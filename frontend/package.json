@@ -44,7 +44,7 @@
 		"react-error-overlay": "6.0.9"
 	},
 	"scripts": {
-		"start": "PORT=3007 react-scripts start",
+		"start": "react-scripts start",
 		"build": "react-scripts build && gulp licenses",
 		"test": "react-scripts test --env=jsdom",
 		"eject": "react-scripts eject",
