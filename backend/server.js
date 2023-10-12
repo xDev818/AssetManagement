@@ -1,3 +1,22 @@
+/** Comments
+ *  Date : 10/12/23 
+    Author : Nole
+    Activities 
+    Purpose : Create new server.js class
+            Initiate the DB Connection
+            app.listen(process.env.PORT,() => {..}
+
+
+    Date : 10 / 12 / 23
+    Author : jinshin
+    Activities
+    Purpose : 
+            - remove mysql package ( e.g: const mysql = require('mysql2') )
+            - imported userRoutes = const usersRoutes = require('./routes/users_routes')
+            - to use the userRoutes = app.use('/api', usersRoutes)
+
+ */
+
 // Packages
 require('dotenv').config()
 var express = require("express");
@@ -20,35 +39,17 @@ app.get("/",(req,res) =>
 )
 
 
-/** Comments
- *  Date : 10/12/23 
-    Author : Nole
-    Activities 
-    Purpose : Create new server.js class
-            Initiate the DB Connection
-            app.listen(process.env.PORT,() => {..}
-
-
-    Date : 10 / 12 / 23
-    Author : jinshin
-    Activities
-    Purpose : 
-            - remove mysql package ( e.g: const mysql = require('mysql2') )
-            - imported userRoutes = const usersRoutes = require('./routes/users_routes')
-            - to use the userRoutes = app.use('/api', usersRoutes)
-
- */
-
 app.listen(process.env.PORT,() => {
     connection.connect(function(err)
     {
         if(err)
         {
-         
+          
             console.log("No Database Present");
         } else
         {
-           
+            const id = randomUUID()
+            console.log("Random ID : " + id);
             console.log("Database Connected");
             
             console.log(`Server running at http://${process.env.HOSTNAME}:${process.env.PORT}/`)
