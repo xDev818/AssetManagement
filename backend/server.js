@@ -14,6 +14,8 @@
             - remove mysql package ( e.g: const mysql = require('mysql2') )
             - imported userRoutes = const usersRoutes = require('./routes/users_routes')
             - to use the userRoutes = app.use('/api', usersRoutes)
+            - Imported positionsRoutes = const positionsRoutes = require('./routes/positions_routes')
+            - to use the positionsRoutes = app.use('/api', positionsRoutes)
 
  */
 
@@ -24,6 +26,7 @@ var cors = require('cors');
 
 // Routes
 const usersRoutes = require('./routes/users_routes')
+const positionsRoutes = require('./routes/positions_routes')
 
 // Server Initialization
 var app = express();
@@ -47,3 +50,4 @@ app.listen(process.env.PORT,() => {
 
 // Api's Routes
 app.use('/api', usersRoutes)
+app.use('/api', positionsRoutes)
