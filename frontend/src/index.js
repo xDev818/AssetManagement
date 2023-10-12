@@ -9,6 +9,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 // Custom Chakra theme
 import theme from "theme/theme.js";
 
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:3001/api'
+
 ReactDOM.render(
   <ChakraProvider theme={theme} resetCss={false} position="relative">
     <HashRouter>

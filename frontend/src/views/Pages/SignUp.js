@@ -14,7 +14,7 @@
 import axios from 'axios'
 import * as React from 'react'
 import  { useEffect, useState } from 'react'
-import appSettings from "../../../src/appSettings";
+
 //import dotenv from 'dotenv'
 
 // Chakra imports
@@ -53,41 +53,79 @@ function SignUp() {
    // dotenv.config()
 
    const [positionID,setPositionID] = useState("")
+   const [categoryID,setCategoryID] = useState("")
   
   useEffect(() => {
     /* Get Default PositionID for user in signup
     */
       
-    const url = appSettings.HOSTNAME + "/position/getPositionIDByPositionName"
+    const url = {
+      positionurl: "/positions",
+      categoryurl: "/categories"
+    }
+    
+    axios.post(url.positionurl)
 
-    axios.post(url)
     .then((res) => {
+      console.log(res.data)
       const dataResponse = res.data.message;
       if (dataResponse.includes("Record")) {
         setPositionID(res.data.result[0].positionDisplayID)
+        
       } 
 
       
     })
     .catch((err) => {
-      // Write Error Log Here
+     // console.log(err.status)
+      if (err.response.status === 404) {
+        alert(err.response.data.message)
+      }
     })
+
+    /*
+    */
+
+    axios.post(url.categoryurl)
+
+    .then((res) => {
+      console.log(res.data)
+      const dataResponse = res.data.message;
+      if (dataResponse.includes("Record")) {
+        setCategoryID(res.data.result[0].categoryID)
+        
+      } 
+
+      
+    })
+    .catch((err) => {
+     // console.log(err.status)
+      if (err.response.status === 404) {
+        alert(err.response.data.message)
+      }
+    })
+
   }, [])
   
 
+
   function HandleSubmit (event) {
+   
+    console.log("Get Position : " + positionID)
+    console.log("Get Category : " + categoryID)
+
     try {
 
       event.preventDefault()
-
+      const url = "/users"
+     // axios.post(url,{username,email,password})
+      
     }
     catch(err) {
       console.log(err)
     }
 
   }
-
-
 
   return (
     <Flex
@@ -243,6 +281,7 @@ function SignUp() {
               Password
             </FormLabel>
             <Input
+            
               variant='auth'
               fontSize='sm'
               ms='4px'
@@ -264,7 +303,7 @@ function SignUp() {
               w='100%'
               h='45'
               mb='24px'
-              
+              onClick={HandleSubmit}
               >
               SIGN UP
             </Button>
