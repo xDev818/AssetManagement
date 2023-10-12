@@ -10,10 +10,13 @@ function Comments_Nole () {
     // Activities 
     // Purpose : Create new database.js class
     //           Initiate the DB Connection
-    //           var connection = mysql.createConnection
+    //           var connection = mysql.createConnection( {.. }
     //
     
-    //
+    // Date : 
+    // Author : 
+    // Activities
+    // Purpose : 
 }
 
 
