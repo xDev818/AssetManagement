@@ -65,6 +65,7 @@ function Sidebar(props) {
         return (
           <>
             <Text
+              key={key}
               color={activeColor}
               fontWeight="bold"
               mb={{
@@ -303,6 +304,7 @@ export function SidebarResponsive(props) {
         return (
           <>
             <Text
+              key={key}
               color={activeColor}
               fontWeight="bold"
               mb={{
