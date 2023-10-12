@@ -16,6 +16,8 @@
             - to use the userRoutes = app.use('/api', usersRoutes)
             - Imported positionsRoutes = const positionsRoutes = require('./routes/positions_routes')
             - to use the positionsRoutes = app.use('/api', positionsRoutes)
+            - Imported categoriesRoutes = const categoriesRoutes = require('./routes/categories_routes')
+            - to use the categoriesRoutes = app.use('/api', categoriesRoutes)
 
  */
 
@@ -27,6 +29,7 @@ var cors = require('cors');
 // Routes
 const usersRoutes = require('./routes/users_routes')
 const positionsRoutes = require('./routes/positions_routes')
+const categoriesRoutes = require('./routes/categories_routes')
 
 // Server Initialization
 var app = express();
@@ -51,3 +54,4 @@ app.listen(process.env.PORT,() => {
 // Api's Routes
 app.use('/api', usersRoutes)
 app.use('/api', positionsRoutes)
+app.use('/api', categoriesRoutes)
