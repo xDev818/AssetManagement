@@ -4,7 +4,7 @@ var express = require("express");
 var cors = require('cors');
 var mysql = require("mysql2");
 var connection = require('./database');
-const {randomUUID } = require('crypto')
+
 
 var app = express();
 
@@ -14,10 +14,11 @@ app.use(express.json());
 app.get("/",(req,res) => 
 {
     res.json("Hello Test")
+    
 }
 )
 
-function Comments_Nole () {
+function Comments () {
 
     // Date : 10/12/23 
     // Author : Nole
@@ -38,10 +39,11 @@ app.listen(process.env.PORT,() => {
     {
         if(err)
         {
-            
+         
             console.log("No Database Present");
         } else
         {
+           
             console.log("Database Connected");
             
             console.log(`Server running at http://${process.env.HOSTNAME}:${process.env.PORT}/`)
