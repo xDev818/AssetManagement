@@ -10,11 +10,12 @@ import {
   DrawerContent,
   DrawerOverlay,
   Flex,
+  Heading,
   Stack,
   Text,
   useColorMode,
   useColorModeValue,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import IconBox from "components/Icons/IconBox";
 import {
@@ -23,15 +24,13 @@ import {
   renderTrack,
   renderTrackRTL,
   renderView,
-  renderViewRTL
+  renderViewRTL,
 } from "components/Scrollbar/Scrollbar";
 import { HSeparator } from "components/Separator/Separator";
 import { SidebarHelp } from "components/Sidebar/SidebarHelp";
 import React from "react";
 import { Scrollbars } from "react-custom-scrollbars";
 import { NavLink, useLocation } from "react-router-dom";
-
-
 
 // FUNCTIONS
 
@@ -251,7 +250,11 @@ function Sidebar(props) {
                 : renderView
             }
           >
-            <Box>{brand}</Box>
+            <Box>
+              <Heading fontSize="md" my={"4"} textAlign="center" width="100">
+                Asset Management
+              </Heading>
+            </Box>
             <Stack direction="column" mb="40px">
               <Box>{links}</Box>
             </Stack>
@@ -482,11 +485,9 @@ export function SidebarResponsive(props) {
           />
           <DrawerBody maxW="250px" px="1rem">
             <Box maxW="100%" h="100vh">
-              <Box>{brand}</Box>
               <Stack direction="column" mb="40px">
                 <Box>{links}</Box>
               </Stack>
-              <SidebarHelp />
             </Box>
           </DrawerBody>
         </DrawerContent>
