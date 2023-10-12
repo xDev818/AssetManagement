@@ -1,3 +1,22 @@
+/* 
+
+    Date : 10 / 12 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      import axios from 'axios'
+      import * as React from 'react'
+      import  { useEffect, useState } from 'react'
+      import appSettings from "../../../src/appSettings";
+
+*/
+
+import axios from 'axios'
+import * as React from 'react'
+import  { useEffect, useState } from 'react'
+import appSettings from "../../../src/appSettings";
+//import dotenv from 'dotenv'
+
 // Chakra imports
 import {
   Box,
@@ -16,16 +35,60 @@ import {
 } from "@chakra-ui/react";
 // Assets
 import BgSignUp from "assets/img/BgSignUp.png";
-import React from "react";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 
 function SignUp() {
+
   const bgForm = useColorModeValue("white", "navy.800");
   const titleColor = useColorModeValue("gray.700", "blue.500");
   const textColor = useColorModeValue("gray.700", "white");
   const colorIcons = useColorModeValue("gray.700", "white");
   const bgIcons = useColorModeValue("trasnparent", "navy.700");
   const bgIconsHover = useColorModeValue("gray.50", "whiteAlpha.100");
+
+
+
+  /*  Variables Declaration Here
+  */
+   // dotenv.config()
+
+   const [positionID,setPositionID] = useState("")
+  
+  useEffect(() => {
+    /* Get Default PositionID for user in signup
+    */
+      
+    const url = appSettings.HOSTNAME + "/position/getPositionIDByPositionName"
+
+    axios.post(url)
+    .then((res) => {
+      const dataResponse = res.data.message;
+      if (dataResponse.includes("Record")) {
+        setPositionID(res.data.result[0].positionDisplayID)
+      } 
+
+      
+    })
+    .catch((err) => {
+      // Write Error Log Here
+    })
+  }, [])
+  
+
+  function HandleSubmit (event) {
+    try {
+
+      event.preventDefault()
+
+    }
+    catch(err) {
+      console.log(err)
+    }
+
+  }
+
+
+
   return (
     <Flex
       direction='column'
@@ -58,19 +121,7 @@ function SignUp() {
         align='center'
         mt='125px'
         mb='30px'>
-        <Text fontSize='4xl' color='white' fontWeight='bold'>
-          Welcome!
-        </Text>
-        <Text
-          fontSize='md'
-          color='white'
-          fontWeight='normal'
-          mt='10px'
-          mb='26px'
-          w={{ base: "90%", sm: "60%", lg: "40%", xl: "333px" }}>
-          Use these awesome forms to login or create new account in your project
-          for free.
-        </Text>
+
       </Flex>
       <Flex alignItems='center' justifyContent='center' mb='60px' mt='20px'>
         <Flex
@@ -212,7 +263,9 @@ function SignUp() {
               fontWeight='bold'
               w='100%'
               h='45'
-              mb='24px'>
+              mb='24px'
+              
+              >
               SIGN UP
             </Button>
           </FormControl>
