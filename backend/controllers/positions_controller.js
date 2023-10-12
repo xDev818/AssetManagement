@@ -9,7 +9,7 @@ const getPositionByName = ( request, response ) => {
 
     mysql.query( stmt, [ defaultPosition ], ( err, result ) => {
 
-        if( err ) return response.status(404).send(
+        if( err || !result.length ) return response.status(404).send(
             {
                 message: "No Record Found",
                 message2: err
