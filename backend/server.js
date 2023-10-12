@@ -40,22 +40,8 @@ app.get("/",(req,res) =>
 
 
 app.listen(process.env.PORT,() => {
-    connection.connect(function(err)
-    {
-        if(err)
-        {
-          
-            console.log("No Database Present");
-        } else
-        {
-            const id = randomUUID()
-            console.log("Random ID : " + id);
-            console.log("Database Connected");
-            
-            console.log(`Server running at http://${process.env.HOSTNAME}:${process.env.PORT}/`)
-        }
-    }
-    )
+    
+    console.log(`Server running at http://${process.env.HOSTNAME}:${process.env.PORT}/`)
 }
 );
 
