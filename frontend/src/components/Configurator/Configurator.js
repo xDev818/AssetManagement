@@ -7,11 +7,12 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
-  Flex, Link,
+  Flex,
+  Link,
   Switch,
   Text,
   useColorMode,
-  useColorModeValue
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { HSeparator } from "components/Separator/Separator";
 import React, { useState } from "react";
@@ -55,7 +56,7 @@ export default function Configurator(props) {
           <DrawerHeader pt="24px" px="24px">
             <DrawerCloseButton />
             <Text fontSize="xl" fontWeight="bold" mt="16px">
-              Argon Chakra Configurator
+              Asset Management Configurator
             </Text>
             <Text fontSize="md" mb="16px">
               See your dashboard options.
