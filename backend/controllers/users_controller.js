@@ -1,5 +1,20 @@
+/* 
+
+    Date : 10 / 13 / 23
+    Author : Jinshin
+    Activities
+    Purpose : 
+      JWT is added: To update your node_modules, simple type in the terminal " npm install " to automatically install jsonwebtoken
+      imported = const jwt = require('jsonwebtoken')
+      Initialized: const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '7d' }  )
+      Note: Add SECRET in the env file. ( e.g: SECRET = 1234 ) output = process.env.SECRET
+
+*/
+
+
 // Packages
 const mysql = require('../database')
+const jwt = require('jsonwebtoken')
 const { randomUUID } = require('crypto')
 
 
@@ -49,7 +64,9 @@ const createUser = ( request, response ) => {
 // An Instance to logged a user in
 const loginUser = ( request, response ) => {
 
-    const { username } = request.body
+    console.log(request.body)
+
+    const { username, password } = request.body
 
     const stmt = "SELECT users.userDisplayID,users.displayName,CONCAT(users.lastname ,', ', users.firstname) as Name,"
     + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
@@ -57,22 +74,24 @@ const loginUser = ( request, response ) => {
     + " inner join tblUserCategory userCategory on users.groupTypeID = userCategory.categoryID"
     + " inner join tblPositions positions on positions.positionDisplayID = users.positionID"
     + " inner join tblDepartments department on department.departmentDisplayID = positions.departmentDisplayID"
-    + " where users.username = ? and users.active=1"
-    // and users.password = ? 
+    + " where users.username = ? and users.password = ? and users.active=1"
+    
 
-    mysql.query( stmt, [ username ], ( err, result ) => {
+    mysql.query( stmt, [ username, password ], ( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
                 message: "No Record Found",
-                message2: err.message 
+                message2: err
             }
         )
+
+        const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '7d' }  )
 
         response.status(200).send(
             {
                 message: "Record Found",
-                result
+                token
             }
         )
 
