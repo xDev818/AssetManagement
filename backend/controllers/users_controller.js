@@ -13,14 +13,16 @@ const id = randomUUID()
 
 // An instance to register a new user
 const createUser = ( request, response ) => {
+    
+    const { username, email, password } = request.body
 
     const stmt = "INSERT INTO tblUsers(userDisplayID,username,email,password,displayName,dateCreated) values (?)";
     const display = "Set your Display Name"
     const values = [
         id,
-        req.body.username,
-        req.body.email,
-        req.body.password,
+        username,
+        email,
+        password,
         display,
         utils_getDate()
     ];
@@ -164,7 +166,7 @@ const getUserByActive = ( request, response ) => {
 // An Instance to get a user's profile
 const getUserProfile = ( request, response ) => {
 
-    const { userid } = request.body
+    const { userid } = request.params
 
     const stmt = "SELECT a.groupTypeID,b.categoryName,a.positionID,a.firstname,a.lastname,a.displayName,"
     + "a.email,a.imgFilename FROM tblUsers a INNER JOIN tblUserCategory b ON a.groupTypeID = b.categoryID " 
@@ -193,6 +195,8 @@ const getUserProfile = ( request, response ) => {
 // An Intance to update a user
 const updateUserProfile = ( request, response ) => {
 
+    const { userDisplayID } = request.params
+
     const {
 
         firstname,
@@ -200,8 +204,7 @@ const updateUserProfile = ( request, response ) => {
         email,
         positionID,
         categoryID,
-        displayname,
-        userDisplayID
+        displayname
 
     } = request.body
 
