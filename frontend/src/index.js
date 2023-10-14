@@ -22,7 +22,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "theme/theme.js";
 
 import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:5000/api'
+axios.defaults.baseURL = 'http://localhost:5001/api'
 
 ReactDOM.render(
   <ChakraProvider theme={theme} resetCss={false} position="relative">
