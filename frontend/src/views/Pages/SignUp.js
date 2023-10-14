@@ -17,6 +17,7 @@
       Comment <HStack spacing='15px' justify='center' mb='22px'> </HStack>
         ** This Functionality will use later part
       Integrate Bcryptjs functionality
+      Integrate log functionality
 
 */
 
@@ -73,54 +74,125 @@ function SignUp() {
   useEffect(() => {
     /* Get Default PositionID for user in signup
     */
+
+    var logvalues = {
+      logtype: "",
+      module: "",
+      logfunction: "",
+      logvalues : "",
+      userID: ""
+    }
       
     const url = {
-      positionurl: "/positions",
+      positionurl: "/positions"
+    }
+
+ 
+      axios.post(url.positionurl)
+
+      .then((res) => {
+        
+        const dataResponse = res.data.message;
+        if (dataResponse.includes("Record")) {
+          setPositionID(res.data.result[0].positionDisplayID)
+          
+        } 
+
+        
+      })
+      .catch( async (err) => {
+      // console.log(err.status)
+      if (err) {
+        logvalues = {
+          logtype: "Error",
+          module: "SignUp",
+          logfunction: "UseEffect /positions",
+          logvalues : err,
+          userID: ""
+        }
+        alert("Error here : " + err)
+      }
+        else if (err.response.status === 404) {
+          logvalues = {
+            logtype: "Error",
+            module: "SignUp",
+            logfunction: "UseEffect /positions",
+            logvalues : err.response.data.message,
+            userID: ""
+          }
+
+          const request = await axios.post('/log',logvalues)
+          alert(err.response.data.message)
+        }
+
+
+      })
+    
+  }, [])
+
+/* 
+  useEffect(() => {
+    
+    var logvalues = {
+      logtype: "",
+      module: "",
+      logfunction: "",
+      logvalues : "",
+      userID: ""
+    }
+
+    const url = {
       categoryurl: "/categories"
     }
-    
-    axios.post(url.positionurl)
 
-    .then((res) => {
-      console.log(res.data)
-      const dataResponse = res.data.message;
-      if (dataResponse.includes("Record")) {
-        setPositionID(res.data.result[0].positionDisplayID)
+    try {
+      axios.post(url.categoryurl)
+
+      .then((res) => {
+        console.log(res.data)
+        const dataResponse = res.data.message;
+        if (dataResponse.includes("Record")) {
+          setCategoryID(res.data.result[0].categoryID)
+          
+        } 
+
         
-      } 
+      })
+      .catch( async (err) => {
 
-      
-    })
-    .catch((err) => {
-     // console.log(err.status)
-      if (err.response.status === 404) {
-        alert(err.response.data.message)
-      }
-    })
+        if (err) {
+        logvalues = {
+            logtype: "Error",
+            module: "SignUp",
+            logfunction: "UseEffect /categories",
+            logvalues : err,
+            userID: ""
+          }
+          
+          alert(err)
+        }
+        else if (err.response.status === 404) {
+          logvalues = {
+            logtype: "Error",
+            module: "SignUp",
+            logfunction: "UseEffect /categories",
+            logvalues : err.response.data.message,
+            userID: ""
+          }
 
-    /*
-    */
+          alert(err.response.data.message)
+        }
 
-    axios.post(url.categoryurl)
+        const request = await axios.post('/log',logvalues)
 
-    .then((res) => {
-      console.log(res.data)
-      const dataResponse = res.data.message;
-      if (dataResponse.includes("Record")) {
-        setCategoryID(res.data.result[0].categoryID)
-        
-      } 
-
-      
-    })
-    .catch((err) => {
-     // console.log(err.status)
-      if (err.response.status === 404) {
-        alert(err.response.data.message)
-      }
-    })
-
+      })
+    } catch (err) {
+      alert(err)
+    }
+ 
   }, [])
+  
+*/
   
 
   const handleInput = (e) => {
@@ -131,8 +203,8 @@ function SignUp() {
 
   const HandleSubmit = async(event) => {
    
-    console.log("Get Position : " + positionID)
-    console.log("Get Category : " + categoryID)
+   // console.log("Get Position : " + positionID)
+   // console.log("Get Category : " + categoryID)
 
     try {
 
@@ -150,13 +222,52 @@ function SignUp() {
 
       const request = await axios.post('/users',currentValues)
 
-      const response = await request.data
-     
-     
+      //const response = await request.data
+
 
     }
     catch(err) {
-      console.log(err)
+      
+      const errorStatus = err.code
+      var logvalues = {
+        logtype: "",
+        module: "",
+        logfunction: "",
+        logvalues : "",
+        userID: ""
+      }
+
+
+      if( errorStatus.includes('ERR_NETWORK') ) 
+      {
+         logvalues = {
+          logtype: "Error",
+          module: "SignUp",
+          logfunction: "HandleSubmit",
+          logvalues : "Server is not running",
+          userID: ""
+        }
+
+     
+      } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
+        
+        //return alert( err.response.data.message )
+         logvalues = {
+          logtype: "Error",
+          module: "SignUp",
+          logfunction: "HandleSubmit",
+          logvalues : err.response.data.message,
+          userID: ""
+        }
+
+      }
+      else {
+          alert(err)
+      }
+
+      const request = await axios.post('/log',logvalues)
+
+
     }
 
   }

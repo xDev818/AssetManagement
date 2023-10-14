@@ -7,14 +7,16 @@ const { randomUUID } = require('crypto')
 const { utils_getDate } = require('../utils/date_helper')
 
 
-// Generate Random ID
-const id = randomUUID() 
 
 
 // An instance to put a log
 const putLog = ( request, response ) => {
+    // Generate Random ID
+    const id = randomUUID() 
 
     const { logtype, module, logfunction, logvalues, userID } = request.body
+
+    const logType = "Error"
 
     const stmt = "INSERT INTO tblLogs(logID,logtype,module,"
     + "logfunction,logvalues,createdBy,dateCreated) values (?)";
@@ -141,5 +143,9 @@ const getUserLogsInfo = ( request, response ) => {
 }
 
 module.exports = {
-    putLog
+    putLog,
+    getAllLogs,
+    getLog,
+    getUserLogsInfo
+
 }
