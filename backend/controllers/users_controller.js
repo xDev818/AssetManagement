@@ -9,6 +9,15 @@
       Initialized: const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '7d' }  )
       Note: Add SECRET in the env file. ( e.g: SECRET = 1234 ) output = process.env.SECRET
 
+------------------
+
+    Date : 10 / 14 / 23
+    Author : Jinshin
+    Activities
+    Purpose : 
+      bcryptjs is added:
+      imported: compare password = const { compare_password } = require('../utils/password_helper')
+
 */
 
 
@@ -16,6 +25,7 @@
 const mysql = require('../database')
 const jwt = require('jsonwebtoken')
 const { randomUUID } = require('crypto')
+const { compare_password } = require('../utils/password_helper')
 
 
 // Date helper
@@ -64,20 +74,11 @@ const createUser = ( request, response ) => {
 // An Instance to logged a user in
 const loginUser = ( request, response ) => {
 
-    console.log(request.body)
-
     const { username, password } = request.body
 
-    const stmt = "SELECT users.userDisplayID,users.displayName,CONCAT(users.lastname ,', ', users.firstname) as Name,"
-    + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
-    + "department.departmentName,users.password FROM tblUsers users"
-    + " inner join tblUserCategory userCategory on users.groupTypeID = userCategory.categoryID"
-    + " inner join tblPositions positions on positions.positionDisplayID = users.positionID"
-    + " inner join tblDepartments department on department.departmentDisplayID = positions.departmentDisplayID"
-    + " where users.username = ? and users.password = ? and users.active=1"
-    
+    const checkUser = "select tblusers.password from tblusers where username = ?"
 
-    mysql.query( stmt, [ username, password ], ( err, result ) => {
+    mysql.query( checkUser, [ username ], ( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -86,14 +87,41 @@ const loginUser = ( request, response ) => {
             }
         )
 
-        const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '7d' }  )
+        const isValid = compare_password( password, result[0].password )
 
-        response.status(200).send(
+        if( !isValid ) return response.status(400).send(
             {
-                message: "Record Found",
-                token
+                message: "Password is incorrect"
             }
         )
+
+        const stmt = "SELECT users.userDisplayID,users.displayName,CONCAT(users.lastname ,', ', users.firstname) as Name,"
+        + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
+        + "department.departmentName,users.password FROM tblUsers users"
+        + " inner join tblUserCategory userCategory on users.groupTypeID = userCategory.categoryID"
+        + " inner join tblPositions positions on positions.positionDisplayID = users.positionID"
+        + " inner join tblDepartments department on department.departmentDisplayID = positions.departmentDisplayID"
+        + " where users.username = ? and users.password = ? and users.active=1"
+
+        mysql.query( stmt, [ username, result[0].password ], ( err, result ) => {
+
+            if( err || !result.length ) return response.status(404).send(
+                {
+                    message: "No Record Found",
+                    message2: err
+                }
+            )
+    
+            const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '7d' }  )
+    
+            response.status(200).send(
+                {
+                    message: "Record Found",
+                    token
+                }
+            )
+    
+        })
 
     })
 
