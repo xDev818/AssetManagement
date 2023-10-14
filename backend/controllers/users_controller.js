@@ -25,7 +25,7 @@
 const mysql = require('../database')
 const jwt = require('jsonwebtoken')
 const { randomUUID } = require('crypto')
-const { compare_password } = require('../utils/password_helper')
+const { compare_password, hash_password } = require('../utils/password_helper')
 
 
 // Date helper
@@ -33,25 +33,29 @@ const { utils_getDate } = require('../utils/date_helper')
 
 
 // Generate Random ID
-const id = randomUUID() 
 
 
 // An instance to register a new user
 const createUser = ( request, response ) => {
-    
-    const { username, email, password } = request.body
 
-    const stmt = "INSERT INTO tblUsers(userDisplayID,username,email,password,displayName,dateCreated) values (?)";
+    const id = randomUUID() 
+    const { username, email, password , positionID, categoryID } = request.body
+
+    const stmt = "INSERT INTO tblUsers(userDisplayID,username,email,password,displayName,positionID,groupTypeID,isRegister,dateCreated) values (?)";
     const display = "Set your Display Name"
+    const iRegister = '1'
     const values = [
         id,
         username,
         email,
         password,
         display,
+        positionID,
+        categoryID,
+        iRegister,
         utils_getDate()
     ];
-      
+    
     mysql.query( stmt, [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(

@@ -9,12 +9,21 @@
       import  { useEffect, useState } from 'react'
       import appSettings from "../../../src/appSettings";
 
+    Date : 10 / 14 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Update From (Registe Wth ) to (Register)
+      Comment <HStack spacing='15px' justify='center' mb='22px'> </HStack>
+        ** This Functionality will use later part
+      Integrate Bcryptjs functionality
+
 */
 
 import axios from 'axios'
 import * as React from 'react'
 import  { useEffect, useState } from 'react'
-
+import {hash_password} from '../../components/Utils/password_helper'
 //import dotenv from 'dotenv'
 
 // Chakra imports
@@ -54,6 +63,12 @@ function SignUp() {
 
    const [positionID,setPositionID] = useState("")
    const [categoryID,setCategoryID] = useState("")
+
+   const [values,setValues] = useState({
+    username: '',
+    email: '',
+    password: ''
+   })
   
   useEffect(() => {
     /* Get Default PositionID for user in signup
@@ -108,8 +123,13 @@ function SignUp() {
   }, [])
   
 
+  const handleInput = (e) => {
+    console.log(e.target.name)
+    setValues( { ...e.tar, [e.target.name]: [e.target.value.trim()] });
+    //setErrors("test")
+  };
 
-  function HandleSubmit (event) {
+  const HandleSubmit = async(event) => {
    
     console.log("Get Position : " + positionID)
     console.log("Get Category : " + categoryID)
@@ -117,9 +137,23 @@ function SignUp() {
     try {
 
       event.preventDefault()
-      const url = "/users"
-     // axios.post(url,{username,email,password})
+
+      const pass = hash_password(values.password)
       
+      const currentValues = {
+        username: values.username,
+        email: values.email,
+        password: pass,
+        positionID : positionID,
+        categoryID: categoryID
+      }
+
+      const request = await axios.post('/users',currentValues)
+
+      const response = await request.data
+     
+     
+
     }
     catch(err) {
       console.log(err)
@@ -180,8 +214,9 @@ function SignUp() {
             fontWeight='bold'
             textAlign='center'
             mb='22px'>
-            Register With
+            Register 
           </Text>
+          {/* 
           <HStack spacing='15px' justify='center' mb='22px'>
             <Flex
               justify='center'
@@ -244,6 +279,7 @@ function SignUp() {
               </Link>
             </Flex>
           </HStack>
+         
           <Text
             fontSize='lg'
             color='gray.400'
@@ -252,11 +288,13 @@ function SignUp() {
             mb='22px'>
             or
           </Text>
+           */}
           <FormControl>
             <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-              Name
+             Username
             </FormLabel>
             <Input
+              
               variant='auth'
               fontSize='sm'
               ms='4px'
@@ -264,11 +302,14 @@ function SignUp() {
               placeholder='Your full name'
               mb='24px'
               size='lg'
+              onChange={ e => setValues( { ...values, username: e.target.value } ) }
+              value={values.username}
             />
             <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
               Email
             </FormLabel>
             <Input
+              
               variant='auth'
               fontSize='sm'
               ms='4px'
@@ -276,12 +317,14 @@ function SignUp() {
               placeholder='Your email address'
               mb='24px'
               size='lg'
+              onChange={ e => setValues( { ...values, email: e.target.value } ) }
+              value={values.email}
             />
             <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
               Password
             </FormLabel>
             <Input
-            
+             
               variant='auth'
               fontSize='sm'
               ms='4px'
@@ -289,13 +332,17 @@ function SignUp() {
               placeholder='Your password'
               mb='24px'
               size='lg'
+              onChange={ e => setValues( { ...values, password: e.target.value } ) }
+              value={values.password}
             />
+            {/* 
             <FormControl display='flex' alignItems='center' mb='24px'>
               <Switch id='remember-login' colorScheme='blue' me='10px' />
               <FormLabel htmlFor='remember-login' mb='0' fontWeight='normal'>
                 Remember me
               </FormLabel>
             </FormControl>
+            */}
             <Button
               fontSize='10px'
               variant='dark'
