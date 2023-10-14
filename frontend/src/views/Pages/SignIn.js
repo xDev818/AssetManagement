@@ -1,3 +1,19 @@
+/* 
+
+    Date : 10 / 13 / 23
+    Author : Jinshin
+    Activities
+    Purpose : 
+      import axios from 'axios'
+      import  { useState } from 'react'
+      loginHandler = () => {}
+      onChange={ e => setValues( { ...values, username: e.target.value } ) }
+      value={ values.username }
+      onChange={ e => setValues( { ...values, password: e.target.value } ) }
+      value={ values.password }
+
+*/
+
 import React from "react";
 // Chakra imports
 import {
@@ -18,6 +34,10 @@ import {
 import signInImage from "assets/img/signInImage.png";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 
+// Imported: Jinshin
+import { useState } from 'react'
+import axios from 'axios'
+
 function SignIn() {
   // Chakra color mode
   const textColor = useColorModeValue("gray.700", "white");
@@ -26,6 +46,39 @@ function SignIn() {
   const colorIcons = useColorModeValue("gray.700", "white");
   const bgIcons = useColorModeValue("trasnparent", "navy.700");
   const bgIconsHover = useColorModeValue("gray.50", "whiteAlpha.100");
+
+  // Start: Jinshin
+  const [ values, setValues ] = useState(
+    {
+      username: '',
+      password: ''
+    }
+  )
+
+  const loginHandler = async () => {
+
+    try {
+
+      const request = await axios.post('/users/login', values)
+
+      const response = await request.data
+
+      console.log(response)
+
+
+    } catch ( err ) {
+
+      const errorStatus = err.code
+
+      if( errorStatus.includes('ERR_NETWORK') ) return alert("Server is not running")
+
+      if ( errorStatus.includes('ERR_BAD_REQUEST') ) return alert( err.response.data.message )
+
+    }
+
+  }
+  // End Jinshin
+
   return (
     <Flex position='relative' mb='40px'>
       <Flex
@@ -148,6 +201,8 @@ function SignIn() {
                 placeholder='Your full name'
                 mb='24px'
                 size='lg'
+                onChange={ e => setValues( { ...values, username: e.target.value } ) }
+                value={ values.username }
               />
               <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
                 Password
@@ -160,6 +215,8 @@ function SignIn() {
                 placeholder='Your password'
                 mb='24px'
                 size='lg'
+                onChange={ e => setValues( { ...values, password: e.target.value } ) }
+                value={ values.password }
               />
               <FormControl display='flex' alignItems='center' mb='24px'>
                 <Switch id='remember-login' colorScheme='blue' me='10px' />
@@ -173,7 +230,7 @@ function SignIn() {
                 fontWeight='bold'
                 w='100%'
                 h='45'
-                mb='24px'>
+                mb='24px' onClick={loginHandler}>
                 SIGN UP
               </Button>
             </FormControl>
