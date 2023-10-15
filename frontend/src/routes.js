@@ -9,6 +9,9 @@ import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
 import Users from "views/Dashboard/Users";
 import Configuration from "views/Dashboard/Configuration";
+import AssetCategory from "components2/Configuration/AssetCategory";
+import PositionCategory from "components2/Configuration/PositionCategory";
+import StatusCategory from "components2/Configuration/StatusCategory";
 
 import {
   HomeIcon,
@@ -30,6 +33,30 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
+    path: "/asset",
+    name: "Asset Configuration",
+    rtlName: "لوحة القيادة",
+    icon: <HomeIcon color="inherit" />,
+    component: AssetCategory,
+    layout: "/admin",
+  },
+  {
+    path: "/position",
+    name: "Position",
+    rtlName: "لوحة القيادة",
+    icon: <HomeIcon color="inherit" />,
+    component: PositionCategory,
+    layout: "/admin",
+  },
+  {
+    path: "/status",
+    name: "Status",
+    rtlName: "لوحة القيادة",
+    icon: <HomeIcon color="inherit" />,
+    component: StatusCategory,
+    layout: "/admin",
+  },
+  {
     path: "/tables",
     name: "Tables",
     rtlName: "لوحة القيادة",
@@ -45,7 +72,7 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-    path: "",
+    path: "/configuration",
     name: "Configuration",
     icon: <HomeIcon color="inherit" />,
     component: Configuration,

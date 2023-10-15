@@ -6,10 +6,13 @@ import {
   Th,
   Td,
   TableContainer,
+  Stack,
 } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { useState } from "react";
 import Modal1 from "components2/Modal/Modal";
+import Card from "components/Card/Card";
+import FourGraphs from "components/FourGraphs/FourGraphs";
 
 export default function AssetCategory() {
   const [editItem, setEditItem] = useState(null);
@@ -63,51 +66,61 @@ export default function AssetCategory() {
     console.log("editing");
   }
   return (
-    <TableContainer>
-      <Button colorScheme="green" onClick={handleCreate}>
-        Create
-      </Button>
-      <Table size="lg">
-        <Thead>
-          <Tr>
-            <Th>Actions</Th>
-            <Th>Category Name</Th>
-            <Th>Description</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.map((item) => (
-            <Tr key={item.id}>
-              <Td>
-                <ButtonGroup>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </Button>
-                  <Button colorScheme="blue" onClick={() => handleEdit(item)}>
-                    Edit
-                  </Button>
-                </ButtonGroup>
-              </Td>
-              <Td>{item.categoryName}</Td>
-              <Td>{item.description}</Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-      <Modal1
-        isCreating={isCreating}
-        isEditing={isEditing}
-        handleCloseModal={handleCloseModal}
-        editItem={editItem}
-        newItem={newItem}
-        setNewItem={setNewItem}
-        setEditItem={setEditItem}
-        handleSave={handleSave}
-        handleSave1={handleSave1}
-      />
-    </TableContainer>
+    <>
+      <Stack mt={100}>
+        <FourGraphs />
+        <Card>
+          <TableContainer>
+            <Button colorScheme="green" onClick={handleCreate}>
+              Create
+            </Button>
+            <Table size="lg">
+              <Thead>
+                <Tr>
+                  <Th>Actions</Th>
+                  <Th>Category Name</Th>
+                  <Th>Description</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.map((item) => (
+                  <Tr key={item.id}>
+                    <Td>
+                      <ButtonGroup>
+                        <Button
+                          colorScheme="red"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          colorScheme="blue"
+                          onClick={() => handleEdit(item)}
+                        >
+                          Edit
+                        </Button>
+                      </ButtonGroup>
+                    </Td>
+                    <Td>{item.categoryName}</Td>
+                    <Td>{item.description}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            <Modal1
+              isCreating={isCreating}
+              isEditing={isEditing}
+              handleCloseModal={handleCloseModal}
+              editItem={editItem}
+              newItem={newItem}
+              setNewItem={setNewItem}
+              setEditItem={setEditItem}
+              handleSave={handleSave}
+              handleSave1={handleSave1}
+            />
+          </TableContainer>
+        </Card>
+      </Stack>
+    </>
   );
 }

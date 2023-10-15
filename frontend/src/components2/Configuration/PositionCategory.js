@@ -17,10 +17,13 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Stack,
 } from "@chakra-ui/react";
 
 import { useState } from "react";
 import Modal1 from "components2/Modal/Modal";
+import Card from "components/Card/Card";
+import FourGraphs from "components/FourGraphs/FourGraphs";
 
 export default function PositionCategory() {
   const [editItem, setEditItem] = useState(null);
@@ -98,117 +101,139 @@ export default function PositionCategory() {
     console.log("editing");
   }
   return (
-    <TableContainer>
-      <Button colorScheme="green" onClick={handleCreate}>
-        Create
-      </Button>
-      <Table size="lg">
-        <Thead>
-          <Tr>
-            <Th>Actions</Th>
-            <Th>Department</Th>
-            <Th>Position</Th>
-            <Th>Description</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.map((item) => (
-            <Tr key={item.id}>
-              <Td>
-                <ButtonGroup>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </Button>
-                  <Button colorScheme="blue" onClick={() => handleEdit(item)}>
-                    Edit
-                  </Button>
-                </ButtonGroup>
-              </Td>
-              <Td>{item.department}</Td>
-              <Td>{item.position}</Td>
-              <Td>{item.description}</Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-      <Modal
-        isOpen={isCreating ? isCreating : isEditing}
-        onClose={handleCloseModal}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{isCreating ? "Add Item" : "Editing"}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Department</FormLabel>
-              {isCreating ? (
-                <>
-                  <Input
-                    value={newItem.department}
-                    onChange={(e) =>
-                      setNewItem({ ...newItem, department: e.target.value })
-                    }
-                  />
-                </>
-              ) : (
-                <Input
-                  value={editItem?.department}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, department: e.target.value })
-                  }
-                />
-              )}
-            </FormControl>
-            <FormControl>
-              <FormLabel>Position</FormLabel>
-              {isCreating ? (
-                <>
-                  <Input
-                    value={newItem.position}
-                    onChange={(e) =>
-                      setNewItem({ ...newItem, position: e.target.value })
-                    }
-                  />
-                </>
-              ) : (
-                <Input
-                  value={editItem?.position}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, position: e.target.value })
-                  }
-                />
-              )}
-            </FormControl>
-            <FormControl>
-              <FormLabel>Description</FormLabel>
-              {isCreating ? (
-                <Input
-                  value={newItem.description}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, description: e.target.value })
-                  }
-                />
-              ) : (
-                <Input
-                  value={editItem?.description}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, description: e.target.value })
-                  }
-                />
-              )}
-            </FormControl>
-          </ModalBody>
-          {isCreating ? (
-            <Button onClick={handleSave1}>Save</Button>
-          ) : (
-            <Button onClick={() => handleSave(editItem)}>Save</Button>
-          )}
-        </ModalContent>
-      </Modal>
-    </TableContainer>
+    <>
+      <Stack mt={100}>
+        <FourGraphs />
+        <Card>
+          <TableContainer>
+            <Button colorScheme="green" onClick={handleCreate}>
+              Create
+            </Button>
+            <Table size="lg">
+              <Thead>
+                <Tr>
+                  <Th>Actions</Th>
+                  <Th>Department</Th>
+                  <Th>Position</Th>
+                  <Th>Description</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.map((item) => (
+                  <Tr key={item.id}>
+                    <Td>
+                      <ButtonGroup>
+                        <Button
+                          colorScheme="red"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          colorScheme="blue"
+                          onClick={() => handleEdit(item)}
+                        >
+                          Edit
+                        </Button>
+                      </ButtonGroup>
+                    </Td>
+                    <Td>{item.department}</Td>
+                    <Td>{item.position}</Td>
+                    <Td>{item.description}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            <Modal
+              isOpen={isCreating ? isCreating : isEditing}
+              onClose={handleCloseModal}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>{isCreating ? "Add Item" : "Editing"}</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <FormControl>
+                    <FormLabel>Department</FormLabel>
+                    {isCreating ? (
+                      <>
+                        <Input
+                          value={newItem.department}
+                          onChange={(e) =>
+                            setNewItem({
+                              ...newItem,
+                              department: e.target.value,
+                            })
+                          }
+                        />
+                      </>
+                    ) : (
+                      <Input
+                        value={editItem?.department}
+                        onChange={(e) =>
+                          setEditItem({
+                            ...editItem,
+                            department: e.target.value,
+                          })
+                        }
+                      />
+                    )}
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Position</FormLabel>
+                    {isCreating ? (
+                      <>
+                        <Input
+                          value={newItem.position}
+                          onChange={(e) =>
+                            setNewItem({ ...newItem, position: e.target.value })
+                          }
+                        />
+                      </>
+                    ) : (
+                      <Input
+                        value={editItem?.position}
+                        onChange={(e) =>
+                          setEditItem({ ...editItem, position: e.target.value })
+                        }
+                      />
+                    )}
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Description</FormLabel>
+                    {isCreating ? (
+                      <Input
+                        value={newItem.description}
+                        onChange={(e) =>
+                          setNewItem({
+                            ...newItem,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      <Input
+                        value={editItem?.description}
+                        onChange={(e) =>
+                          setEditItem({
+                            ...editItem,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    )}
+                  </FormControl>
+                </ModalBody>
+                {isCreating ? (
+                  <Button onClick={handleSave1}>Save</Button>
+                ) : (
+                  <Button onClick={() => handleSave(editItem)}>Save</Button>
+                )}
+              </ModalContent>
+            </Modal>
+          </TableContainer>
+        </Card>
+      </Stack>
+    </>
   );
 }
