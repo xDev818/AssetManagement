@@ -25,6 +25,8 @@ import axios from 'axios'
 import * as React from 'react'
 import  { useEffect, useState } from 'react'
 import {hash_password} from '../../components/Utils/password_helper'
+
+
 //import dotenv from 'dotenv'
 
 // Chakra imports
@@ -62,6 +64,8 @@ function SignUp() {
   */
    // dotenv.config()
 
+   //const navigate = useNavigate();
+
    const [positionID,setPositionID] = useState("")
    const [categoryID,setCategoryID] = useState("")
 
@@ -71,16 +75,16 @@ function SignUp() {
     password: ''
    })
   
-  useEffect(() => {
+  useEffect( () => {
     /* Get Default PositionID for user in signup
     */
 
     var logvalues = {
-      logtype: "",
-      module: "",
-      logfunction: "",
-      logvalues : "",
-      userID: ""
+      logtype: '',
+      module: '',
+      logfunction: '',
+      logvalues : '',
+      userID: ''
     }
       
     const url = {
@@ -100,37 +104,33 @@ function SignUp() {
 
         
       })
-      .catch( async (err) => {
-      // console.log(err.status)
-      if (err) {
-        logvalues = {
-          logtype: "Error",
-          module: "SignUp",
-          logfunction: "UseEffect /positions",
-          logvalues : err,
-          userID: ""
+      .catch((err) => {
+        const errorStatus = err.code
+        if( errorStatus.includes('ERR_NETWORK') ) {
+        
+          alert(errorStatus)
         }
-        alert("Error here : " + err)
-      }
-        else if (err.response.status === 404) {
-          logvalues = {
-            logtype: "Error",
-            module: "SignUp",
-            logfunction: "UseEffect /positions",
-            logvalues : err.response.data.message,
-            userID: ""
-          }
+          else if (err.response.status === 404) {
+            logvalues = {
+              logtype: 'Error',
+              module: 'SignUp',
+              logfunction: 'UseEffect /positions',
+              logvalues : err.response.data.message,
+              userID: ''
+            }
 
-          const request = await axios.post('/log',logvalues)
-          alert(err.response.data.message)
-        }
+             alert(err.response.data.message)
+          
+             // Write axios putlog here
+           
+          }
 
 
       })
     
   }, [])
 
-/* 
+
   useEffect(() => {
     
     var logvalues = {
@@ -145,11 +145,11 @@ function SignUp() {
       categoryurl: "/categories"
     }
 
-    try {
+
       axios.post(url.categoryurl)
 
       .then((res) => {
-        console.log(res.data)
+        
         const dataResponse = res.data.message;
         if (dataResponse.includes("Record")) {
           setCategoryID(res.data.result[0].categoryID)
@@ -158,18 +158,12 @@ function SignUp() {
 
         
       })
-      .catch( async (err) => {
+      .catch((err) => {
 
-        if (err) {
-        logvalues = {
-            logtype: "Error",
-            module: "SignUp",
-            logfunction: "UseEffect /categories",
-            logvalues : err,
-            userID: ""
-          }
-          
-          alert(err)
+        const errorStatus = err.code
+        if( errorStatus.includes('ERR_NETWORK') ) {
+        
+          alert(errorStatus)
         }
         else if (err.response.status === 404) {
           logvalues = {
@@ -183,16 +177,15 @@ function SignUp() {
           alert(err.response.data.message)
         }
 
-        const request = await axios.post('/log',logvalues)
+        // Write log here
+        //const request = await axios.post('/log',logvalues)
 
       })
-    } catch (err) {
-      alert(err)
-    }
+
  
   }, [])
   
-*/
+
   
 
   const handleInput = (e) => {
@@ -222,8 +215,8 @@ function SignUp() {
 
       const request = await axios.post('/users',currentValues)
 
-      //const response = await request.data
-
+      //navigate("/auth/login");
+      
 
     }
     catch(err) {
@@ -247,7 +240,7 @@ function SignUp() {
           logvalues : "Server is not running",
           userID: ""
         }
-
+        alert(errorStatus)
      
       } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
         
@@ -259,13 +252,14 @@ function SignUp() {
           logvalues : err.response.data.message,
           userID: ""
         }
-
+          // Writelog here
+          // const request = await axios.post('/log',logvalues)
       }
       else {
           alert(err)
       }
 
-      const request = await axios.post('/log',logvalues)
+     
 
 
     }

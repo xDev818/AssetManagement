@@ -7,8 +7,6 @@ const { randomUUID } = require('crypto')
 const { utils_getDate } = require('../utils/date_helper')
 
 
-
-
 // An instance to put a log
 const putLog = ( request, response ) => {
     // Generate Random ID
@@ -16,7 +14,7 @@ const putLog = ( request, response ) => {
 
     const { logtype, module, logfunction, logvalues, userID } = request.body
 
-    const logType = "Error"
+    //const logType = "Error"
 
     const stmt = "INSERT INTO tblLogs(logID,logtype,module,"
     + "logfunction,logvalues,createdBy,dateCreated) values (?)";
