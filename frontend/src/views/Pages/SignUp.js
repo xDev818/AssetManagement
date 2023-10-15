@@ -196,13 +196,9 @@ function SignUp() {
   };
 
   const HandleSubmit = async(event) => {
-
     
     const buttonStatus = ButtonRef.current
-    
-    console.log(buttonStatus)
     buttonStatus.disabled = true
-
 
     try {
 
@@ -246,7 +242,6 @@ function SignUp() {
           err,
           ""
         )
-        useEffectLogs.getLogs()
 
         alert( useEffectLogs.getMessage() )
         console.log( useEffectLogs.getLogs() )
