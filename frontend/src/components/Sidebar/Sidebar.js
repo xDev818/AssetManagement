@@ -1,5 +1,6 @@
 /*eslint-disable*/
 import { HamburgerIcon } from "@chakra-ui/icons";
+import "./Sidebar.css";
 // chakra imports
 import {
   Box,
@@ -16,6 +17,7 @@ import {
   useColorMode,
   useColorModeValue,
   useDisclosure,
+  Divider,
 } from "@chakra-ui/react";
 import IconBox from "components/Icons/IconBox";
 import {
@@ -29,12 +31,25 @@ import {
 import { HSeparator } from "components/Separator/Separator";
 import { SidebarHelp } from "components/Sidebar/SidebarHelp";
 import React from "react";
+import { useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, Link } from "react-router-dom";
+import {
+  HomeIcon,
+  StatsIcon,
+  CreditIcon,
+  PersonIcon,
+  DocumentIcon,
+  RocketIcon,
+  SupportIcon,
+} from "components/Icons/Icons";
 
 // FUNCTIONS
 
 function Sidebar(props) {
+  const [userDropdown, setUserDropdown] = useState(false);
+  const [configDropdown, setConfigDropdown] = useState(false);
+
   // to check for active links and opened collapses
   let location = useLocation();
   // this is for the rest of the collapses
@@ -45,161 +60,11 @@ function Sidebar(props) {
   const activeRoute = (routeName) => {
     return location.pathname === routeName ? "active" : "";
   };
+
+  console.log("active route: ", activeRoute);
   const { colorMode } = useColorMode;
   // this function creates the links and collapses that appear in the sidebar (left menu)
-  const { sidebarVariant } = props;
-  const createLinks = (routes) => {
-    // Chakra Color Mode
-    let activeBg = useColorModeValue("white", "navy.700");
-    let inactiveBg = useColorModeValue("white", "navy.700");
-    let activeColor = useColorModeValue("gray.700", "white");
-    let inactiveColor = useColorModeValue("gray.400", "gray.400");
-    let sidebarActiveShadow = "0px 7px 11px rgba(0, 0, 0, 0.04)";
-    return routes.map((prop, key) => {
-      if (prop.redirect) {
-        return null;
-      }
-      if (prop.category) {
-        var st = {};
-        st[prop["state"]] = !state[prop.state];
-        return (
-          <>
-            <Text
-              key={key}
-              color={activeColor}
-              fontWeight="bold"
-              mb={{
-                xl: "6px",
-              }}
-              mx="auto"
-              ps={{
-                sm: "10px",
-                xl: "16px",
-              }}
-              py="12px"
-            >
-              {document.documentElement.dir === "rtl"
-                ? prop.rtlName
-                : prop.name}
-            </Text>
-            {createLinks(prop.views)}
-          </>
-        );
-      }
-      return (
-        <NavLink to={prop.layout + prop.path} key={key}>
-          {activeRoute(prop.layout + prop.path) === "active" ? (
-            <Button
-              boxSize="initial"
-              justifyContent="flex-start"
-              alignItems="center"
-              boxShadow={sidebarActiveShadow}
-              bg={activeBg}
-              transition={variantChange}
-              mb={{
-                xl: "6px",
-              }}
-              mx={{
-                xl: "auto",
-              }}
-              ps={{
-                sm: "10px",
-                xl: "16px",
-              }}
-              py="12px"
-              borderRadius="15px"
-              _hover="none"
-              w="100%"
-              _active={{
-                bg: "inherit",
-                transform: "none",
-                borderColor: "transparent",
-              }}
-              _focus={{
-                boxShadow: "0px 7px 11px rgba(0, 0, 0, 0.04)",
-              }}
-            >
-              <Flex>
-                {typeof prop.icon === "string" ? (
-                  <Icon>{prop.icon}</Icon>
-                ) : (
-                  <IconBox
-                    bg="blue.500"
-                    color="white"
-                    h="30px"
-                    w="30px"
-                    me="12px"
-                    transition={variantChange}
-                  >
-                    {prop.icon}
-                  </IconBox>
-                )}
-                <Text color={activeColor} my="auto" fontSize="sm">
-                  {document.documentElement.dir === "rtl"
-                    ? prop.rtlName
-                    : prop.name}
-                </Text>
-              </Flex>
-            </Button>
-          ) : (
-            <Button
-              boxSize="initial"
-              justifyContent="flex-start"
-              alignItems="center"
-              bg="transparent"
-              mb={{
-                xl: "6px",
-              }}
-              mx={{
-                xl: "auto",
-              }}
-              py="12px"
-              ps={{
-                sm: "10px",
-                xl: "16px",
-              }}
-              borderRadius="15px"
-              _hover="none"
-              w="100%"
-              _active={{
-                bg: "inherit",
-                transform: "none",
-                borderColor: "transparent",
-              }}
-              _focus={{
-                boxShadow: "none",
-              }}
-            >
-              <Flex>
-                {typeof prop.icon === "string" ? (
-                  <Icon>{prop.icon}</Icon>
-                ) : (
-                  <IconBox
-                    bg={inactiveBg}
-                    color="blue.500"
-                    h="30px"
-                    w="30px"
-                    me="12px"
-                    transition={variantChange}
-                  >
-                    {prop.icon}
-                  </IconBox>
-                )}
-                <Text color={inactiveColor} my="auto" fontSize="sm">
-                  {document.documentElement.dir === "rtl"
-                    ? prop.rtlName
-                    : prop.name}
-                </Text>
-              </Flex>
-            </Button>
-          )}
-        </NavLink>
-      );
-    });
-  };
-  const { logo, routes } = props;
 
-  var links = <>{createLinks(routes)}</>;
   //  BRAND
   //  Chakra Color Mode
   let sidebarBg = useColorModeValue("white", "navy.800");
@@ -207,7 +72,6 @@ function Sidebar(props) {
   let sidebarMargins = "0px";
   var brand = (
     <Box pt={"25px"} mb="12px">
-      {logo}
       <HSeparator my="26px" />
     </Box>
   );
@@ -256,10 +120,61 @@ function Sidebar(props) {
                 Asset Management
               </Heading>
             </Box>
-            <Stack direction="column" mb="40px">
-              <Box>{links}</Box>
+            <Divider />
+
+            <Stack direction="column" mb="40px" mt={7} px="4">
+              <Text fontWeight="bold" uppercase mb={5}>
+                ASSETS
+              </Text>
+              <Box
+                display="flex"
+                flexDirection="column"
+                fontWeight="bold"
+                gap="5"
+              >
+                <Box display="flex" alignItems="center" gap="5">
+                  <HomeIcon />
+                  <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                </Box>
+                <Box display="flex" alignItems="center" gap="5">
+                  <StatsIcon color="inherit" />
+                  <Link to="/admin/tables">Tables</Link>
+                </Box>
+                <Box display="flex" alignItems="center" gap="5">
+                  <PersonIcon />
+                  <Text
+                    cursor="pointer"
+                    to="/admin/user"
+                    onClick={() => setUserDropdown(!userDropdown)}
+                  >
+                    User
+                  </Text>
+                </Box>
+                {userDropdown && (
+                  <Stack pl={4}>
+                    <h1>SubMenu</h1>
+                  </Stack>
+                )}
+                <Box display="flex" alignItems="center" gap="5">
+                  <CreditIcon />
+                  <Text
+                    cursor="pointer"
+                    to="/admin/configuration"
+                    onClick={() => setConfigDropdown(!configDropdown)}
+                  >
+                    Configuration
+                  </Text>
+                </Box>
+                {configDropdown && (
+                  <Stack pl={4} gap={4}>
+                    <Link to="/admin/asset">Asset Configuration</Link>
+                    <Link to="/admin/position">Position</Link>
+                    <Link to="/admin/status">Status</Link>
+                  </Stack>
+                )}
+              </Box>
             </Stack>
-            <SidebarHelp sidebarVariant={sidebarVariant} />
+            {/* <SidebarHelp sidebarVariant={sidebarVariant} /> */}
           </Scrollbars>
         </Box>
       </Box>
@@ -435,6 +350,9 @@ export function SidebarResponsive(props) {
   };
 
   var links = <>{createLinks(routes)}</>;
+  {
+    console.log("links", links);
+  }
 
   //  BRAND
 
@@ -447,6 +365,8 @@ export function SidebarResponsive(props) {
 
   // SIDEBAR
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userDropdown, setUserDropdown] = useState(false);
+  const [configDropdown, setConfigDropdown] = useState(false);
   const btnRef = React.useRef();
   // Color variables
   return (
@@ -488,7 +408,53 @@ export function SidebarResponsive(props) {
           <DrawerBody maxW="250px" px="1rem">
             <Box maxW="100%" h="100vh">
               <Stack direction="column" mb="40px">
-                <Box>{links}</Box>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  gap={5}
+                  fontWeight="bold"
+                >
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    gap={5}
+                    fontWeight="bold"
+                  >
+                    <Link to="/admin/dashboard">Dashboard</Link>
+                    <Divider />
+                    <Link to="/admin/tables">Tables</Link>
+                    <Divider />
+                    <Text
+                      cursor="pointer"
+                      to="/admin/user"
+                      onClick={() => setUserDropdown(!userDropdown)}
+                    >
+                      User
+                    </Text>
+                    <Divider />
+
+                    {userDropdown && (
+                      <Stack pl={4}>
+                        <h1>SubMenu</h1>
+                      </Stack>
+                    )}
+                    <Text
+                      cursor="pointer"
+                      to="/admin/configuration"
+                      onClick={() => setConfigDropdown(!configDropdown)}
+                    >
+                      Configuration
+                    </Text>
+                    <Divider />
+                    {configDropdown && (
+                      <Stack pl={4}>
+                        <Link to="/admin/asset">Asset Configuration</Link>
+                        <Link to="/admin/position">Position</Link>
+                        <Link to="/admin/status">Status</Link>
+                      </Stack>
+                    )}
+                  </Box>
+                </Box>
               </Stack>
             </Box>
           </DrawerBody>

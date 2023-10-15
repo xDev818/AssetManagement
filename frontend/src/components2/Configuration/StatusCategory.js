@@ -17,12 +17,15 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Stack,
 } from "@chakra-ui/react";
 
 import { useState } from "react";
 import Modal1 from "components2/Modal/Modal";
+import FourGraphs from "components/FourGraphs/FourGraphs";
+import Card from "components/Card/Card";
 
-export default function PositionCategory() {
+export default function StatusCategory() {
   const [editItem, setEditItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newItem, setNewItem] = useState({ categoryName: "", description: "" });
@@ -90,96 +93,118 @@ export default function PositionCategory() {
     console.log("editing");
   }
   return (
-    <TableContainer>
-      <Button colorScheme="green" onClick={handleCreate}>
-        Create
-      </Button>
-      <Table size="lg">
-        <Thead>
-          <Tr>
-            <Th>Actions</Th>
-            <Th>Status</Th>
-            <Th>Description</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.map((item) => (
-            <Tr key={item.id}>
-              <Td>
-                <ButtonGroup>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </Button>
-                  <Button colorScheme="blue" onClick={() => handleEdit(item)}>
-                    Edit
-                  </Button>
-                </ButtonGroup>
-              </Td>
-              <Td>{item.statusName}</Td>
-              <Td>{item.description}</Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-      <Modal
-        isOpen={isCreating ? isCreating : isEditing}
-        onClose={handleCloseModal}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{isCreating ? "Add Item" : "Editing"}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Status</FormLabel>
-              {isCreating ? (
-                <>
-                  <Input
-                    value={newItem.statusName}
-                    onChange={(e) =>
-                      setNewItem({ ...newItem, statusName: e.target.value })
-                    }
-                  />
-                </>
-              ) : (
-                <Input
-                  value={editItem?.statusName}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, statusName: e.target.value })
-                  }
-                />
-              )}
-            </FormControl>
+    <>
+      <Stack mt={100}>
+        <FourGraphs />
+        <Card>
+          <TableContainer>
+            <Button colorScheme="green" onClick={handleCreate}>
+              Create
+            </Button>
+            <Table size="lg">
+              <Thead>
+                <Tr>
+                  <Th>Actions</Th>
+                  <Th>Status</Th>
+                  <Th>Description</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.map((item) => (
+                  <Tr key={item.id}>
+                    <Td>
+                      <ButtonGroup>
+                        <Button
+                          colorScheme="red"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          colorScheme="blue"
+                          onClick={() => handleEdit(item)}
+                        >
+                          Edit
+                        </Button>
+                      </ButtonGroup>
+                    </Td>
+                    <Td>{item.statusName}</Td>
+                    <Td>{item.description}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            <Modal
+              isOpen={isCreating ? isCreating : isEditing}
+              onClose={handleCloseModal}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>{isCreating ? "Add Item" : "Editing"}</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <FormControl>
+                    <FormLabel>Status</FormLabel>
+                    {isCreating ? (
+                      <>
+                        <Input
+                          value={newItem.statusName}
+                          onChange={(e) =>
+                            setNewItem({
+                              ...newItem,
+                              statusName: e.target.value,
+                            })
+                          }
+                        />
+                      </>
+                    ) : (
+                      <Input
+                        value={editItem?.statusName}
+                        onChange={(e) =>
+                          setEditItem({
+                            ...editItem,
+                            statusName: e.target.value,
+                          })
+                        }
+                      />
+                    )}
+                  </FormControl>
 
-            <FormControl>
-              <FormLabel>Description</FormLabel>
-              {isCreating ? (
-                <Input
-                  value={newItem.description}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, description: e.target.value })
-                  }
-                />
-              ) : (
-                <Input
-                  value={editItem?.description}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, description: e.target.value })
-                  }
-                />
-              )}
-            </FormControl>
-          </ModalBody>
-          {isCreating ? (
-            <Button onClick={handleSave1}>Save</Button>
-          ) : (
-            <Button onClick={() => handleSave(editItem)}>Save</Button>
-          )}
-        </ModalContent>
-      </Modal>
-    </TableContainer>
+                  <FormControl>
+                    <FormLabel>Description</FormLabel>
+                    {isCreating ? (
+                      <Input
+                        value={newItem.description}
+                        onChange={(e) =>
+                          setNewItem({
+                            ...newItem,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      <Input
+                        value={editItem?.description}
+                        onChange={(e) =>
+                          setEditItem({
+                            ...editItem,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    )}
+                  </FormControl>
+                </ModalBody>
+                {isCreating ? (
+                  <Button onClick={handleSave1}>Save</Button>
+                ) : (
+                  <Button onClick={() => handleSave(editItem)}>Save</Button>
+                )}
+              </ModalContent>
+            </Modal>
+          </TableContainer>
+        </Card>
+      </Stack>
+    </>
   );
 }

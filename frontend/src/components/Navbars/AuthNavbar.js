@@ -4,16 +4,22 @@ import {
   Button,
   Flex,
   HStack,
-  Link, Stack, Text, useColorMode, useColorModeValue
+  Link,
+  Stack,
+  Text,
+  useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import {
   ArgonLogoDark,
   ArgonLogoLight,
-  ChakraLogoBlue, ChakraLogoDark,
-  ChakraLogoLight, DocumentIcon,
+  ChakraLogoBlue,
+  ChakraLogoDark,
+  ChakraLogoLight,
+  DocumentIcon,
   HomeIcon,
   PersonIcon,
-  RocketIcon
+  RocketIcon,
 } from "components/Icons/Icons";
 import { SidebarResponsive } from "components/Sidebar/Sidebar";
 import React from "react";
@@ -65,7 +71,6 @@ export default function AuthNavbar(props) {
         <Button
           fontSize="sm"
           ms="0px"
-         
           px="0px"
           me={{ sm: "2px", md: "16px" }}
           color={navbarIcon}
