@@ -271,9 +271,7 @@ function SignUp() {
     catch(err) {
       
       const errorStatus = err.code
-
-
-
+      
       if( errorStatus.includes('ERR_NETWORK') ) 
       {
 
@@ -291,60 +289,7 @@ function SignUp() {
         console.log( useEffectLogs.getLogs() )
         buttonStatus.disabled = false
 
-        try {
-
-          const request = await axios.post('/log',useEffectLogs.getLogs())
-          const response = await request.data
-          console.log(response)
-
-        } catch ( err ) {
-
-          const logStatus = err.code
-
-          if( logStatus.includes("ERR_NETWOR") ) {
-
-            const log_status = new Logs(
-              "DB",
-              "Signup",
-              "Function /HandleSubmit",
-              err,
-              ""
-            )
-
-            alert( log_status.getMessage() )
-            console.log( log_status.getLogs() )
-
-          }
-
-          if( logStatus.includes("ERR_BAD_REQUEST") ) {
-
-            const log_status = new Logs(
-              logStatus,
-              "Signup",
-              "Function /HandleSubmit",
-              err.response.data.message,
-              ""
-            )
-            
-            alert( log_status.getMessage() )
-            console.log( log_status.getLogs() )
-
-          }
-
-        }
-        // End Jinshin
-
-        // Previous Sir Noel
-        //  logvalues = {
-        //   logtype: "Error",
-        //   module: "SignUp",
-        //   logfunction: "HandleSubmit",
-        //   logvalues : "Server is not running",
-        //   userID: ""
-        // }
-
       } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
-        
         //Jinshin: I made some changes here
         const useEffectLogs = new Logs(
           errorStatus,
@@ -359,7 +304,7 @@ function SignUp() {
         console.log( useEffectLogs.getLogs() )
         buttonStatus.disabled = false
 
-        try { // Issue in the logs, if there's no connection in the server or database, then this log api call will not be sent because there's no connection
+        try {
 
           const request = await axios.post('/log',useEffectLogs.getLogs())
           const response = await request.data

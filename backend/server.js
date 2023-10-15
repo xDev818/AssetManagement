@@ -19,6 +19,13 @@
             - Imported categoriesRoutes = const categoriesRoutes = require('./routes/categories_routes')
             - to use the categoriesRoutes = app.use('/api', categoriesRoutes)
 
+    Date : 10 / 15 / 23
+    Author : jinshin
+    Activities
+    Purpose : 
+            - imported : const logsRoutes = require('./routes/log_routes')
+            - Used : app.use('/api', logsRoutes)
+
  */
 
 // Packages
@@ -30,6 +37,7 @@ var cors = require('cors');
 const usersRoutes = require('./routes/users_routes')
 const positionsRoutes = require('./routes/positions_routes')
 const categoriesRoutes = require('./routes/categories_routes')
+const logsRoutes = require('./routes/log_routes')
 
 // Server Initialization
 var app = express();
@@ -55,3 +63,4 @@ app.listen(process.env.PORT,() => {
 app.use('/api', usersRoutes)
 app.use('/api', positionsRoutes)
 app.use('/api', categoriesRoutes)
+app.use('/api', logsRoutes)
