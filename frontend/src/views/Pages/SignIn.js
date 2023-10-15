@@ -44,7 +44,8 @@ import signInImage from "assets/img/signInImage.png";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 
 // Imported: Jinshin
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import Logs from "components/Utils/logs_helper";
 import axios from 'axios'
 
 function SignIn() {
@@ -64,6 +65,9 @@ function SignIn() {
     }
   )
 
+  const buttonStatus = ButtonRef.current
+  buttonStatus.disabled = true
+
   const loginHandler = async () => {
 
     try {
@@ -72,16 +76,91 @@ function SignIn() {
 
       const response = await request.data
 
-      console.log(response)
+      if ( response.message.includes("Record Found") ) {
+
+        window.location.href = "/"
+
+      }
 
 
     } catch ( err ) {
 
       const errorStatus = err.code
 
-      if( errorStatus.includes('ERR_NETWORK') ) return alert("Server is not running")
+      if( errorStatus.includes('ERR_NETWORK') ) {
 
-      if ( errorStatus.includes('ERR_BAD_REQUEST') ) return alert( err.response.data.message )
+        const useEffectLogs = new Logs(
+          "DB",
+          "Login",
+          "Function /loginHandler",
+          err,
+          ""
+        )
+
+        alert( useEffectLogs.getMessage() )
+        console.log( useEffectLogs.getLogs() )
+        buttonStatus.disabled = false
+
+      }
+
+      if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
+
+        const useEffectLogs = new Logs(
+          errorStatus,
+          "Login",
+          "Function /loginHandler",
+          err.response.data.message,
+          ""
+        )
+        useEffectLogs.getLogs()
+
+        alert( useEffectLogs.getMessage() )
+        console.log( useEffectLogs.getLogs() )
+        buttonStatus.disabled = false
+
+        try {
+
+          const request = await axios.post('/log',useEffectLogs.getLogs())
+          const response = await request.data
+          console.log(response)
+
+        } catch ( err ) {
+
+          const logStatus = err.code
+
+          if( logStatus.includes("ERR_NETWOR") ) {
+
+            const log_status = new Logs(
+              "DB",
+              "Login",
+              "Function /loginHandler",
+              err,
+              ""
+            )
+
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+          if( logStatus.includes("ERR_BAD_REQUEST") ) {
+
+            const log_status = new Logs(
+              logStatus,
+              "Login",
+              "Function /loginHandler",
+              err.response.data.message,
+              ""
+            )
+            
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+        }
+
+      }
 
     }
 
@@ -234,6 +313,7 @@ function SignIn() {
                 </FormLabel>
               </FormControl>
               <Button
+                ref={buttonStatus}
                 fontSize='10px'
                 variant='dark'
                 fontWeight='bold'
