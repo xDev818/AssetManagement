@@ -8,6 +8,6 @@ const {
 
 const router = Router()
 
-router.post('/positions', getPositionByName)
+router.get('/positions', getPositionByName)
 
 module.exports = router
