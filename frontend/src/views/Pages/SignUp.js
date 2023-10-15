@@ -142,7 +142,7 @@ function SignUp() {
         else if ( errorStatus.includes("ERR_BAD_REQUEST") ) {
 
           const useEffectLogs = new Logs(
-            errorStatus,
+            "Error",
             "Signup",
             "useEffect /Positions",
             err.response.data.messasge,
