@@ -37,7 +37,6 @@ import  { useEffect, useState, useRef } from 'react'
 import {hash_password} from '../../components/Utils/password_helper'
 import { Link as Anchor } from 'react-router-dom'
 
-
 import Logs from 'components/Utils/logs_helper'
 
 //import dotenv from 'dotenv'
@@ -113,11 +112,12 @@ function SignUp() {
         const dataResponse = res.data.message;
         if (dataResponse.includes("Record")) {
           setPositionID(res.data.result[0].positionDisplayID)
-          
+          GetCategories()
+
         } 
         
       })
-      .catch( async (err) => {
+      .catch((err) => {
         
 
         //Jinshin: I made some changes here
@@ -161,9 +161,8 @@ function SignUp() {
     
   }, [])
 
-/* 
-  useEffect(() => {
-    
+
+  const GetCategories = () => {
     var logvalues = {
       logtype: "",
       module: "",
@@ -175,56 +174,67 @@ function SignUp() {
     const url = {
       categoryurl: "/categories"
     }
+ 
 
     try {
+
       axios.post(url.categoryurl)
 
       .then((res) => {
-        console.log(res.data)
+        
         const dataResponse = res.data.message;
         if (dataResponse.includes("Record")) {
           setCategoryID(res.data.result[0].categoryID)
           
         } 
-
         
       })
-      .catch( async (err) => {
+      .catch( (err ) => {
 
-        if (err) {
-        logvalues = {
-            logtype: "Error",
-            module: "SignUp",
-            logfunction: "UseEffect /categories",
-            logvalues : err,
-            userID: ""
-          }
-          
-          alert(err)
+        const errorStatus = err.code
+        
+        if (errorStatus.includes("ERR_NETWORK") ) {
+
+          const useEffectLogs = new Logs(
+            "DB",
+            "Signup",
+            "useEffect /GroupCategory",
+            err,
+            ""
+          )
+          useEffectLogs.getLogs()
+
+          alert( useEffectLogs.getMessage() )
+          console.log( useEffectLogs.getLogs() )
+          // End Jinshin
+
         }
-        else if (err.response.status === 404) {
-          logvalues = {
-            logtype: "Error",
-            module: "SignUp",
-            logfunction: "UseEffect /categories",
-            logvalues : err.response.data.message,
-            userID: ""
-          }
+        else if ( errorStatus.includes("ERR_BAD_REQUEST") ) {
 
-          alert(err.response.data.message)
+          const useEffectLogs = new Logs(
+            "Error",
+            "Signup",
+            "useEffect /GroupCategory",
+            err.response.data.messasge,
+            ""
+          )
+          useEffectLogs.getLogs()
+
+          alert( useEffectLogs.getMessage() )
+          console.log( useEffectLogs.getLogs() )
+          // End Jinshin
+
+
         }
-
-        const request = await axios.post('/log',logvalues)
 
       })
-    } catch (err) {
+    }
+    catch(err) {
       alert(err)
     }
- 
-  }, [])
-  
-*/
-  
+
+  }
+
 
   const handleInput = (e) => {
     console.log(e.target.name)
@@ -408,7 +418,7 @@ function SignUp() {
             mb='22px'>
             Register 
           </Text>
-          {/* 
+          
           <HStack spacing='15px' justify='center' mb='22px'>
             <Flex
               justify='center'
@@ -480,7 +490,7 @@ function SignUp() {
             mb='22px'>
             or
           </Text>
-           */}
+           
           <FormControl>
             <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
              Username

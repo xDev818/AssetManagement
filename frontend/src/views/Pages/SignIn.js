@@ -12,7 +12,16 @@
       onChange={ e => setValues( { ...values, password: e.target.value } ) }
       value={ values.password }
 
+ Date : 10 / 15 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Add - import { Link as Anchor } from 'react-router-dom'
+        ** Use in Signup under "Already have Account (Sign up )"
+
 */
+
+import { Link as Anchor } from 'react-router-dom'
 
 import React from "react";
 // Chakra imports
@@ -191,7 +200,7 @@ function SignIn() {
             </Text>
             <FormControl>
               <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                Name
+                Username
               </FormLabel>
               <Input
                 variant='auth'
@@ -231,7 +240,7 @@ function SignIn() {
                 w='100%'
                 h='45'
                 mb='24px' onClick={loginHandler}>
-                SIGN UP
+                SIGN IN
               </Button>
             </FormControl>
             <Flex
@@ -248,7 +257,10 @@ function SignIn() {
                   ms='5px'
                   href='#'
                   fontWeight='bold'>
-                  Sign In
+                  <Anchor to="/auth/signup">
+                  Sign up
+                  </Anchor>
+                  
                 </Link>
               </Text>
             </Flex>
