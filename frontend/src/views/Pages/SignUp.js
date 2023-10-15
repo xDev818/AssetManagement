@@ -23,8 +23,13 @@
 
 import axios from 'axios'
 import * as React from 'react'
-import  { useEffect, useState } from 'react'
+import  { useEffect, useState, useRef } from 'react'
 import {hash_password} from '../../components/Utils/password_helper'
+import { Link as Anchor } from 'react-router-dom'
+
+//Jinshin 10-14-2023
+import Logs from 'components/Utils/logs_helper'
+
 //import dotenv from 'dotenv'
 
 // Chakra imports
@@ -70,6 +75,9 @@ function SignUp() {
     email: '',
     password: ''
    })
+   
+    //  Jinshin
+    const ButtonRef = useRef(null)
   
   useEffect(() => {
     /* Get Default PositionID for user in signup
@@ -97,34 +105,70 @@ function SignUp() {
           setPositionID(res.data.result[0].positionDisplayID)
           
         } 
-
         
       })
       .catch( async (err) => {
-      // console.log(err.status)
-      if (err) {
-        logvalues = {
-          logtype: "Error",
-          module: "SignUp",
-          logfunction: "UseEffect /positions",
-          logvalues : err,
-          userID: ""
-        }
-        alert("Error here : " + err)
-      }
-        else if (err.response.status === 404) {
-          logvalues = {
-            logtype: "Error",
-            module: "SignUp",
-            logfunction: "UseEffect /positions",
-            logvalues : err.response.data.message,
-            userID: ""
-          }
+        // console.log(err.status)
 
-          const request = await axios.post('/log',logvalues)
-          alert(err.response.data.message)
-        }
+        //Jinshin: I made some changes here
+        const errorStatus = err.code
+        
+        if (errorStatus.includes("ERR_NETWORK") ) {
 
+          const useEffectLogs = new Logs(
+            "DB",
+            "Signup",
+            "useEffect /Positions",
+            err,
+            ""
+          )
+          useEffectLogs.getLogs()
+
+          alert( useEffectLogs.getMessage() )
+          console.log( useEffectLogs.getLogs() )
+          // End Jinshin
+
+
+          // This is your previous sir noel
+          // logvalues = {
+          //   logtype: "Error: Database",
+          //   module: "SignUp",
+          //   logfunction: "UseEffect /positions",
+          //   logvalues : err,
+          //   userID: ""
+          // }
+
+          // alert("Error here : " + logvalues.logMessage)
+          
+        }
+        else if ( errorStatus.includes("ERR_BAD_REQUEST") ) {
+
+          const useEffectLogs = new Logs(
+            errorStatus,
+            "Signup",
+            "useEffect /Positions",
+            err.response.data.messasge,
+            ""
+          )
+          useEffectLogs.getLogs()
+
+          alert( useEffectLogs.getMessage() )
+          console.log( useEffectLogs.getLogs() )
+          // End Jinshin
+
+          // logvalues = {
+          //   logtype: "Error: " + errorStatus,
+          //   module: "SignUp",
+          //   logfunction: "UseEffect /positions",
+          //   logMessage: err.response.data.message,
+          //   logvalues : err.response.data.message,
+          //   userID: ""
+          // }
+
+          // const request = await axios.post('/log',logvalues)
+          // alert(err.response.data.message)
+
+        }
 
       })
     
@@ -202,7 +246,15 @@ function SignUp() {
   };
 
   const HandleSubmit = async(event) => {
-   
+
+    
+    const buttonStatus = ButtonRef.current
+    
+    console.log(buttonStatus)
+    buttonStatus.disabled = true
+
+    // buttonStatus.disabled = true
+
    // console.log("Get Position : " + positionID)
    // console.log("Get Category : " + categoryID)
 
@@ -222,51 +274,173 @@ function SignUp() {
 
       const request = await axios.post('/users',currentValues)
 
-      //const response = await request.data
+      const response = await request.data
 
+      if ( response.message.includes("Insert Success") ) {
+
+        buttonStatus.disabled = false
+
+        window.location.href = "/#/auth/signin"
+
+      }
 
     }
     catch(err) {
       
       const errorStatus = err.code
-      var logvalues = {
-        logtype: "",
-        module: "",
-        logfunction: "",
-        logvalues : "",
-        userID: ""
-      }
+      // var logvalues = {
+      //   logtype: "",
+      //   module: "",
+      //   logfunction: "",
+      //   logvalues : "",
+      //   userID: ""
+      // }
 
 
       if( errorStatus.includes('ERR_NETWORK') ) 
       {
-         logvalues = {
-          logtype: "Error",
-          module: "SignUp",
-          logfunction: "HandleSubmit",
-          logvalues : "Server is not running",
-          userID: ""
-        }
 
-     
+        //Jinshin: I made some changes here
+        const useEffectLogs = new Logs(
+          "DB",
+          "Signup",
+          "Function /HandleSubmit",
+          err,
+          ""
+        )
+        useEffectLogs.getLogs()
+
+        alert( useEffectLogs.getMessage() )
+        console.log( useEffectLogs.getLogs() )
+        buttonStatus.disabled = false
+
+        try {
+
+          const request = await axios.post('/log',useEffectLogs.getLogs())
+          const response = await request.data
+          console.log(response)
+
+        } catch ( err ) {
+
+          const logStatus = err.code
+
+          if( logStatus.includes("ERR_NETWOR") ) {
+
+            const log_status = new Logs(
+              "DB",
+              "Signup",
+              "Function /HandleSubmit",
+              err,
+              ""
+            )
+
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+          if( logStatus.includes("ERR_BAD_REQUEST") ) {
+
+            const log_status = new Logs(
+              logStatus,
+              "Signup",
+              "Function /HandleSubmit",
+              err.response.data.message,
+              ""
+            )
+            
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+        }
+        // End Jinshin
+
+        // Previous Sir Noel
+        //  logvalues = {
+        //   logtype: "Error",
+        //   module: "SignUp",
+        //   logfunction: "HandleSubmit",
+        //   logvalues : "Server is not running",
+        //   userID: ""
+        // }
+
       } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
         
-        //return alert( err.response.data.message )
-         logvalues = {
-          logtype: "Error",
-          module: "SignUp",
-          logfunction: "HandleSubmit",
-          logvalues : err.response.data.message,
-          userID: ""
+        //Jinshin: I made some changes here
+        const useEffectLogs = new Logs(
+          errorStatus,
+          "Signup",
+          "Function /HandleSubmit",
+          err.response.data.message,
+          ""
+        )
+        useEffectLogs.getLogs()
+
+        alert( useEffectLogs.getMessage() )
+        console.log( useEffectLogs.getLogs() )
+        buttonStatus.disabled = false
+
+        try { // Issue in the logs, if there's no connection in the server or database, then this log api call will not be sent because there's no connection
+
+          const request = await axios.post('/log',useEffectLogs.getLogs())
+          const response = await request.data
+          console.log(response)
+
+        } catch ( err ) {
+
+          const logStatus = err.code
+
+          if( logStatus.includes("ERR_NETWOR") ) {
+
+            const log_status = new Logs(
+              "DB",
+              "Signup",
+              "Function /HandleSubmit",
+              err,
+              ""
+            )
+
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+          if( logStatus.includes("ERR_BAD_REQUEST") ) {
+
+            const log_status = new Logs(
+              logStatus,
+              "Signup",
+              "Function /HandleSubmit",
+              err.response.data.message,
+              ""
+            )
+            
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
         }
+        // End Jinshin
+
+        //return alert( err.response.data.message )
+        //  logvalues = {
+        //   logtype: "Error",
+        //   module: "SignUp",
+        //   logfunction: "HandleSubmit",
+        //   logvalues : err.response.data.message,
+        //   userID: ""
+        // }
 
       }
-      else {
-          alert(err)
-      }
+      // else {
+      //     alert(err)
+      // }
 
-      const request = await axios.post('/log',logvalues)
-
+      // This is log api should be put in the called inside "catch section"
+      // const request = await axios.post('/log',logvalues)
 
     }
 
@@ -455,6 +629,7 @@ function SignUp() {
             </FormControl>
             */}
             <Button
+              ref={ButtonRef}
               fontSize='10px'
               variant='dark'
               fontWeight='bold'
@@ -480,7 +655,9 @@ function SignUp() {
                 ms='5px'
                 href='#'
                 fontWeight='bold'>
-                Sign In
+                <Anchor to="/auth/signin">
+                  Sign In
+                </Anchor>
               </Link>
             </Text>
           </Flex>
