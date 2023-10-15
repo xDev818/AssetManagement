@@ -80,6 +80,7 @@ function SignUp() {
 
    const [positionID,setPositionID] = useState("")
    const [categoryID,setCategoryID] = useState("")
+   const [departmentID,setDepartmentID] = useState("")
 
    const [values,setValues] = useState({
     username: '',
@@ -154,6 +155,37 @@ function SignUp() {
 
     })
     
+    Defaults.getDepartmentID().then( res => setDepartmentID(res) ).catch( err => {
+      const errorStatus = err.code
+
+      if(errorStatus.includes("ERR_NETWORK") ) {
+        const useEffectLogs = new Logs(
+          "DB",
+          "Signup",
+          "useEffect /departments",
+          err,
+          ""
+        )
+        alert(useEffectLogs.getMessage())
+      }
+
+      if( errorStatus.includes("ERR_BAD_REQUEST") ) {
+        const useEffectLogs = new Logs(
+          "error",
+          "Signup",
+          "useEffect /departments",
+          err.response.data.message,
+          ""
+        )
+        
+        axios.post('/log', useEffectLogs.getLogs())
+        .then(res => console.log(res.data))
+        .catch(err => console.log(err))
+
+      }
+
+    })
+
   }, [])
 
 

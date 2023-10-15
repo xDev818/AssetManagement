@@ -25,6 +25,8 @@
     Purpose : 
             - imported : const logsRoutes = require('./routes/log_routes')
             - Used : app.use('/api', logsRoutes)
+            - imported : const departmentRoutes = require('./routes/department_routes')
+            - Used : app.use('/api', departmentRoutes)
 
  */
 
@@ -38,6 +40,7 @@ const usersRoutes = require('./routes/users_routes')
 const positionsRoutes = require('./routes/positions_routes')
 const categoriesRoutes = require('./routes/categories_routes')
 const logsRoutes = require('./routes/log_routes')
+const departmentRoutes = require('./routes/department_routes')
 
 // Server Initialization
 var app = express();
@@ -63,4 +66,5 @@ app.listen(process.env.PORT,() => {
 app.use('/api', usersRoutes)
 app.use('/api', positionsRoutes)
 app.use('/api', categoriesRoutes)
-app.use('/api', logsRoutes)
+app.use('/api', categoriesRoutes)
+app.use('/api', departmentRoutes)
