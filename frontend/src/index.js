@@ -8,11 +8,21 @@
       Now Set By Jinshin = axios.defaults.baseURL = 'http://localhost:5000/api'
         - Reason: Having confict with frontend running at 3000 or 3001 with server running at 3001
 
+    Date : 10 / 15 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Update FROM : import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+      Update TO : import { HashRouter,Route,Switch,Redirect } from "react-router-dom/cjs/react-router-dom.min";
+      ** Unable to locate in local machine "react-router-dom";
+      ** Downgrade react-router-dom to 5.2.1 
+      npm i react-router-dom@5.2.1
 */
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+//import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import { HashRouter,Route,Switch,Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 import AuthLayout from "./layouts/Auth";
 import AdminLayout from "./layouts/Admin";

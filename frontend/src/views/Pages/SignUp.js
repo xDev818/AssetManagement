@@ -19,12 +19,27 @@
       Integrate Bcryptjs functionality
       Integrate log functionality
 
+    Date : 10 / 14 / 23
+    Author : Jinshin
+    Activities
+    Purpose : 
+      import Logs from 'components/Utils/logs_helper'
+      const ButtonRef = useRef(null) - to enable/disable button functionality in 
+        <Button
+           ref={ButtonRef}
+           ....
+        </Button>
 */
 
-import axios from "axios";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { hash_password } from "../../components/Utils/password_helper";
+import axios from 'axios'
+import * as React from 'react'
+import  { useEffect, useState, useRef } from 'react'
+import {hash_password} from '../../components/Utils/password_helper'
+import { Link as Anchor } from 'react-router-dom'
+
+
+import Logs from 'components/Utils/logs_helper'
+
 //import dotenv from 'dotenv'
 
 // Chakra imports
@@ -48,6 +63,7 @@ import BgSignUp from "assets/img/BgSignUp.png";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 
 function SignUp() {
+
   const bgForm = useColorModeValue("white", "navy.800");
   const titleColor = useColorModeValue("gray.700", "blue.500");
   const textColor = useColorModeValue("gray.700", "white");
@@ -55,71 +71,97 @@ function SignUp() {
   const bgIcons = useColorModeValue("trasnparent", "navy.700");
   const bgIconsHover = useColorModeValue("gray.50", "whiteAlpha.100");
 
+
+
   /*  Variables Declaration Here
-   */
-  // dotenv.config()
+  */
+   // dotenv.config()
 
-  const [positionID, setPositionID] = useState("");
-  const [categoryID, setCategoryID] = useState("");
+   const [positionID,setPositionID] = useState("")
+   const [categoryID,setCategoryID] = useState("")
 
-  const [values, setValues] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
+   const [values,setValues] = useState({
+    username: '',
+    email: '',
+    password: ''
+   })
+   
+    //  Jinshin
+    const ButtonRef = useRef(null)
+  
   useEffect(() => {
     /* Get Default PositionID for user in signup
-     */
+    */
 
     var logvalues = {
       logtype: "",
       module: "",
       logfunction: "",
-      logvalues: "",
-      userID: "",
-    };
-
+      logvalues : "",
+      userID: ""
+    }
+      
     const url = {
-      positionurl: "/positions",
-    };
+      positionurl: "/positions"
+    }
 
-    axios
-      .post(url.positionurl)
+ 
+      axios.post(url.positionurl)
 
       .then((res) => {
+        
         const dataResponse = res.data.message;
         if (dataResponse.includes("Record")) {
-          setPositionID(res.data.result[0].positionDisplayID);
-        }
+          setPositionID(res.data.result[0].positionDisplayID)
+          
+        } 
+        
       })
-      .catch(async (err) => {
-        // console.log(err.status)
-        if (err) {
-          logvalues = {
-            logtype: "Error",
-            module: "SignUp",
-            logfunction: "UseEffect /positions",
-            logvalues: err,
-            userID: "",
-          };
-          alert("Error here : " + err);
-        } else if (err.response.status === 404) {
-          logvalues = {
-            logtype: "Error",
-            module: "SignUp",
-            logfunction: "UseEffect /positions",
-            logvalues: err.response.data.message,
-            userID: "",
-          };
+      .catch( async (err) => {
+        
 
-          const request = await axios.post("/log", logvalues);
-          alert(err.response.data.message);
+        //Jinshin: I made some changes here
+        const errorStatus = err.code
+        
+        if (errorStatus.includes("ERR_NETWORK") ) {
+
+          const useEffectLogs = new Logs(
+            "DB",
+            "Signup",
+            "useEffect /Positions",
+            err,
+            ""
+          )
+          useEffectLogs.getLogs()
+
+          alert( useEffectLogs.getMessage() )
+          console.log( useEffectLogs.getLogs() )
+          // End Jinshin
+
         }
-      });
-  }, []);
+        else if ( errorStatus.includes("ERR_BAD_REQUEST") ) {
 
-  /* 
+          const useEffectLogs = new Logs(
+            "Error",
+            "Signup",
+            "useEffect /Positions",
+            err.response.data.messasge,
+            ""
+          )
+          useEffectLogs.getLogs()
+
+          alert( useEffectLogs.getMessage() )
+          console.log( useEffectLogs.getLogs() )
+          // End Jinshin
+
+
+        }
+
+      })
+    
+  }, [])
+
+/* 
   useEffect(() => {
     
     var logvalues = {
@@ -182,125 +224,189 @@ function SignUp() {
   }, [])
   
 */
+  
 
   const handleInput = (e) => {
-    console.log(e.target.name);
-    setValues({ ...e.tar, [e.target.name]: [e.target.value.trim()] });
-    //setErrors("test")
+    console.log(e.target.name)
+    setValues( { ...e.tar, [e.target.name]: [e.target.value.trim()] });
+
   };
 
-  const HandleSubmit = async (event) => {
-    // console.log("Get Position : " + positionID)
-    // console.log("Get Category : " + categoryID)
+  const HandleSubmit = async(event) => {
+
+    
+    const buttonStatus = ButtonRef.current
+    
+    console.log(buttonStatus)
+    buttonStatus.disabled = true
+
 
     try {
-      event.preventDefault();
 
-      const pass = hash_password(values.password);
+      event.preventDefault()
 
+      const pass = hash_password(values.password)
+      
       const currentValues = {
         username: values.username,
         email: values.email,
         password: pass,
-        positionID: positionID,
-        categoryID: categoryID,
-      };
-
-      const request = await axios.post("/users", currentValues);
-
-      //const response = await request.data
-    } catch (err) {
-      const errorStatus = err.code;
-      var logvalues = {
-        logtype: "",
-        module: "",
-        logfunction: "",
-        logvalues: "",
-        userID: "",
-      };
-
-      if (errorStatus.includes("ERR_NETWORK")) {
-        logvalues = {
-          logtype: "Error",
-          module: "SignUp",
-          logfunction: "HandleSubmit",
-          logvalues: "Server is not running",
-          userID: "",
-        };
-      } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
-        //return alert( err.response.data.message )
-        logvalues = {
-          logtype: "Error",
-          module: "SignUp",
-          logfunction: "HandleSubmit",
-          logvalues: err.response.data.message,
-          userID: "",
-        };
-      } else {
-        alert(err);
+        positionID : positionID,
+        categoryID: categoryID
       }
 
-      const request = await axios.post("/log", logvalues);
+      const request = await axios.post('/users',currentValues)
+
+      const response = await request.data
+
+      if ( response.message.includes("Insert Success") ) {
+
+        buttonStatus.disabled = false
+
+        window.location.href = "/#/auth/signin"
+
+      }
+
     }
-  };
+    catch(err) {
+      
+      const errorStatus = err.code
+      
+      if( errorStatus.includes('ERR_NETWORK') ) 
+      {
+
+        //Jinshin: I made some changes here
+        const useEffectLogs = new Logs(
+          "DB",
+          "Signup",
+          "Function /HandleSubmit",
+          err,
+          ""
+        )
+        useEffectLogs.getLogs()
+
+        alert( useEffectLogs.getMessage() )
+        console.log( useEffectLogs.getLogs() )
+        buttonStatus.disabled = false
+
+      } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
+        //Jinshin: I made some changes here
+        const useEffectLogs = new Logs(
+          errorStatus,
+          "Signup",
+          "Function /HandleSubmit",
+          err.response.data.message,
+          ""
+        )
+        useEffectLogs.getLogs()
+
+        alert( useEffectLogs.getMessage() )
+        console.log( useEffectLogs.getLogs() )
+        buttonStatus.disabled = false
+
+        try {
+
+          const request = await axios.post('/log',useEffectLogs.getLogs())
+          const response = await request.data
+          console.log(response)
+
+        } catch ( err ) {
+
+          const logStatus = err.code
+
+          if( logStatus.includes("ERR_NETWOR") ) {
+
+            const log_status = new Logs(
+              "DB",
+              "Signup",
+              "Function /HandleSubmit",
+              err,
+              ""
+            )
+
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+          if( logStatus.includes("ERR_BAD_REQUEST") ) {
+
+            const log_status = new Logs(
+              logStatus,
+              "Signup",
+              "Function /HandleSubmit",
+              err.response.data.message,
+              ""
+            )
+            
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+        }
+        // End Jinshin
+
+      }
+
+    }
+
+  }
 
   return (
     <Flex
-      direction="column"
-      alignSelf="center"
-      justifySelf="center"
-      overflow="hidden"
-    >
+      direction='column'
+      alignSelf='center'
+      justifySelf='center'
+      overflow='hidden'>
       <Box
-        position="absolute"
+        position='absolute'
         minH={{ base: "70vh", md: "50vh" }}
         maxH={{ base: "70vh", md: "50vh" }}
         w={{ md: "calc(100vw - 50px)" }}
         maxW={{ md: "calc(100vw - 50px)" }}
-        left="0"
-        right="0"
-        bgRepeat="no-repeat"
-        overflow="hidden"
-        zIndex="-1"
-        top="0"
+        left='0'
+        right='0'
+        bgRepeat='no-repeat'
+        overflow='hidden'
+        zIndex='-1'
+        top='0'
         bgImage={BgSignUp}
-        bgSize="cover"
+        bgSize='cover'
         mx={{ md: "auto" }}
         mt={{ md: "14px" }}
-        borderRadius={{ base: "0px", md: "20px" }}
-      >
-        <Box w="100vw" h="100vh" bg="blue.500" opacity="0.8"></Box>
+        borderRadius={{ base: "0px", md: "20px" }}>
+        <Box w='100vw' h='100vh' bg='blue.500' opacity='0.8'></Box>
       </Box>
       <Flex
-        direction="column"
-        textAlign="center"
-        justifyContent="center"
-        align="center"
-        mt="125px"
-        mb="30px"
-      ></Flex>
-      <Flex alignItems="center" justifyContent="center" mb="60px" mt="20px">
+        direction='column'
+        textAlign='center'
+        justifyContent='center'
+        align='center'
+        mt='125px'
+        mb='30px'>
+
+      </Flex>
+      <Flex alignItems='center' justifyContent='center' mb='60px' mt='20px'>
         <Flex
-          direction="column"
-          w="445px"
-          background="transparent"
-          borderRadius="15px"
-          p="40px"
+          direction='column'
+          w='445px'
+          background='transparent'
+          borderRadius='15px'
+          p='40px'
           mx={{ base: "100px" }}
           bg={bgForm}
           boxShadow={useColorModeValue(
             "0px 5px 14px rgba(0, 0, 0, 0.05)",
             "unset"
-          )}
-        >
+          )}>
           <Text
-            fontSize="xl"
+            fontSize='xl'
             color={textColor}
-            fontWeight="bold"
-            textAlign="center"
-            mb="22px"
-          >
-            Register
+            fontWeight='bold'
+            textAlign='center'
+            mb='22px'>
+            Register 
           </Text>
           {/* 
           <HStack spacing='15px' justify='center' mb='22px'>
@@ -376,50 +482,49 @@ function SignUp() {
           </Text>
            */}
           <FormControl>
-            <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
-              Username
+            <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
+             Username
             </FormLabel>
             <Input
-              variant="auth"
-              fontSize="sm"
-              ms="4px"
-              type="text"
-              placeholder="Your full name"
-              mb="24px"
-              size="lg"
-              onChange={(e) =>
-                setValues({ ...values, username: e.target.value })
-              }
+              
+              variant='auth'
+              fontSize='sm'
+              ms='4px'
+              type='text'
+              placeholder='Your full name'
+              mb='24px'
+              size='lg'
+              onChange={ e => setValues( { ...values, username: e.target.value } ) }
               value={values.username}
             />
-            <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+            <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
               Email
             </FormLabel>
             <Input
-              variant="auth"
-              fontSize="sm"
-              ms="4px"
-              type="email"
-              placeholder="Your email address"
-              mb="24px"
-              size="lg"
-              onChange={(e) => setValues({ ...values, email: e.target.value })}
+              
+              variant='auth'
+              fontSize='sm'
+              ms='4px'
+              type='email'
+              placeholder='Your email address'
+              mb='24px'
+              size='lg'
+              onChange={ e => setValues( { ...values, email: e.target.value } ) }
               value={values.email}
             />
-            <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+            <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
               Password
             </FormLabel>
             <Input
-              variant="auth"
-              fontSize="sm"
-              ms="4px"
-              type="password"
-              placeholder="Your password"
-              mb="24px"
-              size="lg"
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
+             
+              variant='auth'
+              fontSize='sm'
+              ms='4px'
+              type='password'
+              placeholder='Your password'
+              mb='24px'
+              size='lg'
+              onChange={ e => setValues( { ...values, password: e.target.value } ) }
               value={values.password}
             />
             {/* 
@@ -431,34 +536,35 @@ function SignUp() {
             </FormControl>
             */}
             <Button
-              fontSize="10px"
-              variant="dark"
-              fontWeight="bold"
-              w="100%"
-              h="45"
-              mb="24px"
+              ref={ButtonRef}
+              fontSize='10px'
+              variant='dark'
+              fontWeight='bold'
+              w='100%'
+              h='45'
+              mb='24px'
               onClick={HandleSubmit}
-            >
+              >
               SIGN UP
             </Button>
           </FormControl>
           <Flex
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            maxW="100%"
-            mt="0px"
-          >
-            <Text color={textColor} fontWeight="medium">
+            flexDirection='column'
+            justifyContent='center'
+            alignItems='center'
+            maxW='100%'
+            mt='0px'>
+            <Text color={textColor} fontWeight='medium'>
               Already have an account?
               <Link
                 color={titleColor}
-                as="span"
-                ms="5px"
-                href="#"
-                fontWeight="bold"
-              >
-                Sign In
+                as='span'
+                ms='5px'
+                href='#'
+                fontWeight='bold'>
+                <Anchor to="/auth/signin">
+                  Sign In
+                </Anchor>
               </Link>
             </Text>
           </Flex>
