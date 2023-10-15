@@ -29,6 +29,7 @@
            ref={ButtonRef}
            ....
         </Button>
+        import Defaults from 'components/Utils/_defaults'
 */
 
 import axios from 'axios'
@@ -37,7 +38,9 @@ import  { useEffect, useState, useRef } from 'react'
 import {hash_password} from '../../components/Utils/password_helper'
 import { Link as Anchor } from 'react-router-dom'
 
+// Jinshin
 import Logs from 'components/Utils/logs_helper'
+import Defaults from 'components/Utils/_defaults'
 
 //import dotenv from 'dotenv'
 
@@ -71,7 +74,6 @@ function SignUp() {
   const bgIconsHover = useColorModeValue("gray.50", "whiteAlpha.100");
 
 
-
   /*  Variables Declaration Here
   */
    // dotenv.config()
@@ -89,151 +91,70 @@ function SignUp() {
     const ButtonRef = useRef(null)
   
   useEffect(() => {
-    /* Get Default PositionID for user in signup
-    */
+    
+    Defaults.getPositionID().then( res => setPositionID(res) ).catch( err => {
+      const errorStatus = err.code
 
-    var logvalues = {
-      logtype: "",
-      module: "",
-      logfunction: "",
-      logvalues : "",
-      userID: ""
-    }
-      
-    const url = {
-      positionurl: "/positions"
-    }
+      if(errorStatus.includes("ERR_NETWORK") ) {
+        const useEffectLogs = new Logs(
+          "DB",
+          "Signup",
+          "useEffect /positions",
+          err,
+          ""
+        )
+        alert(useEffectLogs.getMessage())
+      }
 
- 
-      axios.post(url.positionurl)
-
-      .then((res) => {
+      if( errorStatus.includes("ERR_BAD_REQUEST") ) {
+        const useEffectLogs = new Logs(
+          "error",
+          "Signup",
+          "useEffect /categories",
+          err.response.data.message,
+          ""
+        )
         
-        const dataResponse = res.data.message;
-        if (dataResponse.includes("Record")) {
-          setPositionID(res.data.result[0].positionDisplayID)
-          GetCategories()
+        axios.post('/log', useEffectLogs.getLogs())
+        .then(res => console.log(res.data))
+        .catch(err => console.log(err))
 
-        } 
+      }
+
+    })
+
+    Defaults.getCategoryID().then( res => setCategoryID(res) ).catch( err => {
+      const errorStatus = err.code
+
+      if(errorStatus.includes("ERR_NETWORK") ) {
+        const useEffectLogs = new Logs(
+          "DB",
+          "Signup",
+          "useEffect /categories",
+          err,
+          ""
+        )
+        alert(useEffectLogs.getMessage())
+      }
+
+      if( errorStatus.includes("ERR_BAD_REQUEST") ) {
+        const useEffectLogs = new Logs(
+          "error",
+          "Signup",
+          "useEffect /categories",
+          err.response.data.message,
+          ""
+        )
         
-      })
-      .catch((err) => {
-        
+        axios.post('/log', useEffectLogs.getLogs())
+        .then(res => console.log(res.data))
+        .catch(err => console.log(err))
 
-        //Jinshin: I made some changes here
-        const errorStatus = err.code
-        
-        if (errorStatus.includes("ERR_NETWORK") ) {
+      }
 
-          const useEffectLogs = new Logs(
-            "DB",
-            "Signup",
-            "useEffect /Positions",
-            err,
-            ""
-          )
-          useEffectLogs.getLogs()
-
-          alert( useEffectLogs.getMessage() )
-          console.log( useEffectLogs.getLogs() )
-          // End Jinshin
-
-        }
-        else if ( errorStatus.includes("ERR_BAD_REQUEST") ) {
-
-          const useEffectLogs = new Logs(
-            "Error",
-            "Signup",
-            "useEffect /Positions",
-            err.response.data.messasge,
-            ""
-          )
-          useEffectLogs.getLogs()
-
-          alert( useEffectLogs.getMessage() )
-          console.log( useEffectLogs.getLogs() )
-          // End Jinshin
-
-
-        }
-
-      })
+    })
     
   }, [])
-
-
-  const GetCategories = () => {
-    var logvalues = {
-      logtype: "",
-      module: "",
-      logfunction: "",
-      logvalues : "",
-      userID: ""
-    }
-
-    const url = {
-      categoryurl: "/categories"
-    }
- 
-
-    try {
-
-      axios.post(url.categoryurl)
-
-      .then((res) => {
-        
-        const dataResponse = res.data.message;
-        if (dataResponse.includes("Record")) {
-          setCategoryID(res.data.result[0].categoryID)
-          
-        } 
-        
-      })
-      .catch( (err ) => {
-
-        const errorStatus = err.code
-        
-        if (errorStatus.includes("ERR_NETWORK") ) {
-
-          const useEffectLogs = new Logs(
-            "DB",
-            "Signup",
-            "useEffect /GroupCategory",
-            err,
-            ""
-          )
-          useEffectLogs.getLogs()
-
-          alert( useEffectLogs.getMessage() )
-          console.log( useEffectLogs.getLogs() )
-          // End Jinshin
-
-        }
-        else if ( errorStatus.includes("ERR_BAD_REQUEST") ) {
-
-          const useEffectLogs = new Logs(
-            "Error",
-            "Signup",
-            "useEffect /GroupCategory",
-            err.response.data.messasge,
-            ""
-          )
-          useEffectLogs.getLogs()
-
-          alert( useEffectLogs.getMessage() )
-          console.log( useEffectLogs.getLogs() )
-          // End Jinshin
-
-
-        }
-
-      })
-    }
-    catch(err) {
-      alert(err)
-    }
-
-  }
 
 
   const handleInput = (e) => {

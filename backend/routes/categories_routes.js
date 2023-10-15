@@ -8,6 +8,6 @@ const {
 
 const router = Router()
 
-router.post('/categories', getCategoryByName)
+router.get('/categories', getCategoryByName)
 
 module.exports = router
