@@ -19,12 +19,27 @@
       Integrate Bcryptjs functionality
       Integrate log functionality
 
+    Date : 10 / 14 / 23
+    Author : Jinshin
+    Activities
+    Purpose : 
+      import Logs from 'components/Utils/logs_helper'
+      const ButtonRef = useRef(null) - to enable/disable button functionality in 
+        <Button
+           ref={ButtonRef}
+           ....
+        </Button>
 */
 
 import axios from 'axios'
 import * as React from 'react'
 import  { useEffect, useState, useRef } from 'react'
 import {hash_password} from '../../components/Utils/password_helper'
+import { Link as Anchor } from 'react-router-dom'
+
+
+import Logs from 'components/Utils/logs_helper'
+
 //import dotenv from 'dotenv'
 
 // Chakra imports
@@ -62,8 +77,6 @@ function SignUp() {
   */
    // dotenv.config()
 
-   //const navigate = useNavigate();
-
    const [positionID,setPositionID] = useState("")
    const [categoryID,setCategoryID] = useState("")
 
@@ -72,17 +85,20 @@ function SignUp() {
     email: '',
     password: ''
    })
+   
+    //  Jinshin
+    const ButtonRef = useRef(null)
   
   useEffect(() => {
     /* Get Default PositionID for user in signup
     */
 
     var logvalues = {
-      logtype: '',
-      module: '',
-      logfunction: '',
-      logvalues : '',
-      userID: ''
+      logtype: "",
+      module: "",
+      logfunction: "",
+      logvalues : "",
+      userID: ""
     }
       
     const url = {
@@ -102,35 +118,50 @@ function SignUp() {
         
       })
       .catch( async (err) => {
-      // console.log(err.status)
-      if (err) {
-        logvalues = {
-          logtype: "Error",
-          module: "SignUp",
-          logfunction: "UseEffect /positions",
-          logvalues : err,
-          userID: ""
-        }
-        alert("Error here : " + err)
-      }
-        else if (err.response.status === 404) {
-          logvalues = {
-            logtype: "Error",
-            module: "SignUp",
-            logfunction: "UseEffect /positions",
-            logvalues : err.response.data.message,
-            userID: ""
-          }
+        
 
-          const request = await axios.post('/log',logvalues)
-          alert(err.response.data.message)
+        //Jinshin: I made some changes here
+        const errorStatus = err.code
+        
+        if (errorStatus.includes("ERR_NETWORK") ) {
+
+          const useEffectLogs = new Logs(
+            "DB",
+            "Signup",
+            "useEffect /Positions",
+            err,
+            ""
+          )
+          useEffectLogs.getLogs()
+
+          alert( useEffectLogs.getMessage() )
+          console.log( useEffectLogs.getLogs() )
+          // End Jinshin
+
+        }
+        else if ( errorStatus.includes("ERR_BAD_REQUEST") ) {
+
+          const useEffectLogs = new Logs(
+            errorStatus,
+            "Signup",
+            "useEffect /Positions",
+            err.response.data.messasge,
+            ""
+          )
+          useEffectLogs.getLogs()
+
+          alert( useEffectLogs.getMessage() )
+          console.log( useEffectLogs.getLogs() )
+          // End Jinshin
+
+
         }
 
       })
     
   }, [])
 
-
+/* 
   useEffect(() => {
     
     var logvalues = {
@@ -145,11 +176,11 @@ function SignUp() {
       categoryurl: "/categories"
     }
 
-
+    try {
       axios.post(url.categoryurl)
 
       .then((res) => {
-        
+        console.log(res.data)
         const dataResponse = res.data.message;
         if (dataResponse.includes("Record")) {
           setCategoryID(res.data.result[0].categoryID)
@@ -158,12 +189,18 @@ function SignUp() {
 
         
       })
-      .catch((err) => {
+      .catch( async (err) => {
 
-        const errorStatus = err.code
-        if( errorStatus.includes('ERR_NETWORK') ) {
-        
-          alert(errorStatus)
+        if (err) {
+        logvalues = {
+            logtype: "Error",
+            module: "SignUp",
+            logfunction: "UseEffect /categories",
+            logvalues : err,
+            userID: ""
+          }
+          
+          alert(err)
         }
         else if (err.response.status === 404) {
           logvalues = {
@@ -177,21 +214,22 @@ function SignUp() {
           alert(err.response.data.message)
         }
 
-        // Write log here
-        //const request = await axios.post('/log',logvalues)
+        const request = await axios.post('/log',logvalues)
 
       })
-
+    } catch (err) {
+      alert(err)
+    }
  
   }, [])
   
-
+*/
   
 
   const handleInput = (e) => {
     console.log(e.target.name)
     setValues( { ...e.tar, [e.target.name]: [e.target.value.trim()] });
-    //setErrors("test")
+
   };
 
   const HandleSubmit = async(event) => {
@@ -202,10 +240,6 @@ function SignUp() {
     console.log(buttonStatus)
     buttonStatus.disabled = true
 
-    // buttonStatus.disabled = true
-
-   // console.log("Get Position : " + positionID)
-   // console.log("Get Category : " + categoryID)
 
     try {
 
@@ -223,20 +257,21 @@ function SignUp() {
 
       const request = await axios.post('/users',currentValues)
 
-      //const response = await request.data
+      const response = await request.data
 
+      if ( response.message.includes("Insert Success") ) {
+
+        buttonStatus.disabled = false
+
+        window.location.href = "/#/auth/signin"
+
+      }
 
     }
     catch(err) {
       
       const errorStatus = err.code
-      // var logvalues = {
-      //   logtype: "",
-      //   module: "",
-      //   logfunction: "",
-      //   logvalues : "",
-      //   userID: ""
-      // }
+
 
 
       if( errorStatus.includes('ERR_NETWORK') ) 
@@ -297,8 +332,17 @@ function SignUp() {
           }
 
         }
+        // End Jinshin
 
-     
+        // Previous Sir Noel
+        //  logvalues = {
+        //   logtype: "Error",
+        //   module: "SignUp",
+        //   logfunction: "HandleSubmit",
+        //   logvalues : "Server is not running",
+        //   userID: ""
+        // }
+
       } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
         
         //Jinshin: I made some changes here
@@ -358,22 +402,7 @@ function SignUp() {
         }
         // End Jinshin
 
-        //return alert( err.response.data.message )
-         logvalues = {
-          logtype: "Error",
-          module: "SignUp",
-          logfunction: "HandleSubmit",
-          logvalues : err.response.data.message,
-          userID: ""
-        }
-
       }
-      // else {
-      //     alert(err)
-      // }
-
-      const request = await axios.post('/log',logvalues)
-
 
     }
 
