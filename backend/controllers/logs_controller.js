@@ -14,30 +14,28 @@ const putLog = ( request, response ) => {
 
     const { logtype, module, logfunction, logvalues, userID } = request.body
 
-    //const logType = "Error"
-
     const stmt = "INSERT INTO tblLogs(logID,logtype,module,"
     + "logfunction,logvalues,createdBy,dateCreated) values (?)";
 
     const values = [
         id,
-        req.body.logtype,
-        req.body.module,
-        req.body.logfunction,
-        req.body.logvalues,
-        req.body.userID,
+        logtype,
+        module,
+        logfunction,
+        logvalues,
+        userID,
         utils_getDate()
     ];
       
-    connection.query( stmt, [values], ( err, result ) => {
+    mysql.query( stmt, [values], ( err, result ) => {
         if(err) {
             
-            res.json({
+            request.status(400).json({
                 message: "Insert Error",
                 message2: err.message});
         }else {
 
-            res.json({
+            response.status(200).json({
                 message: "Insert Success"});
         }
 

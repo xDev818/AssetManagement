@@ -41,6 +41,8 @@ const createUser = ( request, response ) => {
     const id = randomUUID() 
     const { username, email, password , positionID, categoryID } = request.body
 
+    if( !username ) return response.status(400).send( { message: "Username is required" } )
+
     const stmt = "INSERT INTO tblUsers(userDisplayID,username,email,password,displayName,positionID,groupTypeID,isRegister,dateCreated) values (?)";
     const display = "Set your Display Name"
     const iRegister = '1'
