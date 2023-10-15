@@ -33,8 +33,8 @@ import theme from "theme/theme.js";
 import Configuration from "views/Dashboard/Configuration";
 import Dummy from "views/Dashboard/Dummy";
 
-// import axios from "axios";
-// axios.defaults.baseURL = "http://localhost:5001/api";
+ import axios from "axios";
+ axios.defaults.baseURL = "http://localhost:5001/api";
 
 ReactDOM.render(
   <ChakraProvider theme={theme} resetCss={false} position="relative">

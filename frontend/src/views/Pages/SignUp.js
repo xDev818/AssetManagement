@@ -22,6 +22,7 @@
     Date : 10 / 14 / 23
     Author : Jinshin
     Activities
+
     Purpose : 
       import Logs from 'components/Utils/logs_helper'
       const ButtonRef = useRef(null) - to enable/disable button functionality in 
@@ -92,10 +93,17 @@ function SignUp() {
     const ButtonRef = useRef(null)
   
   useEffect(() => {
-    
-    Defaults.getPositionID().then( res => setPositionID(res) ).catch( err => {
-      const errorStatus = err.code
+   
+    Defaults.getPositionID().then( res => {
+      //console.log(res)
+      setPositionID(res)
 
+
+  
+        
+    }).catch( err => {
+      const errorStatus = err.code
+      console.log("What is error : " + err)
       if(errorStatus.includes("ERR_NETWORK") ) {
         const useEffectLogs = new Logs(
           "DB",
@@ -111,11 +119,11 @@ function SignUp() {
         const useEffectLogs = new Logs(
           "error",
           "Signup",
-          "useEffect /categories",
+          "useEffect /positions",
           err.response.data.message,
           ""
         )
-        
+
         axios.post('/log', useEffectLogs.getLogs())
         .then(res => console.log(res.data))
         .catch(err => console.log(err))
@@ -154,37 +162,7 @@ function SignUp() {
       }
 
     })
-    
-    Defaults.getDepartmentID().then( res => setDepartmentID(res) ).catch( err => {
-      const errorStatus = err.code
 
-      if(errorStatus.includes("ERR_NETWORK") ) {
-        const useEffectLogs = new Logs(
-          "DB",
-          "Signup",
-          "useEffect /departments",
-          err,
-          ""
-        )
-        alert(useEffectLogs.getMessage())
-      }
-
-      if( errorStatus.includes("ERR_BAD_REQUEST") ) {
-        const useEffectLogs = new Logs(
-          "error",
-          "Signup",
-          "useEffect /departments",
-          err.response.data.message,
-          ""
-        )
-        
-        axios.post('/log', useEffectLogs.getLogs())
-        .then(res => console.log(res.data))
-        .catch(err => console.log(err))
-
-      }
-
-    })
 
   }, [])
 
@@ -203,7 +181,6 @@ function SignUp() {
     console.log(buttonStatus)
     buttonStatus.disabled = true
 
-
     try {
 
       event.preventDefault()
@@ -214,8 +191,9 @@ function SignUp() {
         username: values.username,
         email: values.email,
         password: pass,
-        positionID : positionID,
-        categoryID: categoryID
+        positionID,
+        categoryID,
+        departmentID
       }
 
       const request = await axios.post('/users',currentValues)
@@ -246,8 +224,7 @@ function SignUp() {
           err,
           ""
         )
-        useEffectLogs.getLogs()
-
+        
         alert( useEffectLogs.getMessage() )
         console.log( useEffectLogs.getLogs() )
         buttonStatus.disabled = false
@@ -255,16 +232,13 @@ function SignUp() {
       } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
         //Jinshin: I made some changes here
         const useEffectLogs = new Logs(
-          errorStatus,
+          'Error',
           "Signup",
           "Function /HandleSubmit",
           err.response.data.message,
           ""
         )
-        useEffectLogs.getLogs()
-
-        alert( useEffectLogs.getMessage() )
-        console.log( useEffectLogs.getLogs() )
+        
         buttonStatus.disabled = false
 
         try {
