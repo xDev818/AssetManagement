@@ -33,7 +33,7 @@ import { SidebarHelp } from "components/Sidebar/SidebarHelp";
 import React from "react";
 import { useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
-import { NavLink, useLocation, Link } from "react-router-dom";
+import { NavLink, useLocation, Link as Anchor } from "react-router-dom";
 import {
   HomeIcon,
   StatsIcon,
@@ -50,7 +50,7 @@ function Sidebar(props) {
   const [userDropdown, setUserDropdown] = useState(false);
   const [configDropdown, setConfigDropdown] = useState(false);
 
-  // to check for active links and opened collapses
+  // to check for active Anchors and opened collapses
   let location = useLocation();
   // this is for the rest of the collapses
   const [state, setState] = React.useState({});
@@ -63,7 +63,7 @@ function Sidebar(props) {
 
   console.log("active route: ", activeRoute);
   const { colorMode } = useColorMode;
-  // this function creates the links and collapses that appear in the sidebar (left menu)
+  // this function creates the Anchors and collapses that appear in the sidebar (left menu)
 
   //  BRAND
   //  Chakra Color Mode
@@ -136,10 +136,10 @@ function Sidebar(props) {
                   <HomeIcon />
                   <NavLink to="/admin/dashboard">Dashboard</NavLink>
                 </Box>
-                <Box display="flex" alignItems="center" gap="5">
+                {/* <Box display="flex" alignItems="center" gap="5">
                   <StatsIcon color="inherit" />
-                  <Link to="/admin/tables">Tables</Link>
-                </Box>
+                  <Anchor to="/admin/tables">Tables</Anchor>
+                </Box> */}
                 <Box display="flex" alignItems="center" gap="5">
                   <PersonIcon />
                   <Text
@@ -147,12 +147,14 @@ function Sidebar(props) {
                     to="/admin/user"
                     onClick={() => setUserDropdown(!userDropdown)}
                   >
-                    User
+                    Activity
                   </Text>
                 </Box>
                 {userDropdown && (
-                  <Stack pl={4}>
-                    <h1>SubMenu</h1>
+                  <Stack pl={4} gap={4}>
+                    <h1>Check In</h1>
+                    <h1>Check Out</h1>
+                    <h1>Pull Out</h1>
                   </Stack>
                 )}
                 <Box display="flex" alignItems="center" gap="5">
@@ -167,10 +169,11 @@ function Sidebar(props) {
                 </Box>
                 {configDropdown && (
                   <Stack pl={4} gap={4}>
-                    <Link to="/admin/asset">Asset Configuration</Link>
-                    <Link to="/admin/position">Position</Link>
-                    <Link to="/admin/status">Status</Link>
-                    <Link to="/admin/assetstatus">Asset Status</Link>
+                    <Anchor to="/admin/asset">Asset Configuration</Anchor>
+                    <Anchor to="/admin/position">Position</Anchor>
+                    <Anchor to="/admin/status">Status</Anchor>
+                    <Anchor to="/admin/department">Department</Anchor>
+                    <Anchor to="/admin/suppliers">Suppliers</Anchor>
                   </Stack>
                 )}
               </Box>
@@ -186,7 +189,7 @@ function Sidebar(props) {
 // FUNCTIONS
 
 export function SidebarResponsive(props) {
-  // to check for active links and opened collapses
+  // to check for active Anchors and opened collapses
   let location = useLocation();
   const { logo, routes, colorMode, hamburgerColor, ...rest } = props;
 
@@ -208,8 +211,8 @@ export function SidebarResponsive(props) {
   );
   let sidebarBackgroundColor = useColorModeValue("white", "navy.800");
 
-  // this function creates the links and collapses that appear in the sidebar (left menu)
-  const createLinks = (routes) => {
+  // this function creates the Anchors and collapses that appear in the sidebar (left menu)
+  const createAnchors = (routes) => {
     return routes.map((prop, key) => {
       if (prop.redirect) {
         return null;
@@ -237,7 +240,7 @@ export function SidebarResponsive(props) {
                 ? prop.rtlName
                 : prop.name}
             </Text>
-            {createLinks(prop.views)}
+            {createAnchors(prop.views)}
           </>
         );
       }
@@ -350,9 +353,9 @@ export function SidebarResponsive(props) {
     });
   };
 
-  var links = <>{createLinks(routes)}</>;
+  var Anchors = <>{createAnchors(routes)}</>;
   {
-    console.log("links", links);
+    console.log("Anchors", Anchors);
   }
 
   //  BRAND
@@ -408,37 +411,43 @@ export function SidebarResponsive(props) {
           />
           <DrawerBody maxW="250px" px="1rem">
             <Box maxW="100%" h="100vh">
-              <Stack direction="column" mb="40px">
+              <Stack direction="column" mb="40px" mt={7} px="4">
+                <Text fontWeight="bold" uppercase mb={5}>
+                  ASSETS
+                </Text>
                 <Box
                   display="flex"
                   flexDirection="column"
-                  gap={5}
                   fontWeight="bold"
+                  gap="5"
                 >
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    gap={5}
-                    fontWeight="bold"
-                  >
-                    <Link to="/admin/dashboard">Dashboard</Link>
-                    <Divider />
-                    <Link to="/admin/tables">Tables</Link>
-                    <Divider />
+                  <Box display="flex" alignItems="center" gap="5">
+                    <HomeIcon />
+                    <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                  </Box>
+                  {/* <Box display="flex" alignItems="center" gap="5">
+                    <StatsIcon color="inherit" />
+                    <Anchor to="/admin/tables">Tables</Anchor>
+                  </Box> */}
+                  <Box display="flex" alignItems="center" gap="5">
+                    <PersonIcon />
                     <Text
                       cursor="pointer"
                       to="/admin/user"
                       onClick={() => setUserDropdown(!userDropdown)}
                     >
-                      User
+                      Activity
                     </Text>
-                    <Divider />
-
-                    {userDropdown && (
-                      <Stack pl={4}>
-                        <h1>SubMenu</h1>
-                      </Stack>
-                    )}
+                  </Box>
+                  {userDropdown && (
+                    <Stack pl={4} gap={4}>
+                      <h1>Check In</h1>
+                      <h1>Check Out</h1>
+                      <h1>Pull Out</h1>
+                    </Stack>
+                  )}
+                  <Box display="flex" alignItems="center" gap="5">
+                    <CreditIcon />
                     <Text
                       cursor="pointer"
                       to="/admin/configuration"
@@ -456,6 +465,13 @@ export function SidebarResponsive(props) {
                       </Stack>
                     )}
                   </Box>
+                  {configDropdown && (
+                    <Stack pl={4} gap={4}>
+                      <Anchor to="/admin/asset">Asset Configuration</Anchor>
+                      <Anchor to="/admin/position">Position</Anchor>
+                      <Anchor to="/admin/status">Status</Anchor>
+                    </Stack>
+                  )}
                 </Box>
               </Stack>
             </Box>
