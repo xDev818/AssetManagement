@@ -1,3 +1,21 @@
+/* 
+
+ Date : 10 / 16 / 23
+    Author : Jinshin
+    Activities
+    Purpose : 
+      Imports:
+          - import React, { useEffect, useLayoutEffect, useState } from "react";
+          - import decoder from 'jwt-decode'
+          - import axios from "axios";
+          - import Logs from '../../components/Utils/logs_helper'
+      Added:
+          - const [ decoded, setDecode ] = useState()
+          - useEffect
+          - useLayoutEffect
+
+*/
+
 // Chakra imports
 import {
   Box,
@@ -31,7 +49,7 @@ import {
   GlobeIcon,
   WalletIcon,
 } from "components/Icons/Icons.js";
-import React from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 // Variables
 import {
   barChartData,
@@ -40,6 +58,12 @@ import {
   lineChartOptions,
 } from "variables/charts";
 import { pageVisits, socialTraffic } from "variables/general";
+
+// Jinshin
+import decoder from 'jwt-decode'
+import axios from "axios";
+import Logs from '../../components/Utils/logs_helper'
+// End Jinshin
 
 export default function Dashboard() {
   // Chakra Color Mode
@@ -51,6 +75,106 @@ export default function Dashboard() {
   const textTableColor = useColorModeValue("gray.500", "white");
 
   const { colorMode } = useColorMode();
+
+  // Jinshin
+  const [ decoded, setDecode ] = useState()
+
+  useEffect( () => {
+
+    const storage = localStorage
+
+    if( !storage.getItem("token") || !storage.getItem('token').length  ) {
+
+      window.location.href = "/#/auth/signin"
+
+    }
+    
+    const token = storage.getItem(
+      "token")
+    axios.post("/users/verify", { token })
+    .then( res => {
+      
+      if( res.data.includes("Token is valid") ) {
+
+        const decoding = decoder(token)
+        setDecode( decoding )
+
+      }
+
+    })
+    .catch( err => {
+
+      const errorStatus = err.code
+
+      if( errorStatus.includes("ERR_NETWORK") ) {
+
+        const verifyLogs = new Logs(
+          "DB",
+          "dashboard",
+          "useEffect /users/verify",
+          err,
+          ""
+        )
+        alert( verifyLogs.getMessage() )
+        
+      }
+
+      if( errorStatus.includes("ERR_BAD_REQUEST") ) {
+
+        const verifyLogs = new Logs(
+          "Error",
+          "dashboard",
+          "useEffect /users/verify",
+          err.response.data.message,
+          ""
+        )
+          
+        axios.post("/log", verifyLogs.getLogs())
+        .then( res => console.log('Log is: ', res.data ) )
+        .catch( err => {
+
+          const logStatus = err.code
+          
+          if( logStatus.includes("ERR_NETWORK") ) {
+
+            const _logs = new Logs(
+              "DB",
+              "dashboard",
+              "useEffect /log",
+              err,
+              ""
+            )
+            alert( _logs.getMessage() )
+
+          }
+
+          if( logStatus.includes("ERR_BAD_REQUEST") ) {
+
+            const _logs = new Logs(
+              "Error",
+              "dashboard",
+              "useEffect /log",
+              err.response.data.message,
+              ""
+            )
+            alert( _logs.getLogs() )
+
+          }
+
+        })
+
+      }
+
+    })
+
+  }, [setDecode])
+
+  useLayoutEffect(() => {
+    
+    decoded && console.log( "user", decoded)
+
+  })
+  // End Jinshin
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>

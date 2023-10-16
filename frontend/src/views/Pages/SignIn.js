@@ -46,7 +46,8 @@ import { Redirect } from "react-router-dom";
 
 // Imported: Jinshin
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+
 import Logs from "components/Utils/logs_helper";
 import axios from 'axios'
 
@@ -67,13 +68,31 @@ function SignIn() {
     password: "",
   });
 
-  //var ButtonRef = useRef();
-  const buttonStatus = ButtonRef.current
-  buttonStatus.disabled = true
+  const ButtonRef = useRef()
+
+  useEffect( () => {
+
+    const storage = localStorage
+
+    if( storage.getItem("token") && storage.getItem('token').length === 637  ) {
+
+      window.location.href = "/"
+
+    } else {
+
+      localStorage.removeItem('token')
+
+    }
+
+
+  }, [])
 
   const loginHandler = async () => {
     // const request = await axios.post("/users/login", values);
 
+
+    const buttonStatus = ButtonRef.current
+    buttonStatus.disabled = true
 
     try {
 
@@ -84,6 +103,8 @@ function SignIn() {
       if ( response.message.includes("Record Found") ) {
 
         window.location.href = "/"
+        localStorage.setItem("token", response.token)
+        buttonStatus.disabled = false
 
       }
 
@@ -331,7 +352,7 @@ function SignIn() {
                 </FormLabel>
               </FormControl>
               <Button
-                ref={buttonStatus}
+                ref={ButtonRef}
                 fontSize='10px'
                 variant='dark'
                 fontWeight='bold'

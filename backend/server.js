@@ -6,6 +6,7 @@
             Initiate the DB Connection
             app.listen(process.env.PORT,() => {..}
 
+--------------------
 
     Date : 10 / 12 / 23
     Author : jinshin
@@ -28,6 +29,17 @@
             - imported : const departmentRoutes = require('./routes/department_routes')
             - Used : app.use('/api', departmentRoutes)
 
+    Date : 10 / 16 / 23
+    Author : jinshin
+    Activities
+    Purpose : 
+        configured:
+            - app.use(cors(
+                {
+                        origin: "*" // changed to wildcard temporarily
+                }
+              ));
+
  */
 
 // Packages
@@ -46,8 +58,12 @@ const logsRoutes = require('./routes/log_routes')
 var app = express();
 
 // Middlewares
-app.use(cors());
 app.use(express.json());
+app.use(cors(
+        {
+                origin: "*"
+        }
+));
 
 app.get("/",(req,res) => 
 {

@@ -17,6 +17,15 @@
     Purpose : 
       bcryptjs is added:
       imported: compare password = const { compare_password } = require('../utils/password_helper')
+   
+------------------      
+
+      Date : 10 / 16 / 23
+    Author : Jinshin
+    Activities
+    Purpose : 
+      Added:
+          - verifyUserToken
 
 */
 
@@ -30,10 +39,6 @@ const { compare_password, hash_password } = require('../utils/password_helper')
 
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
-
-
-// Generate Random ID
-
 
 // An instance to register a new user
 const createUser = ( request, response ) => {
@@ -130,6 +135,42 @@ const loginUser = ( request, response ) => {
         })
 
     })
+
+}
+
+
+const verifyUserToken = ( request, response, next ) => {
+
+    console.log(request.body)
+
+    const { token } = request.body
+
+    if( !token ) return response.status(401).send(
+        {
+            message: "Invalid token"
+        }
+    )
+
+    try {
+        
+        const isValid = jwt.verify( token, process.env.SECRET )
+
+        console.log(isValid)
+
+        response.status(200).send("Token is valid")
+
+        next()
+
+    } catch (error) {
+        
+        response.status(400).send(
+            {
+                message: "Invalid token",
+                error
+            }
+        )
+
+    }
 
 }
 
@@ -354,6 +395,7 @@ const deleteAllOldUsers = ( request, response ) => {
 module.exports = {
     createUser,
     loginUser,
+    verifyUserToken,
     getAllUsers,
     getAllUsersByLastname,
     getUserByActive,
