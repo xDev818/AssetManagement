@@ -88,6 +88,11 @@ function SignUp() {
     email: '',
     password: ''
    })
+
+   const [errors,setErrors] = useState({
+    error_name : '',
+    error_message: ''
+   })
    
     //  Jinshin
     const ButtonRef = useRef(null)
@@ -98,9 +103,6 @@ function SignUp() {
       //console.log(res)
       setPositionID(res)
 
-
-  
-        
     }).catch( err => {
       const errorStatus = err.code
       console.log("What is error : " + err)
@@ -123,6 +125,11 @@ function SignUp() {
           err.response.data.message,
           ""
         )
+
+        setErrors({
+          ...errors,
+          error_name: "Signup",
+          error_message: err.response.data.message})
 
         axios.post('/log', useEffectLogs.getLogs())
         .then(res => console.log(res.data))
@@ -154,7 +161,11 @@ function SignUp() {
           err.response.data.message,
           ""
         )
-        
+        setErrors({
+          ...errors,
+          error_name: "Signup",
+          error_message: err.response.data.message})
+
         axios.post('/log', useEffectLogs.getLogs())
         .then(res => console.log(res.data))
         .catch(err => console.log(err))
@@ -193,6 +204,8 @@ function SignUp() {
         departmentID
       }
 
+      if((positionID !== "") && (categoryID !== "")){
+
       const request = await axios.post('/users',currentValues)
 
       const response = await request.data
@@ -204,6 +217,20 @@ function SignUp() {
         window.location.href = "/#/auth/signin"
 
       }
+    }
+    else {
+      buttonStatus.disabled = false
+
+      alert(
+
+         //errors.map((val) => (
+         //  "\n" + errors.error_message
+        //  + "\n Message : " + val.error_message
+        // ))
+        errors.error_message
+      )
+
+    }
 
     }
     catch(err) {

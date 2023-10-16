@@ -170,6 +170,7 @@ function Sidebar(props) {
                     <Link to="/admin/asset">Asset Configuration</Link>
                     <Link to="/admin/position">Position</Link>
                     <Link to="/admin/status">Status</Link>
+                    <Link to="/admin/assetstatus">Asset Status</Link>
                   </Stack>
                 )}
               </Box>
@@ -451,6 +452,7 @@ export function SidebarResponsive(props) {
                         <Link to="/admin/asset">Asset Configuration</Link>
                         <Link to="/admin/position">Position</Link>
                         <Link to="/admin/status">Status</Link>
+                        <Link to="/admin/assetstatus">Asset Status</Link>
                       </Stack>
                     )}
                   </Box>

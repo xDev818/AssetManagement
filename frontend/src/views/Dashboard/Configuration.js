@@ -11,6 +11,7 @@ import AssetCategory from "components2/Configuration/AssetCategory";
 import PositionCategory from "components2/Configuration/PositionCategory";
 import StatusCategory from "components2/Configuration/StatusCategory";
 
+
 export default function Configuration() {
   // Chakra Color Mode
 
