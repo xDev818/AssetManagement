@@ -22,7 +22,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 //import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import { HashRouter,Route,Switch,Redirect } from "react-router-dom/cjs/react-router-dom.min";
+import {
+  HashRouter,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom/cjs/react-router-dom.min";
 
 import AuthLayout from "./layouts/Auth";
 import AdminLayout from "./layouts/Admin";
@@ -33,13 +38,14 @@ import theme from "theme/theme.js";
 import Configuration from "views/Dashboard/Configuration";
 import Dummy from "views/Dashboard/Dummy";
 
-// import axios from "axios";
-// axios.defaults.baseURL = "http://localhost:5001/api";
+import axios from "axios";
+axios.defaults.baseURL = "http://localhost:5001/api";
 
 ReactDOM.render(
   <ChakraProvider theme={theme} resetCss={false} position="relative">
     <HashRouter>
       <Switch>
+        {/* {!token ? <Redirect from={`/signin`} to="/admin/dashboard" />: null} */}
         <Route path={`/auth`} component={AuthLayout} />
         <Route path={`/admin`} component={AdminLayout} />
         {/* <Route path={`/admin/configuration`} component={Configuration} /> */}
