@@ -9,6 +9,14 @@ import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
 import Users from "views/Dashboard/Users";
 import Configuration from "views/Dashboard/Configuration";
+
+//Activity User submenus pages
+import User from "components2/Activity/User";
+import CheckIn from "components2/Activity/CheckIn";
+import CheckOut from "components2/Activity/CheckOut";
+import PullOut from "components2/Activity/PullOut";
+
+// Configuration submenus pages
 import AssetCategory from "components2/Configuration/AssetCategory";
 import PositionCategory from "components2/Configuration/PositionCategory";
 import StatusCategory from "components2/Configuration/StatusCategory";
@@ -29,30 +37,66 @@ import {
 
 var dashRoutes = [
   {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
+    layout: "/admin",
+  },
+  // Activity Menu
+  {
+    submenu: "activity",
+    path: "/user-profile",
+    name: "Profile",
+    component: User,
+    layout: "/admin",
+  },
+  {
+    submenu: "activity",
+    path: "/check-in",
+    name: "Check In",
+    component: CheckIn,
+    layout: "/admin",
+  },
+  {
+    submenu: "activity",
+    path: "/check-out",
+    name: "Check Out",
+    component: CheckOut,
+    layout: "/admin",
+  },
+  {
+    submenu: "activity",
+    path: "/pull-out",
+    name: "Pull Out",
+    component: PullOut,
+    layout: "/admin",
+  },
+  // End Activity Menu
+
+  // Configuration Menu
+  {
+    submenu: "configuration",
     path: "/department",
     name: "Department",
     component: Department,
     layout: "/admin",
   },
   {
+    submenu: "configuration",
     path: "/suppliers",
     name: "Suppliers",
     component: Suppliers,
     layout: "/admin",
   },
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    component: Dashboard,
-    layout: "/admin",
-  },
-  {
+    submenu: "configuration",
     path: "/asset",
     name: "Asset Configuration",
     component: AssetCategory,
     layout: "/admin",
   },
   {
+    submenu: "configuration",
     path: "/position",
     name: "Position",
     component: PositionCategory,
@@ -60,6 +104,7 @@ var dashRoutes = [
   },
 
   {
+    submenu: "configuration",
     path: "/assetstatus",
     name: "Asset Status",
     icon: <HomeIcon color="inherit" />,
@@ -67,35 +112,24 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-    path: "/tables",
-    name: "Tables",
-    icon: <StatsIcon color="inherit" />,
-    component: Tables,
-
-    layout: "/admin",
-  },
-  {
+    submenu: "configuration",
     path: "/status",
     name: "Status",
     component: StatusCategory,
     layout: "/admin",
   },
-  // {
-  //   path: "/tables",
-  //   name: "Tables",
-  //   component: Tables,
-  //   layout: "/admin",
-  // },
+  // End Configuration Menu
+  {
+    path: "/tables",
+    name: "Tables",
+    icon: <StatsIcon color="inherit" />,
+    component: Tables,
+    layout: "/admin",
+  },
   {
     path: "/users",
     name: "Users",
     component: Users,
-    layout: "/admin",
-  },
-  {
-    path: "/configuration",
-    name: "Configuration",
-    component: Configuration,
     layout: "/admin",
   },
   {
