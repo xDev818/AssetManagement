@@ -174,6 +174,7 @@ function Sidebar(props) {
                     <Anchor to="/admin/status">Status</Anchor>
                     <Anchor to="/admin/department">Department</Anchor>
                     <Anchor to="/admin/suppliers">Suppliers</Anchor>
+                    <Anchor to="/admin/assetstatus">Asset Status</Anchor>
                   </Stack>
                 )}
               </Box>
