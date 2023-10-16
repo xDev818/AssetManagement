@@ -63,9 +63,17 @@ export default function PositionCategory() {
     },
   ]);
 
+  // const positionData = async () => {
+  //   const res = await axios.get("http://localhost:5001/api/positions");
+  //   const data = await res.data;
+
+  //   console.log(data);
+  // };
+
   // useEffect(() => {
-  //   PositionData();
+  //   positionData();
   // }, []);
+
   const handleEdit = (item) => {
     setEditItem(item);
     setIsEditing(true);
