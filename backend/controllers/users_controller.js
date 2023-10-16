@@ -153,9 +153,6 @@ const verifyUserToken = ( request, response, next ) => {
         
         const isValid = jwt.verify( token, process.env.SECRET )
 
-        console.log(isValid)
-        console.log( 'oras', Date())
-
         response.status(200).send("Token is valid")
 
         next()
