@@ -60,9 +60,10 @@ import {
 import { pageVisits, socialTraffic } from "variables/general";
 
 // Jinshin
-import decoder from 'jwt-decode'
+import decoder from "jwt-decode";
 import axios from "axios";
-import Logs from '../../components/Utils/logs_helper'
+import Logs from "../../components/Utils/logs_helper";
+import FourGraphs from "components/FourGraphs/FourGraphs";
 // End Jinshin
 
 export default function Dashboard() {
@@ -77,283 +78,92 @@ export default function Dashboard() {
   const { colorMode } = useColorMode();
 
   // Jinshin
-  const [ decoded, setDecode ] = useState()
+  const [decoded, setDecode] = useState();
 
-  useEffect( () => {
+  useEffect(() => {
+    const storage = localStorage;
 
-    const storage = localStorage
-
-    if( !storage.getItem("token") || !storage.getItem('token').length  ) {
-
-      window.location.href = "/#/auth/signin"
-
+    if (!storage.getItem("token") || !storage.getItem("token").length) {
+      window.location.href = "/#/auth/signin";
     }
-    
-    const token = storage.getItem("token")
 
-    axios.post("/users/verify", { token })
-    .then( res => {
-      
-      if( res.data.includes("Token is valid") ) {
+    const token = storage.getItem("token");
 
-        const decoding = decoder(token)
-        setDecode( decoding )
+    axios
+      .post("/users/verify", { token })
+      .then((res) => {
+        if (res.data.includes("Token is valid")) {
+          const decoding = decoder(token);
+          setDecode(decoding);
+        }
+      })
+      .catch((err) => {
+        const errorStatus = err.code;
 
-      }
+        if (errorStatus.includes("ERR_NETWORK")) {
+          const verifyLogs = new Logs(
+            "DB",
+            "dashboard",
+            "useEffect /users/verify",
+            err,
+            ""
+          );
+          alert(verifyLogs.getMessage());
+        }
 
-    })
-    .catch( err => {
+        if (errorStatus.includes("ERR_BAD_REQUEST")) {
+          console.log(err);
+          const verifyLogs = new Logs(
+            "Error",
+            "dashboard",
+            "useEffect /users/verify",
+            err.response.data.message,
+            ""
+          );
 
-      const errorStatus = err.code
+          axios
+            .post("/log", verifyLogs.getLogs())
+            .then((res) => {
+              console.log("Log is: ", res.data);
+              localStorage.removeItem("token");
+              window.location.href = "/#/auth/signin";
+            })
+            .catch((err) => {
+              const logStatus = err.code;
 
-      if( errorStatus.includes("ERR_NETWORK") ) {
+              if (logStatus.includes("ERR_NETWORK")) {
+                const _logs = new Logs(
+                  "DB",
+                  "dashboard",
+                  "useEffect /log",
+                  err,
+                  ""
+                );
+                alert(_logs.getMessage());
+              }
 
-        const verifyLogs = new Logs(
-          "DB",
-          "dashboard",
-          "useEffect /users/verify",
-          err,
-          ""
-        )
-        alert( verifyLogs.getMessage() )
-        
-      }
-
-      if( errorStatus.includes("ERR_BAD_REQUEST") ) {
-        console.log(err)
-        const verifyLogs = new Logs(
-          "Error",
-          "dashboard",
-          "useEffect /users/verify",
-          err.response.data.message,
-          ""
-        )
-        
-        axios.post("/log", verifyLogs.getLogs())
-        .then( res => {
-          
-          console.log('Log is: ', res.data )
-          localStorage.removeItem("token")
-          window.location.href = "/#/auth/signin"
-
-        })
-        .catch( err => {
-          
-          const logStatus = err.code
-          
-          if( logStatus.includes("ERR_NETWORK") ) {
-
-            const _logs = new Logs(
-              "DB",
-              "dashboard",
-              "useEffect /log",
-              err,
-              ""
-            )
-            alert( _logs.getMessage() )
-
-          }
-
-          if( logStatus.includes("ERR_BAD_REQUEST") ) {
-
-            const _logs = new Logs(
-              "Error",
-              "dashboard",
-              "useEffect /log",
-              err.response.data.message,
-              ""
-            )
-            alert( _logs.getLogs() )
-
-          }
-
-        })
-
-      }
-
-    })
-
-  }, [setDecode])
+              if (logStatus.includes("ERR_BAD_REQUEST")) {
+                const _logs = new Logs(
+                  "Error",
+                  "dashboard",
+                  "useEffect /log",
+                  err.response.data.message,
+                  ""
+                );
+                alert(_logs.getLogs());
+              }
+            });
+        }
+      });
+  }, [setDecode]);
 
   useLayoutEffect(() => {
-    
-    decoded && console.log( "user", decoded)
-
-  })
+    decoded && console.log("user", decoded);
+  });
   // End Jinshin
 
   return (
-    <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
-      <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px" mb="20px">
-        <Card minH="125px">
-          <Flex direction="column">
-            <Flex
-              flexDirection="row"
-              align="center"
-              justify="center"
-              w="100%"
-              mb="25px"
-            >
-              <Stat me="auto">
-                <StatLabel
-                  fontSize="xs"
-                  color="gray.400"
-                  fontWeight="bold"
-                  textTransform="uppercase"
-                >
-                  Today's Money
-                </StatLabel>
-                <Flex>
-                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                    $53,897
-                  </StatNumber>
-                </Flex>
-              </Stat>
-              <IconBox
-                borderRadius="50%"
-                as="box"
-                h={"45px"}
-                w={"45px"}
-                bg={iconBlue}
-              >
-                <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />
-              </IconBox>
-            </Flex>
-            <Text color="gray.400" fontSize="sm">
-              <Text as="span" color="green.400" fontWeight="bold">
-                +3.48%{" "}
-              </Text>
-              Since last month
-            </Text>
-          </Flex>
-        </Card>
-        <Card minH="125px">
-          <Flex direction="column">
-            <Flex
-              flexDirection="row"
-              align="center"
-              justify="center"
-              w="100%"
-              mb="25px"
-            >
-              <Stat me="auto">
-                <StatLabel
-                  fontSize="xs"
-                  color="gray.400"
-                  fontWeight="bold"
-                  textTransform="uppercase"
-                >
-                  Today's Users
-                </StatLabel>
-                <Flex>
-                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                    $3,200
-                  </StatNumber>
-                </Flex>
-              </Stat>
-              <IconBox
-                borderRadius="50%"
-                as="box"
-                h={"45px"}
-                w={"45px"}
-                bg={iconBlue}
-              >
-                <GlobeIcon h={"24px"} w={"24px"} color={iconBoxInside} />
-              </IconBox>
-            </Flex>
-            <Text color="gray.400" fontSize="sm">
-              <Text as="span" color="green.400" fontWeight="bold">
-                +5.2%{" "}
-              </Text>
-              Since last month
-            </Text>
-          </Flex>
-        </Card>
-        <Card minH="125px">
-          <Flex direction="column">
-            <Flex
-              flexDirection="row"
-              align="center"
-              justify="center"
-              w="100%"
-              mb="25px"
-            >
-              <Stat me="auto">
-                <StatLabel
-                  fontSize="xs"
-                  color="gray.400"
-                  fontWeight="bold"
-                  textTransform="uppercase"
-                >
-                  New Clients
-                </StatLabel>
-                <Flex>
-                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                    +2,503
-                  </StatNumber>
-                </Flex>
-              </Stat>
-              <IconBox
-                borderRadius="50%"
-                as="box"
-                h={"45px"}
-                w={"45px"}
-                bg={iconBlue}
-              >
-                <DocumentIcon h={"24px"} w={"24px"} color={iconBoxInside} />
-              </IconBox>
-            </Flex>
-            <Text color="gray.400" fontSize="sm">
-              <Text as="span" color="red.500" fontWeight="bold">
-                -2.82%{" "}
-              </Text>
-              Since last month
-            </Text>
-          </Flex>
-        </Card>
-        <Card minH="125px">
-          <Flex direction="column">
-            <Flex
-              flexDirection="row"
-              align="center"
-              justify="center"
-              w="100%"
-              mb="25px"
-            >
-              <Stat me="auto">
-                <StatLabel
-                  fontSize="xs"
-                  color="gray.400"
-                  fontWeight="bold"
-                  textTransform="uppercase"
-                >
-                  Total Sales
-                </StatLabel>
-                <Flex>
-                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                    $173,000
-                  </StatNumber>
-                </Flex>
-              </Stat>
-              <IconBox
-                borderRadius="50%"
-                as="box"
-                h={"45px"}
-                w={"45px"}
-                bg={iconBlue}
-              >
-                <CartIcon h={"24px"} w={"24px"} color={iconBoxInside} />
-              </IconBox>
-            </Flex>
-            <Text color="gray.400" fontSize="sm">
-              <Text as="span" color="green.400" fontWeight="bold">
-                +8.12%{" "}
-              </Text>
-              Since last month
-            </Text>
-          </Flex>
-        </Card>
-      </SimpleGrid>
+    <Flex flexDirection="column" pt={{ base: "120px", md: 0 }}>
       <Grid
         templateColumns={{ sm: "1fr", lg: "2fr 1fr" }}
         templateRows={{ lg: "repeat(2, auto)" }}

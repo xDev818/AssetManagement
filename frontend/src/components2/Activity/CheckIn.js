@@ -3,9 +3,5 @@ import FourGraphs from "components/FourGraphs/FourGraphs";
 import React from "react";
 
 export default function CheckIn() {
-  return (
-    <Stack mt={100}>
-      <FourGraphs />
-    </Stack>
-  );
+  return <h1>Check In</h1>;
 }

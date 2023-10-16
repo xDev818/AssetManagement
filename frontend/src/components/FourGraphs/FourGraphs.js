@@ -22,7 +22,12 @@ export default function FourGraphs() {
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
   return (
-    <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px" mb="20px">
+    <SimpleGrid
+      columns={{ sm: 1, md: 2, xl: 4 }}
+      spacing="24px"
+      mb="20px"
+      display={{ base: "none", md: "grid" }}
+    >
       <Card minH="125px">
         <Flex direction="column">
           <Flex

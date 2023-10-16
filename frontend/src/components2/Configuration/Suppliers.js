@@ -3,9 +3,5 @@ import FourGraphs from "components/FourGraphs/FourGraphs";
 import React from "react";
 
 export default function Suppliers() {
-  return (
-    <Stack mt={100}>
-      <FourGraphs />
-    </Stack>
-  );
+  return <h1>Suppliers</h1>;
 }
