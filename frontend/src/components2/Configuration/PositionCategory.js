@@ -18,12 +18,14 @@ import {
   FormLabel,
   Input,
   Stack,
+  Select,
 } from "@chakra-ui/react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal1 from "components2/Modal/Modal";
 import Card from "components/Card/Card";
 import FourGraphs from "components/FourGraphs/FourGraphs";
+import axios from "axios";
 
 export default function PositionCategory() {
   const [editItem, setEditItem] = useState(null);
@@ -60,6 +62,10 @@ export default function PositionCategory() {
       description: "Software",
     },
   ]);
+
+  // useEffect(() => {
+  //   PositionData();
+  // }, []);
   const handleEdit = (item) => {
     setEditItem(item);
     setIsEditing(true);
@@ -154,19 +160,12 @@ export default function PositionCategory() {
                 <ModalCloseButton />
                 <ModalBody>
                   <FormControl>
-                    <FormLabel>Department</FormLabel>
                     {isCreating ? (
-                      <>
-                        <Input
-                          value={newItem.department}
-                          onChange={(e) =>
-                            setNewItem({
-                              ...newItem,
-                              department: e.target.value,
-                            })
-                          }
-                        />
-                      </>
+                      <Select placeholder="Select Department" mb={4}>
+                        <option value="ITHelpSupport">ITHelpSupport</option>
+                        <option value="IT">IT</option>
+                        <option value="Project Manager">Project Manager</option>
+                      </Select>
                     ) : (
                       <Input
                         value={editItem?.department}
