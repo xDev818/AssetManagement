@@ -82,17 +82,17 @@ const loginUser = ( request, response ) => {
 
     const { username, password } = request.body
 
-    const checkUser = "select tblusers.password from tblusers where username = ?"
+    const checkUser = "select password from tblusers where username = ?"
 
     mysql.query( checkUser, [ username ], ( err, result ) => {
-
+        
         if( err || !result.length ) return response.status(404).send(
             {
                 message: "No Record Found",
                 message2: err
             }
         )
-
+ 
         const isValid = compare_password( password, result[0].password )
 
         if( !isValid ) return response.status(400).send(

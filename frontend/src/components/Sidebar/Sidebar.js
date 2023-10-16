@@ -455,6 +455,15 @@ export function SidebarResponsive(props) {
                     >
                       Configuration
                     </Text>
+                    <Divider />
+                    {configDropdown && (
+                      <Stack pl={4}>
+                        <Link to="/admin/asset">Asset Configuration</Link>
+                        <Link to="/admin/position">Position</Link>
+                        <Link to="/admin/status">Status</Link>
+                        <Link to="/admin/assetstatus">Asset Status</Link>
+                      </Stack>
+                    )}
                   </Box>
                   {configDropdown && (
                     <Stack pl={4} gap={4}>

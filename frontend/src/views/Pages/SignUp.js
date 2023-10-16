@@ -22,6 +22,7 @@
     Date : 10 / 14 / 23
     Author : Jinshin
     Activities
+
     Purpose : 
       import Logs from 'components/Utils/logs_helper'
       const ButtonRef = useRef(null) - to enable/disable button functionality in 
@@ -80,21 +81,31 @@ function SignUp() {
 
    const [positionID,setPositionID] = useState("")
    const [categoryID,setCategoryID] = useState("")
+   const [departmentID,setDepartmentID] = useState("")
 
    const [values,setValues] = useState({
     username: '',
     email: '',
     password: ''
    })
+
+   const [errors,setErrors] = useState({
+    error_name : '',
+    error_message: ''
+   })
    
     //  Jinshin
     const ButtonRef = useRef(null)
   
   useEffect(() => {
-    
-    Defaults.getPositionID().then( res => setPositionID(res) ).catch( err => {
-      const errorStatus = err.code
+   
+    Defaults.getPositionID().then( res => {
+      //console.log(res)
+      setPositionID(res)
 
+    }).catch( err => {
+      const errorStatus = err.code
+      console.log("What is error : " + err)
       if(errorStatus.includes("ERR_NETWORK") ) {
         const useEffectLogs = new Logs(
           "DB",
@@ -110,11 +121,16 @@ function SignUp() {
         const useEffectLogs = new Logs(
           "error",
           "Signup",
-          "useEffect /categories",
+          "useEffect /positions",
           err.response.data.message,
           ""
         )
-        
+
+        setErrors({
+          ...errors,
+          error_name: "Signup",
+          error_message: err.response.data.message})
+
         axios.post('/log', useEffectLogs.getLogs())
         .then(res => console.log(res.data))
         .catch(err => console.log(err))
@@ -145,7 +161,11 @@ function SignUp() {
           err.response.data.message,
           ""
         )
-        
+        setErrors({
+          ...errors,
+          error_name: "Signup",
+          error_message: err.response.data.message})
+
         axios.post('/log', useEffectLogs.getLogs())
         .then(res => console.log(res.data))
         .catch(err => console.log(err))
@@ -153,7 +173,8 @@ function SignUp() {
       }
 
     })
-    
+
+
   }, [])
 
 
@@ -164,13 +185,9 @@ function SignUp() {
   };
 
   const HandleSubmit = async(event) => {
-
     
     const buttonStatus = ButtonRef.current
-    
-    console.log(buttonStatus)
     buttonStatus.disabled = true
-
 
     try {
 
@@ -182,9 +199,12 @@ function SignUp() {
         username: values.username,
         email: values.email,
         password: pass,
-        positionID : positionID,
-        categoryID: categoryID
+        positionID,
+        categoryID,
+        departmentID
       }
+
+      if((positionID !== "") && (categoryID !== "")){
 
       const request = await axios.post('/users',currentValues)
 
@@ -197,6 +217,20 @@ function SignUp() {
         window.location.href = "/#/auth/signin"
 
       }
+    }
+    else {
+      buttonStatus.disabled = false
+
+      alert(
+
+         //errors.map((val) => (
+         //  "\n" + errors.error_message
+        //  + "\n Message : " + val.error_message
+        // ))
+        errors.error_message
+      )
+
+    }
 
     }
     catch(err) {
@@ -214,7 +248,7 @@ function SignUp() {
           err,
           ""
         )
-        useEffectLogs.getLogs()
+        
 
         alert( useEffectLogs.getMessage() )
         console.log( useEffectLogs.getLogs() )
@@ -223,16 +257,13 @@ function SignUp() {
       } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
         //Jinshin: I made some changes here
         const useEffectLogs = new Logs(
-          errorStatus,
+          'Error',
           "Signup",
           "Function /HandleSubmit",
           err.response.data.message,
           ""
         )
-        useEffectLogs.getLogs()
-
-        alert( useEffectLogs.getMessage() )
-        console.log( useEffectLogs.getLogs() )
+        
         buttonStatus.disabled = false
 
         try {
@@ -339,7 +370,7 @@ function SignUp() {
             mb='22px'>
             Register 
           </Text>
-          {/* 
+          
           <HStack spacing='15px' justify='center' mb='22px'>
             <Flex
               justify='center'
@@ -411,7 +442,7 @@ function SignUp() {
             mb='22px'>
             or
           </Text>
-           */}
+           
           <FormControl>
             <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
              Username

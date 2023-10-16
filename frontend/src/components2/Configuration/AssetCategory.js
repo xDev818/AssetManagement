@@ -28,7 +28,7 @@ export default function AssetCategory() {
   const handleEdit = (item) => {
     setEditItem(item);
     setIsEditing(true);
-  };
+  }; 
   const handleCreate = () => {
     setIsCreating(true);
   };

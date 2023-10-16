@@ -12,7 +12,17 @@
       onChange={ e => setValues( { ...values, password: e.target.value } ) }
       value={ values.password }
 
+ Date : 10 / 15 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Add - import { Link as Anchor } from 'react-router-dom'
+        ** Use in Signup under "Already have Account (Sign up )"
+
 */
+
+import { Link as Anchor } from 'react-router-dom'
+
 import React from "react";
 // Chakra imports
 import {
@@ -35,8 +45,12 @@ import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 import { Redirect } from "react-router-dom";
 
 // Imported: Jinshin
-import { useState } from "react";
-import axios from "axios";
+
+import { useState, useRef } from 'react'
+import Logs from "components/Utils/logs_helper";
+import axios from 'axios'
+
+
 
 function SignIn() {
   // Chakra color mode
@@ -53,12 +67,106 @@ function SignIn() {
     password: "",
   });
 
+  //var ButtonRef = useRef();
+  const buttonStatus = ButtonRef.current
+  buttonStatus.disabled = true
+
   const loginHandler = async () => {
     // const request = await axios.post("/users/login", values);
 
-    // const response = await request.data;
-    if (true) {
-      <Redirect to="/admin/dashboard" />;
+
+    try {
+
+      const request = await axios.post('/users/login', values)
+
+      const response = await request.data
+
+      if ( response.message.includes("Record Found") ) {
+
+        window.location.href = "/"
+
+      }
+
+
+    } catch ( err ) {
+
+      const errorStatus = err.code
+
+      if( errorStatus.includes('ERR_NETWORK') ) {
+
+        const useEffectLogs = new Logs(
+          "DB",
+          "Login",
+          "Function /loginHandler",
+          err,
+          ""
+        )
+
+        alert( useEffectLogs.getMessage() )
+        console.log( useEffectLogs.getLogs() )
+        buttonStatus.disabled = false
+
+      }
+
+      if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
+
+        const useEffectLogs = new Logs(
+          errorStatus,
+          "Login",
+          "Function /loginHandler",
+          err.response.data.message,
+          ""
+        )
+        useEffectLogs.getLogs()
+
+        alert( useEffectLogs.getMessage() )
+        console.log( useEffectLogs.getLogs() )
+        buttonStatus.disabled = false
+
+        try {
+
+          const request = await axios.post('/log',useEffectLogs.getLogs())
+          const response = await request.data
+          console.log(response)
+
+        } catch ( err ) {
+
+          const logStatus = err.code
+
+          if( logStatus.includes("ERR_NETWOR") ) {
+
+            const log_status = new Logs(
+              "DB",
+              "Login",
+              "Function /loginHandler",
+              err,
+              ""
+            )
+
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+          if( logStatus.includes("ERR_BAD_REQUEST") ) {
+
+            const log_status = new Logs(
+              logStatus,
+              "Login",
+              "Function /loginHandler",
+              err.response.data.message,
+              ""
+            )
+            
+            alert( log_status.getMessage() )
+            console.log( log_status.getLogs() )
+
+          }
+
+        }
+
+      }
+
     }
 
     console.log("asd");
@@ -184,8 +292,8 @@ function SignIn() {
               or
             </Text>
             <FormControl>
-              <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
-                Name
+              <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
+                Username
               </FormLabel>
               <Input
                 variant="auth"
@@ -223,15 +331,14 @@ function SignIn() {
                 </FormLabel>
               </FormControl>
               <Button
-                fontSize="10px"
-                variant="dark"
-                fontWeight="bold"
-                w="100%"
-                h="45"
-                mb="24px"
-                onClick={loginHandler}
-              >
-                SIGN UP
+                ref={buttonStatus}
+                fontSize='10px'
+                variant='dark'
+                fontWeight='bold'
+                w='100%'
+                h='45'
+                mb='24px' onClick={loginHandler}>
+                SIGN IN
               </Button>
             </FormControl>
             <Flex
@@ -245,12 +352,13 @@ function SignIn() {
                 Already have an account?
                 <Link
                   color={titleColor}
-                  as="span"
-                  ms="5px"
-                  href="#"
-                  fontWeight="bold"
-                >
-                  Sign In
+                  as='span'
+                  ms='5px'
+                  href='#'
+                  fontWeight='bold'>
+                  <Anchor to="/auth/signup">
+                  Sign up
+                  </Anchor>
                 </Link>
               </Text>
             </Flex>
