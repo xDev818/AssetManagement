@@ -31,7 +31,7 @@ import {
   GlobeIcon,
   WalletIcon,
 } from "components/Icons/Icons.js";
-import React from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 // Variables
 import {
   barChartData,
@@ -40,6 +40,9 @@ import {
   lineChartOptions,
 } from "variables/charts";
 import { pageVisits, socialTraffic } from "variables/general";
+
+// Jinshin
+import decoder from 'jwt-decode'
 
 export default function Dashboard() {
   // Chakra Color Mode
@@ -51,6 +54,36 @@ export default function Dashboard() {
   const textTableColor = useColorModeValue("gray.500", "white");
 
   const { colorMode } = useColorMode();
+
+  // Jinshin
+
+  const [ decoded, setDecode ] = useState()
+
+  useEffect( () => {
+
+    const storage = localStorage
+
+    if( !storage.getItem("token") || !storage.getItem('token').length  ) {
+
+      window.location.href = "/#/auth/signin"
+
+    }
+
+    const token = storage.getItem("token")
+
+    const decoding = decoder(token)
+
+    setDecode( decoding )
+
+    
+  }, [setDecode])
+
+
+  useLayoutEffect(() => {
+    
+    decoded && console.log( "user", decoded)
+
+  })
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>

@@ -44,7 +44,7 @@ import signInImage from "assets/img/signInImage.png";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 
 // Imported: Jinshin
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Logs from "components/Utils/logs_helper";
 import axios from 'axios'
 
@@ -65,10 +65,30 @@ function SignIn() {
     }
   )
 
-  const buttonStatus = ButtonRef.current
-  buttonStatus.disabled = true
+  const ButtonRef = useRef()
+
+  useEffect( () => {
+
+    const storage = localStorage
+
+    if( storage.getItem("token") && storage.getItem('token').length === 637  ) {
+
+      window.location.href = "/"
+
+    } else {
+
+      localStorage.removeItem('token')
+
+    }
+
+
+  }, [])
+
 
   const loginHandler = async () => {
+
+    const buttonStatus = ButtonRef.current
+    buttonStatus.disabled = true
 
     try {
 
@@ -79,6 +99,8 @@ function SignIn() {
       if ( response.message.includes("Record Found") ) {
 
         window.location.href = "/"
+        localStorage.setItem("token", response.token)
+        buttonStatus.disabled = false
 
       }
 
@@ -313,7 +335,7 @@ function SignIn() {
                 </FormLabel>
               </FormControl>
               <Button
-                ref={buttonStatus}
+                ref={ButtonRef}
                 fontSize='10px'
                 variant='dark'
                 fontWeight='bold'
