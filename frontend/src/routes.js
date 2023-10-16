@@ -12,6 +12,8 @@ import Configuration from "views/Dashboard/Configuration";
 import AssetCategory from "components2/Configuration/AssetCategory";
 import PositionCategory from "components2/Configuration/PositionCategory";
 import StatusCategory from "components2/Configuration/StatusCategory";
+import Department from "components2/Configuration/Department";
+import Suppliers from "components2/Configuration/Suppliers";
 
 import AssetStatus from "components2/Configuration/AssetStatus";
 
@@ -25,8 +27,19 @@ import {
   SupportIcon,
 } from "components/Icons/Icons";
 
-
 var dashRoutes = [
+  {
+    path: "/department",
+    name: "Department",
+    component: Department,
+    layout: "/admin",
+  },
+  {
+    path: "/suppliers",
+    name: "Suppliers",
+    component: Suppliers,
+    layout: "/admin",
+  },
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -45,14 +58,8 @@ var dashRoutes = [
     component: PositionCategory,
     layout: "/admin",
   },
-  {
-    path: "/suppliers",
-    name: "Suppliers",
-    component: Test,
-    layout: "/admin",
-  },
-  {
 
+  {
     path: "/assetstatus",
     name: "Asset Status",
     rtlName: "لوحة القيادة",
