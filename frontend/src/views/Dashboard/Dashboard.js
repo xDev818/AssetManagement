@@ -89,8 +89,8 @@ export default function Dashboard() {
 
     }
     
-    const token = storage.getItem(
-      "token")
+    const token = storage.getItem("token")
+
     axios.post("/users/verify", { token })
     .then( res => {
       
@@ -130,7 +130,13 @@ export default function Dashboard() {
         )
           
         axios.post("/log", verifyLogs.getLogs())
-        .then( res => console.log('Log is: ', res.data ) )
+        .then( res => {
+
+          console.log('Log is: ', res.data )
+          localStorage.removeItem("token")
+          window.location.href = "/#/auth/signin"
+
+        })
         .catch( err => {
 
           const logStatus = err.code

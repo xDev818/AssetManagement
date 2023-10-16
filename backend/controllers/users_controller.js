@@ -123,7 +123,7 @@ const loginUser = ( request, response ) => {
                 }
             )
     
-            const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '7d' }  )
+            const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '5s' }  )
     
             response.status(200).send(
                 {
