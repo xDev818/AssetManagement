@@ -18,7 +18,6 @@ function Comments_Nole() {
  var connection = mysql.createConnection({
    host: process.env.HOST,
    database: process.env.DATABASE,
-   port: process.env.PORT,
    user: process.env.MYDB_USERNAME,
    password: process.env.PASSWORDASSET_MYSQL,
  });
