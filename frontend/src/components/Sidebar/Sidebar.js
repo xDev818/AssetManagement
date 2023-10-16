@@ -44,11 +44,23 @@ import {
   SupportIcon,
 } from "components/Icons/Icons";
 
+import dashRoutes from "routes";
+
 // FUNCTIONS
 
 function Sidebar(props) {
   const [userDropdown, setUserDropdown] = useState(false);
   const [configDropdown, setConfigDropdown] = useState(false);
+
+  //Dynamic Activity Submenus
+  const activitySubmenu = dashRoutes.filter(
+    (route) => route.submenu === "activity"
+  );
+
+  //Dynamic Configuration Submenus
+  const configurationSubmenu = dashRoutes.filter(
+    (route) => route.submenu === "configuration"
+  );
 
   // to check for active Anchors and opened collapses
   let location = useLocation();
@@ -152,9 +164,11 @@ function Sidebar(props) {
                 </Box>
                 {userDropdown && (
                   <Stack pl={4} gap={4}>
-                    <h1>Check In</h1>
-                    <h1>Check Out</h1>
-                    <h1>Pull Out</h1>
+                    {activitySubmenu.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        {route.name}
+                      </Anchor>
+                    ))}
                   </Stack>
                 )}
                 <Box display="flex" alignItems="center" gap="5">
@@ -169,12 +183,11 @@ function Sidebar(props) {
                 </Box>
                 {configDropdown && (
                   <Stack pl={4} gap={4}>
-                    <Anchor to="/admin/asset">Asset Configuration</Anchor>
-                    <Anchor to="/admin/position">Position</Anchor>
-                    <Anchor to="/admin/status">Status</Anchor>
-                    <Anchor to="/admin/department">Department</Anchor>
-                    <Anchor to="/admin/suppliers">Suppliers</Anchor>
-                    <Anchor to="/admin/assetstatus">Asset Status</Anchor>
+                    {configurationSubmenu.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        {route.name}
+                      </Anchor>
+                    ))}
                   </Stack>
                 )}
               </Box>
@@ -442,6 +455,7 @@ export function SidebarResponsive(props) {
                   </Box>
                   {userDropdown && (
                     <Stack pl={4} gap={4}>
+                      <h1>Account</h1>
                       <h1>Check In</h1>
                       <h1>Check Out</h1>
                       <h1>Pull Out</h1>
@@ -459,20 +473,13 @@ export function SidebarResponsive(props) {
                     <Divider />
                     {configDropdown && (
                       <Stack pl={4}>
-                        <Link to="/admin/asset">Asset Configuration</Link>
-                        <Link to="/admin/position">Position</Link>
-                        <Link to="/admin/status">Status</Link>
-                        <Link to="/admin/assetstatus">Asset Status</Link>
+                        <Anchor to="/admin/asset">Asset Configuration</Anchor>
+                        <Anchor to="/admin/position">Position</Anchor>
+                        <Anchor to="/admin/status">Status</Anchor>
+                        <Anchor to="/admin/assetstatus">Asset Status</Anchor>
                       </Stack>
                     )}
                   </Box>
-                  {configDropdown && (
-                    <Stack pl={4} gap={4}>
-                      <Anchor to="/admin/asset">Asset Configuration</Anchor>
-                      <Anchor to="/admin/position">Position</Anchor>
-                      <Anchor to="/admin/status">Status</Anchor>
-                    </Stack>
-                  )}
                 </Box>
               </Stack>
             </Box>
