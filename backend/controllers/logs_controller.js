@@ -30,7 +30,7 @@ const putLog = ( request, response ) => {
     mysql.query( stmt, [values], ( err, result ) => {
         if(err) {
             
-            request.status(400).json({
+            response.status(400).json({
                 message: "Insert Error",
                 message2: err.message});
         }else {

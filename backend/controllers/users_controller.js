@@ -123,7 +123,7 @@ const loginUser = ( request, response ) => {
                 }
             )
     
-            const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '5s' }  )
+            const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '1d' }  )
     
             response.status(200).send(
                 {
@@ -141,8 +141,6 @@ const loginUser = ( request, response ) => {
 
 const verifyUserToken = ( request, response, next ) => {
 
-    console.log(request.body)
-
     const { token } = request.body
 
     if( !token ) return response.status(401).send(
@@ -156,16 +154,24 @@ const verifyUserToken = ( request, response, next ) => {
         const isValid = jwt.verify( token, process.env.SECRET )
 
         console.log(isValid)
+        console.log( 'oras', Date())
 
         response.status(200).send("Token is valid")
 
         next()
 
     } catch (error) {
-        
-        response.status(400).send(
+
+        if( error.name.includes("JsonWebTokenError") ) return response.status(400).send(
             {
-                message: "Invalid token",
+                message: "Token Is Invalid",
+                error
+            }
+        )
+
+        if( error.name.includes("TokenExpiredError") ) return response.status(400).send(
+            {
+                message: "Token Is Expired",
                 error
             }
         )
