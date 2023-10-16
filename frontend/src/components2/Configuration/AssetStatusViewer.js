@@ -12,6 +12,8 @@
 
 */
 
+import { Link as Anchor } from 'react-router-dom'
+
 
 import {
     Table,
@@ -29,7 +31,7 @@ import {
   import Card from "components/Card/Card";
   import FourGraphs from "components/FourGraphs/FourGraphs";
   
-  export default function AssetStatusCRUD() {
+  export default function AssetStatusViewer() {
     const [editItem, setEditItem] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [newItem, setNewItem] = useState({ categoryName: "", description: "" });
@@ -47,7 +49,7 @@ import {
     const handleCreate = () => {
       //setIsCreating(true);
 
-      window.location.href = "/#/auth/signin"
+      window.location.href = "/#/admin/_assetstatus"
 
 
     };

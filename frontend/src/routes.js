@@ -15,7 +15,7 @@ import StatusCategory from "components2/Configuration/StatusCategory";
 import Department from "components2/Configuration/Department";
 import Suppliers from "components2/Configuration/Suppliers";
 
-import AssetStatus from "components2/Configuration/AssetStatus";
+import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 
 import {
   HomeIcon,
@@ -63,7 +63,7 @@ var dashRoutes = [
     path: "/assetstatus",
     name: "Asset Status",
     icon: <HomeIcon color="inherit" />,
-    component: AssetStatus,
+    component: AssetStatusViewer,
     layout: "/admin",
   },
   {
