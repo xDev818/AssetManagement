@@ -21,7 +21,7 @@
 
 */
 
-import { Link as Anchor } from 'react-router-dom'
+import { Link as Anchor } from "react-router-dom";
 
 import React from "react";
 // Chakra imports
@@ -46,12 +46,10 @@ import { Redirect } from "react-router-dom";
 
 // Imported: Jinshin
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from "react";
 
 import Logs from "components/Utils/logs_helper";
-import axios from 'axios'
-
-
+import axios from "axios";
 
 function SignIn() {
   // Chakra color mode
@@ -68,126 +66,99 @@ function SignIn() {
     password: "",
   });
 
-  const ButtonRef = useRef()
+  const ButtonRef = useRef();
 
-  useEffect( () => {
+  useEffect(() => {
+    const storage = localStorage;
 
-    const storage = localStorage
-
-    if( storage.getItem("token") && storage.getItem('token').length === 637  ) {
-
-      window.location.href = "/"
-
+    if (storage.getItem("token") && storage.getItem("token").length === 637) {
+      window.location.href = "/";
     } else {
-
-      localStorage.removeItem('token')
-
+      localStorage.removeItem("token");
     }
-
-
-  }, [])
+  }, []);
 
   const loginHandler = async () => {
     // const request = await axios.post("/users/login", values);
 
-
-    const buttonStatus = ButtonRef.current
-    buttonStatus.disabled = true
+    const buttonStatus = ButtonRef.current;
+    buttonStatus.disabled = true;
 
     try {
+      const request = await axios.post("/users/login", values);
 
-      const request = await axios.post('/users/login', values)
+      const response = await request.data;
 
-      const response = await request.data
-
-      if ( response.message.includes("Record Found") ) {
-
-        window.location.href = "/"
-        localStorage.setItem("token", response.token)
-        buttonStatus.disabled = false
-
+      if (response.message.includes("Record Found")) {
+        window.location.href = "/";
+        localStorage.setItem("token", response.token);
+        buttonStatus.disabled = false;
       }
+    } catch (err) {
+      const errorStatus = err.code;
 
-
-    } catch ( err ) {
-
-      const errorStatus = err.code
-
-      if( errorStatus.includes('ERR_NETWORK') ) {
-
+      if (errorStatus.includes("ERR_NETWORK")) {
         const useEffectLogs = new Logs(
           "DB",
           "Login",
           "Function /loginHandler",
           err,
           ""
-        )
+        );
 
-        alert( useEffectLogs.getMessage() )
-        console.log( useEffectLogs.getLogs() )
-        buttonStatus.disabled = false
-
+        alert(useEffectLogs.getMessage());
+        console.log(useEffectLogs.getLogs());
+        buttonStatus.disabled = false;
       }
 
-      if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
-
+      if (errorStatus.includes("ERR_BAD_REQUEST")) {
         const useEffectLogs = new Logs(
           errorStatus,
           "Login",
           "Function /loginHandler",
           err.response.data.message,
           ""
-        )
-        useEffectLogs.getLogs()
+        );
+        useEffectLogs.getLogs();
 
-        alert( useEffectLogs.getMessage() )
-        console.log( useEffectLogs.getLogs() )
-        buttonStatus.disabled = false
+        alert(useEffectLogs.getMessage());
+        console.log(useEffectLogs.getLogs());
+        buttonStatus.disabled = false;
 
         try {
+          const request = await axios.post("/log", useEffectLogs.getLogs());
+          const response = await request.data;
+          console.log(response);
+        } catch (err) {
+          const logStatus = err.code;
 
-          const request = await axios.post('/log',useEffectLogs.getLogs())
-          const response = await request.data
-          console.log(response)
-
-        } catch ( err ) {
-
-          const logStatus = err.code
-
-          if( logStatus.includes("ERR_NETWOR") ) {
-
+          if (logStatus.includes("ERR_NETWOR")) {
             const log_status = new Logs(
               "DB",
               "Login",
               "Function /loginHandler",
               err,
               ""
-            )
+            );
 
-            alert( log_status.getMessage() )
-            console.log( log_status.getLogs() )
-
+            alert(log_status.getMessage());
+            console.log(log_status.getLogs());
           }
 
-          if( logStatus.includes("ERR_BAD_REQUEST") ) {
-
+          if (logStatus.includes("ERR_BAD_REQUEST")) {
             const log_status = new Logs(
               logStatus,
               "Login",
               "Function /loginHandler",
               err.response.data.message,
               ""
-            )
-            
-            alert( log_status.getMessage() )
-            console.log( log_status.getLogs() )
+            );
 
+            alert(log_status.getMessage());
+            console.log(log_status.getLogs());
           }
-
         }
-
       }
-
     }
 
     console.log("asd");
@@ -313,7 +284,7 @@ function SignIn() {
               or
             </Text>
             <FormControl>
-              <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
+              <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
                 Username
               </FormLabel>
               <Input
@@ -353,12 +324,14 @@ function SignIn() {
               </FormControl>
               <Button
                 ref={ButtonRef}
-                fontSize='10px'
-                variant='dark'
-                fontWeight='bold'
-                w='100%'
-                h='45'
-                mb='24px' onClick={loginHandler}>
+                fontSize="10px"
+                variant="dark"
+                fontWeight="bold"
+                w="100%"
+                h="45"
+                mb="24px"
+                onClick={loginHandler}
+              >
                 SIGN IN
               </Button>
             </FormControl>
@@ -373,13 +346,12 @@ function SignIn() {
                 Already have an account?
                 <Link
                   color={titleColor}
-                  as='span'
-                  ms='5px'
-                  href='#'
-                  fontWeight='bold'>
-                  <Anchor to="/auth/signup">
-                  Sign up
-                  </Anchor>
+                  as="span"
+                  ms="5px"
+                  href="#"
+                  fontWeight="bold"
+                >
+                  <Anchor to="/auth/signup">Sign up</Anchor>
                 </Link>
               </Text>
             </Flex>
