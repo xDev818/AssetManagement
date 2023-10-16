@@ -48,6 +48,7 @@ import { useState, useRef } from 'react'
 import Logs from "components/Utils/logs_helper";
 import axios from 'axios'
 
+
 function SignIn() {
   // Chakra color mode
   const textColor = useColorModeValue("gray.700", "white");
@@ -65,6 +66,7 @@ function SignIn() {
     }
   )
 
+  //var ButtonRef = useRef();
   const buttonStatus = ButtonRef.current
   buttonStatus.disabled = true
 

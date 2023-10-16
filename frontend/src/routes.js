@@ -12,6 +12,7 @@ import Configuration from "views/Dashboard/Configuration";
 import AssetCategory from "components2/Configuration/AssetCategory";
 import PositionCategory from "components2/Configuration/PositionCategory";
 import StatusCategory from "components2/Configuration/StatusCategory";
+import AssetStatus from "components2/Configuration/AssetStatus";
 
 import {
   HomeIcon,
@@ -54,6 +55,14 @@ var dashRoutes = [
     rtlName: "لوحة القيادة",
     icon: <HomeIcon color="inherit" />,
     component: StatusCategory,
+    layout: "/admin",
+  },
+  {
+    path: "/assetstatus",
+    name: "Asset Status",
+    rtlName: "لوحة القيادة",
+    icon: <HomeIcon color="inherit" />,
+    component: AssetStatus,
     layout: "/admin",
   },
   {
