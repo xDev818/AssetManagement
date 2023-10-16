@@ -62,7 +62,6 @@ var dashRoutes = [
   {
     path: "/assetstatus",
     name: "Asset Status",
-    rtlName: "لوحة القيادة",
     icon: <HomeIcon color="inherit" />,
     component: AssetStatus,
     layout: "/admin",
@@ -70,7 +69,6 @@ var dashRoutes = [
   {
     path: "/tables",
     name: "Tables",
-    rtlName: "لوحة القيادة",
     icon: <StatsIcon color="inherit" />,
     component: Tables,
 
