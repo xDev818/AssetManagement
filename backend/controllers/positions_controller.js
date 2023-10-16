@@ -3,7 +3,7 @@ const mysql = require('../database')
 
 const getPositionByName = ( request, response ) => {
 
-    const defaultPosition = 'Defaulttt Position'
+    const defaultPosition = 'Defaultttttttttttttt Position'
 
     const stmt = "select positionDisplayID from tblPositions where positionName = ?"
 
