@@ -15,12 +15,12 @@ function Comments_Nole() {
   // Purpose :
 }
 
-// var connection = mysql.createConnection({
-//   host: process.env.HOST,
-//   database: process.env.DATABASE,
-//   port: process.env.PORT,
-//   user: process.env.MYDB_USERNAME,
-//   password: process.env.PASSWORDASSET_MYSQL,
-// });
+ var connection = mysql.createConnection({
+   host: process.env.HOST,
+   database: process.env.DATABASE,
+   port: process.env.PORT,
+   user: process.env.MYDB_USERNAME,
+   password: process.env.PASSWORDASSET_MYSQL,
+ });
 
 module.exports = connection;
