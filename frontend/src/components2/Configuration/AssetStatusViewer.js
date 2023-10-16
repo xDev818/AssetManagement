@@ -8,12 +8,17 @@
       Create AssetStatus.js
 
       import { Link as Anchor } from 'react-router-dom'
-      
+      import Logs from 'components/Utils/logs_helper'
+      import axios from 'axios'
+
+      Create useEffect to load the Asset Status
 
 */
 
 import { Link as Anchor } from 'react-router-dom'
-
+import Logs from 'components/Utils/logs_helper'
+import  { useEffect, useState } from 'react'
+import axios from 'axios'
 
 import {
     Table,
@@ -26,12 +31,14 @@ import {
     Stack,
   } from "@chakra-ui/react";
   import { Button, ButtonGroup } from "@chakra-ui/react";
-  import { useState } from "react";
+  
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
   import FourGraphs from "components/FourGraphs/FourGraphs";
   
   export default function AssetStatusViewer() {
+
+
     const [editItem, setEditItem] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [newItem, setNewItem] = useState({ categoryName: "", description: "" });
@@ -78,14 +85,44 @@ import {
       setNewItem({ categoryName: "", description: "" });
     };
   
-    console.log(editItem?.categoryName);
-    console.log("data", data);
+   // console.log(editItem?.categoryName);
+   // console.log("data", data);
     if (isCreating) {
       console.log("creating");
     }
     if (isEditing) {
       console.log("editing");
     }
+
+/* 
+
+*/
+
+const userID = '09be40c6-2025-40b0-ac35-f21be62f8e25'
+
+useEffect( () => {
+
+
+
+  axios.get('/users')
+  //axios.get('/getViewallStatus')
+  .then(res => {
+    console.log(" What value : " + res.data.result)
+
+  })
+  .catch(err => {
+
+    console.log(err)
+
+  })
+
+    
+    
+
+
+}, [])
+
+
     return (
       <>
         <Stack mt={100}>
@@ -93,13 +130,13 @@ import {
           <Card>
             <TableContainer>
               <Button colorScheme="green" onClick={handleCreate}>
-                Create
+                Create Test
               </Button>
               <Table size="lg">
                 <Thead>
                   <Tr>
                     <Th>Actions</Th>
-                    <Th>Category Name</Th>
+                    <Th>Status Name</Th>
                     <Th>Description</Th>
                   </Tr>
                 </Thead>
