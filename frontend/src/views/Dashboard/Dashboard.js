@@ -89,8 +89,8 @@ export default function Dashboard() {
 
     }
     
-    const token = storage.getItem(
-      "token")
+    const token = storage.getItem("token")
+
     axios.post("/users/verify", { token })
     .then( res => {
       
@@ -120,7 +120,7 @@ export default function Dashboard() {
       }
 
       if( errorStatus.includes("ERR_BAD_REQUEST") ) {
-
+        console.log(err)
         const verifyLogs = new Logs(
           "Error",
           "dashboard",
@@ -128,11 +128,17 @@ export default function Dashboard() {
           err.response.data.message,
           ""
         )
-          
+        
         axios.post("/log", verifyLogs.getLogs())
-        .then( res => console.log('Log is: ', res.data ) )
-        .catch( err => {
+        .then( res => {
+          
+          console.log('Log is: ', res.data )
+          localStorage.removeItem("token")
+          window.location.href = "/#/auth/signin"
 
+        })
+        .catch( err => {
+          
           const logStatus = err.code
           
           if( logStatus.includes("ERR_NETWORK") ) {
