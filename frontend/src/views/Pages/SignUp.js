@@ -477,7 +477,7 @@ function SignUp() {
               size='lg'
               onChange={ e => {
                 setValues( { ...values, username: e.target.value } )
-                OnType_Validate.username( e.currentTarget, e.target.value )
+                OnType_Validate.username( e.currentTarget, "signup", e.target.value )
               }}
               value={values.username}
             />

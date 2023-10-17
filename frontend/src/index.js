@@ -1,3 +1,4 @@
+
 /* 
 
     Date : 10 / 13 / 23
@@ -52,7 +53,6 @@ ReactDOM.render(
         <Redirect from={`/`} to="/admin/dashboard" />
       </Switch>
     </HashRouter>
-  
-</ChakraProvider>,
+  </ChakraProvider>,
   document.getElementById("root")
 );

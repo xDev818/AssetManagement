@@ -21,7 +21,6 @@ import axios from 'axios'
 import decoder from 'jwt-decode'
 
 
-
 import {
   Table,
   Thead,
@@ -40,12 +39,10 @@ export default function AssetStatusViewer() {
   
 
 
-
-  const handleNew_Edit = (statusID) => {
-   
+   const handleNew_Edit = (statusID) => {
 
 
-    };
+     };
    
 
 /* 
@@ -88,7 +85,7 @@ useEffect( () => {
       <Stack>
         <Card>
           <TableContainer>
-            <Button colorScheme="green" onClick={() => handleNew_Edit('')}>
+            <Button colorScheme="green">
               Create Test
             </Button>
             <Table size="lg">
