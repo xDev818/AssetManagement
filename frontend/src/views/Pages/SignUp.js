@@ -31,6 +31,24 @@
            ....
         </Button>
         import Defaults from 'components/Utils/_defaults'
+
+    Purpose : 
+      imported :
+          - import OnType_Validate from 'components/Utils/ontype_validate'
+      function :
+          - onChange={ e => {
+              setValues( { ...values, username: e.target.value } )
+              OnType_Validate.username( e.currentTarget, e.target.value )
+            }}
+          - onChange={ e => {
+              setValues( { ...values, email: e.target.value } )
+              OnType_Validate.email( e.currentTarget, e.target.value )
+            }}
+          - onChange={ e => {
+              setValues( { ...values, password: e.target.value } )
+              OnType_Validate.password( e.currentTarget, e.target.value )
+            }}
+
 */
 
 import axios from 'axios'
@@ -42,6 +60,7 @@ import { Link as Anchor } from 'react-router-dom'
 // Jinshin
 import Logs from 'components/Utils/logs_helper'
 import Defaults from 'components/Utils/_defaults'
+import OnType_Validate from 'components/Utils/ontype_validate'
 
 //import dotenv from 'dotenv'
 
@@ -456,7 +475,10 @@ function SignUp() {
               placeholder='Your full name'
               mb='24px'
               size='lg'
-              onChange={ e => setValues( { ...values, username: e.target.value } ) }
+              onChange={ e => {
+                setValues( { ...values, username: e.target.value } )
+                OnType_Validate.username( e.currentTarget, "signup", e.target.value )
+              }}
               value={values.username}
             />
             <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
@@ -471,7 +493,10 @@ function SignUp() {
               placeholder='Your email address'
               mb='24px'
               size='lg'
-              onChange={ e => setValues( { ...values, email: e.target.value } ) }
+              onChange={ e => {
+                setValues( { ...values, email: e.target.value } )
+                OnType_Validate.email( e.currentTarget, e.target.value )
+              }}
               value={values.email}
             />
             <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
@@ -486,7 +511,10 @@ function SignUp() {
               placeholder='Your password'
               mb='24px'
               size='lg'
-              onChange={ e => setValues( { ...values, password: e.target.value } ) }
+              onChange={ e => {
+                setValues( { ...values, password: e.target.value } )
+                OnType_Validate.password( e.currentTarget, "signup", e.target.value )
+              }}
               value={values.password}
             />
             {/* 

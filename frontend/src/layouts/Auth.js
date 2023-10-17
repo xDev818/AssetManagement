@@ -4,8 +4,8 @@ import Footer from "components/Footer/Footer.js";
 // core components
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import React from "react";
-//import { Redirect, Route, Switch } from "react-router-dom";
-import { Navigate, Route, Routes } from "react-router-dom";
+
+import { Redirect, Switch, Route, Routes } from "react-router-dom";
 import routes from "routes.js";
 
 export default function Pages(props) {
@@ -89,7 +89,7 @@ export default function Pages(props) {
         <Box ref={wrapper} w="100%">
           <Switch>
             {getRoutes(routes)}
-            <Navigate from="/auth" to="/auth/login-page" />
+            <Redirect from="/auth" to="/auth/login-page" />
           </Switch>
         </Box>
       </Box>
