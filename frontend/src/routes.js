@@ -26,6 +26,7 @@ import UpdateProfile from "components2/Profile/UpdateProfile";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 import AssetStatus from "components2/Configuration/AssetStatus";
+import CreateStatusViewer from "components2/views/CreateStatusViewer";
 
 import {
   HomeIcon,
@@ -133,6 +134,12 @@ var dashRoutes = [
     path: "/status",
     name: "Status",
     component: StatusCategory,
+    layout: "/admin",
+  },
+  {
+    path: "/createAssets",
+    name: "Create Assets Status",
+    component: CreateStatusViewer,
     layout: "/admin",
   },
   // End Configuration Menu
