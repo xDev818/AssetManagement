@@ -177,7 +177,7 @@ const verifyUserToken = ( request, response, next ) => {
 
 }
 
-const veryUsername = ( request, response ) => {
+const verifyUsername = ( request, response ) => {
 
     const { values } = request.body
 
@@ -201,6 +201,37 @@ const veryUsername = ( request, response ) => {
         response.status(200).send(
             {
                 message: "Username is available"
+            }
+        )
+
+    })
+
+}
+
+const verifyEmail = ( request, response ) => {
+
+    const { values } = request.body
+
+    const stmt = "SELECT email FROM tblusers WHERE email = ?"
+
+    mysql.query( stmt, [ values ], ( err, result ) => {
+
+        if ( err ) return response.status(400).send(
+            {
+                message: "An Error Occured",
+                err
+            }
+        )
+
+        if( result.length > 0 ) return response.status(409).send(
+            {
+                message: "Email is already taken"
+            }
+        )
+
+        response.status(200).send(
+            {
+                message: "Email is available"
             }
         )
 
@@ -430,7 +461,8 @@ module.exports = {
     createUser,
     loginUser,
     verifyUserToken,
-    veryUsername,
+    verifyUsername,
+    verifyEmail,
     getAllUsers,
     getAllUsersByLastname,
     getUserByActive,
