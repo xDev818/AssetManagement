@@ -59,6 +59,7 @@ import {
 
       window.location.href = "/#/admin/_assetstatus"
 
+
     };
     const handleSave = (updatedData) => {
       const updatedArray = data.map((item) =>
@@ -102,88 +103,12 @@ import {
 const [assetStatus,setStatus] = useState([])
 
 
-useEffect( () => {
-
-
-  const tokenStorage = localStorage.getItem('token')
-  const tokenDecoded = decoder(tokenStorage)
-
-  const userID =tokenDecoded.result[0].userDisplayID
-
-
-  axios.get('/getViewallStatus')
-  //axios.get('/getViewallStatus')
-  .then((res) => {
-
-  setStatus(res.data.result)
-  //console.log("userID : " , userID)
-  console.log(" What value : " , res.data.result)
-
-  })
-  .catch(err => {
-
-    console.log(err)
-
-  })
-
-    
-}, [])
-
-
     return (
       <>
         <Stack mt={100}>
           <FourGraphs />
           <Card>
-            <TableContainer>
-              <Button colorScheme="green" onClick={handleCreate}>
-                Create Test
-              </Button>
-              <Table size="lg">
-                <Thead>
-                  <Tr>
-                    <Th>Actions</Th>
-                    <Th>Status Name</Th>
-                    <Th>Description</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {assetStatus.map((item) => (
-                    <Tr key={item.assetStatusID}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={() => handleDelete(item.assetStatusID)}
-                          >
-                            Delete
-                          </Button>
-                          <Button
-                            colorScheme="blue"
-                            onClick={() => handleEdit(item.assetStatusID)}
-                          >
-                            Edit
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{item.statusName}</Td>
-                      <Td>{item.statusDescription}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-              <Modal1
-                isCreating={isCreating}
-                isEditing={isEditing}
-                handleCloseModal={handleCloseModal}
-                editItem={editItem}
-                newItem={newItem}
-                setNewItem={setNewItem}
-                setEditItem={setEditItem}
-                handleSave={handleSave}
-                handleSave1={handleSave1}
-              />
-            </TableContainer>
+
           </Card>
         </Stack>
       </>
