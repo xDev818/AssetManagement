@@ -48,7 +48,7 @@ import {
 // Assets
 import NewSignInImage from "assets/img/NewSignInImage.webp";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 // Imported: Jinshin
 

@@ -12,7 +12,7 @@ import Footer from "components/Footer/Footer.js";
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import React, { useState } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Route, Switch } from "react-router-dom";
 import routes from "routes.js";
 import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
 // Custom components
@@ -164,7 +164,7 @@ export default function Dashboard(props) {
             <PanelContainer>
               <Switch>
                 {getRoutes(routes)}
-                <Redirect from="/rtl" to="/rtl/rtl-support-page" />
+                <Navigate from="/rtl" to="/rtl/rtl-support-page" />
               </Switch>
             </PanelContainer>
           </PanelContent>

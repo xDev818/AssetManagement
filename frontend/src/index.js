@@ -28,7 +28,7 @@ import ReactDOM from "react-dom";
 //   Switch,
 //   Redirect,
 // } from "react-router-dom/cjs/react-router-dom.min";
-import { Navigate,Route,HashRouter,Routes } from "react-router-dom";
+import { Navigate,Route,HashRouter,Routes,Router } from "react-router-dom";
 
 import AuthLayout from "./layouts/Auth";
 import AdminLayout from "./layouts/Admin";
@@ -44,7 +44,7 @@ axios.defaults.baseURL = "http://localhost:5001/api";
 
 ReactDOM.render(
   <ChakraProvider theme={theme} resetCss={false} position="relative">
-   
+   <Router>
       <Routes>
         {/* {!token ? <Redirect from={`/signin`} to="/admin/dashboard" />: null} */}
         <Route path={`/auth`} component={AuthLayout} />
@@ -52,7 +52,7 @@ ReactDOM.render(
         {/* <Route path={`/admin/configuration`} component={Configuration} /> */}
         <Navigate from={`/`} to="/admin/dashboard" />
       </Routes>
-  
+      </Router>
   </ChakraProvider>,
   document.getElementById("root")
 );
