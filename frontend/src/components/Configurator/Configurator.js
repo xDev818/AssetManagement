@@ -9,7 +9,6 @@ import {
   DrawerHeader,
   Flex,
   Link,
-  Switch,
   Text,
   useColorMode,
   useColorModeValue,
