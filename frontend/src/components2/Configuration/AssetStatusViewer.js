@@ -19,7 +19,7 @@ import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
 import axios from 'axios'
 import decoder from 'jwt-decode'
-import { useNavigate } from "react-router-dom";
+
 
 
 import {
@@ -39,11 +39,11 @@ import Card from "components/Card/Card";
 export default function AssetStatusViewer() {
   
 
-  const navigate = useNavigate()
+
 
   const handleNew_Edit = (statusID) => {
    
-    navigate('/admin/assestatus',{})
+
 
     };
    
