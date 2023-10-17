@@ -83,11 +83,42 @@ const ViewAllAssetStatus = ( request, response ) => {
 
     })
 }
+
+// An instance to Load all Asset Status
+const getAssetStatusbyID = ( request, response ) => {
+
+    const { id } = request.params
+
     
 
 
+    const stmt = "SELECT statusName,statusDescription FROM tblAssetStatus"
+                + " where assetStatusID = ?"
+    
+
+    mysql.query( stmt,[id], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+       
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
+         console.log(result)
+    })
+}
+    
+
 module.exports = {
     createAssetStatus,
-    ViewAllAssetStatus
+    ViewAllAssetStatus,
+    getAssetStatusbyID
 
 }

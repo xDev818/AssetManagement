@@ -42,6 +42,11 @@
               setValues({ ...values, password: e.target.value })
               OnType_Validate.password( e.currentTarget, 'signin', e.target.value )
             }}
+          - if ( response.isRegister === null || response.isRegister == 0 ) {
+                  window.location.href = "/#/admin/update-profile";
+                } else {
+                  window.location.href = "/";
+                }
 
 */
 
@@ -113,9 +118,20 @@ function SignIn() {
       const response = await request.data;
 
       if (response.message.includes("Record Found")) {
-        window.location.href = "/";
+        
         localStorage.setItem("token", response.token);
         buttonStatus.disabled = false;
+
+        if ( response.isRegister === null || response.isRegister == 0 ) {
+
+          window.location.href = "/#/admin/update-profile";
+          
+        } else {
+
+          window.location.href = "/";
+
+        }
+
       }
     } catch (err) {
       const errorStatus = err.code;

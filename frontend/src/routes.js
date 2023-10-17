@@ -25,7 +25,7 @@ import Suppliers from "components2/Configuration/Suppliers";
 import UpdateProfile from "components2/Profile/UpdateProfile";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
-import AssetStatus from "components2/Configuration/AssetStatus";
+import AssetStatus from "components2/views/AssetStatus";
 import CreateStatusViewer from "components2/views/CreateStatusViewer";
 
 import {
@@ -116,16 +116,14 @@ var dashRoutes = [
   {
     submenu: "configuration",
     path: "/assetstatusviewer",
-    name: "Asset Status Viewer",
+    name: "Asset Status",
     icon: <HomeIcon color="inherit" />,
     component: AssetStatusViewer,
     layout: "/admin",
   },
   {
-    submenu: "configuration",
     path: "/assetstatus",
-    name: "Asset Status",
-    icon: <HomeIcon color="inherit" />,
+    name: "Create Assets Status",
     component: AssetStatus,
     layout: "/admin",
   },
@@ -136,12 +134,13 @@ var dashRoutes = [
     component: StatusCategory,
     layout: "/admin",
   },
-  {
-    path: "/createAssets",
-    name: "Create Assets Status",
-    component: CreateStatusViewer,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/createAssets",
+  //   name: "Create Assets Status",
+  //   component: CreateStatusViewer,
+  //   layout: "/admin",
+  // },
+
   // End Configuration Menu
   {
     path: "/tables",

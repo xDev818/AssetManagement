@@ -50,8 +50,7 @@ export default function AssetStatusViewer() {
 
     const userID = tokenDecoded.result[0].userDisplayID;
 
-    axios
-      .get("/getViewallStatus")
+    axios.get("/getallStatus")
       //axios.get('/getViewallStatus')
       .then((res) => {
         setStatus(res.data.result);
@@ -62,6 +61,12 @@ export default function AssetStatusViewer() {
         console.log(err);
       });
   }, []);
+
+  const handleDelete = (statID) => {
+
+    alert("Delete here by ID"  + statID )
+
+  }
 
   return (
     <>
@@ -76,7 +81,16 @@ export default function AssetStatusViewer() {
               borderRadius={5}
               textColor="white"
             >
-              <Link to="/admin/createAssets">Create Test</Link>
+              {/*</Box><Link to="/admin/assetstatus"  state={{ from: "occupation" }}>Create Test</Link> */ }
+              
+              <Link
+                  to={{
+                  pathname: "/admin/assetstatus",
+                  state: { assetstatID: '' },
+                  }}>
+                Create
+              </Link>
+
             </Box>
             <Table size="lg">
               <Thead>
@@ -101,8 +115,15 @@ export default function AssetStatusViewer() {
                           colorScheme="blue"
                           onClick={() => handleNew_Edit(item.assetStatusID)}
                         >
-                          Edit
+                          <Link
+                            to={{
+                            pathname: "/admin/assetstatus",
+                            state: { assetstatID: item.assetStatusID },
+                            }}>
+                           Edit
+                          </Link>
                         </Button>
+                  
                       </ButtonGroup>
                     </Td>
                     <Td>{item.statusName}</Td>
