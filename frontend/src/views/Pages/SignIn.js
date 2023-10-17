@@ -19,6 +19,11 @@
       Add - import { Link as Anchor } from 'react-router-dom'
         ** Use in Signup under "Already have Account (Sign up )"
 
+  Date : 10 / 17 / 23
+    Author : John
+    Activities
+    Purpose : 
+      Changed Background Image and sign In form
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -38,9 +43,10 @@ import {
   Switch,
   Text,
   useColorModeValue,
+  Stack,
 } from "@chakra-ui/react";
 // Assets
-import signInImage from "assets/img/signInImage.png";
+import NewSignInImage from "assets/img/NewSignInImage.webp";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 import { Redirect } from "react-router-dom";
 
@@ -166,39 +172,62 @@ function SignIn() {
   // End Jinshin
 
   return (
-    <Flex position="relative" mb="40px">
+    <Flex position="relative">
       <Flex
-        minH={{ md: "1000px" }}
-        h={{ sm: "initial", md: "75vh", lg: "85vh" }}
-        w="100%"
+        h={{ sm: "100vh", md: "100vh", lg: "100vh" }}
         maxW="1044px"
         mx="auto"
-        justifyContent="space-between"
-        mb="30px"
         pt={{ md: "0px" }}
+        flexDirection={{ base: "column" }}
       >
-        <Flex
-          w="100%"
-          h="100%"
-          alignItems="center"
-          justifyContent="center"
-          mb="60px"
-          mt={{ base: "50px", md: "20px" }}
-        >
+        <Flex w="100%" h="100%" mb="60px" mt={{ base: "50px", md: "20px" }}>
           <Flex
             zIndex="2"
             direction="column"
             w="445px"
+            h="622"
             background="transparent"
-            borderRadius="15px"
-            p="40px"
             mx={{ base: "100px" }}
             m={{ base: "20px", md: "auto" }}
+            bgImage={NewSignInImage}
+            bgRepeat="no-repeat"
+            bgSize="cover"
+            display={{ base: "none", md: "flex" }}
+
+            // boxShadow={useColorModeValue(
+            //   "0px 5px 14px rgba(0, 0, 0, 0.05)",
+            //   "unset"
+            // )}
+          >
+            <Box w="100%" h="100%" bgSize="cover" bg="blackAlpha.600">
+              <Flex justifyContent="center" alignItems="center" h="100%">
+                <Text
+                  zIndex={10}
+                  color="white"
+                  align="center"
+                  px={18}
+                  fontWeight="semibold"
+                >
+                  Asset management Corporation
+                </Text>
+              </Flex>
+            </Box>
+          </Flex>
+          <Flex
+            zIndex="2"
+            direction="column"
+            w="445px"
+            h={{ base: "700px", md: "auto" }}
+            borderRadius={{ base: 10, md: 0 }}
+            background="transparent"
+            p="40px"
+            mx={{ base: "100px" }}
+            m={{ base: "10px", md: "auto" }}
             bg={bgForm}
-            boxShadow={useColorModeValue(
-              "0px 5px 14px rgba(0, 0, 0, 0.05)",
-              "unset"
-            )}
+            // boxShadow={useColorModeValue(
+            //   "0px 5px 14px rgba(0, 0, 0, 0.05)",
+            //   "unset"
+            // )}
           >
             <Text
               fontSize="xl"
@@ -363,13 +392,15 @@ function SignIn() {
           w="100%"
           left="0px"
           position="absolute"
-          bgImage={signInImage}
+          bgImage={NewSignInImage}
+          bgRepeat="no-repeat"
+          bgSize="cover"
         >
           <Box
             w="100%"
             h="100%"
             bgSize="cover"
-            bg="blue.500"
+            bg="blackAlpha.900"
             opacity="0.8"
           ></Box>
         </Box>

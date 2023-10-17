@@ -62,17 +62,19 @@ export default function PositionCategory() {
       description: "Software",
     },
   ]);
-  
-  // const positionData = async () => {
-  //   const res = await axios.get("http://localhost:5001/api/positions");
-  //   const data = await res.data;
 
-  //   console.log(data);
-  // };
-
-  // useEffect(() => {
-  //   positionData();
-  // }, []);
+  useEffect(() => {
+    const positionData = async () => {
+      try {
+        const res = await axios.get("http://localhost:5001/positions");
+        const data = await res.data;
+        console.log("position data", data);
+      } catch (error) {
+        console.log("position error", error.message);
+      }
+    };
+    positionData();
+  }, []);
 
   const handleEdit = (item) => {
     setEditItem(item);
@@ -106,8 +108,6 @@ export default function PositionCategory() {
     setNewItem({ categoryName: "", description: "" });
   };
 
-  console.log(editItem?.categoryName);
-  console.log("data", data);
   if (isCreating) {
     console.log("creating");
   }
@@ -116,8 +116,7 @@ export default function PositionCategory() {
   }
   return (
     <>
-      <Stack mt={100}>
-        <FourGraphs />
+      <Stack>
         <Card>
           <TableContainer>
             <Button colorScheme="green" onClick={handleCreate}>

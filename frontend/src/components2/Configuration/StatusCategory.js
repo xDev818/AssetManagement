@@ -94,8 +94,7 @@ export default function StatusCategory() {
   }
   return (
     <>
-      <Stack mt={100}>
-        <FourGraphs />
+      <Stack>
         <Card>
           <TableContainer>
             <Button colorScheme="green" onClick={handleCreate}>
