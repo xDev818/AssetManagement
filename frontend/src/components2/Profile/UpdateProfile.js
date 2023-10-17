@@ -30,8 +30,6 @@ export default function UpdateProfile() {
   const userRole = data?.result[0].userRole;
   const profileImage = data?.result[0].imgFilename;
 
-  console.log(profileImage);
-
   return (
     <Card
       w={{ base: "auto", md: "auto", lg: "auto" }}
