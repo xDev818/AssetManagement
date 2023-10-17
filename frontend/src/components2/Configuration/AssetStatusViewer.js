@@ -27,10 +27,11 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal1 from "components2/Modal/Modal";
 import Card from "components/Card/Card";
 import FourGraphs from "components/FourGraphs/FourGraphs";
+import axios from "axios";
 
 export default function AssetStatusViewer() {
   const [editItem, setEditItem] = useState(null);
@@ -49,129 +50,10 @@ export default function AssetStatusViewer() {
   };
   const handleCreate = () => {
     //setIsCreating(true);
-
-
-    };
-    const handleSave = (updatedData) => {
-      const updatedArray = data.map((item) =>
-        item.id === updatedData.id ? updatedData : item
-      );
-      setData(updatedArray);
-      setIsEditing(false);
-    };
-    const handleDelete = (id) => {
-      const newData = data.filter((item) => item.id !== id);
-      setData(newData);
-    };
-    const handleCloseModal = () => {
-      setIsCreating(false);
-      setIsEditing(false);
-      setNewItem({ categoryName: "", description: "" });
-      setEditItem(null);
-    };
-    const handleSave1 = () => {
-      const newId = data.length + 1;
-      const newData = { id: newId, ...newItem };
-      setData([...data, newData]);
-      setIsCreating(false);
-      setNewItem({ categoryName: "", description: "" });
-    };
-  
-   // console.log(editItem?.categoryName);
-   // console.log("data", data);
-    if (isCreating) {
-      console.log("creating");
-    }
-    if (isEditing) {
-      console.log("editing");
-    }
-
-/* 
-
-*/
-
-const userID = '09be40c6-2025-40b0-ac35-f21be62f8e25'
-
-useEffect( () => {
-
-
-
-  axios.get('/users')
-  //axios.get('/getViewallStatus')
-  .then(res => {
-    console.log(" What value : " + res.data.result)
-
-  })
-  .catch(err => {
-
-    console.log(err)
-
-  })
-
-    
-    
-
-
-}, [])
-
-
-    return (
-      <>
-        <Stack mt={100}>
-          <FourGraphs />
-          <Card>
-            <TableContainer>
-              <Button colorScheme="green" onClick={handleCreate}>
-                Create Test
-              </Button>
-              <Table size="lg">
-                <Thead>
-                  <Tr>
-                    <Th>Actions</Th>
-                    <Th>Status Name</Th>
-                    <Th>Description</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {data.map((item) => (
-                    <Tr key={item.id}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={() => handleDelete(item.id)}
-                          >
-                            Delete
-                          </Button>
-                          <Button
-                            colorScheme="blue"
-                            onClick={() => handleEdit(item)}
-                          >
-                            Edit
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{item.categoryName}</Td>
-                      <Td>{item.description}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-              <Modal1
-                isCreating={isCreating}
-                isEditing={isEditing}
-                handleCloseModal={handleCloseModal}
-                editItem={editItem}
-                newItem={newItem}
-                setNewItem={setNewItem}
-                setEditItem={setEditItem}
-                handleSave={handleSave}
-                handleSave1={handleSave1}
-              />
-            </TableContainer>
-          </Card>
-        </Stack>
-      </>
+  };
+  const handleSave = (updatedData) => {
+    const updatedArray = data.map((item) =>
+      item.id === updatedData.id ? updatedData : item
     );
     setData(updatedArray);
     setIsEditing(false);
@@ -194,27 +76,46 @@ useEffect( () => {
     setNewItem({ categoryName: "", description: "" });
   };
 
-  console.log(editItem?.categoryName);
-  console.log("data", data);
+  // console.log(editItem?.categoryName);
+  // console.log("data", data);
   if (isCreating) {
     console.log("creating");
   }
   if (isEditing) {
     console.log("editing");
   }
+
+  /* 
+
+*/
+
+  const userID = "09be40c6-2025-40b0-ac35-f21be62f8e25";
+
+  useEffect(() => {
+    axios
+      .get("/users")
+      //axios.get('/getViewallStatus')
+      .then((res) => {
+        console.log(" What value : " + res.data.result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <>
       <Stack>
         <Card>
           <TableContainer>
             <Button colorScheme="green" onClick={handleCreate}>
-              Create
+              Create Test
             </Button>
             <Table size="lg">
               <Thead>
                 <Tr>
                   <Th>Actions</Th>
-                  <Th>Category Name</Th>
+                  <Th>Status Name</Th>
                   <Th>Description</Th>
                 </Tr>
               </Thead>
