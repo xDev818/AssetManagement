@@ -53,6 +53,7 @@ const positionsRoutes = require('./routes/positions_routes')
 const categoriesRoutes = require('./routes/categories_routes')
 const departmentRoutes = require('./routes/department_routes')
 const logsRoutes = require('./routes/log_routes')
+const asset_status_routes = require('./routes/asset_status_routes')
 
 // Server Initialization
 var app = express();
@@ -84,3 +85,5 @@ app.use('/api', positionsRoutes)
 app.use('/api', categoriesRoutes)
 app.use('/api', departmentRoutes)
 app.use('/api', logsRoutes)
+app.use('/api', logsRoutes)
+app.use('/api', asset_status_routes)
