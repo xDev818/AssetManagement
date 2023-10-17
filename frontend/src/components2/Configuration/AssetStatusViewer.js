@@ -14,12 +14,11 @@
 
 */
 
-import { Link as Anchor } from 'react-router-dom'
-import Logs from 'components/Utils/logs_helper'
-import  { useEffect, useState } from 'react'
-import axios from 'axios'
-import decoder from 'jwt-decode'
-
+import { Link as Anchor } from "react-router-dom";
+import Logs from "components/Utils/logs_helper";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import decoder from "jwt-decode";
 
 import {
   Table,
@@ -30,64 +29,55 @@ import {
   Td,
   TableContainer,
   Stack,
+  Box,
 } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
-
+import { Link } from "react-router-dom";
 
 export default function AssetStatusViewer() {
-  
+  const handleNew_Edit = (statusID) => {};
 
-
-   const handleNew_Edit = (statusID) => {
-
-
-     };
-   
-
-/* 
+  /* 
 
 */
 
+  const [assetStatus, setStatus] = useState([]);
 
-const [assetStatus,setStatus] = useState([])
+  useEffect(() => {
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
 
+    const userID = tokenDecoded.result[0].userDisplayID;
 
-useEffect( () => {
-
-
-  const tokenStorage = localStorage.getItem('token')
-  const tokenDecoded = decoder(tokenStorage)
-
-  const userID =tokenDecoded.result[0].userDisplayID
-
-
-  axios.get('/getViewallStatus')
-  //axios.get('/getViewallStatus')
-  .then((res) => {
-
-  setStatus(res.data.result)
-  //console.log("userID : " , userID)
-  console.log(" What value : " , res.data.result)
-
-  })
-  .catch(err => {
-
-    console.log(err)
-
-  })
-
-    
-}, [])
+    axios
+      .get("/getViewallStatus")
+      //axios.get('/getViewallStatus')
+      .then((res) => {
+        setStatus(res.data.result);
+        //console.log("userID : " , userID)
+        console.log(" What value : ", res.data.result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <>
       <Stack>
         <Card>
           <TableContainer>
-            <Button colorScheme="green">
-              Create Test
-            </Button>
+            <Box
+              bgColor="green.600"
+              w="100px"
+              textAlign="center"
+              py="2"
+              borderRadius={5}
+              textColor="white"
+            >
+              <Link to="/admin/createAssets">Create Test</Link>
+            </Box>
             <Table size="lg">
               <Thead>
                 <Tr>
@@ -121,12 +111,9 @@ useEffect( () => {
                 ))}
               </Tbody>
             </Table>
-            
           </TableContainer>
         </Card>
       </Stack>
     </>
   );
 }
-
-
