@@ -122,7 +122,7 @@ function SignIn() {
         localStorage.setItem("token", response.token);
         buttonStatus.disabled = false;
 
-        if ( response.isRegister === null || response.isRegister == 0 ) {
+        if ( response.isRegister === null || response.isRegister == 1 ) {
 
           window.location.href = "/#/admin/update-profile";
           
