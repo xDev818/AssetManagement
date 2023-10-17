@@ -18,7 +18,7 @@ import {
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import React, { useState } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import routes from "routes.js";
 // Custom Chakra theme
 import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
@@ -27,8 +27,11 @@ import MainPanel from "../components/Layout/MainPanel";
 import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
 import bgAdmin from "assets/img/admin-background.png";
+import FourGraphs from "components/FourGraphs/FourGraphs";
 
 export default function Dashboard(props) {
+  const location = useLocation();
+  console.log("location", location.pathname);
   const { ...rest } = props;
   // states and functions
   const [fixed, setFixed] = useState(false);
@@ -119,6 +122,7 @@ export default function Dashboard(props) {
         bgSize="cover"
         top="0"
       />
+
       <Sidebar
         routes={routes}
         logo={
@@ -143,12 +147,17 @@ export default function Dashboard(props) {
         display="none"
         {...rest}
       />
+
       <MainPanel
         w={{
           base: "100%",
           xl: "calc(100% - 275px)",
         }}
       >
+        {/* Four Graphs */}
+        <Stack mt={{ base: 140, md: 100 }} px={{ base: 4, md: 7, lg: 10 }}>
+          <FourGraphs />
+        </Stack>
         <Portal>
           <AdminNavbar
             onOpen={onOpen}

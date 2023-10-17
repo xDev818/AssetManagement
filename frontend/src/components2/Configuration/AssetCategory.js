@@ -28,7 +28,7 @@ export default function AssetCategory() {
   const handleEdit = (item) => {
     setEditItem(item);
     setIsEditing(true);
-  }; 
+  };
   const handleCreate = () => {
     setIsCreating(true);
   };
@@ -67,8 +67,7 @@ export default function AssetCategory() {
   }
   return (
     <>
-      <Stack mt={100}>
-        <FourGraphs />
+      <Stack>
         <Card>
           <TableContainer>
             <Button colorScheme="green" onClick={handleCreate}>

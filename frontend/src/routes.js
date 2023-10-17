@@ -22,6 +22,7 @@ import PositionCategory from "components2/Configuration/PositionCategory";
 import StatusCategory from "components2/Configuration/StatusCategory";
 import Department from "components2/Configuration/Department";
 import Suppliers from "components2/Configuration/Suppliers";
+import UpdateProfile from "components2/Profile/UpdateProfile";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 
@@ -48,6 +49,13 @@ var dashRoutes = [
     path: "/user-profile",
     name: "Profile",
     component: User,
+    layout: "/admin",
+  },
+  {
+    submenu: "activity",
+    path: "/update-profile",
+    name: "Update Profile",
+    component: UpdateProfile,
     layout: "/admin",
   },
   {

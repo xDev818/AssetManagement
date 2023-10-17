@@ -190,6 +190,16 @@ function Sidebar(props) {
                     ))}
                   </Stack>
                 )}
+                <Box display="flex" alignItems="center" gap="5">
+                  <DocumentIcon />
+                  <Text
+                    cursor="pointer"
+                    to="/admin/configuration"
+                    onClick={() => setConfigDropdown(!configDropdown)}
+                  >
+                    Logs
+                  </Text>
+                </Box>
               </Box>
             </Stack>
             {/* <SidebarHelp sidebarVariant={sidebarVariant} /> */}
@@ -203,6 +213,15 @@ function Sidebar(props) {
 // FUNCTIONS
 
 export function SidebarResponsive(props) {
+  //Dynamic Activity Submenus
+  const activitySubmenu = dashRoutes.filter(
+    (route) => route.submenu === "activity"
+  );
+
+  //Dynamic Configuration Submenus
+  const configurationSubmenu = dashRoutes.filter(
+    (route) => route.submenu === "configuration"
+  );
   // to check for active Anchors and opened collapses
   let location = useLocation();
   const { logo, routes, colorMode, hamburgerColor, ...rest } = props;
@@ -424,65 +443,81 @@ export function SidebarResponsive(props) {
             _hover={{ boxShadow: "none" }}
           />
           <DrawerBody maxW="250px" px="1rem">
-            <Box maxW="100%" h="100vh">
-              <Stack direction="column" mb="40px" mt={7} px="4">
-                <Text fontWeight="bold" uppercase mb={5}>
-                  ASSETS
-                </Text>
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  fontWeight="bold"
-                  gap="5"
-                >
-                  <Box display="flex" alignItems="center" gap="5">
-                    <HomeIcon />
-                    <NavLink to="/admin/dashboard">Dashboard</NavLink>
-                  </Box>
-                  {/* <Box display="flex" alignItems="center" gap="5">
-                    <StatsIcon color="inherit" />
-                    <Anchor to="/admin/tables">Tables</Anchor>
-                  </Box> */}
-                  <Box display="flex" alignItems="center" gap="5">
-                    <PersonIcon />
-                    <Text
-                      cursor="pointer"
-                      to="/admin/user"
-                      onClick={() => setUserDropdown(!userDropdown)}
-                    >
-                      Activity
-                    </Text>
-                  </Box>
-                  {userDropdown && (
-                    <Stack pl={4} gap={4}>
-                      <h1>Account</h1>
-                      <h1>Check In</h1>
-                      <h1>Check Out</h1>
-                      <h1>Pull Out</h1>
-                    </Stack>
-                  )}
-                  <Box display="flex" alignItems="center" gap="5">
-                    <CreditIcon />
-                    <Text
-                      cursor="pointer"
-                      to="/admin/configuration"
-                      onClick={() => setConfigDropdown(!configDropdown)}
-                    >
-                      Configuration
-                    </Text>
-                    <Divider />
-                    {configDropdown && (
-                      <Stack pl={4}>
-                        <Anchor to="/admin/asset">Asset Configuration</Anchor>
-                        <Anchor to="/admin/position">Position</Anchor>
-                        <Anchor to="/admin/status">Status</Anchor>
-                        <Anchor to="/admin/assetstatus">Asset Status</Anchor>
-                      </Stack>
-                    )}
-                  </Box>
-                </Box>
-              </Stack>
+            <Box>
+              <Heading fontSize="md" my={"4"} textAlign="center" width="100">
+                Asset Management
+              </Heading>
             </Box>
+            <Divider />
+
+            <Stack direction="column" mb="40px" mt={7} px="4">
+              <Text fontWeight="bold" uppercase mb={5}>
+                ASSETS
+              </Text>
+              <Box
+                display="flex"
+                flexDirection="column"
+                fontWeight="bold"
+                gap="5"
+              >
+                <Box display="flex" alignItems="center" gap="5">
+                  <HomeIcon />
+                  <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                </Box>
+                {/* <Box display="flex" alignItems="center" gap="5">
+                  <StatsIcon color="inherit" />
+                  <Anchor to="/admin/tables">Tables</Anchor>
+                </Box> */}
+                <Box display="flex" alignItems="center" gap="5">
+                  <PersonIcon />
+                  <Text
+                    cursor="pointer"
+                    to="/admin/user"
+                    onClick={() => setUserDropdown(!userDropdown)}
+                  >
+                    Activity
+                  </Text>
+                </Box>
+                {userDropdown && (
+                  <Stack pl={4} gap={4}>
+                    {activitySubmenu.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        {route.name}
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+                <Box display="flex" alignItems="center" gap="5">
+                  <CreditIcon />
+                  <Text
+                    cursor="pointer"
+                    to="/admin/configuration"
+                    onClick={() => setConfigDropdown(!configDropdown)}
+                  >
+                    Configuration
+                  </Text>
+                </Box>
+                {configDropdown && (
+                  <Stack pl={4} gap={4}>
+                    {configurationSubmenu.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        {route.name}
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+                <Box display="flex" alignItems="center" gap="5">
+                  <DocumentIcon />
+                  <Text
+                    cursor="pointer"
+                    to="/admin/configuration"
+                    onClick={() => setConfigDropdown(!configDropdown)}
+                  >
+                    Logs
+                  </Text>
+                </Box>
+              </Box>
+            </Stack>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
