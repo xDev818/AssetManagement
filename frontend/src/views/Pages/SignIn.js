@@ -42,13 +42,12 @@ import {
 // Assets
 import signInImage from "assets/img/signInImage.png";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
-import { Redirect } from "react-router-dom";
 
 // Imported: Jinshin
-
 import { useState, useRef, useEffect } from "react";
 
 import Logs from "components/Utils/logs_helper";
+import OnType_Validate from "components/Utils/ontype_validate";
 import axios from "axios";
 
 function SignIn() {
@@ -295,9 +294,10 @@ function SignIn() {
                 placeholder="Your full name"
                 mb="24px"
                 size="lg"
-                onChange={(e) =>
+                onChange={(e) => {
                   setValues({ ...values, username: e.target.value })
-                }
+                  OnType_Validate.username( e.currentTarget, e.target.value )
+                }}
                 value={values.username}
               />
               <FormLabel ms="4px" fontSize="sm" fontWeight="normal">

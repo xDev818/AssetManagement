@@ -6,6 +6,7 @@ const {
     createUser,
     loginUser,
     verifyUserToken,
+    veryUsername,
     getAllUsers,
     getAllUsersByLastname,
     getUserByActive,
@@ -21,6 +22,7 @@ const router = Router()
 router.post('/users', createUser) // Api call to create / register a new user
 router.post('/users/login', loginUser) // Api call to logged a user in
 router.post('/users/verify', verifyUserToken) // Api call to verify user's token
+router.post('/users/username/verify', veryUsername) // Api call to verify user's username
 router.get('/users', getAllUsers) // Api call to get all the users
 router.get('/users/ByLas', getAllUsersByLastname) // Api call to get all the users by their lastname
 router.get('/users/ByAct',getUserByActive) // Api call to get all the users base on active status
