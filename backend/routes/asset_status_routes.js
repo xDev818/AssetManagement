@@ -13,12 +13,14 @@ const { Router } = require('express')
 
 const {
     createAssetStatus,
-    ViewAllAssetStatus
+    ViewAllAssetStatus,
+    getAssetStatusbyID
 } = require('../controllers/asset_status_controller')
 
 const router = Router()
 
 router.post('/status',createAssetStatus) //api call to create Asset Status
-router.get('/getViewallStatus',ViewAllAssetStatus) // api to view all Asset Status
+router.get('/getallStatus',ViewAllAssetStatus) // api to view all Asset Status
+router.get('/getStatusbyID/:id',getAssetStatusbyID) // api to view all Asset Status
 
 module.exports = router
