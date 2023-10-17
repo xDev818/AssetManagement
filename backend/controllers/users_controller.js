@@ -108,7 +108,7 @@ const loginUser = ( request, response ) => {
 
         const stmt = "SELECT users.userDisplayID,users.displayName,CONCAT(users.lastname ,', ', users.firstname) as Name,"
         + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
-        + "department.departmentName,users.password FROM tblUsers users"
+        + "department.departmentName, users.isRegister FROM tblUsers users"
         + " inner join tblUserCategory userCategory on users.groupTypeID = userCategory.categoryID"
         + " inner join tblPositions positions on positions.positionDisplayID = users.positionID"
         + " inner join tblDepartments department on department.departmentDisplayID = positions.departmentDisplayID"
@@ -122,12 +122,15 @@ const loginUser = ( request, response ) => {
                     message2: err
                 }
             )
+
+            const { isRegister } = result[0]
     
             const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '1d' }  )
     
             response.status(200).send(
                 {
                     message: "Record Found",
+                    isRegister,
                     token
                 }
             )
