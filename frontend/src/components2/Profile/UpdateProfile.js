@@ -24,11 +24,11 @@ export default function UpdateProfile() {
   }, []);
 
   // Destructuring personal info
-  const displayName = data.result[0].displayName;
-  const department = data.result[0].departmentName;
-  const email = data.result[0].email;
-  const userRole = data.result[0].userRole;
-  const profileImage = data.result[0].imgFilename;
+  const displayName = data?.result[0].displayName;
+  const department = data?.result[0].departmentName;
+  const email = data?.result[0].email;
+  const userRole = data?.result[0].userRole;
+  const profileImage = data?.result[0].imgFilename;
 
   console.log(profileImage);
 

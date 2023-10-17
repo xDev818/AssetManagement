@@ -19,7 +19,6 @@ import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
 import axios from 'axios'
 import decoder from 'jwt-decode'
-import { useNavigate } from "react-router-dom";
 
 
 import {
@@ -39,13 +38,13 @@ import Card from "components/Card/Card";
 export default function AssetStatusViewer() {
   
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
-  const handleNew_Edit = (statusID) => {
+  // const handleNew_Edit = (statusID) => {
    
-    navigate('/admin/assestatus',{})
+  //   navigate('/admin/assestatus',{})
 
-    };
+  //   };
    
 
 /* 
@@ -88,7 +87,7 @@ useEffect( () => {
       <Stack>
         <Card>
           <TableContainer>
-            <Button colorScheme="green" onClick={() => handleNew_Edit('')}>
+            <Button colorScheme="green">
               Create Test
             </Button>
             <Table size="lg">
