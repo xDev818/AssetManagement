@@ -4,7 +4,7 @@ import Footer from "components/Footer/Footer.js";
 // core components
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import React from "react";
-//import { Redirect, Route, Switch } from "react-router-dom";
+
 import { Redirect, Switch, Route, Routes } from "react-router-dom";
 import routes from "routes.js";
 

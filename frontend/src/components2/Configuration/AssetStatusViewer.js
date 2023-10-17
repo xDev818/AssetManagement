@@ -38,13 +38,11 @@ import Card from "components/Card/Card";
 export default function AssetStatusViewer() {
   
 
-  // const navigate = useNavigate()
 
-  // const handleNew_Edit = (statusID) => {
-   
-  //   navigate('/admin/assestatus',{})
+   const handleNew_Edit = (statusID) => {
 
-  //   };
+
+     };
    
 
 /* 

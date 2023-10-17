@@ -115,7 +115,7 @@ var dashRoutes = [
   {
     submenu: "configuration",
     path: "/assetstatusviewer",
-    name: "Asset Status",
+    name: "Asset Status Viewer",
     icon: <HomeIcon color="inherit" />,
     component: AssetStatusViewer,
     layout: "/admin",

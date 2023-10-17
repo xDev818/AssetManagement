@@ -20,6 +20,7 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import React, { useState } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 
+
 import routes from "routes.js";
 // Custom Chakra theme
 import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
