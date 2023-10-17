@@ -34,8 +34,29 @@ import { SidebarResponsive } from "components/Sidebar/Sidebar";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import routes from "routes.js";
+import jwtDecode from "jwt-decode";
+import { useEffect } from "react";
+import { useState } from "react";
 
 export default function HeaderLinks(props) {
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const token = window.localStorage.getItem("token");
+    const data = jwtDecode(token);
+    setUser(data);
+  }, []);
+  const handleLogout = () => {
+    const storage = localStorage;
+    window.localStorage.removeItem("token");
+
+    if (!storage.getItem("token")) {
+      window.location.href = "/#/auth/signin";
+    }
+  };
+
+  useEffect(() => {}, []);
+
   const {
     variant,
     children,
@@ -64,31 +85,44 @@ export default function HeaderLinks(props) {
       alignItems="center"
       flexDirection="row"
     >
-      <NavLink to="/auth/signin">
-        <Button
-          ms="0px"
-          px="0px"
-          me={{ sm: "2px", md: "16px" }}
-          color={navbarIcon}
-          variant="no-effects"
-          rightIcon={
-            document.documentElement.dir ? (
-              ""
-            ) : (
-              <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
-            )
-          }
-          leftIcon={
-            document.documentElement.dir ? (
-              <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
-            ) : (
-              ""
-            )
-          }
-        >
-          <Text display={{ sm: "none", md: "flex" }}>Sign In</Text>
-        </Button>
-      </NavLink>
+      {user ? (
+        <Flex mr={5} gap={3} alignItems="center">
+          <Flex>
+            <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
+            <Text color="white">{user.result[0].Name}</Text>
+          </Flex>
+          <Button size="sm" onClick={handleLogout}>
+            Log Out
+          </Button>
+        </Flex>
+      ) : (
+        <NavLink to="/auth/signin">
+          <Button
+            ms="0px"
+            px="0px"
+            me={{ sm: "2px", md: "16px" }}
+            color={navbarIcon}
+            variant="no-effects"
+            rightIcon={
+              document.documentElement.dir ? (
+                ""
+              ) : (
+                <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
+              )
+            }
+            leftIcon={
+              document.documentElement.dir ? (
+                <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
+              ) : (
+                ""
+              )
+            }
+          >
+            <Text display={{ sm: "none", md: "flex" }}>Sign In</Text>
+          </Button>
+        </NavLink>
+      )}
+
       <SidebarResponsive
         hamburgerColor={"white"}
         logo={

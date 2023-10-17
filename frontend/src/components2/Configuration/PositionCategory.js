@@ -19,6 +19,7 @@ import {
   Input,
   Stack,
   Select,
+  toast,
 } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
@@ -26,8 +27,15 @@ import Modal1 from "components2/Modal/Modal";
 import Card from "components/Card/Card";
 import FourGraphs from "components/FourGraphs/FourGraphs";
 import axios from "axios";
+import jwtDecode from "jwt-decode";
+import Defaults from "components/Utils/_defaults";
+import Logs from "components/Utils/logs_helper";
+import { deletePosition } from "api/api";
+import { useToast } from "@chakra-ui/react";
+import { getViewAllPosition } from "api/api";
 
 export default function PositionCategory() {
+  const toast = useToast();
   const [editItem, setEditItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newItem, setNewItem] = useState({
@@ -36,44 +44,36 @@ export default function PositionCategory() {
     description: "",
   });
   const [isCreating, setIsCreating] = useState(false);
-  const [data, setData] = useState([
-    {
-      id: 1,
-      department: "Accessories",
-      position: "IT Support L1",
-      description: "Accessories",
-    },
-    {
-      id: 2,
-      department: "Consumables",
-      position: "IT Support L1",
-      description: "Consumables",
-    },
-    {
-      id: 3,
-      department: "Hardware",
-      position: "IT Support L1",
-      description: "Hardware",
-    },
-    {
-      id: 4,
-      department: "Software",
-      position: "IT Support L1",
-      description: "Software",
-    },
-  ]);
+
+  const [positionData, setPositionData] = useState([]);
+  const [errors, setErrors] = useState({
+    error_name: "",
+    error_message: "",
+  });
+  const positionDataRes = async () => {
+    try {
+      const res = await getViewAllPosition();
+      setPositionData(res.result);
+      console.log("positionData", positionData);
+    } catch (error) {
+      const errorStatus = err.code;
+      console.log("What is error : " + err);
+      if (errorStatus.includes("ERR_NETWORK")) {
+        const useEffectLogs = new Logs(
+          "DB",
+          "Position",
+          "useEffect /positions",
+          err,
+          ""
+        );
+        alert(useEffectLogs.getMessage());
+      }
+      console.log("position error", error.message);
+    }
+  };
 
   useEffect(() => {
-    const positionData = async () => {
-      try {
-        const res = await axios.get("http://localhost:5001/positions");
-        const data = await res.data;
-        console.log("position data", data);
-      } catch (error) {
-        console.log("position error", error.message);
-      }
-    };
-    positionData();
+    positionDataRes();
   }, []);
 
   const handleEdit = (item) => {
@@ -84,16 +84,13 @@ export default function PositionCategory() {
     setIsCreating(true);
   };
   const handleSave = (updatedData) => {
-    const updatedArray = data.map((item) =>
+    const updatedArray = positionData.map((item) =>
       item.id === updatedData.id ? updatedData : item
     );
-    setData(updatedArray);
+    setPositionData(updatedArray);
     setIsEditing(false);
   };
-  const handleDelete = (id) => {
-    const newData = data.filter((item) => item.id !== id);
-    setData(newData);
-  };
+
   const handleCloseModal = () => {
     setIsCreating(false);
     setIsEditing(false);
@@ -108,12 +105,34 @@ export default function PositionCategory() {
     setNewItem({ categoryName: "", description: "" });
   };
 
-  if (isCreating) {
-    console.log("creating");
-  }
-  if (isEditing) {
-    console.log("editing");
-  }
+  const handleDelete = async (id) => {
+    try {
+      const res = await deletePosition(id);
+      toast({
+        title: res.message,
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+      console.log("del", res);
+    } catch (error) {
+      const errorStatus = err.code;
+      console.log("What is error : " + err);
+      if (errorStatus.includes("ERR_NETWORK")) {
+        const useEffectLogs = new Logs(
+          "DB",
+          "Position",
+          "useEffect /positions/delete",
+          err,
+          ""
+        );
+        alert(useEffectLogs.getMessage());
+      }
+      console.log("position error", error.message);
+    }
+  };
+
   return (
     <>
       <Stack>
@@ -125,14 +144,14 @@ export default function PositionCategory() {
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Actions</Th>
+                  <Th>actions</Th>
                   <Th>Department</Th>
                   <Th>Position</Th>
                   <Th>Description</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {data.map((item) => (
+                {positionData.map((item) => (
                   <Tr key={item.id}>
                     <Td>
                       <ButtonGroup>
@@ -150,8 +169,8 @@ export default function PositionCategory() {
                         </Button>
                       </ButtonGroup>
                     </Td>
-                    <Td>{item.department}</Td>
-                    <Td>{item.position}</Td>
+                    <Td>{item.departmentName}</Td>
+                    <Td>{item.positionName}</Td>
                     <Td>{item.description}</Td>
                   </Tr>
                 ))}
@@ -169,16 +188,18 @@ export default function PositionCategory() {
                   <FormControl>
                     {isCreating ? (
                       <Select placeholder="Select Department" mb={4}>
-                        <option value="ITHelpSupport">ITHelpSupport</option>
-                        <option value="IT">IT</option>
-                        <option value="Project Manager">Project Manager</option>
+                        {positionData.map((item) => (
+                          <option value={item.departmentName}>
+                            {item.departmentName}
+                          </option>
+                        ))}
                       </Select>
                     ) : (
                       <Input
-                        value={editItem?.department}
+                        value={positionData?.departmentName}
                         onChange={(e) =>
                           setEditItem({
-                            ...editItem,
+                            ...positionData,
                             department: e.target.value,
                           })
                         }
@@ -190,9 +211,12 @@ export default function PositionCategory() {
                     {isCreating ? (
                       <>
                         <Input
-                          value={newItem.position}
+                          value={positionData.position}
                           onChange={(e) =>
-                            setNewItem({ ...newItem, position: e.target.value })
+                            setNewItem({
+                              ...positionData,
+                              position: e.target.value,
+                            })
                           }
                         />
                       </>

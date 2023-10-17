@@ -100,7 +100,7 @@ function SignIn() {
   useEffect(() => {
     const storage = localStorage;
 
-    if (storage.getItem("token") && storage.getItem("token").length === 637) {
+    if (storage.getItem("token")) {
       window.location.href = "/";
     } else {
       localStorage.removeItem("token");
@@ -108,7 +108,6 @@ function SignIn() {
   }, []);
 
   const loginHandler = async () => {
-
     const buttonStatus = ButtonRef.current;
     buttonStatus.disabled = true;
 
@@ -358,8 +357,12 @@ function SignIn() {
                 mb="24px"
                 size="lg"
                 onChange={(e) => {
-                  setValues({ ...values, username: e.target.value })
-                  OnType_Validate.username( e.currentTarget, "signin", e.target.value )
+                  setValues({ ...values, username: e.target.value });
+                  OnType_Validate.username(
+                    e.currentTarget,
+                    "signin",
+                    e.target.value
+                  );
                 }}
                 value={values.username}
               />
@@ -375,8 +378,12 @@ function SignIn() {
                 mb="24px"
                 size="lg"
                 onChange={(e) => {
-                  setValues({ ...values, password: e.target.value })
-                  OnType_Validate.password( e.currentTarget, 'signin', e.target.value )
+                  setValues({ ...values, password: e.target.value });
+                  OnType_Validate.password(
+                    e.currentTarget,
+                    "signin",
+                    e.target.value
+                  );
                 }}
                 value={values.password}
               />
