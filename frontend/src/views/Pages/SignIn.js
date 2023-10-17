@@ -24,6 +24,25 @@
     Activities
     Purpose : 
       Changed Background Image and sign In form
+
+  ------------------
+
+  Date : 10 / 17 / 23
+    Author : Josh
+    Activities
+    Purpose : 
+      Imported:
+          - import OnType_Validate from "components/Utils/ontype_validate";
+      Function:
+          - onChange={(e) => {
+              setValues({ ...values, username: e.target.value })
+              OnType_Validate.username( e.currentTarget, e.target.value )
+            }}
+          - onChange={(e) => {
+              setValues({ ...values, password: e.target.value })
+              OnType_Validate.password( e.currentTarget, 'signin', e.target.value )
+            }}
+
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -48,14 +67,13 @@ import {
 // Assets
 import NewSignInImage from "assets/img/NewSignInImage.webp";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
-import { Redirect } from "react-router-dom";
 
 // Imported: Jinshin
-
 import { useState, useRef, useEffect } from "react";
-
 import Logs from "components/Utils/logs_helper";
+import OnType_Validate from "components/Utils/ontype_validate";
 import axios from "axios";
+// End Jinshin
 
 function SignIn() {
   // Chakra color mode
@@ -85,7 +103,6 @@ function SignIn() {
   }, []);
 
   const loginHandler = async () => {
-    // const request = await axios.post("/users/login", values);
 
     const buttonStatus = ButtonRef.current;
     buttonStatus.disabled = true;
@@ -324,9 +341,10 @@ function SignIn() {
                 placeholder="Your full name"
                 mb="24px"
                 size="lg"
-                onChange={(e) =>
+                onChange={(e) => {
                   setValues({ ...values, username: e.target.value })
-                }
+                  OnType_Validate.username( e.currentTarget, e.target.value )
+                }}
                 value={values.username}
               />
               <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
@@ -340,9 +358,10 @@ function SignIn() {
                 placeholder="Your password"
                 mb="24px"
                 size="lg"
-                onChange={(e) =>
+                onChange={(e) => {
                   setValues({ ...values, password: e.target.value })
-                }
+                  OnType_Validate.password( e.currentTarget, 'signin', e.target.value )
+                }}
                 value={values.password}
               />
               <FormControl display="flex" alignItems="center" mb="24px">
