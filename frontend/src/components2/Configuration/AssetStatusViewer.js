@@ -19,6 +19,8 @@ import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
 import axios from 'axios'
 import decoder from 'jwt-decode'
+import { useNavigate } from "react-router-dom";
+
 
 import {
   Table,
@@ -31,63 +33,20 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
-import { useState } from "react";
-import Modal1 from "components2/Modal/Modal";
 import Card from "components/Card/Card";
-import FourGraphs from "components/FourGraphs/FourGraphs";
+
 
 export default function AssetStatusViewer() {
-  const [editItem, setEditItem] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newItem, setNewItem] = useState({ categoryName: "", description: "" });
-  const [isCreating, setIsCreating] = useState(false);
-  const [data, setData] = useState([
-    { id: 1, categoryName: "Accessories", description: "Accessories" },
-    { id: 2, categoryName: "Consumables", description: "Consumables" },
-    { id: 3, categoryName: "Hardware", description: "Hardware" },
-    { id: 4, categoryName: "Software", description: "Software" },
-  ]);
-  const handleEdit = (item) => {
-    setEditItem(item);
-    setIsEditing(true);
-  };
-  const handleCreate = () => {
-    //setIsCreating(true);
+  
+
+  const navigate = useNavigate()
+
+  const handleNew_Edit = (statusID) => {
+   
+    navigate('/admin/assestatus',{})
 
     };
-    const handleSave = (updatedData) => {
-      const updatedArray = data.map((item) =>
-        item.id === updatedData.id ? updatedData : item
-      );
-      setData(updatedArray);
-      setIsEditing(false);
-    };
-    const handleDelete = (id) => {
-      const newData = data.filter((item) => item.id !== id);
-      setData(newData);
-    };
-    const handleCloseModal = () => {
-      setIsCreating(false);
-      setIsEditing(false);
-      setNewItem({ categoryName: "", description: "" });
-      setEditItem(null);
-    };
-    const handleSave1 = () => {
-      const newId = data.length + 1;
-      const newData = { id: newId, ...newItem };
-      setData([...data, newData]);
-      setIsCreating(false);
-      setNewItem({ categoryName: "", description: "" });
-    };
-  
-   // console.log(editItem?.categoryName);
-   // console.log("data", data);
-    if (isCreating) {
-      console.log("creating");
-    }
-    if (isEditing) {
-      console.log("editing");
-    }
+   
 
 /* 
 
@@ -124,149 +83,53 @@ useEffect( () => {
     
 }, [])
 
-
-    return (
-      <>
-        <Stack mt={100}>
-          <FourGraphs />
-          <Card>
-            <TableContainer>
-              <Button colorScheme="green" onClick={handleCreate}>
-                Create Test
-              </Button>
-              <Table size="lg">
-                <Thead>
-                  <Tr>
-                    <Th>Actions</Th>
-                    <Th>Status Name</Th>
-                    <Th>Description</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {assetStatus.map((item) => (
-                    <Tr key={item.assetStatusID}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={() => handleDelete(item.assetStatusID)}
-                          >
-                            Delete
-                          </Button>
-                          <Button
-                            colorScheme="blue"
-                            onClick={() => handleEdit(item.assetStatusID)}
-                          >
-                            Edit
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{item.statusName}</Td>
-                      <Td>{item.statusDescription}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-              <Modal1
-                isCreating={isCreating}
-                isEditing={isEditing}
-                handleCloseModal={handleCloseModal}
-                editItem={editItem}
-                newItem={newItem}
-                setNewItem={setNewItem}
-                setEditItem={setEditItem}
-                handleSave={handleSave}
-                handleSave1={handleSave1}
-              />
-            </TableContainer>
-          </Card>
-        </Stack>
-      </>
-    );
-    setData(updatedArray);
-    setIsEditing(false);
-  };
-  const handleDelete = (id) => {
-    const newData = data.filter((item) => item.id !== id);
-    setData(newData);
-  };
-  const handleCloseModal = () => {
-    setIsCreating(false);
-    setIsEditing(false);
-    setNewItem({ categoryName: "", description: "" });
-    setEditItem(null);
-  };
-  const handleSave1 = () => {
-    const newId = data.length + 1;
-    const newData = { id: newId, ...newItem };
-    setData([...data, newData]);
-    setIsCreating(false);
-    setNewItem({ categoryName: "", description: "" });
-  };
-
-  console.log(editItem?.categoryName);
-  console.log("data", data);
-  if (isCreating) {
-    console.log("creating");
-  }
-  if (isEditing) {
-    console.log("editing");
-  }
   return (
     <>
       <Stack>
         <Card>
           <TableContainer>
-            <Button colorScheme="green" onClick={handleCreate}>
-              Create
+            <Button colorScheme="green" onClick={() => handleNew_Edit('')}>
+              Create Test
             </Button>
             <Table size="lg">
               <Thead>
                 <Tr>
                   <Th>Actions</Th>
-                  <Th>Category Name</Th>
+                  <Th>Status Name</Th>
                   <Th>Description</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {data.map((item) => (
-                  <Tr key={item.id}>
+                {assetStatus.map((item) => (
+                  <Tr key={item.assetStatusID}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={() => handleDelete(item.id)}
+                          onClick={() => handleDelete(item.assetStatusID)}
                         >
                           Delete
                         </Button>
                         <Button
                           colorScheme="blue"
-                          onClick={() => handleEdit(item)}
+                          onClick={() => handleNew_Edit(item.assetStatusID)}
                         >
                           Edit
                         </Button>
                       </ButtonGroup>
                     </Td>
-                    <Td>{item.categoryName}</Td>
-                    <Td>{item.description}</Td>
+                    <Td>{item.statusName}</Td>
+                    <Td>{item.statusDescription}</Td>
                   </Tr>
                 ))}
               </Tbody>
             </Table>
-            <Modal1
-              isCreating={isCreating}
-              isEditing={isEditing}
-              handleCloseModal={handleCloseModal}
-              editItem={editItem}
-              newItem={newItem}
-              setNewItem={setNewItem}
-              setEditItem={setEditItem}
-              handleSave={handleSave}
-              handleSave1={handleSave1}
-            />
+            
           </TableContainer>
         </Card>
       </Stack>
     </>
   );
 }
+
+

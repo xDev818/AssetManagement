@@ -25,6 +25,7 @@ import Suppliers from "components2/Configuration/Suppliers";
 import UpdateProfile from "components2/Profile/UpdateProfile";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
+import AssetStatus from "components2/Configuration/AssetStatus";
 
 import {
   HomeIcon,
@@ -113,10 +114,18 @@ var dashRoutes = [
 
   {
     submenu: "configuration",
-    path: "/assetstatus",
+    path: "/assetstatusviewer",
     name: "Asset Status",
     icon: <HomeIcon color="inherit" />,
     component: AssetStatusViewer,
+    layout: "/admin",
+  },
+  {
+    submenu: "configuration",
+    path: "/assetstatus",
+    name: "Asset Status",
+    icon: <HomeIcon color="inherit" />,
+    component: AssetStatus,
     layout: "/admin",
   },
   {
