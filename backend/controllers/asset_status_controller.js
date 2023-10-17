@@ -57,7 +57,7 @@ const createAssetStatus = ( request, response ) => {
 // An instance to Load all Asset Status
 const ViewAllAssetStatus = ( request, response ) => {
 
-    const stmt = "SELECT * FROM tblAssetStatus"
+    const stmt = "SELECT assetStatusID, statusName,statusDescription FROM tblAssetStatus"
                 + " order by statusName asc"
     
              
@@ -72,14 +72,14 @@ const ViewAllAssetStatus = ( request, response ) => {
         )
        
        
-        response.status(200).json(
-            {
-                message: "Records Found",
-                data : result
-           }
-        )
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
 
-       // console.log(result)
+        //response.json({result,message: "Record Found"});
 
     })
 }
