@@ -9,7 +9,9 @@
 */ 
 
 import PDFAssetStatus from '../../components2/views/pdfreports/PDFAssetStatus'
-//'../components2/views/pdfreports/PDFAssetStatus'
+import PDFPosition from '../../components2/views/pdfreports/PDFPosition'
+import PDFDepartment from 'components2/views/pdfreports/PDFDepartment'
+
 import React from 'react'
 
 const generate_PDF =  (paramQuery,paramReportType) => {
@@ -19,10 +21,14 @@ const generate_PDF =  (paramQuery,paramReportType) => {
 
             PDFAssetStatus(paramQuery)
 
-        } else {
-           PDFAssetStatus(paramQuery)
+        } else if (paramReportType === 'Position') {
+           PDFPosition(paramQuery)
 
-        }
+        } else if (paramReportType === 'Department') {
+            PDFDepartment(paramQuery)
+ 
+         }
+
     
 }
 

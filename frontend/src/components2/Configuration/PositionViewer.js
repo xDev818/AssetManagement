@@ -4,7 +4,12 @@
     Author : Nole
     Activities
     Purpose : 
-      create PositionViewer.js
+      import { Link as Anchor } from "react-router-dom";
+      import Logs from "components/Utils/logs_helper";
+      import { useEffect, useState } from "react";
+      import axios from "axios";
+      import decoder from "jwt-decode";
+      import generate_PDF from "components/Utils/generate_PDF";
 
 */
 
@@ -13,6 +18,7 @@ import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import decoder from "jwt-decode";
+import generate_PDF from "components/Utils/generate_PDF";
 
 import {
   Table,
@@ -25,7 +31,7 @@ import {
   Stack,
   Box,
 } from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button, ButtonGroup,Wrap,WrapItem } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
@@ -107,30 +113,45 @@ export default function PositionViewer() {
 
   }
 
+  const handleReport =() => {
+      try {
+
+          generate_PDF(positions,'Position')
+
+      }
+      catch(err) {
+        alert(err)
+      }
+  }
+
   return (
     <>
       <Stack>
         <Card>
           <TableContainer>
-            <Box
-              bgColor="green.600"
-              w="100px"
-              textAlign="center"
-              py="2"
-              borderRadius={5}
-              textColor="white"
+            <ButtonGroup spacing={6}>
+            <Button
+              colorScheme='messenger'
             >
-              {/*</Box><Link to="/admin/assetstatus"  state={{ from: "occupation" }}>Create Test</Link> */ }
-              
+     
               <Link
                   to={{
                   pathname: "/admin/position",
                   state: { positionID: '' },
                   }}>
-                Create
+                New
               </Link>
 
-            </Box>
+            </Button>
+            <Button
+             colorScheme='green'
+              
+              onClick={handleReport}
+              
+            >        
+             PDF Report
+            </Button>
+            </ButtonGroup>
             <Table size="lg">
               <Thead>
                 <Tr>

@@ -12,6 +12,7 @@
       import React from "react";
       import { Button, ButtonGroup } from "@chakra-ui/react";
       Remove : import FourGraphs from "components/FourGraphs/FourGraphs";
+      import generate_PDF from "components/Utils/generate_PDF";
 */
 
 
@@ -20,6 +21,7 @@ import axios from "axios";
 import { useEffect,useState } from "react";
 import React from "react";
 import decoder from "jwt-decode";
+import generate_PDF from "components/Utils/generate_PDF";
 
 import Logs from "components/Utils/logs_helper";
 
@@ -104,11 +106,23 @@ export default function DepartmentViewer() {
 
     }
 
+    const handleReport =() => {
+      try {
+
+          generate_PDF(departments,'Department')
+
+      }
+      catch(err) {
+        alert(err)
+      }
+    }
+
   return (
     <Box px={3}>
       <Card>
         <TableContainer>
-          <Button colorScheme="green">
+          <ButtonGroup>
+          <Button colorScheme="messenger">
             <Anchor
                 to={{
                 pathname: "/admin/department",
@@ -117,6 +131,15 @@ export default function DepartmentViewer() {
               Create
             </Anchor>
             </Button>
+            <Button
+             colorScheme='green'
+              
+              onClick={handleReport}
+              
+            >        
+             PDF Report
+            </Button>
+            </ButtonGroup>
           <Table size="lg">
             <Thead>
               <Tr>

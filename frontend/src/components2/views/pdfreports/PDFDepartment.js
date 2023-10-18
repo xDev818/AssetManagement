@@ -4,7 +4,7 @@
     Author : Nole
     Activities
     Purpose : 
-        create PDFAssetStatus.js
+        create PDFDepartment.js
         
 */ 
 
@@ -15,10 +15,10 @@ import React from 'react'
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-const PDFAssetStatus = (assetStatus) => {
+const PDFDepartment = (departments) => {
  
     const doc = new jsPDF();
-    const totalAssetStatus = assetStatus.length.toString();
+    const totalDepartments = departments.length.toString();
     const datehelper = new Datehelper()
     try {
 
@@ -29,29 +29,29 @@ const PDFAssetStatus = (assetStatus) => {
         img.src = DefaultLogoReport
 
         // define the columns we want and their titles
-        const tableColumn = ["#","Status", "Description"];
+        const tableColumn = ["#","Department", "Description"];
         // define an empty array of rows
         const tableRows = [];
         var icount = 0
 
         // for each ticket pass all its data into an array
-        assetStatus.forEach(status => {
+        departments.forEach(department => {
             icount = icount + 1
             
-            const statusData = [
+            const departmentData = [
                 icount.toString(),
-                status.statusName,
-                status.statusDescription,
+                department.departmentName,
+                department.description,
             ];
             // push each assets info into a row
-            tableRows.push(statusData);
+            tableRows.push(departmentData);
         });
 
         doc.addImage(img, 'webp',10 ,5, 40,15)  // margin-left,margin-top,width , height
-        doc.text("Asset Status",150, 12 ); // margin-left,margin-top
+        doc.text("List of Departments",150, 12 ); // margin-left,margin-top
         doc.setFontSize(10)
         doc.text('Date Generated : ' + dateGenerate,150,16)
-        doc.text('# of Status : ' + totalAssetStatus,150,21)
+        doc.text('# of Departments : ' + totalDepartments,150,21)
         doc.line(10,25,200,25)
 
         doc.autoTable(tableColumn, tableRows,{ startY: 30,horizontalPageBreak: true,horizontalPageBreakRepeat: 0, })
@@ -73,7 +73,7 @@ const PDFAssetStatus = (assetStatus) => {
         }
 
         // we define the name of our PDF file to save.
-        doc.save(`AssetStatus_${dateStr}.pdf`);
+        doc.save(`ListofDepartments_${dateStr}.pdf`);
     }
     catch(err) {
         alert(err)
@@ -81,5 +81,5 @@ const PDFAssetStatus = (assetStatus) => {
 
 }
 
-export default PDFAssetStatus;
+export default PDFDepartment;
 

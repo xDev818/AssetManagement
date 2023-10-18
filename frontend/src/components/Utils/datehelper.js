@@ -1,13 +1,17 @@
+/* 
+
+    Date : 10 / 18 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        create datehelper.js
+*/
+
 import React from 'react'
 
 export default class Datehelper {
 
      dateformat_PDFFile () {
-
-  //      const newDate = new Date()
-  //      let year = newDate.getFullYear();
-  //      let month = newDate.getMonth() + 1;
-  //      let day = newDate.getDate();
 
         const date = Date().split(" ");
         const dateStr = date[1] + date[2] + date[3] + date[4];

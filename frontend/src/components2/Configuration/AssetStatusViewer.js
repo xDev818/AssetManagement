@@ -154,7 +154,7 @@ export default function AssetStatusViewer() {
                   pathname: "/admin/assetstatus",
                   state: { assetstatID: '' },
                   }}>
-                Create
+                New
               </Link>
 
             </Button>
