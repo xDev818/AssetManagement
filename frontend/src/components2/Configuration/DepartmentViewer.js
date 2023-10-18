@@ -59,7 +59,7 @@ export default function DepartmentViewer() {
       setDepartments(res.data.result)
 
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 

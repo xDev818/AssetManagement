@@ -1,5 +1,65 @@
+/*
+Date : 10 / 18 / 23
+Author : Nole
+Activities
+Purpose : 
+
+  create function createPosition 
+  update function getViewAllPosition
+  update function updatePosition
+  create function deletePosition
+
+*/
+
 // Packages
-const mysql = require("../database");
+const mysql = require('../database')
+const jwt = require('jsonwebtoken')
+const { randomUUID } = require('crypto')
+
+// Date helper
+const { utils_getDate } = require('../utils/date_helper')
+
+// An instance to Create new Department
+const createPosition = ( request, response ) => {
+
+  const id = randomUUID() 
+  const { positionname, description, departmentid, userID  } = request.body
+
+ // if( !username ) return response.status(400).send( { message: "Username is required" } )
+
+
+  const stmt = "INSERT INTO tblPositions(positionDisplayID,positionName,"
+  + "description,departmentDisplayID,createdBy,dateCreated) values (?)";
+
+
+  const values = [
+      id,
+      positionname,
+      description,
+      departmentid,
+      userID,
+      utils_getDate()
+  ];
+  
+  
+  mysql.query( stmt, [values], ( err, result ) => {
+
+      if( err ) return response.status(400).send(
+          {
+              message: "Insert Error",
+              message2: err.message
+          }
+      )
+      
+      response.status(200).send(
+          {
+              message: "Insert Success"
+          }
+      )
+
+  })
+
+}
 
 const getPositionByName = (request, response) => {
   const defaultPosition = "Default Position";
@@ -21,107 +81,122 @@ const getPositionByName = (request, response) => {
   });
 };
 
-const getPositionById = (req, res) => {
-  const sql =
+const getPositionById = (request, response) => {
+
+  const { id } = request.params
+
+  const stmt =
     "SELECT positions.positionDisplayID,positions.positionName,positions.description," +
     "departments.departmentDisplayID," +
     "departments.departmentName FROM tblPositions positions" +
     " INNER JOIN tblDepartments departments on departments.departmentDisplayID = positions.departmentDisplayID" +
     " WHERE positions.positionDisplayID = ?";
 
-  mysql.query(sql, [req.body.rowId], (err, result) => {
-    if (err) {
-      res.json({
-        message: "No Record Found",
-        message2: err.message,
-      });
-    } else {
-      if (result.length > 0) {
-        res.json({ result, message: "Record Found" });
-      } else {
-        res.json({ message: "No Record Found" });
-      }
-    }
-  });
+
+      mysql.query( stmt, [id],( err, result ) => {
+
+        if( err || !result.length ) return response.status(404).send(
+            {
+                message: "No Record Found",
+                message2: err
+            }
+        )
+
+        response.status(200).send(
+            {
+                message: "Record Found",
+                result
+            }
+        )
+
+      })
+
 };
 
-const getViewAllPosition = (req, res) => {
-  const sql =
-    "SELECT positions.positionName,departments.departmentName,positions.description,positions.positionDisplayID as id" +
-    " FROM tblPositions positions" +
-    " INNER JOIN tblDepartments departments on departments.departmentDisplayID = positions.departmentDisplayID" +
-    " ORDER BY positions.positionName";
+const getViewAllPosition = (request, response) => {
 
-  mysql.query(sql, (err, result) => {
-    if (err) {
-      res.json({
-        message: "No Record Found",
-        message2: err.message,
+  const stmt =
+    "SELECT positions.positionDisplayID as id,positions.positionName,departments.departmentName,positions.description"
+    + " FROM tblPositions positions"
+    + " INNER JOIN tblDepartments departments on departments.departmentDisplayID = positions.departmentDisplayID"
+    + " ORDER BY positions.positionName"
+
+    mysql.query(stmt, (err, result) => {
+
+        if (err || !result.length)
+          return response.status(404).send({
+            message: "No Record Found",
+            message2: err,
+          });
+
+        response.status(200).send({
+          message: "Record Found",
+          result
+          
       });
-    } else {
-      if (result.length > 0) {
-        res.json({ result, message: "Record Found" });
-      } else {
-        res.json({ message: "No Record Found" });
-      }
-    }
-  });
+    })
+}
+
+const updatePosition = (request, response) => {
+
+  const { positionid, positionname, description, departmentid, userID  } = request.body
+
+  const stmt =
+    "UPDATE tblPositions SET positionName = ?,description = ?," 
+    + "departmentDisplayID = ?,updateBy = ?,dateUpdated = ?" 
+    + " where positionDisplayID = ? "
+
+  console.log(request.body)
+    mysql.query( stmt, [positionname,description,
+                departmentid,userID,utils_getDate(),positionid], ( err, result ) => {
+
+      if( err ) return response.status(400).send(
+          {
+              message: "Update Error",
+              message2: err.message
+          }
+      )
+      
+      response.status(200).send(
+          {
+              message: "Update Success"
+          }
+      )
+
+  })
+
 };
 
-const updatePosition = (req, res) => {
-  const sqlUpdate =
-    "UPDATE tblPositions SET positionName = ?,description = ?," +
-    "departmentDisplayID = ?,updateBy = ?,dateUpdated = ?" +
-    " where positionDisplayID = ? ";
+const deletePosition = (request, response) => {
 
-  mysql.query(
-    sqlUpdate,
-    [
-      req.body.name,
-      req.body.description,
-      req.body.deptid,
-      req.body.userID,
-      utils_getDate(),
-      req.body.rowId,
-    ],
-    (err, result) => {
-      if (err) {
-        res.json({
-          message: "Update Error",
-          message2: err.message,
-        });
-      } else {
-        res.json({
-          message: "Update Success",
-        });
-      }
-    }
-  );
-};
+  const { positionID } = request.body
 
-const deletePosition = (req, res) => {
-  const sqlUpdate = "DELETE FROM tblPositions WHERE positionDisplayID=?";
+  console.log(positionID)
 
-  mysql.query(sqlUpdate, [req.body.rowId], (err, result) => {
-    if (err) {
-      res.json({
-        message: "No Record Deleted",
-        message2: err.message,
+  const stmt = "DELETE FROM tblPositions WHERE positionDisplayID=?";
+
+    mysql.query(stmt, [positionID] ,(err, result) => {
+
+      if (err) return response.status(400).send(
+        {
+            message: "Update Error",
+            message2: err.message
+        })
+
+      response.status(200).send({
+        message: "Delete Successfull"
+        
       });
-    } else {
-      //console.log("Success")
-      //console.log(values)
-      res.json({
-        message: "Record Deleted",
-      });
-    }
-  });
+
+      console.log(response.message)
+    })
 };
 
 module.exports = {
+  createPosition,
   getPositionByName,
   getPositionById,
   getViewAllPosition,
   updatePosition,
-  deletePosition,
+  deletePosition
 };

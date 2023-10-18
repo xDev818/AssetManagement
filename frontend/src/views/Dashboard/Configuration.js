@@ -7,9 +7,9 @@ import FourGraphs from "components/FourGraphs/FourGraphs";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 
 import React from "react";
-import AssetCategory from "components2/Configuration/AssetCategory";
-import PositionCategory from "components2/Configuration/PositionCategory";
-import StatusCategory from "components2/Configuration/StatusCategory";
+//import AssetCategory from "components2/Configuration/AssetCategory";
+//import PositionCategory from "components2/Configuration/PositionCategory";
+//import StatusCategory from "components2/Configuration/StatusCategory";
 
 
 export default function Configuration() {
@@ -30,21 +30,21 @@ export default function Configuration() {
           <TabPanels>
             <TabPanel>
               <Text mb={5}>Asset Category</Text>
-              <AssetCategory />
+              {/* <AssetCategory /> */}
             </TabPanel>
             <TabPanel>
               <Text>User Group</Text>
             </TabPanel>
             <TabPanel>
               <Text>Status</Text>
-              <StatusCategory />
+              {/* <StatusCategory /> */}
             </TabPanel>
             <TabPanel>
               <Text>Department</Text>
             </TabPanel>
             <TabPanel>
               <Text>Position</Text>
-              <PositionCategory />
+              {/* <PositionCategory /> */}
             </TabPanel>
           </TabPanels>
         </Tabs>

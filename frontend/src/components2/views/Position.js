@@ -42,6 +42,8 @@ import {
     Box,
     Input,
     FormControl,
+    Select,
+    
   } from "@chakra-ui/react";
   import { Button, ButtonGroup } from "@chakra-ui/react";
   
@@ -49,33 +51,61 @@ import {
   import Card from "components/Card/Card";
  
   
-  export default function AssetStatus () {
+  export default function Position () {
 
-    const [values,setStatus] = useState({
-      statusid:'',
-      statusname:'',
-      description:''
+    var userID =''
+    const [values,setPosition] = useState({
+      positionid:'',
+      positionname:'',
+      description:'',
+      departmentid: '',
+      departmentname: ''
   })
 
+  const [departments, setDepartments] = useState([]);
+  
+
     const location = useLocation()
-    const  statusID  = location.state?.assetstatID
+    const  positionID  = location.state?.positionID
     const [btnstate,setbtnState] = useState()
 
+
+    const LoadallDepartments = async () => {
+      try {
+       
+        const tokenStorage = localStorage.getItem("token");
+        const tokenDecoded = decoder(tokenStorage);
+  
+        userID = tokenDecoded.result[0].userDisplayID;
+  
+        const res = await axios.get("/get_all_departments");
+        const data = await res.data;
+        
+        setDepartments(res.data.result)
+      
+  
+      } catch (err) {
+        alert(err)
+      }
+    };
+  
 
     useEffect(() => {
       
       try {
         
-        if(statusID) {
+        if(positionID) {
         
-            axios.get('/getStatusbyID/' + statusID)
+            axios.get('/positions/getPositionID/' + positionID)
             .then((res) => {
               setbtnState("Update")
-                setStatus({
+                setPosition({
                   ...values,
-                  statusid: res.data.result[0].assetStatusID,
-                  statusname: res.data.result[0].statusName,
-                  description: res.data.result[0].statusDescription
+                  positionid: res.data.result[0].positionDisplayID,
+                  positionname: res.data.result[0].positionName,
+                  description: res.data.result[0].description,
+                  departmentid: res.data.result[0].departmentDisplayID,
+                  departmentname: res.data.result[0].departmentName
                 })
                
             })
@@ -86,12 +116,14 @@ import {
         } else {
           setbtnState("Save")
            
-            setStatus({
-              ...values,
-              statusid: '',
-              statusname: '',
-              description: ''
-            })
+          setPosition({
+            ...values,
+            positionid: '',
+            positionname: '',
+            description: '',
+            departmentid: '',
+            departmentname: ''
+          })
         }
 
       }
@@ -99,6 +131,20 @@ import {
         alert(err)
       }
     }, [])
+
+    useEffect(() => {
+        
+      try { 
+
+        LoadallDepartments();
+      }
+      catch(err) {
+        alert(err)
+      }
+    
+  
+    }, [])
+    
 
     async function handleUpdate(event)  {
 
@@ -112,16 +158,20 @@ import {
 
       
 
-        const statusvalues = {
-          statusid: values.statusid,
-          statusname: values.statusname,
+        const positionvalues = {
+          positionid: values.positionid,
+          positionname: values.positionname,
           description: values.description,
+          departmentid: values.departmentid,
+          departmentname: values.departmentname,
           userID: userID
         }
 
-        if(statusvalues.statusid === "") {
+
+
+        if(positionvalues.positionid === "") {
             // insert here
-            const success = await axios.post('/status',statusvalues)
+            const success = await axios.post('/positions/createNewPosition',positionvalues)
             .then((res) => {
             
               alert("Insert Successful")
@@ -130,23 +180,23 @@ import {
                 'Info',
                 "Asset Status",
                 "Function /handleUpdate",
-                ' Create   Statusname :  ' + statusvalues.statusname,
+                ' Create   Position name :  ' + positionvalues.positionname,
                 userID
               )
       
              // const request = axios.post('/log',InsertLogs.getLogs())
              // const response =  request.data
 
-             window.location.href = "/#/admin/assetstatusviewer"
+             window.location.href = "/#/admin/position-viewer"
               
 
             })
             .catch((err) => {
               alert(err);
             });
-        } else if(!statusvalues.statusid == "") {
+        } else if(!positionvalues.positionid == "") {
           /// update here
-          const success = await axios.post('/updateStatusbyID',statusvalues)
+          const success = await axios.post('/positions/updatePosition',positionvalues)
           .then((res) => {
           
             alert("Update Successful")
@@ -155,15 +205,15 @@ import {
               'Info',
               "Asset Status",
               "Function /handleUpdate",
-              ' Update StatusID : ' +  statusvalues.statusid
-              + ' Statusname :  ' + statusvalues.statusname,
+              ' Update Position ID : ' +  positionvalues.positionid
+              + ' Position Name :  ' + positionvalues.positionname,
               userID
             )
     
           //  const request = axios.post('/log',InsertLogs.getLogs())
           //  const response =  request.data
 
-           window.location.href = "/#/admin/assetstatusviewer"
+           window.location.href = "/#/admin/position-viewer"
             
           })
           .catch((err) => {
@@ -251,11 +301,28 @@ import {
           <FormControl>
           <Card>
             <Box>
+            <Select placeholder='Select option' size='md'
+             onChange={ e => {
+              setPosition( { ...values, departmentid: e.target.value } )}}
+              value={values.departmentid}
+             >
+              {departments.map((department) => (
+                <option value={department.departmentDisplayID} size='md'> 
+                  {department.departmentName}
+                </option>
+                ))
+                
+              }
+
+            </Select>
+
+            </Box>
+            <Box>
               <FormLabel fontSize={{ base: "sm" }}>Status Name:  </FormLabel>
-              <Input id='statusname' label="Status name" placeholder="Status Name" 
-              value={values.statusname}
+              <Input id='positionname' label="Position name" placeholder="Position Name" 
+              value={values.positionname}
               onChange={ e => {
-                setStatus( { ...values, statusname: e.target.value } )}}
+                setPosition( { ...values, positionname: e.target.value } )}}
               />    
             </Box>
             <Box>
@@ -263,7 +330,7 @@ import {
               <Input id='description' label="Description" placeholder="Description" 
               value={values.description}
               onChange={ e => {
-                setStatus( { ...values, description: e.target.value } )}}
+                setPosition( { ...values, description: e.target.value } )}}
               />    
             </Box>
             <Box>

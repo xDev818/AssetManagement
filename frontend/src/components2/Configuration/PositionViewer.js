@@ -1,24 +1,11 @@
 /* 
 
-    Date : 10 / 16 / 23
-    Author : Nole
-    Activities
-    Purpose : 
-      Create AssetStatus.js
-
-      import { Link as Anchor } from 'react-router-dom'
-      import Logs from 'components/Utils/logs_helper'
-      import axios from 'axios'
-
-      Create useEffect to load the Asset Status
-
     Date : 10 / 18 / 23
     Author : Nole
     Activities
     Purpose : 
-      update useEffect(() => { .. }
-      new function LoadAllStatus - use in useEffect and Delete Function
-      new function handleDelete for ( Delete asste by Stat ID )
+      create PositionViewer.js
+
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -42,43 +29,40 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
-export default function AssetStatusViewer() {
-  //const handleNew_Edit = (statusID) => {};
+export default function PositionViewer() {
 
-  /* 
 
-*/
+  
   var userID = ""
 
-  const [assetStatus, setStatus] = useState([]);
+  const [positions, setPositions] = useState([]);
 
   useEffect(() => {
-    LoadAllStatus()
+    LoadAllPositions()
   }, []);
 
-  const LoadAllStatus = async () => {
+  const LoadAllPositions = async () => {
     try {
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios.get("/getallStatus")
-        //axios.get('/getViewallStatus')
+      const success = await axios.get("/positions/viewallpositions")
+
         .then((res) => {
-          setStatus(res.data.result);
+          setPositions(res.data.result);
 
         })
         .catch((err) => {
           
           const InsertLogs = new Logs(
             'Error',
-            "Asset Status Viewer",
-            "Function /LoadAllStatus",
-            'LoadAllStatus',
+            "PositionViewer",
+            "Function /LoadAllPositions",
+            'LoadAllPositions',
             userID
           )
-
           
         });
     }
@@ -87,29 +71,30 @@ export default function AssetStatusViewer() {
     }
   }
 
-  const handleDelete = async (event,statusid,statusname) => {
+  const handleDelete = async (event,positionID,positionname) => {
 
     try {
       event.preventDefault()
-      //alert("Delete ID : " + statusid)
-      const deleteSuccess = await axios.post("/deleteStatusbyID",{statusid})
+      
+      const deleteSuccess = await axios.post("/positions/deletePosition",{positionID})
       .then((res) => {
 
-        alert("Delete Successfull")
+        alert("Delete succes")
 
-        LoadAllStatus()
+        LoadAllPositions()
 
         const deleteLogs = new Logs(
           'Info',
-          "Asset Status Viewer",
+          "Position Viewer",
           "Function /handleDelete",
-          'Delete statusID :  ' + statusid 
-          + '   Statusname :  ' + statusname,
+          'Delete statusID :  ' + positionID 
+          + '   Statusname :  ' + positionname,
           userID
         )
 
-        const request = axios.post('/log',deleteLogs.getLogs())
-        const response =  request.data
+        
+       // const request = axios.post('/log',deleteLogs.getLogs())
+       // const response =  request.data
         
 
       })
@@ -139,8 +124,8 @@ export default function AssetStatusViewer() {
               
               <Link
                   to={{
-                  pathname: "/admin/assetstatus",
-                  state: { assetstatID: '' },
+                  pathname: "/admin/position",
+                  state: { positionID: '' },
                   }}>
                 Create
               </Link>
@@ -150,18 +135,19 @@ export default function AssetStatusViewer() {
               <Thead>
                 <Tr>
                   <Th>Actions</Th>
-                  <Th>Status Name</Th>
+                  <Th>Position Name</Th>
+                  <Th>Department Name</Th>
                   <Th>Description</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {assetStatus.map((status) => (
-                  <Tr key={status.assetStatusID}>
+                {positions.map((position) => (
+                  <Tr key={position.id}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={(e) => handleDelete(e,status.assetStatusID,status.statusName)}
+                          onClick={(e) => handleDelete(e,position.id,position.positionName)}
                         >
                           Delete
                         </Button>
@@ -171,8 +157,8 @@ export default function AssetStatusViewer() {
                         >
                           <Link
                             to={{
-                            pathname: "/admin/assetstatus",
-                            state: { assetstatID: status.assetStatusID }
+                            pathname: "/admin/position",
+                            state: { positionID: position.id }
                             }}>
                            Edit
                           </Link>
@@ -180,8 +166,9 @@ export default function AssetStatusViewer() {
                   
                       </ButtonGroup>
                     </Td>
-                    <Td>{status.statusName}</Td>
-                    <Td>{status.statusDescription}</Td>
+                    <Td>{position.positionName}</Td>
+                    <Td>{position.departmentName}</Td>
+                    <Td>{position.description}</Td>
                   </Tr>
                 ))}
               </Tbody>

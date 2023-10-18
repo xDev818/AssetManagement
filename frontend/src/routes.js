@@ -8,9 +8,42 @@
              TO   : import DepartmentViewer from "components2/Configuration/DepartmentViewer";
            Reason : Reuse the previous components
 
-      new function LoadAllStatus - use in useEffect and Delete Function
-      new function handleDelete for ( Delete asste by Stat ID )
+      import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
+      import AssetStatus from "components2/views/AssetStatus";
+      import DepartmentViewer from "components2/Configuration/DepartmentViewer";
+      import Department from "components2/views/Department";
+      import PositionViewer from "components2/Configuration/PositionViewer";
 
+      REMOVE
+        {
+          submenu: "configuration",
+          path: "/status",
+          name: "Status",
+          component: StatusCategory,
+          layout: "/admin",
+        },
+
+        {
+          submenu: "configuration",
+          path: "/asset",
+          name: "Asset Configuration",
+          component: AssetCategory,
+          layout: "/admin",
+        },
+
+        {
+          submenu: "configuration",
+          path: "/position",
+          name: "Position",
+          component: PositionCategory,
+          layout: "/admin",
+        },
+
+        REMOVE
+      //import CreateStatusViewer from "components2/views/CreateStatusViewer";
+      //import StatusCategory from "components2/Configuration/StatusCategory";
+      //import PositionCategory from "components2/Configuration/PositionCategory";
+      //import AssetCategory from "components2/Configuration/AssetCategory";
 */
 
 // import
@@ -32,10 +65,6 @@ import CheckOut from "components2/Activity/CheckOut";
 import PullOut from "components2/Activity/PullOut";
 
 // Configuration submenus pages
-import AssetCategory from "components2/Configuration/AssetCategory";
-import PositionCategory from "components2/Configuration/PositionCategory";
-import StatusCategory from "components2/Configuration/StatusCategory";
-
 import Suppliers from "components2/Configuration/Suppliers";
 import UpdateProfile from "components2/Profile/UpdateProfile";
 
@@ -43,9 +72,13 @@ import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 import AssetStatus from "components2/views/AssetStatus";
 import DepartmentViewer from "components2/Configuration/DepartmentViewer";
 import Department from "components2/views/Department";
+import PositionViewer from "components2/Configuration/PositionViewer";
 
 
-import CreateStatusViewer from "components2/views/CreateStatusViewer";
+//import CreateStatusViewer from "components2/views/CreateStatusViewer";
+//import StatusCategory from "components2/Configuration/StatusCategory";
+//import PositionCategory from "components2/Configuration/PositionCategory";
+//import AssetCategory from "components2/Configuration/AssetCategory";
 
 import {
   HomeIcon,
@@ -56,6 +89,7 @@ import {
   RocketIcon,
   SupportIcon,
 } from "components/Icons/Icons";
+import Position from "components2/views/Position";
 
 var dashRoutes = [
   {
@@ -105,6 +139,20 @@ var dashRoutes = [
   // Configuration Menu
   {
     submenu: "configuration",
+    path: "/position-viewer",
+    name: "Position",
+    component: PositionViewer,
+    layout: "/admin",
+  },
+  
+  {
+    path: "/position",
+    name: "Create Position",
+    component: Position,
+    layout: "/admin",
+  },
+  {
+    submenu: "configuration",
     path: "/department-viewer",
     name: "Department",
     component: DepartmentViewer,
@@ -124,20 +172,6 @@ var dashRoutes = [
     component: Suppliers,
     layout: "/admin",
   },
-  {
-    submenu: "configuration",
-    path: "/asset",
-    name: "Asset Configuration",
-    component: AssetCategory,
-    layout: "/admin",
-  },
-  {
-    submenu: "configuration",
-    path: "/position",
-    name: "Position",
-    component: PositionCategory,
-    layout: "/admin",
-  },
 
   {
     submenu: "configuration",
@@ -153,13 +187,7 @@ var dashRoutes = [
     component: AssetStatus,
     layout: "/admin",
   },
-  {
-    submenu: "configuration",
-    path: "/status",
-    name: "Status",
-    component: StatusCategory,
-    layout: "/admin",
-  },
+
   // {
   //   path: "/createAssets",
   //   name: "Create Assets Status",

@@ -58,6 +58,7 @@ class Logs {
 
             alert(log_status.getMessage());
             console.log(log_status.getLogs());
+            
          }
 
          if (logStatus.includes("ERR_BAD_REQUEST")) {

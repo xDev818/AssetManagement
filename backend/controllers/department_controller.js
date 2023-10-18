@@ -106,7 +106,7 @@ const getallDepartments = ( request, response ) => {
                 result
             }
         )
-
+            console.log(result)
     })
 
 }
