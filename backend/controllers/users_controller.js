@@ -357,47 +357,50 @@ const getUserProfile = ( request, response ) => {
 // An Intance to update a user
 const updateUserProfile = ( request, response ) => {
 
-    const { userDisplayID } = request.params
+    // const { userDisplayID } = request.params
 
-    const {
+    console.log(request.params)
+    console.log(request.body)
 
-        firstname,
-        lastname,
-        email,
-        positionID,
-        categoryID,
-        displayname
+    // const {
 
-    } = request.body
+    //     firstname,
+    //     lastname,
+    //     email,
+    //     positionID,
+    //     categoryID,
+    //     displayname
 
-    const stmt = "UPDATE tblUsers SET `firstname` = ?,`lastname`= ?,`email`= ?,positionID = ?,"  
-    + "`groupTypeID` = ?,`displayName`= ?,`updatedBy`=?,`dateUpdated`=? WHERE `userDisplayID` = ?";
+    // } = request.body
 
-    mysql.query( stmt, [
-        firstname,
-        lastname,
-        email,
-        positionID,
-        categoryID,
-        displayname,
-        userDisplayID,
-        utils_getDate()
-    ], ( err, result ) => {
+    // const stmt = "UPDATE tblUsers SET `firstname` = ?,`lastname`= ?,`email`= ?,positionID = ?,"  
+    // + "`groupTypeID` = ?,`displayName`= ?,`updatedBy`=?,`dateUpdated`=? WHERE `userDisplayID` = ?";
 
-        if( err ) return response.status(400).send(
-            {
-                message: "Upload Error",
-                message2: err.message
-            }
-        )
+    // mysql.query( stmt, [
+    //     firstname,
+    //     lastname,
+    //     email,
+    //     positionID,
+    //     categoryID,
+    //     displayname,
+    //     userDisplayID,
+    //     utils_getDate()
+    // ], ( err, result ) => {
 
-        response.status(200).send(
-            {
-                message: "Upload Success"
-            }
-        )
+    //     if( err ) return response.status(400).send(
+    //         {
+    //             message: "Upload Error",
+    //             message2: err.message
+    //         }
+    //     )
 
-    })
+    //     response.status(200).send(
+    //         {
+    //             message: "Upload Success"
+    //         }
+    //     )
+
+    // })
 
 }
 
