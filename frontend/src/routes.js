@@ -14,6 +14,7 @@
       import Department from "components2/views/Department";
       import PositionViewer from "components2/Configuration/PositionViewer";
 
+
       REMOVE
         {
           submenu: "configuration",
@@ -65,7 +66,6 @@ import CheckOut from "components2/Activity/CheckOut";
 import PullOut from "components2/Activity/PullOut";
 
 // Configuration submenus pages
-import Suppliers from "components2/Configuration/Suppliers";
 import UpdateProfile from "components2/Profile/UpdateProfile";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
@@ -73,7 +73,9 @@ import AssetStatus from "components2/views/AssetStatus";
 import DepartmentViewer from "components2/Configuration/DepartmentViewer";
 import Department from "components2/views/Department";
 import PositionViewer from "components2/Configuration/PositionViewer";
-
+import Position from "components2/views/Position";
+import SuppliersViewer from "components2/Configuration/SuppliersViewer";
+import Suppliers from "components2/views/Suppliers";
 
 //import CreateStatusViewer from "components2/views/CreateStatusViewer";
 //import StatusCategory from "components2/Configuration/StatusCategory";
@@ -89,7 +91,7 @@ import {
   RocketIcon,
   SupportIcon,
 } from "components/Icons/Icons";
-import Position from "components2/views/Position";
+
 
 var dashRoutes = [
   {
@@ -164,15 +166,19 @@ var dashRoutes = [
     component: Department,
     layout: "/admin",
   },
-
   {
     submenu: "configuration",
-    path: "/suppliers",
+    path: "/suppliers-viewer",
     name: "Suppliers",
+    component: SuppliersViewer,
+    layout: "/admin",
+  },
+  {
+    path: "/suppliers",
+    name: "Create Suppliers",
     component: Suppliers,
     layout: "/admin",
   },
-
   {
     submenu: "configuration",
     path: "/assetstatusviewer",

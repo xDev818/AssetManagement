@@ -1,22 +1,10 @@
 /* 
-    Date : 10 / 16 / 23
-    Author : Nole
-    Activities
-    Purpose : 
-      create asset_status_controller.js for Asset Status
-
-    Date : 10 / 17 / 23
-    Author : Nole
-    Activities
-    Purpose : 
-      create function ViewAllAssetStatus
-      create function getAssetStatusbyID
-
     Date : 10 / 18 / 23
     Author : Nole
     Activities
     Purpose : 
-      create function deleteAssetStatus
+      create suppliers_controller.js
+      create function ViewAllAssetStatus
 */
 
 // Packages
@@ -28,21 +16,22 @@ const { randomUUID } = require('crypto')
 const { utils_getDate } = require('../utils/date_helper')
 
 
-// An instance to Create new Asset Status
-const createAssetStatus = ( request, response ) => {
+const createSupplier = ( request, response ) => {
 
     const id = randomUUID() 
-    const { statusname, description, userID  } = request.body
-
+    const { suppliername, address, contactno,email, userID  } = request.body
+   
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-    const stmt = "INSERT INTO tblAssetStatus(assetStatusID,statusName,statusDescription,"
-            + "createdBy,dateCreated) values (?)";
+    const stmt = "INSERT INTO tblSuppliers(supplierid,name,address,"
+            + "contactno,email,createdBy,dateCreated) values (?)";
     
     const values = [
         id,
-        statusname,
-        description,
+        suppliername,
+        address,
+        contactno,
+        email,
         userID,
         utils_getDate()
     ];
@@ -66,45 +55,38 @@ const createAssetStatus = ( request, response ) => {
 
 }
 
-// An instance to Load all Asset Status
+// An instance to Load all Suppliers
+const viewAllSuppliers = ( request, response ) => {
 
-const ViewAllAssetStatus = ( request, response ) => {
-
-    const stmt = "SELECT assetStatusID, statusName,statusDescription FROM tblAssetStatus"
-                + " order by statusName asc"
-           
+    const stmt = "SELECT supplierid as id,name as supplierName,address,contactno,email FROM tblSuppliers"
+            + " ORDER BY supplierName ASC"
+    
+             
     mysql.query( stmt, ( err, result ) => {
-
+       
         if( err ) return response.status(400).send(
             {
                 message: "No Records Found",
                 message2: err.message
             }
         )
-       
-       
+
          response.status(200).send(
              {
                  message: "Records Found",
                  result
              }
          )
-
-        //response.json({result,message: "Record Found"});
-
     })
 }
 
-// An instance to Load all Asset Status
-const getAssetStatusbyID = ( request, response ) => {
+const getSupplierID = ( request, response ) => {
 
     const { id } = request.params
 
+    const stmt = "SELECT supplierid as id,name as supplierName,address,contactno,email FROM tblSuppliers"
+            + " WHERE supplierid = ?"
     
-
-
-    const stmt = "SELECT assetStatusID,statusName,statusDescription FROM tblAssetStatus"
-                + " where assetStatusID = ?"
     
 
     mysql.query( stmt,[id], ( err, result ) => {
@@ -126,26 +108,17 @@ const getAssetStatusbyID = ( request, response ) => {
     })
 }
 
-// An instance to Update Asset Status by ID
 const updateAssetStatus = ( request, response ) => {
 
-    const { statusid, statusname, description, userID  } = request.body
+    const { supplierid, suppliername, address,contactno,email, userID  } = request.body
 
    
-    const stmt = "UPDATE tblAssetStatus SET statusName = ?,"
-    + "statusDescription = ?,updateBy = ?,dateUpdate = ?"
-    + " where assetStatusID = ?"
+    const stmt = "UPDATE tblSuppliers SET name = ?,"
+    + "address = ?,contactno = ?,email = ?, updateBy = ?,dateUpdate = ?"
+    + " where supplierid = ?"
     
-    // const values = [
-    //     statusname,
-    //     description,
-    //     userID,
-    //     utils_getDate(),
-    //     statusid
-    // ];
-
-   // console.log(values)
-    mysql.query( stmt, [statusname,description,userID,utils_getDate(),statusid], ( err, result ) => {
+  
+    mysql.query( stmt, [suppliername,address,contactno,email,userID,utils_getDate(),supplierid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -167,22 +140,14 @@ const updateAssetStatus = ( request, response ) => {
 }
 
 // An instance to Update Asset Status by ID
-const deleteAssetStatus = ( request, response ) => {
+const deleteSupplier = ( request, response ) => {
 
-    const { statusid} = request.body
+    const { supplierid} = request.body
 
-    const stmt = "DELETE FROM tblAssetStatus WHERE assetStatusID=?"
+    const stmt = "DELETE FROM tblSuppliers WHERE supplierid=?"
     
-    // const values = [
-    //     statusname,
-    //     description,
-    //     userID,
-    //     utils_getDate(),
-    //     statusid
-    // ];
-
-   // console.log(values)
-    mysql.query( stmt, [statusid], ( err, result ) => {
+   
+    mysql.query( stmt, [supplierid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -202,13 +167,12 @@ const deleteAssetStatus = ( request, response ) => {
     })
 
 }
-    
 
 module.exports = {
-    createAssetStatus,
-    ViewAllAssetStatus,
-    getAssetStatusbyID,
+    createSupplier,
+    viewAllSuppliers,
     updateAssetStatus,
-    deleteAssetStatus
+    deleteSupplier,
+    getSupplierID
 
 }
