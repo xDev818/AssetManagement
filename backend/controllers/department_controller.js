@@ -147,7 +147,6 @@ const updateDepartmentByID = ( request, response ) => {
 
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-   console.log("Values : " ,request.body)
 
    const stmt = "UPDATE tblDepartments SET departmentName = ?,description = ?,"
         + "updatedBy = ?,dateUpdated = ?"
