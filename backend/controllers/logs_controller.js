@@ -12,6 +12,8 @@ const putLog = ( request, response ) => {
     // Generate Random ID
     const id = randomUUID() 
 
+    console.log(request.body)
+
     const { logtype, module, logfunction, logvalues, userID } = request.body
 
     const stmt = "INSERT INTO tblLogs(logID,logtype,module,"

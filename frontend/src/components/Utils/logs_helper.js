@@ -1,3 +1,4 @@
+import axios from 'axios'
 class Logs {
 
    #errorDbConnection = "Server is not running"
@@ -30,6 +31,49 @@ class Logs {
    getMessage () {
 
       return this.logtype === "DB" ? this.#errorDbConnection : this.logvalues
+
+   }
+
+   async insertLogs ( logs ) {
+
+      try {
+
+         const request = await axios.post("/log", logs);
+         const response = await request.data;
+
+         console.log(response);
+
+       } catch (err) {
+
+         const logStatus = err.code;
+
+         if (logStatus.includes("ERR_NETWOR")) {
+            const log_status = new Logs(
+               "DB",
+               "Login",
+               "Function /loginHandler",
+               err,
+               ""
+            );
+
+            alert(log_status.getMessage());
+            console.log(log_status.getLogs());
+         }
+
+         if (logStatus.includes("ERR_BAD_REQUEST")) {
+            const log_status = new Logs(
+               "Error",
+               "Login",
+               "Function /loginHandler",
+               err.response.data.message,
+               ""
+            );
+
+            alert('Bad Request /log, ' + log_status.getMessage());
+            console.log(log_status.getLogs());
+         }
+
+      }
 
    }
 
