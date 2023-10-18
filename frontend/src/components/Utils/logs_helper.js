@@ -17,7 +17,7 @@ class Logs {
    getLogs () {
 
       const logValues = {
-         logtype: `Error: ${ this.logtype === "DB" ? this.#db : this.logtype }`,
+         logtype: `Error`,
          module: this.module,
          logfunction: this.logfunction,
          logvalues: this.logvalues,
@@ -50,8 +50,8 @@ class Logs {
          if (logStatus.includes("ERR_NETWOR")) {
             const log_status = new Logs(
                "DB",
-               "Login",
-               "Function /loginHandler",
+               this.module,
+               this.logfunction,
                err,
                ""
             );
@@ -63,8 +63,8 @@ class Logs {
          if (logStatus.includes("ERR_BAD_REQUEST")) {
             const log_status = new Logs(
                "Error",
-               "Login",
-               "Function /loginHandler",
+               this.module,
+               this.logfunction,
                err.response.data.message,
                ""
             );
