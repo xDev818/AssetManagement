@@ -85,7 +85,7 @@ import {
           
         } else {
           setbtnState("Save")
-            alert("Empty : " + statusID)
+           
             setStatus({
               ...values,
               statusid: '',

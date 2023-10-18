@@ -1,3 +1,18 @@
+/* 
+
+    Date : 10 / 18 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      update FROM : import Department from "components2/Configuration/Department";
+             TO   : import DepartmentViewer from "components2/Configuration/DepartmentViewer";
+           Reason : Reuse the previous components
+
+      new function LoadAllStatus - use in useEffect and Delete Function
+      new function handleDelete for ( Delete asste by Stat ID )
+
+*/
+
 // import
 import React, { Component } from "react";
 import Dashboard from "views/Dashboard/Dashboard.js";
@@ -20,12 +35,16 @@ import PullOut from "components2/Activity/PullOut";
 import AssetCategory from "components2/Configuration/AssetCategory";
 import PositionCategory from "components2/Configuration/PositionCategory";
 import StatusCategory from "components2/Configuration/StatusCategory";
-import Department from "components2/Configuration/Department";
+
 import Suppliers from "components2/Configuration/Suppliers";
 import UpdateProfile from "components2/Profile/UpdateProfile";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 import AssetStatus from "components2/views/AssetStatus";
+import DepartmentViewer from "components2/Configuration/DepartmentViewer";
+import Department from "components2/views/Department";
+
+
 import CreateStatusViewer from "components2/views/CreateStatusViewer";
 
 import {
@@ -86,11 +105,18 @@ var dashRoutes = [
   // Configuration Menu
   {
     submenu: "configuration",
-    path: "/department",
+    path: "/department-viewer",
     name: "Department",
+    component: DepartmentViewer,
+    layout: "/admin",
+  },
+  {
+    path: "/department",
+    name: "Create Department",
     component: Department,
     layout: "/admin",
   },
+
   {
     submenu: "configuration",
     path: "/suppliers",
