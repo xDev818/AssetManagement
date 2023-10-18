@@ -5,6 +5,18 @@
     Purpose : 
       create asset_status_controller.js for Asset Status
 
+    Date : 10 / 17 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      create function ViewAllAssetStatus
+      create function getAssetStatusbyID
+
+    Date : 10 / 18 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      create function deleteAssetStatus
 */
 
 // Packages
@@ -55,6 +67,7 @@ const createAssetStatus = ( request, response ) => {
 }
 
 // An instance to Load all Asset Status
+
 const ViewAllAssetStatus = ( request, response ) => {
 
     const stmt = "SELECT assetStatusID, statusName,statusDescription FROM tblAssetStatus"
@@ -92,7 +105,7 @@ const getAssetStatusbyID = ( request, response ) => {
     
 
 
-    const stmt = "SELECT statusName,statusDescription FROM tblAssetStatus"
+    const stmt = "SELECT assetStatusID,statusName,statusDescription FROM tblAssetStatus"
                 + " where assetStatusID = ?"
     
 
@@ -111,14 +124,93 @@ const getAssetStatusbyID = ( request, response ) => {
                  result
              }
          )
-         console.log(result)
+       
     })
+}
+
+// An instance to Update Asset Status by ID
+const updateAssetStatus = ( request, response ) => {
+
+    const { statusid, statusname, description, userID  } = request.body
+
+   
+    const stmt = "UPDATE tblAssetStatus SET statusName = ?,"
+    + "statusDescription = ?,updateBy = ?,dateUpdate = ?"
+    + " where assetStatusID = ?"
+    
+    // const values = [
+    //     statusname,
+    //     description,
+    //     userID,
+    //     utils_getDate(),
+    //     statusid
+    // ];
+
+   // console.log(values)
+    mysql.query( stmt, [statusname,description,userID,utils_getDate(),statusid], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+        
+        response.status(200).send(
+            {
+                message: "Update Success"
+            }
+        )
+        
+     
+
+    })
+
+}
+
+// An instance to Update Asset Status by ID
+const deleteAssetStatus = ( request, response ) => {
+
+    const { statusid} = request.body
+
+    const stmt = "DELETE FROM tblAssetStatus WHERE assetStatusID=?"
+    
+    // const values = [
+    //     statusname,
+    //     description,
+    //     userID,
+    //     utils_getDate(),
+    //     statusid
+    // ];
+
+   // console.log(values)
+    mysql.query( stmt, [statusid], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "Delete Error",
+                message2: err.message
+            }
+        )
+        
+        response.status(200).send(
+            {
+                message: "Delete Success"
+            }
+        )
+        
+     
+
+    })
+
 }
     
 
 module.exports = {
     createAssetStatus,
     ViewAllAssetStatus,
-    getAssetStatusbyID
+    getAssetStatusbyID,
+    updateAssetStatus,
+    deleteAssetStatus
 
 }

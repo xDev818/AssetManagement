@@ -4,8 +4,15 @@
     Activities
     Purpose : 
       create asset_status_routes.js for Asset Status
-         *** router.post('/status',createAssetStatus) 
-         *** router.get('/getViewallStatus',ViewAllAssetStatus)
+         Create router.post('/status',createAssetStatus) 
+         Create router.get('/getViewallStatus',ViewAllAssetStatus)
+        router.post('/updateStatusbyID',updateAssetStatus) // api to update Asset Status by ID
+
+    Date : 10 / 18 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        Create router.post('/deleteStatusbyID',deleteAssetStatus) // api to delete Asset Status by ID
 
 */
 
@@ -14,13 +21,16 @@ const { Router } = require('express')
 const {
     createAssetStatus,
     ViewAllAssetStatus,
-    getAssetStatusbyID
+    getAssetStatusbyID,
+    updateAssetStatus,
+    deleteAssetStatus
 } = require('../controllers/asset_status_controller')
 
 const router = Router()
 
 router.post('/status',createAssetStatus) //api call to create Asset Status
 router.get('/getallStatus',ViewAllAssetStatus) // api to view all Asset Status
-router.get('/getStatusbyID/:id',getAssetStatusbyID) // api to view all Asset Status
-
+router.get('/getStatusbyID/:id',getAssetStatusbyID) // api to view all Asset Status by ID
+router.post('/updateStatusbyID',updateAssetStatus) // api to update Asset Status by ID
+router.post('/deleteStatusbyID',deleteAssetStatus) // api to delete Asset Status by ID
 module.exports = router

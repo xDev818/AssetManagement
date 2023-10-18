@@ -13,6 +13,13 @@
 
       Create useEffect to Create/Update the Asset Status
 
+    Date : 10 / 18 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      update useEffect(() => { .. }
+      new function handleUpdate for ( Insert and Update )
+        
 */
 
 import { useLocation,Link } from 'react-router-dom'
@@ -44,29 +51,47 @@ import {
   
   export default function AssetStatus () {
 
-    const [values,setStatus] = useState([])
+    const [values,setStatus] = useState({
+      statusid:'',
+      statusname:'',
+      description:''
+  })
 
     const location = useLocation()
     const  statusID  = location.state?.assetstatID
+    const [btnstate,setbtnState] = useState()
+
 
     useEffect(() => {
-
+      
       try {
-       
+        
         if(statusID) {
-          alert("sss " + statusID)
+        
             axios.get('/getStatusbyID/' + statusID)
             .then((res) => {
-              setStatus(res.data.result);
-              
-              console.log(res.data.result);
+              setbtnState("Update")
+                setStatus({
+                  ...values,
+                  statusid: res.data.result[0].assetStatusID,
+                  statusname: res.data.result[0].statusName,
+                  description: res.data.result[0].statusDescription
+                })
+               
             })
             .catch((err) => {
-              console.log(err);
+              alert(err);
             });
           
         } else {
-          alert("Empty : " + statusID)
+          setbtnState("Save")
+            alert("Empty : " + statusID)
+            setStatus({
+              ...values,
+              statusid: '',
+              statusname: '',
+              description: ''
+            })
         }
 
       }
@@ -75,6 +100,151 @@ import {
       }
     }, [])
 
+    async function handleUpdate(event)  {
+
+      try {
+
+        event.preventDefault();
+        const tokenStorage = localStorage.getItem("token");
+        const tokenDecoded = decoder(tokenStorage);
+
+        const userID = tokenDecoded.result[0].userDisplayID;
+
+      
+
+        const statusvalues = {
+          statusid: values.statusid,
+          statusname: values.statusname,
+          description: values.description,
+          userID: userID
+        }
+
+        if(statusvalues.statusid === "") {
+            // insert here
+            const success = await axios.post('/status',statusvalues)
+            .then((res) => {
+            
+              alert("Insert Successful")
+
+              const InsertLogs = new Logs(
+                'Info',
+                "Asset Status",
+                "Function /handleUpdate",
+                ' Create   Statusname :  ' + statusvalues.statusname,
+                userID
+              )
+      
+              const request = axios.post('/log',InsertLogs.getLogs())
+              const response =  request.data
+
+             window.location.href = "/#/admin/assetstatusviewer"
+              
+
+            })
+            .catch((err) => {
+              alert(err);
+            });
+        } else if(!statusvalues.statusid == "") {
+          /// update here
+          const success = await axios.post('/updateStatusbyID',statusvalues)
+          .then((res) => {
+          
+            alert("Update Successful")
+
+            const InsertLogs = new Logs(
+              'Info',
+              "Asset Status",
+              "Function /handleUpdate",
+              ' Update StatusID : ' +  statusvalues.statusid
+              + ' Statusname :  ' + statusvalues.statusname,
+              userID
+            )
+    
+            const request = axios.post('/log',InsertLogs.getLogs())
+            const response =  request.data
+
+           window.location.href = "/#/admin/assetstatusviewer"
+            
+          })
+          .catch((err) => {
+           
+            const errorStatus = err.code
+      
+            if( errorStatus.includes('ERR_NETWORK') ) 
+            {
+
+              
+              const submitLogs = new Logs(
+                "DB",
+                "AssetStatus",
+                "Function /HandleSubmit",
+                err,
+                userID
+              )
+              
+              alert( submitLogs.getMessage() )
+
+            } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
+             
+              const submitLogs = new Logs(
+                'Error',
+                "Asset Status",
+                "Function /HandleSubmit",
+                err.response.data.message,
+                userID
+              )
+      
+              try {
+      
+                const request = axios.post('/log',submitLogs.getLogs())
+                const response =  request.data
+                console.log(response)
+      
+              } catch ( err ) {
+      
+                const logStatus = err.code
+      
+                if( logStatus.includes("ERR_NETWOR") ) {
+      
+                  const submitLogs = new Logs(
+                    "DB",
+                    "Asset Status",
+                    "Function /HandleSubmit",
+                    err,
+                    userID
+                  )
+      
+                  alert( submitLogs.getMessage() )
+                  console.log( submitLogs.getLogs() )
+      
+                }
+      
+                if( logStatus.includes("ERR_BAD_REQUEST") ) {
+      
+                  const submitLogs = new Logs(
+                    "Error",
+                    "Asset Status",
+                    "Function /HandleSubmit",
+                    err.response.data.message,
+                    userID
+                  )
+                  
+                  alert( submitLogs.getMessage() )
+                  console.log( submitLogs.getLogs() )
+      
+                }
+      
+              }
+
+          }});
+      }
+
+      }
+      catch (err) {
+        alert(err)
+      }
+    }
+    
     return (
 
         <Stack>
@@ -82,20 +252,29 @@ import {
           <Card>
             <Box>
               <FormLabel fontSize={{ base: "sm" }}>Status Name:  </FormLabel>
-              <Input id='statusname' label="Status name" placeholder="Status Name"  />    
+              <Input id='statusname' label="Status name" placeholder="Status Name" 
+              value={values.statusname}
+              onChange={ e => {
+                setStatus( { ...values, statusname: e.target.value } )}}
+              />    
             </Box>
             <Box>
               <FormLabel fontSize={{ base: "sm" }}>Description:  </FormLabel>
-              <Input id='description' label="Description" placeholder="Description" />    
+              <Input id='description' label="Description" placeholder="Description" 
+              value={values.description}
+              onChange={ e => {
+                setStatus( { ...values, description: e.target.value } )}}
+              />    
             </Box>
             <Box>
-            <Button colorScheme="green">
-              <Link
+            <Button colorScheme="green" onClick={handleUpdate}>
+              {/* <Link
                   to={{
                   pathname: "/admin/assetstatusviewer"
                   }}>
-                  Update Profile
-              </Link>
+              </Link> */}
+              {btnstate}
+
             </Button>
           </Box>
           </Card>

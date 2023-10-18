@@ -12,6 +12,13 @@
 
       Create useEffect to load the Asset Status
 
+    Date : 10 / 18 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      update useEffect(() => { .. }
+      new function LoadAllStatus - use in useEffect and Delete Function
+      new function handleDelete for ( Delete asste by Stat ID )
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -36,35 +43,73 @@ import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
 export default function AssetStatusViewer() {
-  const handleNew_Edit = (statusID) => {};
+  //const handleNew_Edit = (statusID) => {};
 
   /* 
 
 */
+  var userID = ""
 
   const [assetStatus, setStatus] = useState([]);
 
   useEffect(() => {
-    const tokenStorage = localStorage.getItem("token");
-    const tokenDecoded = decoder(tokenStorage);
-
-    const userID = tokenDecoded.result[0].userDisplayID;
-
-    axios.get("/getallStatus")
-      //axios.get('/getViewallStatus')
-      .then((res) => {
-        setStatus(res.data.result);
-        //console.log("userID : " , userID)
-        console.log(" What value : ", res.data.result);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    LoadAllStatus()
   }, []);
 
-  const handleDelete = (statID) => {
+  const LoadAllStatus = async () => {
+    try {
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
 
-    alert("Delete here by ID"  + statID )
+      userID = tokenDecoded.result[0].userDisplayID;
+
+      const success = await axios.get("/getallStatus")
+        //axios.get('/getViewallStatus')
+        .then((res) => {
+          setStatus(res.data.result);
+
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    catch(err) {
+      alert(err)
+    }
+  }
+
+  const handleDelete = async (event,statusid,statusname) => {
+
+    try {
+      event.preventDefault()
+      //alert("Delete ID : " + statusid)
+      const deleteSuccess = await axios.post("/deleteStatusbyID",{statusid})
+      .then((res) => {
+
+        alert("Delete Successfull")
+
+        LoadAllStatus()
+
+        const deleteLogs = new Logs(
+          'Info',
+          "Asset Status Viewer",
+          "Function /handleDelete",
+          'Delete statusID :  ' + statusid 
+          + '   Statusname :  ' + statusname,
+          userID
+        )
+
+        const request = axios.post('/log',deleteLogs.getLogs())
+        const response =  request.data
+        
+
+      })
+      .catch((err) => {
+        alert(err)
+      })
+    } catch(err) {
+        alert(err)
+    }
 
   }
 
@@ -101,24 +146,24 @@ export default function AssetStatusViewer() {
                 </Tr>
               </Thead>
               <Tbody>
-                {assetStatus.map((item) => (
-                  <Tr key={item.assetStatusID}>
+                {assetStatus.map((status) => (
+                  <Tr key={status.assetStatusID}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={() => handleDelete(item.assetStatusID)}
+                          onClick={(e) => handleDelete(e,status.assetStatusID,status.statusName)}
                         >
                           Delete
                         </Button>
                         <Button
                           colorScheme="blue"
-                          onClick={() => handleNew_Edit(item.assetStatusID)}
+                          
                         >
                           <Link
                             to={{
                             pathname: "/admin/assetstatus",
-                            state: { assetstatID: item.assetStatusID },
+                            state: { assetstatID: status.assetStatusID }
                             }}>
                            Edit
                           </Link>
@@ -126,8 +171,8 @@ export default function AssetStatusViewer() {
                   
                       </ButtonGroup>
                     </Td>
-                    <Td>{item.statusName}</Td>
-                    <Td>{item.statusDescription}</Td>
+                    <Td>{status.statusName}</Td>
+                    <Td>{status.statusDescription}</Td>
                   </Tr>
                 ))}
               </Tbody>
