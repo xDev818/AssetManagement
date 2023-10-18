@@ -48,6 +48,14 @@
                   window.location.href = "/";
                 }
 
+  ------------
+
+  Date : 10 / 18 / 23
+    Author : Josh
+    Activities
+    Purpose : 
+      Function:
+          - useEffectLogs.insertLogs( useEffectLogs.getLogs() )
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -163,39 +171,8 @@ function SignIn() {
         console.log(useEffectLogs.getLogs());
         buttonStatus.disabled = false;
 
-        try {
-          const request = await axios.post("/log", useEffectLogs.getLogs());
-          const response = await request.data;
-          console.log(response);
-        } catch (err) {
-          const logStatus = err.code;
+        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
 
-          if (logStatus.includes("ERR_NETWOR")) {
-            const log_status = new Logs(
-              "DB",
-              "Login",
-              "Function /loginHandler",
-              err,
-              ""
-            );
-
-            alert(log_status.getMessage());
-            console.log(log_status.getLogs());
-          }
-
-          if (logStatus.includes("ERR_BAD_REQUEST")) {
-            const log_status = new Logs(
-              logStatus,
-              "Login",
-              "Function /loginHandler",
-              err.response.data.message,
-              ""
-            );
-
-            alert(log_status.getMessage());
-            console.log(log_status.getLogs());
-          }
-        }
       }
     }
 
