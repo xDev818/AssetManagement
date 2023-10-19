@@ -22,40 +22,116 @@ Info : The code was made and controlled by Nole
 
 */ 
 
-import PDFAssetCategory from 'components2/views/pdfreports/PDFAssetCategory'
-import PDFAssetStatus from '../../components2/views/pdfreports/PDFAssetStatus'
-import PDFPosition from '../../components2/views/pdfreports/PDFPosition'
-import PDFDepartment from 'components2/views/pdfreports/PDFDepartment'
-import PDFSuppliers from 'components2/views/pdfreports/PDFSuppliers'
+import PDFReports from 'components2/views/pdfreports/PDFReports'
 
 
-import React from 'react'
+import React, { useState } from 'react'
+
 
 const generate_PDF =  (propdata,paramReportType) => {
+
+    var icount = 0
+    const rowdata = []
+
+    const ThreeColumn = ["#","Name","Description"];
+    const FourColumn = ["#","Position","Department", "Description"];
+    const vendorColumn  = ["#","Vendor","Address", "Contact No", "Email"];
+    
 
   
         if(paramReportType === 'Asset Status') {
 
-            PDFAssetStatus(propdata)
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const itempData = [
+                    icount.toString(),
+                    item.statusName,
+                    item.statusDescription
+                ];
+                rowdata.push(itempData)
+            });
+
+            PDFReports(rowdata,ThreeColumn,paramReportType)
 
         } else if (paramReportType === 'Position') {
-           PDFPosition(propdata)
+
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const itempData = [
+                    icount.toString(),
+                    item.positionName,
+                    item.departmentName,
+                    item.description
+                ];
+                rowdata.push(itempData)
+            });
+            PDFReports(rowdata,FourColumn,paramReportType)
+           // PDFPosition(propdata)
 
         } else if (paramReportType === 'Department') {
-            PDFDepartment(propdata)
- 
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const itempData = [
+                    icount.toString(),
+                    item.departmentName,
+                    item.description
+                ];
+                rowdata.push(itempData)
+            });
+            PDFReports(rowdata,ThreeColumn,paramReportType)
 
         } else if (paramReportType === 'Suppliers') {
-            alert("still working")
-            PDFSuppliers(propdata)
+            alert("working on presentation view")
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const itempData = [
+                    icount.toString(),
+                    item.supplierName,
+                    item.address,
+                    item.contactno,
+                    item.email
+                ];
+                rowdata.push(itempData)
+            });
+            PDFReports(rowdata,vendorColumn,paramReportType)
 
         } else if (paramReportType === 'Asset Category') {
-        
-            PDFAssetCategory(propdata)
+
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const itempData = [
+                    icount.toString(),
+                    item.assetCategName,
+                    item.description
+                    
+                ];
+                rowdata.push(itempData)
+            });
+            PDFReports(rowdata,ThreeColumn,paramReportType)
+
+         } else if (paramReportType === 'User Group') {
+ 
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const itempData = [
+                    icount.toString(),
+                    item.categoryName,
+                    item.categoryDesc
+                ];
+                rowdata.push(itempData)
+            });
+
+            PDFReports(rowdata,ThreeColumn,'User Group')
 
          }
    
-       }
+}
 
   
 export default generate_PDF;

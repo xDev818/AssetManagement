@@ -15,10 +15,10 @@ import React from 'react'
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-const PDFAssetStatus = (assetStatus) => {
+const PDFReports = (propdata,propColumn,propReportName) => {
  
     const doc = new jsPDF();
-    const totalAssetStatus = assetStatus.length.toString();
+    const total = propdata.length.toString();
     const datehelper = new Datehelper()
     try {
 
@@ -29,32 +29,20 @@ const PDFAssetStatus = (assetStatus) => {
         img.src = DefaultLogoReport
 
         // define the columns we want and their titles
-        const tableColumn = ["#","Status", "Description"];
+       // const tableColumn = propColumn
+        //["#","Position","Department", "Description"];
+
         // define an empty array of rows
         const tableRows = [];
-        var icount = 0
-
-        // for each ticket pass all its data into an array
-        assetStatus.forEach(status => {
-            icount = icount + 1
-            
-            const statusData = [
-                icount.toString(),
-                status.statusName,
-                status.statusDescription,
-            ];
-            // push each assets info into a row
-            tableRows.push(statusData);
-        });
-
+       
         doc.addImage(img, 'webp',10 ,5, 40,15)  // margin-left,margin-top,width , height
-        doc.text("Asset Status",150, 12 ); // margin-left,margin-top
+        doc.text("List : " + propReportName,150, 12 ); // margin-left,margin-top
         doc.setFontSize(10)
         doc.text('Date Generated : ' + dateGenerate,150,16)
-        doc.text('# of Status : ' + totalAssetStatus,150,21)
+        doc.text("# of " + propReportName + " : " + total,150,21)
         doc.line(10,25,200,25)
 
-        doc.autoTable(tableColumn, tableRows,{ startY: 30,horizontalPageBreak: true,horizontalPageBreakRepeat: 0, })
+        doc.autoTable(propColumn, propdata,{ startY: 30,horizontalPageBreak: true,horizontalPageBreakRepeat: 0, })
 
         var pageCount = doc.getCurrentPageInfo().pageNumber
 
@@ -73,7 +61,7 @@ const PDFAssetStatus = (assetStatus) => {
         }
 
         // we define the name of our PDF file to save.
-        doc.save(`AssetStatus_${dateStr}.pdf`);
+        doc.save(propReportName + `${dateStr}.pdf`);
     }
     catch(err) {
         alert(err)
@@ -81,5 +69,5 @@ const PDFAssetStatus = (assetStatus) => {
 
 }
 
-export default PDFAssetStatus;
+export default PDFReports;
 
