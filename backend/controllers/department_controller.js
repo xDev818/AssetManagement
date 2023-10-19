@@ -37,7 +37,7 @@ const createDepartment = ( request, response ) => {
         userID,
         utils_getDate()
     ];
-    console.log(values)
+    
     mysql.query( stmt, [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
@@ -106,7 +106,7 @@ const getallDepartments = ( request, response ) => {
                 result
             }
         )
-            console.log(result)
+           
     })
 
 }
