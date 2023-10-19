@@ -2,11 +2,19 @@
 /* 
 
 
+
     Date : 10 / 19 / 23
     Author : Nole
     Activities
     Purpose : 
       create AssetCategoryViewer.js
+
+    Date : 10 / 18 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      create SuppliersViewer.js
+
         
 */
 
@@ -54,7 +62,9 @@ export default function AssetCategoryViewer() {
       const success = await axios.get("/assetcategory/viewassetcategory")
 
         .then((res) => {
+
           setCategories(res.data.result);
+
 
         })
         .catch((err) => {
@@ -79,12 +89,17 @@ export default function AssetCategoryViewer() {
     try {
       event.preventDefault()
       
+
       const deleteSuccess = await axios.post("/assetcategory/deleteassetcategory",{asset_categoryid})
+
+
       .then((res) => {
 
         alert("Delete succes")
 
+
         LoadAllCategories()
+
 
         const deleteLogs = new Logs(
           'Info',
@@ -109,8 +124,10 @@ export default function AssetCategoryViewer() {
 
   const handleReport =() => {
       try {
+
           console.log(categories)
           generate_PDF(categories,'Asset Category')
+
 
       }
       catch(err) {
@@ -131,6 +148,7 @@ export default function AssetCategoryViewer() {
               <Anchor
                   to={{
                   pathname: "/admin/assetcategory",
+
                   state: { categoryID: '' },
                   }}>
                 New
@@ -182,6 +200,7 @@ export default function AssetCategoryViewer() {
                     </Td>
                     <Td>{category.assetCategName}</Td>
                     <Td>{category.description}</Td>
+
 
                   </Tr>
                 ))}

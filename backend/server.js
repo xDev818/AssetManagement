@@ -60,9 +60,11 @@
 require('dotenv').config()
 var express = require("express");
 var cors = require('cors');
+const fileUpload = require('express-fileupload')
 
 // Routes
 const usersRoutes = require('./routes/users_routes')
+const imageRoutes = require('./routes/images_routes')
 const positionsRoutes = require('./routes/positions_routes')
 const categoriesRoutes = require('./routes/categories_routes')
 const departmentRoutes = require('./routes/department_routes')
@@ -70,7 +72,9 @@ const logsRoutes = require('./routes/log_routes')
 const asset_status_routes = require('./routes/asset_status_routes')
 const supplier_routes = require('./routes/supplier_routes')
 const asset_category_routes = require('./routes/asset_category_routes')
+
 const usergroup_routes = require('./routes/usergroup_routes')
+
 
 // Server Initialization
 var app = express();
@@ -98,6 +102,7 @@ app.listen(process.env.PORT,() => {
 
 // Api's Routes
 app.use('/api', usersRoutes)
+app.use('/api', imageRoutes)
 app.use('/api', positionsRoutes)
 app.use('/api', categoriesRoutes)
 app.use('/api', departmentRoutes)
@@ -105,5 +110,7 @@ app.use('/api', logsRoutes)
 app.use('/api', logsRoutes)
 app.use('/api', asset_status_routes)
 app.use('/api', supplier_routes)
+
 app.use('/api', asset_category_routes)
 app.use('/api', usergroup_routes)
+

@@ -287,6 +287,7 @@ var dashRoutes = [
     layout: "/admin",
   },
 
+
   {
     submenu: "configuration",
     path: "/assetstype-viewer",
@@ -315,6 +316,7 @@ var dashRoutes = [
     component: UserGroup,
     layout: "/admin",
   },
+
 
   // End Configuration Menu
 

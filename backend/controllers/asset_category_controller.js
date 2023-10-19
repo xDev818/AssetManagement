@@ -18,6 +18,7 @@ const { randomUUID } = require('crypto')
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
 
+
 const createAssetCategory = ( request, response ) => {
 
     const id = randomUUID() 
@@ -61,7 +62,7 @@ const viewAllCategory = ( request, response ) => {
     const stmt = "SELECT assetCategID as id,assetCategName,description FROM tblAssetCategory"
             + " ORDER BY assetCategName ASC"
     
-  
+
     mysql.query( stmt, ( err, result ) => {
        
         if( err ) return response.status(400).send(
@@ -79,6 +80,7 @@ const viewAllCategory = ( request, response ) => {
          )
     })
 }
+
 
 const getCategoryByID = ( request, response ) => {
 
@@ -175,5 +177,6 @@ module.exports = {
     getCategoryByID,
     createAssetCategory,
     updateAssetCategory
+
 
 }

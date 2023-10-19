@@ -18,6 +18,7 @@ const {
     getCategoryByID,
     createAssetCategory,
     updateAssetCategory
+
 } = require('../controllers/asset_category_controller')
 
 const router = Router()
@@ -30,3 +31,4 @@ router.post('/assetcategory/updateAssetCategory',updateAssetCategory)
 
 
 module.exports = router
+

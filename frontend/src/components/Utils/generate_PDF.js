@@ -44,6 +44,7 @@ const generate_PDF =  (propdata,paramReportType) => {
         } else if (paramReportType === 'Department') {
             PDFDepartment(propdata)
  
+
         } else if (paramReportType === 'Suppliers') {
             alert("still working")
             PDFSuppliers(propdata)
@@ -51,6 +52,8 @@ const generate_PDF =  (propdata,paramReportType) => {
         } else if (paramReportType === 'Asset Category') {
         
             PDFAssetCategory(propdata)
+
+         }
 
        }
     
