@@ -57,6 +57,7 @@ const departmentRoutes = require('./routes/department_routes')
 const logsRoutes = require('./routes/log_routes')
 const asset_status_routes = require('./routes/asset_status_routes')
 const supplier_routes = require('./routes/supplier_routes')
+const asset_category_routes = require('./routes/asset_category_routes')
 
 // Server Initialization
 var app = express();
@@ -92,3 +93,4 @@ app.use('/api', logsRoutes)
 app.use('/api', logsRoutes)
 app.use('/api', asset_status_routes)
 app.use('/api', supplier_routes)
+app.use('/api', asset_category_routes)

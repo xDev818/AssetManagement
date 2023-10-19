@@ -32,26 +32,26 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
-export default function SuppliersViewer() {
+export default function AssetCategoryViewer() {
 
 
   
   var userID = ""
 
-  const [suppliers, setSuppliers] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    LoadAllSuppliers()
+    LoadAllCategories()
   }, []);
 
-  const LoadAllSuppliers = async () => {
+  const LoadAllCategories = async () => {
     try {
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios.get("/suppliers/viewallsuppliers")
+      const success = await axios.get("/assetcategory/viewassetcategory")
 
         .then((res) => {
           setSuppliers(res.data.result);
@@ -74,12 +74,12 @@ export default function SuppliersViewer() {
     }
   }
 
-  const handleDelete = async (event,supplierid,suppliername) => {
+  const handleDelete = async (event,asset_categoryid,asset_categoryname) => {
 
     try {
       event.preventDefault()
       
-      const deleteSuccess = await axios.post("/suppliers/deleteSupplier",{supplierid})
+      const deleteSuccess = await axios.post("/suppliers/deleteSupplier",{asset_categoryid})
       .then((res) => {
 
         alert("Delete succes")
@@ -90,8 +90,8 @@ export default function SuppliersViewer() {
           'Info',
           "Position Viewer",
           "Function /handleDelete",
-          'Delete statusID :  ' + supplierid
-          + '   Statusname :  ' + suppliername,
+          'Delete statusID :  ' + asset_categoryid
+          + '   Statusname :  ' + asset_categoryname,
           userID
         )
 
@@ -130,7 +130,7 @@ export default function SuppliersViewer() {
      
               <Anchor
                   to={{
-                  pathname: "/admin/suppliers",
+                  pathname: "/admin/assetcategory",
                   state: { supplierID: '' },
                   }}>
                 New
@@ -173,7 +173,7 @@ export default function SuppliersViewer() {
                         >
                           <Link
                             to={{
-                            pathname: "/admin/suppliers",
+                            pathname: "/admin/assetcategory",
                             state: { supplierID: supplier.id }
                             }}>
                            Edit
