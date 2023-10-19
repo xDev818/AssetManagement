@@ -45,6 +45,19 @@
       //import StatusCategory from "components2/Configuration/StatusCategory";
       //import PositionCategory from "components2/Configuration/PositionCategory";
       //import AssetCategory from "components2/Configuration/AssetCategory";
+
+    Date : 10 / 19 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        Remove :
+          // {
+          //   path: "/createAssets",
+          //   name: "Create Assets Status",
+          //   component: CreateStatusViewer,
+          //   layout: "/admin",
+          // },
+
 */
 
 // import
@@ -193,13 +206,6 @@ var dashRoutes = [
     component: AssetStatus,
     layout: "/admin",
   },
-
-  // {
-  //   path: "/createAssets",
-  //   name: "Create Assets Status",
-  //   component: CreateStatusViewer,
-  //   layout: "/admin",
-  // },
 
   // End Configuration Menu
   {
