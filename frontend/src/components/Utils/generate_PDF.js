@@ -54,7 +54,7 @@ const generate_PDF =  (propdata,paramReportType) => {
             PDFAssetCategory(propdata)
 
          }
-
+   
        }
 
   

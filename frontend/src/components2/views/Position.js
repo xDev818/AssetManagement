@@ -64,7 +64,7 @@ import {
 
   const [departments, setDepartments] = useState([]);
   
-
+    
     const location = useLocation()
     const  positionID  = location.state?.positionID
     const [btnstate,setbtnState] = useState()
