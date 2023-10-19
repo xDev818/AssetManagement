@@ -7,6 +7,7 @@
     Purpose : 
       create UserGroupViewer.js
 
+*/
 
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
