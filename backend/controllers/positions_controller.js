@@ -146,7 +146,7 @@ const updatePosition = (request, response) => {
     + "departmentDisplayID = ?,updateBy = ?,dateUpdated = ?" 
     + " where positionDisplayID = ? "
 
-  console.log(request.body)
+  
     mysql.query( stmt, [positionname,description,
                 departmentid,userID,utils_getDate(),positionid], ( err, result ) => {
 
@@ -171,7 +171,7 @@ const deletePosition = (request, response) => {
 
   const { positionID } = request.body
 
-  console.log(positionID)
+ 
 
   const stmt = "DELETE FROM tblPositions WHERE positionDisplayID=?";
 
@@ -188,7 +188,7 @@ const deletePosition = (request, response) => {
         
       });
 
-      console.log(response.message)
+     
     })
 };
 
