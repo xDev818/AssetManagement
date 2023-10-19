@@ -234,15 +234,23 @@ var dashRoutes = [
     component: AssetStatus,
     layout: "/admin",
   },
-
-  // {
-  //   path: "/createAssets",
-  //   name: "Create Assets Status",
-  //   component: CreateStatusViewer,
-  //   layout: "/admin",
-  // },
-
+  {
+    submenu: "configuration",
+    path: "/assetscategory-viewer",
+    name: "Asset Category",
+    icon: <HomeIcon color="inherit" />,
+    component: AssetCategoryViewer,
+    layout: "/admin",
+  },
+  {
+    path: "/assetcategory",
+    name: "Create Assets Category",
+    component: AssetCategory,
+    layout: "/admin",
+  },
+  
   // End Configuration Menu
+
   {
     path: "/tables",
     name: "Tables",

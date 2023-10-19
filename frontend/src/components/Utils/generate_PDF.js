@@ -1,5 +1,8 @@
 /* 
 
+Info : The code was made and controlled by Nole 
+            The current Author can add and update the codes
+
     Date : 10 / 18 / 23
     Author : Nole
     Activities
@@ -15,22 +18,22 @@ import PDFSuppliers from 'components2/views/pdfreports/PDFSuppliers'
 
 import React from 'react'
 
-const generate_PDF =  (paramQuery,paramReportType) => {
+const generate_PDF =  (propdata,paramReportType) => {
 
   
         if(paramReportType === 'Asset Status') {
 
-            PDFAssetStatus(paramQuery)
+            PDFAssetStatus(propdata)
 
         } else if (paramReportType === 'Position') {
-           PDFPosition(paramQuery)
+           PDFPosition(propdata)
 
         } else if (paramReportType === 'Department') {
-            PDFDepartment(paramQuery)
+            PDFDepartment(propdata)
  
          } else if (paramReportType === 'Suppliers') {
-            alert("working with bug")
-            PDFSuppliers(paramQuery)
+            alert("still working")
+            PDFSuppliers(propdata)
  
          }
 
