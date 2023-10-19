@@ -8,6 +8,17 @@ Info : The code was made and controlled by Nole
     Activities
     Purpose : 
         create generate_PDF.js
+        import PDFAssetStatus from '../../components2/views/pdfreports/PDFAssetStatus'
+         import PDFPosition from '../../components2/views/pdfreports/PDFPosition'
+         import PDFDepartment from 'components2/views/pdfreports/PDFDepartment'
+         import PDFSuppliers from 'components2/views/pdfreports/PDFSuppliers'
+
+
+    Date : 10 / 19 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        import PDFAssetCategory from 'components2/views/pdfreports/PDFAssetCategory'
 
 */ 
 

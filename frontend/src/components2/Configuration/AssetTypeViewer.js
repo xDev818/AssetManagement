@@ -32,19 +32,19 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
-export default function AssetCategoryViewer() {
+export default function AssetTypeViewer() {
 
 
   
   var userID = ""
 
-  const [categories, setCategories] = useState([]);
+  const [assettype, setAssetType] = useState([]);
 
   useEffect(() => {
-    LoadAllCategories()
+    LoadAllAssetType()
   }, []);
 
-  const LoadAllCategories = async () => {
+  const LoadAllAssetType = async () => {
     try {
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
@@ -54,7 +54,7 @@ export default function AssetCategoryViewer() {
       const success = await axios.get("/assetcategory/viewassetcategory")
 
         .then((res) => {
-          setCategories(res.data.result);
+          setAssetType(res.data.result);
 
         })
         .catch((err) => {
