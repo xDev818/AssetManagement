@@ -6,7 +6,7 @@
     Activities
     Purpose : 
       create UserGroupViewer.js
-
+ 
 */
 
 import { Link as Anchor } from "react-router-dom";
