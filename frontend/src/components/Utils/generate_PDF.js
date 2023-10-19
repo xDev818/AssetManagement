@@ -11,10 +11,12 @@ Info : The code was made and controlled by Nole
 
 */ 
 
+import PDFAssetCategory from 'components2/views/pdfreports/PDFAssetCategory'
 import PDFAssetStatus from '../../components2/views/pdfreports/PDFAssetStatus'
 import PDFPosition from '../../components2/views/pdfreports/PDFPosition'
 import PDFDepartment from 'components2/views/pdfreports/PDFDepartment'
 import PDFSuppliers from 'components2/views/pdfreports/PDFSuppliers'
+
 
 import React from 'react'
 
@@ -31,12 +33,15 @@ const generate_PDF =  (propdata,paramReportType) => {
         } else if (paramReportType === 'Department') {
             PDFDepartment(propdata)
  
-         } else if (paramReportType === 'Suppliers') {
+        } else if (paramReportType === 'Suppliers') {
             alert("still working")
             PDFSuppliers(propdata)
- 
-         }
 
+        } else if (paramReportType === 'Asset Category') {
+        
+            PDFAssetCategory(propdata)
+
+       }
     
 }
 

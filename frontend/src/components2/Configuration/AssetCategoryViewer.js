@@ -54,7 +54,7 @@ export default function AssetCategoryViewer() {
       const success = await axios.get("/assetcategory/viewassetcategory")
 
         .then((res) => {
-          setSuppliers(res.data.result);
+          setCategories(res.data.result);
 
         })
         .catch((err) => {
@@ -79,12 +79,12 @@ export default function AssetCategoryViewer() {
     try {
       event.preventDefault()
       
-      const deleteSuccess = await axios.post("/suppliers/deleteSupplier",{asset_categoryid})
+      const deleteSuccess = await axios.post("/assetcategory/deleteassetcategory",{asset_categoryid})
       .then((res) => {
 
         alert("Delete succes")
 
-        LoadAllSuppliers()
+        LoadAllCategories()
 
         const deleteLogs = new Logs(
           'Info',
@@ -109,8 +109,8 @@ export default function AssetCategoryViewer() {
 
   const handleReport =() => {
       try {
-
-          generate_PDF(suppliers,'Suppliers')
+          console.log(categories)
+          generate_PDF(categories,'Asset Category')
 
       }
       catch(err) {
@@ -131,7 +131,7 @@ export default function AssetCategoryViewer() {
               <Anchor
                   to={{
                   pathname: "/admin/assetcategory",
-                  state: { supplierID: '' },
+                  state: { categoryID: '' },
                   }}>
                 New
               </Anchor>
@@ -150,20 +150,18 @@ export default function AssetCategoryViewer() {
               <Thead>
                 <Tr>
                   <Th>Actions</Th>
-                  <Th>Supplier</Th>
-                  <Th>Address</Th>
-                  <Th>Contact No</Th>
-                  <Th>Email</Th>
+                  <Th>Asset Category</Th>
+                  <Th>Description</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {suppliers.map((supplier) => (
-                  <Tr key={supplier.id}>
+                {categories.map((category) => (
+                  <Tr key={category.id}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={(e) => handleDelete(e,supplier.id,supplier.supplierName)}
+                          onClick={(e) => handleDelete(e,category.id,category.assetCategName)}
                         >
                           Delete
                         </Button>
@@ -174,7 +172,7 @@ export default function AssetCategoryViewer() {
                           <Link
                             to={{
                             pathname: "/admin/assetcategory",
-                            state: { supplierID: supplier.id }
+                            state: { categoryID: category.id }
                             }}>
                            Edit
                           </Link>
@@ -182,10 +180,9 @@ export default function AssetCategoryViewer() {
                   
                       </ButtonGroup>
                     </Td>
-                    <Td>{supplier.supplierName}</Td>
-                    <Td>{supplier.address}</Td>
-                    <Td>{supplier.contactno}</Td>
-                    <Td>{supplier.email}</Td>
+                    <Td>{category.assetCategName}</Td>
+                    <Td>{category.description}</Td>
+
                   </Tr>
                 ))}
               </Tbody>

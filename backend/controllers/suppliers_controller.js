@@ -139,7 +139,7 @@ const updateAssetStatus = ( request, response ) => {
 
 }
 
-// An instance to Update Asset Status by ID
+// An instance to delete Catgegory by ID
 const deleteSupplier = ( request, response ) => {
 
     const { supplierid} = request.body

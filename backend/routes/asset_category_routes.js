@@ -13,9 +13,20 @@ Info : The routes was made and controlled by Jinshin
 const { Router } = require('express')
 
 const {
-    viewAllCategory
+    viewAllCategory,
+    deleteAssetCategory,
+    getCategoryByID,
+    createAssetCategory,
+    updateAssetCategory
 } = require('../controllers/asset_category_controller')
 
 const router = Router()
 
-router.post('/assetcategory/viewassetcategory',viewAllCategory) //api call to insert new suppliers
+router.get('/assetcategory/viewassetcategory',viewAllCategory) 
+router.post('/assetcategory/deleteassetcategory',deleteAssetCategory) 
+router.get('/assetcategory/getCategoryByID/:id',getCategoryByID) 
+router.post('/assetcategory/createAssetCategory',createAssetCategory) 
+router.post('/assetcategory/updateAssetCategory',updateAssetCategory) 
+
+
+module.exports = router
