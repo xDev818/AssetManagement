@@ -41,7 +41,7 @@ const PDFReports = (propdata,propColumn,propReportName) => {
         doc.text('Date Generated : ' + dateGenerate,150,16)
         doc.text("# of " + propReportName + " : " + total,150,21)
         doc.line(10,25,200,25)
-
+ 
         doc.autoTable(propColumn, propdata,{ startY: 30,horizontalPageBreak: true,horizontalPageBreakRepeat: 0, })
 
         var pageCount = doc.getCurrentPageInfo().pageNumber
