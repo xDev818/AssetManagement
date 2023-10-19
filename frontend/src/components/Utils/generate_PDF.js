@@ -52,10 +52,10 @@ const generate_PDF =  (propdata,paramReportType) => {
         } else if (paramReportType === 'Asset Category') {
         
             PDFAssetCategory(propdata)
- 
+
          }
 
        }
-    
+
   
 export default generate_PDF;
