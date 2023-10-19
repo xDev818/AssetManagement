@@ -19,3 +19,5 @@ const {
 const router = Router()
 
 router.post('/assetcategory/viewassetcategory',viewAllCategory) //api call to insert new suppliers
+
+module.exports = router // You forgot to export the module
