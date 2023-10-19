@@ -70,6 +70,19 @@
           layout: "/admin",
         },
       ***** End creating menu
+
+    Date : 10 / 19 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        Remove :
+          // {
+          //   path: "/createAssets",
+          //   name: "Create Assets Status",
+          //   component: CreateStatusViewer,
+          //   layout: "/admin",
+          // },
+          // 
 */
 
 // import
@@ -219,20 +232,6 @@ var dashRoutes = [
     path: "/assetstatus",
     name: "Create Assets Status",
     component: AssetStatus,
-    layout: "/admin",
-  },
-  {
-    submenu: "configuration",
-    path: "/assetscategory-viewer",
-    name: "Asset Category",
-    icon: <HomeIcon color="inherit" />,
-    component: AssetCategoryViewer,
-    layout: "/admin",
-  },
-  {
-    path: "/assetcategory",
-    name: "Create Assets Category",
-    component: AssetCategory,
     layout: "/admin",
   },
 
