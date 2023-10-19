@@ -17,7 +17,7 @@ class Logs {
    getLogs () {
 
       const logValues = {
-         logtype: `Error`,
+         logtype: this.logtype,
          module: this.module,
          logfunction: this.logfunction,
          logvalues: this.logvalues,

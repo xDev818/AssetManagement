@@ -13,14 +13,18 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, useRef } from "react";
 import decoder from "jwt-decode";
 import axios from 'axios'
+import Logs from "components/Utils/logs_helper";
 
 // Jinshin
 const myFunc = ( states, action ) => {
 
   switch( action.type ) {
+
+    case 'myRole' : 
+        return { ...states, user_role: action.payload }
 
     case 'myDepartment' :
         return { ...states, department: action.payload }
@@ -48,6 +52,7 @@ const myFunc = ( states, action ) => {
 
 const ACTION = {
 
+  ROLE : 'myRole',
   DEPARTMENT : 'myDepartment',
   FIRSTNAME : 'myFirstname',
   LASTNAME : 'myLastname',
@@ -60,17 +65,20 @@ const ACTION = {
 export default function UpdateProfile() {
 
   //Jinshin
-  const [ states, dispatch ] = useReducer( myFunc, { department: '', firstname: '', lastname: '', email: '', password: '', confirm_password: '' })
+  const [ states, dispatch ] = useReducer( myFunc, { user_role: '', department: '', firstname: '', lastname: '', email: '', password: '', confirm_password: '' })
   // End Jinshin
 
   const [data, setData] = useState();
   const token = window.localStorage.getItem("token");
+  const button = useRef(null)
   useEffect(() => {
     const decoded = decoder(token)
     setData(decoded?.result[0]);
-  }, []);
-
+  }, [setData]);
+  data && console.log(data)
   // Destructuring personal info
+  const firstname = data?.firstname
+  const lastname = data?.lastname
   const displayID = data?.userDisplayID
   const department = data?.departmentName
   const email = data?.email
@@ -80,25 +88,71 @@ export default function UpdateProfile() {
   // Jinshin
   const updateHandler = async () => {
 
-    console.log(data)
+    const buttonStatus = button.current
+    buttonStatus.disabled = true;
 
     const values = {
-      department: states.department,
-      firstname: states.firstname,
-      lastname: states.lastname,
-      email: states.email,
+      role: states.user_role || userRole,
+      department: states.department || department,
+      firstname: states.firstname || firstname,
+      lastname: states.lastname || lastname,
+      email: states.email || email,
       password: states.password,
     }
+
+    // Tasks
+    //  fix the image . make a seperate api call for it
+    //  add password then match it, if match then update success else, use bcrypt if password has length else use the old one
+    //  fetch the password in the set data data?.password
+    //  is complete user will be redirected to dashboard
 
     try {
 
       const request = await axios.put(`/users/${displayID}`, values)
       const response = await request.data
-      console.log(response)
+      if ( response.message.includes('Updated Successfully') ) {
+
+        localStorage.setItem("token", response.token);
+        buttonStatus.disabled = false;
+        window.location.reload()
+
+      }
 
     } catch ( err ) {
 
-      console.log( err )
+      const errorStatus = err.code;
+
+      if (errorStatus.includes("ERR_NETWORK")) {
+        const useEffectLogs = new Logs(
+          "DB",
+          "Login",
+          "Function /loginHandler",
+          err,
+          ""
+        );
+
+        alert(useEffectLogs.getMessage());
+        console.log(useEffectLogs.getLogs());
+        buttonStatus.disabled = false;
+      }
+
+      if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        const useEffectLogs = new Logs(
+          errorStatus,
+          "Login",
+          "Function /loginHandler",
+          err.response.data.message,
+          ""
+        );
+        useEffectLogs.getLogs();
+
+        alert(useEffectLogs.getMessage());
+        console.log(useEffectLogs.getLogs());
+        buttonStatus.disabled = false;
+
+        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
+
+      }
 
     }
 
@@ -136,28 +190,32 @@ export default function UpdateProfile() {
           <input type="file" mt={4} />
         </Flex>
         <Stack gap={2} mt={10}>
-          <FormLabel>Position: {userRole}</FormLabel>
+          <FormLabel>Position: { states.user_role || userRole}</FormLabel>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Department</FormLabel>
-            <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )} defaultValue={ states.department || department }>
-              <option value="option1">IT</option>
-              <option value="option2">Admin</option>
-              <option value="option3">Support Desk</option>
+            <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
+              <option value={ department }> { department } </option>
+              <option value="Production">Production</option>
+              <option value="Accounting">Accounting</option>
+              <option value="Marketing">Marketing</option>
+              <option value="HR">HR</option>
+              <option value="ITDepartment">ITDepartment</option>
+              <option value="Default Department">Default Department</option>
             </Select>
           </Box>
           <Grid templateColumns="repeat(2, 1fr)" gap={5}>
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>First Name</FormLabel>
-              <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname } />
+              <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
             </GridItem>
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>Last Name</FormLabel>
-              <Input onChange={ ( e ) => dispatch( { type: ACTION.LASTNAME, payload: e.target.value } )}  placeholder="Lastname..." defaultValue={ states.lastname } />
+              <Input onChange={ ( e ) => dispatch( { type: ACTION.LASTNAME, payload: e.target.value } )}  placeholder="Lastname..." defaultValue={ states.lastname || lastname } />
             </GridItem>
           </Grid>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Email Address</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.EMAIL, payload: e.target.value } )} defaultValue={ states.email || email} placeholder="Email..." />
+            <Input onChange={ ( e ) => dispatch( { type: ACTION.EMAIL, payload: e.target.value } )} defaultValue={ email } placeholder="Email..." />
           </Box>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Password</FormLabel>
@@ -169,7 +227,7 @@ export default function UpdateProfile() {
           </Box>
 
           <Box>
-            <Button colorScheme="green" onClick={ updateHandler }>Update Profile</Button>
+            <Button ref={button} colorScheme="green" onClick={ updateHandler }>Update Profile</Button>
           </Box>
         </Stack>
       </FormControl>
