@@ -21,6 +21,7 @@
       new function handleDelete for ( Delete asste by Stat ID )
       new function handleReport 
         *** Generate PDF Report
+        
 */
 
 import { Link as Anchor } from "react-router-dom";
