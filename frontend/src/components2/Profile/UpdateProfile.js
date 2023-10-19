@@ -1,3 +1,19 @@
+/* 
+
+    Date : 10 / 19 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Update Profile
+          *** add var userID = ''
+          *** Add useEffect() to get all User Group
+          *** function  LoadAllUserGroups()
+          *** function LoadAllPositions()
+          *** later to fix Load Data based on userGroup assgined (LoadAllUserGroups() , LoadAllPositions())
+          
+
+*/
+
 import {
   Box,
   Flex,
@@ -67,6 +83,11 @@ export default function UpdateProfile() {
   //Jinshin
   const [ states, dispatch ] = useReducer( myFunc, { user_role: '', department: '', firstname: '', lastname: '', email: '', password: '', confirm_password: '' })
   // End Jinshin
+
+  //Nole
+  var userID = ''
+  const [usergroups, setUserGroups] = useState([]);
+  const [positions, setPositions] = useState([]);
 
   const [data, setData] = useState();
   const token = window.localStorage.getItem("token");
@@ -158,6 +179,79 @@ export default function UpdateProfile() {
 
   }
 
+  useEffect(() => {
+    
+    try {
+
+      LoadAllUserGroups()
+      LoadAllPositions()
+    }
+    catch(err) {
+      alert(err)
+    }
+
+  }, [])
+
+  const LoadAllUserGroups = async () => {
+    try {
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
+
+      userID = tokenDecoded.result[0].userDisplayID;
+
+      const success = await axios.get("/usergroup/viewuser-group")
+
+        .then((res) => {
+          setUserGroups(res.data.result);
+
+        })
+        .catch((err) => {
+          
+          const InsertLogs = new Logs(
+            'Error',
+            "PositionViewer",
+            "Function /LoadAllPositions",
+            'LoadAllPositions',
+            userID
+          )
+          
+        });
+    }
+    catch(err) {
+      alert(err)
+    }
+  }
+
+  const LoadAllPositions = async () => {
+    try {
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
+
+      userID = tokenDecoded.result[0].userDisplayID;
+
+      const success = await axios.get("/positions/viewallpositions")
+
+        .then((res) => {
+          setPositions(res.data.result);
+        
+        })
+        .catch((err) => {
+          
+          const InsertLogs = new Logs(
+            'Error',
+            "PositionViewer",
+            "Function /LoadAllPositions",
+            'LoadAllPositions',
+            userID
+          )
+          
+        });
+    }
+    catch(err) {
+      alert(err)
+    }
+  }
+
   return (
     <Card
       w={{ base: "auto", md: "auto", lg: "auto" }}
@@ -190,10 +284,24 @@ export default function UpdateProfile() {
           <input type="file" mt={4} />
         </Flex>
         <Stack gap={2} mt={10}>
-          <FormLabel>Position: { states.user_role || userRole}</FormLabel>
+          <FormLabel>User Group: { states.user_role || userRole}</FormLabel>
+          <Select placeholder='Select option' size='md'
+            //  onChange={ e => {
+            //   setUserGroups( { ...values, departmentid: e.target.value } )}}
+            //   value={usergroups.}
+             >
+              {usergroups.map((group) => (
+                <option value={group.id} size='md'> 
+                  {group.categoryName}
+                </option>
+                ))
+                
+              }
+
+            </Select>
           <Box>
-            <FormLabel fontSize={{ base: "sm" }}>Department</FormLabel>
-            <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
+            <FormLabel fontSize={{ base: "sm" }}>Position : </FormLabel>
+            {/* <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
               <option value={ department }> { department } </option>
               <option value="Production">Production</option>
               <option value="Accounting">Accounting</option>
@@ -201,6 +309,20 @@ export default function UpdateProfile() {
               <option value="HR">HR</option>
               <option value="ITDepartment">ITDepartment</option>
               <option value="Default Department">Default Department</option>
+            </Select> */}
+            <Select placeholder='Select option' size='md'
+            //  onChange={ e => {
+            //   setUserGroups( { ...values, departmentid: e.target.value } )}}
+            //   value={usergroups.}
+             >
+              {positions.map((position) => (
+                <option value={position.id} size='md'> 
+                  {position.positionName}
+                </option>
+                ))
+                
+              }
+
             </Select>
           </Box>
           <Grid templateColumns="repeat(2, 1fr)" gap={5}>

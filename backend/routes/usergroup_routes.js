@@ -14,12 +14,16 @@ const { Router } = require('express')
 const {
     viewAllUserGroup,
     deleteUserGroup,
-    getUserGroupByID
+    getUserGroupByID,
+    createUserGroup,
+    updateAssetCategory
 } = require('../controllers/usergroup_controller')
 
 const router = Router()
 router.get('/usergroup/viewuser-group',viewAllUserGroup) 
 router.post('/usergroup/delete-usergroup',deleteUserGroup) 
 router.get('/usergroup/getUserGroupByID/:id',getUserGroupByID) 
+router.post('/usergroup/create-usergroup',createUserGroup) 
+router.post('/usergroup/update-usergroup',updateAssetCategory) 
 
 module.exports = router

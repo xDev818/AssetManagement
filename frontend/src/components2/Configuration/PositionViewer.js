@@ -35,6 +35,7 @@ import { Button, ButtonGroup,Wrap,WrapItem } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
+
 export default function PositionViewer() {
 
 
@@ -58,7 +59,7 @@ export default function PositionViewer() {
 
         .then((res) => {
           setPositions(res.data.result);
-
+          console.log(res.data.result)
         })
         .catch((err) => {
           
@@ -176,6 +177,7 @@ export default function PositionViewer() {
                           colorScheme="blue"
                           
                         >
+                        
                           <Link
                             to={{
                             pathname: "/admin/position",

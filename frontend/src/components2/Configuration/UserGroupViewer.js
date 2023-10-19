@@ -1,14 +1,11 @@
 
 /* 
 
-
-
-
     Date : 10 / 19 / 23
     Author : Nole
     Activities
     Purpose : 
-      create UserGroup.js
+      create UserGroupViewer.js
 
 */
 
@@ -110,7 +107,7 @@ export default function UserGroupViewer() {
 
   const handleReport =() => {
       try {
-          console.log(usergroups)
+   
           generate_PDF(usergroups,'User Group')
 
       }

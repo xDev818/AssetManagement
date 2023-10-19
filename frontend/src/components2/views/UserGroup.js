@@ -6,7 +6,7 @@
     Author : Nole
     Activities
     Purpose : 
-      create new AssetCategory.js
+      create new UserGroup.js
       import { useLocation,Link } from 'react-router-dom'
       import Logs from 'components/Utils/logs_helper'
       import  { useEffect, useState } from 'react'
@@ -63,7 +63,7 @@ import {
             axios.get('/usergroup/getUserGroupByID/' + usergroup_id)
             .then((res) => {
               setbtnState("Update")
-                setCaegory({
+                setUserGroup({
                   ...values,
                   usergroup_id: res.data.result[0].id,
                   usergroup_name: res.data.result[0].categoryName,
@@ -78,11 +78,11 @@ import {
         } else {
           setbtnState("Save")
            
-            setCaegory({
+            setUserGroup({
               ...values,
-                usergroup_id: '',
-                usergroup_name: '',
-                usergroup_description: ''
+              usergroup_id: '',
+              usergroup_name: '',
+              usergroup_description: ''
             })
         }
 
@@ -113,7 +113,7 @@ import {
 
         if(usergroupvalues.usergroup_id === "") {
             // insert here
-            const success = await axios.post('/assetcategory/createAssetCategory',usergroupvalues)
+            const success = await axios.post('/usergroup/create-usergroup',usergroupvalues)
             .then((res) => {
             
               alert("Insert Successful")
@@ -138,7 +138,7 @@ import {
             });
         } else if(!usergroupvalues.usergroup_id == "") {
           /// update here
-          const success = await axios.post('/assetcategory/updateAssetCategory',usergroupvalues)
+          const success = await axios.post('/usergroup/update-usergroup',usergroupvalues)
           .then((res) => {
           
             alert("Update Successful")
@@ -243,19 +243,19 @@ import {
           <FormControl>
           <Card>
             <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Status Name:  </FormLabel>
-              <Input id='asset_categoryname' label="Asset Category name" placeholder="Asset Category Name" 
-              value={values.asset_categoryname}
+              <FormLabel fontSize={{ base: "sm" }}>User Group Name:  </FormLabel>
+              <Input id='usergroup_name' label="User Group name" placeholder="User Group Name" 
+              value={values.usergroup_name}
               onChange={ e => {
-                setCaegory( { ...values, asset_categoryname: e.target.value } )}}
+                setUserGroup( { ...values, usergroup_name: e.target.value } )}}
               />    
             </Box>
             <Box>
               <FormLabel fontSize={{ base: "sm" }}>Description:  </FormLabel>
-              <Input id='asset_categorydescription' label="Description" placeholder="Description" 
-              value={values.asset_categorydescription}
+              <Input id='usergroup_description' label="Description" placeholder="Description" 
+              value={values.usergroup_description}
               onChange={ e => {
-                setCaegory( { ...values, asset_categorydescription: e.target.value } )}}
+                setUserGroup( { ...values, usergroup_description: e.target.value } )}}
               />    
             </Box>
             <Box>
