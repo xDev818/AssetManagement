@@ -56,7 +56,6 @@ const generate_PDF =  (propdata,paramReportType) => {
          }
 
        }
-    
-}
 
+  
 export default generate_PDF;
