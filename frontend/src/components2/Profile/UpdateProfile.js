@@ -300,7 +300,7 @@ export default function UpdateProfile() {
 
             </Select>
           <Box>
-            <FormLabel fontSize={{ base: "sm" }}>Department</FormLabel>
+            <FormLabel fontSize={{ base: "sm" }}>Position : </FormLabel>
             {/* <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
               <option value={ department }> { department } </option>
               <option value="Production">Production</option>
