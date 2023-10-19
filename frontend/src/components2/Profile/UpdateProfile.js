@@ -320,7 +320,7 @@ export default function UpdateProfile() {
                   {position.positionName}
                 </option>
                 ))
-                
+                 
               }
 
             </Select>
