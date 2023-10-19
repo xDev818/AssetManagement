@@ -75,6 +75,10 @@
     Author : Nole
     Activities
     Purpose : 
+
+        import UserGroupViewer from "components2/Configuration/UserGroupViewer";
+        import UserGroup from "components2/views/UserGroup";
+
         Remove :
           // {
           //   path: "/createAssets",
@@ -83,6 +87,39 @@
           //   layout: "/admin",
           // },
           // 
+
+      *** New menu ***
+
+          {
+          submenu: "configuration",
+          path: "/assetstype-viewer",
+          name: "Asset Type",
+          icon: <HomeIcon color="inherit" />,
+          component: AssetCategoryViewer,
+          layout: "/admin",
+        },
+        {
+          path: "/assettype",
+          name: "Create Assets Type",
+          component: AssetCategory,
+          layout: "/admin",
+        },
+        {
+          submenu: "configuration",
+          path: "/usergroup-viewer",
+          name: "User Group",
+          icon: <HomeIcon color="inherit" />,
+          component: AssetCategoryViewer,
+          layout: "/admin",
+        },
+        {
+          path: "/usergroup",
+          name: "Create User Group",
+          component: AssetCategory,
+          layout: "/admin",
+        },
+      *** end menu 
+
 */
 
 // import
@@ -116,7 +153,8 @@ import SuppliersViewer from "components2/Configuration/SuppliersViewer";
 import Suppliers from "components2/views/Suppliers";
 import AssetCategoryViewer from "components2/Configuration/AssetCategoryViewer";
 import AssetCategory from "components2/views/AssetCategory";
-
+import UserGroupViewer from "components2/Configuration/UserGroupViewer";
+import UserGroup from "components2/views/UserGroup";
 //import CreateStatusViewer from "components2/views/CreateStatusViewer";
 //import StatusCategory from "components2/Configuration/StatusCategory";
 //import PositionCategory from "components2/Configuration/PositionCategory";
@@ -248,7 +286,38 @@ var dashRoutes = [
     component: AssetCategory,
     layout: "/admin",
   },
-  
+
+
+  {
+    submenu: "configuration",
+    path: "/assetstype-viewer",
+    name: "Asset Type",
+    icon: <HomeIcon color="inherit" />,
+    component: AssetCategoryViewer,
+    layout: "/admin",
+  },
+  {
+    path: "/assettype",
+    name: "Create Assets Type",
+    component: AssetCategory,
+    layout: "/admin",
+  },
+  {
+    submenu: "configuration",
+    path: "/usergroup-viewer",
+    name: "User Group",
+    icon: <HomeIcon color="inherit" />,
+    component: UserGroupViewer,
+    layout: "/admin",
+  },
+  {
+    path: "/usergroup",
+    name: "Create User Group",
+    component: UserGroup,
+    layout: "/admin",
+  },
+
+
   // End Configuration Menu
 
   {

@@ -41,16 +41,16 @@ import {
   import Card from "components/Card/Card";
  
   
-  export default function AssetCategory () {
+  export default function UserGroup () {
 
-    const [values,setCaegory] = useState({
-      asset_categoryid:'',
-      asset_categoryname:'',
-      asset_categorydescription:''
+    const [values,setUserGroup] = useState({
+      usergroup_id:'',
+      usergroup_name:'',
+      usergroup_description:''
   })
 
     const location = useLocation()
-    const  asset_categoryID  = location.state?.categoryID
+    const  usergroup_id  = location.state?.userGroupID
     const [btnstate,setbtnState] = useState()
 
 
@@ -58,16 +58,16 @@ import {
       
       try {
         
-        if(asset_categoryID) {
+        if(usergroup_id) {
         
-            axios.get('/assetcategory/getCategoryByID/' + asset_categoryID)
+            axios.get('/usergroup/getUserGroupByID/' + usergroup_id)
             .then((res) => {
               setbtnState("Update")
                 setCaegory({
                   ...values,
-                  asset_categoryid: res.data.result[0].id,
-                  asset_categoryname: res.data.result[0].assetCategName,
-                  asset_categorydescription: res.data.result[0].description
+                  usergroup_id: res.data.result[0].id,
+                  usergroup_name: res.data.result[0].categoryName,
+                  usergroup_description: res.data.result[0].categoryDesc
                 })
                
             })
@@ -80,9 +80,9 @@ import {
            
             setCaegory({
               ...values,
-              asset_categoryid: '',
-                asset_categoryname: '',
-                asset_categorydescription: ''
+                usergroup_id: '',
+                usergroup_name: '',
+                usergroup_description: ''
             })
         }
 
@@ -104,16 +104,16 @@ import {
 
       
 
-        const categoryvalues = {
-          asset_categoryid: values.asset_categoryid,
-          asset_categoryname: values.asset_categoryname,
-          asset_categorydescription: values.asset_categorydescription,
+        const usergroupvalues = {
+          usergroup_id: values.usergroup_id,
+          usergroup_name: values.usergroup_name,
+          usergroup_description: values.usergroup_description,
           userID: userID
         }
 
-        if(categoryvalues.asset_categoryid === "") {
+        if(usergroupvalues.usergroup_id === "") {
             // insert here
-            const success = await axios.post('/assetcategory/createAssetCategory',categoryvalues)
+            const success = await axios.post('/assetcategory/createAssetCategory',usergroupvalues)
             .then((res) => {
             
               alert("Insert Successful")
@@ -122,23 +122,23 @@ import {
                 'Info',
                 "Asset Status",
                 "Function /handleUpdate",
-                ' Create   Statusname :  ' + categoryvalues.asset_categoryname,
+                ' Create   Statusname :  ' + usergroupvalues.usergroup_name,
                 userID
               )
       
              // const request = axios.post('/log',InsertLogs.getLogs())
              // const response =  request.data
 
-             window.location.href = "/#/admin/assetscategory-viewer"
+             window.location.href = "/#/admin/usergroup-viewer"
               
 
             })
             .catch((err) => {
               alert(err);
             });
-        } else if(!categoryvalues.asset_categoryid == "") {
+        } else if(!usergroupvalues.usergroup_id == "") {
           /// update here
-          const success = await axios.post('/assetcategory/updateAssetCategory',categoryvalues)
+          const success = await axios.post('/assetcategory/updateAssetCategory',usergroupvalues)
           .then((res) => {
           
             alert("Update Successful")
@@ -147,15 +147,15 @@ import {
               'Info',
               "Asset Status",
               "Function /handleUpdate",
-              ' Update StatusID : ' +  categoryvalues.asset_categoryid
-              + ' Statusname :  ' + categoryvalues.asset_categoryname,
+              ' Update StatusID : ' +  usergroupvalues.usergroup_id
+              + ' Statusname :  ' + usergroupvalues.usergroup_name,
               userID
             )
     
           //  const request = axios.post('/log',InsertLogs.getLogs())
           //  const response =  request.data
 
-           window.location.href = "/#/admin/assetscategory-viewer"
+           window.location.href = "/#/admin/usergroup-viewer"
             
           })
           .catch((err) => {
