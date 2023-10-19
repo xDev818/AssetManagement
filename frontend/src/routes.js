@@ -45,6 +45,31 @@
       //import StatusCategory from "components2/Configuration/StatusCategory";
       //import PositionCategory from "components2/Configuration/PositionCategory";
       //import AssetCategory from "components2/Configuration/AssetCategory";
+
+      Date : 10 / 19 / 23
+      Author : Nole
+      Activities
+      Purpose : 
+
+        Add - import AssetCategoryViewer from "components2/Configuration/AssetCategoryViewer";
+        Add - import AssetCategory from "components2/views/AssetCategory";
+
+       ***  New Menu ***
+          {
+          submenu: "configuration",
+          path: "/assetscategory-viewer",
+          name: "Asset Category",
+          icon: <HomeIcon color="inherit" />,
+          component: AssetCategoryViewer,
+          layout: "/admin",
+        },
+        {
+          path: "/assetcategory",
+          name: "Create Assets Category",
+          component: AssetCategory,
+          layout: "/admin",
+        },
+      ***** End creating menu
 */
 
 // import
@@ -76,6 +101,8 @@ import PositionViewer from "components2/Configuration/PositionViewer";
 import Position from "components2/views/Position";
 import SuppliersViewer from "components2/Configuration/SuppliersViewer";
 import Suppliers from "components2/views/Suppliers";
+import AssetCategoryViewer from "components2/Configuration/AssetCategoryViewer";
+import AssetCategory from "components2/views/AssetCategory";
 
 //import CreateStatusViewer from "components2/views/CreateStatusViewer";
 //import StatusCategory from "components2/Configuration/StatusCategory";
@@ -91,6 +118,7 @@ import {
   RocketIcon,
   SupportIcon,
 } from "components/Icons/Icons";
+
 
 
 var dashRoutes = [
@@ -191,6 +219,20 @@ var dashRoutes = [
     path: "/assetstatus",
     name: "Create Assets Status",
     component: AssetStatus,
+    layout: "/admin",
+  },
+  {
+    submenu: "configuration",
+    path: "/assetscategory-viewer",
+    name: "Asset Category",
+    icon: <HomeIcon color="inherit" />,
+    component: AssetCategoryViewer,
+    layout: "/admin",
+  },
+  {
+    path: "/assetcategory",
+    name: "Create Assets Category",
+    component: AssetCategory,
     layout: "/admin",
   },
 
