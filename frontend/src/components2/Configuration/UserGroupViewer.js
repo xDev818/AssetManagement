@@ -3,19 +3,13 @@
 
 
 
+
     Date : 10 / 19 / 23
     Author : Nole
     Activities
     Purpose : 
-      create AssetCategoryViewer.js
+      create UserGroup.js
 
-    Date : 10 / 18 / 23
-    Author : Nole
-    Activities
-    Purpose : 
-      create SuppliersViewer.js
-
-        
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -40,31 +34,28 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
-export default function AssetCategoryViewer() {
-
+export default function UserGroupViewer() {
 
   
   var userID = ""
 
-  const [categories, setCategories] = useState([]);
+  const [usergroups, setUserGroups] = useState([]);
 
   useEffect(() => {
-    LoadAllCategories()
+    LoadAllUserGroups()
   }, []);
 
-  const LoadAllCategories = async () => {
+  const LoadAllUserGroups = async () => {
     try {
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios.get("/assetcategory/viewassetcategory")
+      const success = await axios.get("/usergroup/viewuser-group")
 
         .then((res) => {
-
-          setCategories(res.data.result);
-
+          setUserGroups(res.data.result);
 
         })
         .catch((err) => {
@@ -84,29 +75,24 @@ export default function AssetCategoryViewer() {
     }
   }
 
-  const handleDelete = async (event,asset_categoryid,asset_categoryname) => {
+  const handleDelete = async (event,usergroup_id,usergroupname) => {
 
     try {
       event.preventDefault()
       
-
-      const deleteSuccess = await axios.post("/assetcategory/deleteassetcategory",{asset_categoryid})
-
-
+      const deleteSuccess = await axios.post("/usergroup/delete-usergroup",{usergroup_id})
       .then((res) => {
 
         alert("Delete succes")
 
-
-        LoadAllCategories()
-
+        LoadAllUserGroups()
 
         const deleteLogs = new Logs(
           'Info',
           "Position Viewer",
           "Function /handleDelete",
-          'Delete statusID :  ' + asset_categoryid
-          + '   Statusname :  ' + asset_categoryname,
+          'Delete statusID :  ' + usergroup_id
+          + '   Statusname :  ' + usergroupname,
           userID
         )
 
@@ -124,10 +110,8 @@ export default function AssetCategoryViewer() {
 
   const handleReport =() => {
       try {
-
-          console.log(categories)
-          generate_PDF(categories,'Asset Category')
-
+          console.log(usergroups)
+          generate_PDF(usergroups,'User Group')
 
       }
       catch(err) {
@@ -147,9 +131,8 @@ export default function AssetCategoryViewer() {
      
               <Anchor
                   to={{
-                  pathname: "/admin/assetcategory",
-
-                  state: { categoryID: '' },
+                  pathname: "/admin/usergroup",
+                  state: { userGroupID: '' },
                   }}>
                 New
               </Anchor>
@@ -168,18 +151,18 @@ export default function AssetCategoryViewer() {
               <Thead>
                 <Tr>
                   <Th>Actions</Th>
-                  <Th>Asset Category</Th>
+                  <Th>Name</Th>
                   <Th>Description</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {categories.map((category) => (
-                  <Tr key={category.id}>
+                {usergroups.map((group) => (
+                  <Tr key={group.id}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={(e) => handleDelete(e,category.id,category.assetCategName)}
+                          onClick={(e) => handleDelete(e,group.id,group.categoryName)}
                         >
                           Delete
                         </Button>
@@ -189,8 +172,8 @@ export default function AssetCategoryViewer() {
                         >
                           <Link
                             to={{
-                            pathname: "/admin/assetcategory",
-                            state: { categoryID: category.id }
+                            pathname: "/admin/usergroup",
+                            state: { userGroupID: group.id }
                             }}>
                            Edit
                           </Link>
@@ -198,9 +181,8 @@ export default function AssetCategoryViewer() {
                   
                       </ButtonGroup>
                     </Td>
-                    <Td>{category.assetCategName}</Td>
-                    <Td>{category.description}</Td>
-
+                    <Td>{group.categoryName}</Td>
+                    <Td>{group.categoryDesc}</Td>
 
                   </Tr>
                 ))}

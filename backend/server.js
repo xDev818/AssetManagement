@@ -40,6 +40,20 @@
                 }
               ));
 
+        Date : 10 / 18 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+                const positionsRoutes = require('./routes/positions_routes')
+                const categoriesRoutes = require('./routes/categories_routes')
+                const departmentRoutes = require('./routes/department_routes')
+
+        Date : 10 / 18 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+                const asset_category_routes = require('./routes/asset_category_routes')
+                const usergroup_routes = require('./routes/usergroup_routes')
  */
 
 // Packages
@@ -58,6 +72,9 @@ const logsRoutes = require('./routes/log_routes')
 const asset_status_routes = require('./routes/asset_status_routes')
 const supplier_routes = require('./routes/supplier_routes')
 const asset_category_routes = require('./routes/asset_category_routes')
+
+const usergroup_routes = require('./routes/usergroup_routes')
+
 
 // Server Initialization
 var app = express();
@@ -93,4 +110,7 @@ app.use('/api', logsRoutes)
 app.use('/api', logsRoutes)
 app.use('/api', asset_status_routes)
 app.use('/api', supplier_routes)
+
 app.use('/api', asset_category_routes)
+app.use('/api', usergroup_routes)
+
