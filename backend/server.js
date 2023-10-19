@@ -46,9 +46,11 @@
 require('dotenv').config()
 var express = require("express");
 var cors = require('cors');
+const fileUpload = require('express-fileupload')
 
 // Routes
 const usersRoutes = require('./routes/users_routes')
+const imageRoutes = require('./routes/images_routes')
 const positionsRoutes = require('./routes/positions_routes')
 const categoriesRoutes = require('./routes/categories_routes')
 const departmentRoutes = require('./routes/department_routes')
@@ -82,6 +84,7 @@ app.listen(process.env.PORT,() => {
 
 // Api's Routes
 app.use('/api', usersRoutes)
+app.use('/api', imageRoutes)
 app.use('/api', positionsRoutes)
 app.use('/api', categoriesRoutes)
 app.use('/api', departmentRoutes)
