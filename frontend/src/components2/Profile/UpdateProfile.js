@@ -285,7 +285,7 @@ export default function UpdateProfile() {
         </Flex>
         <Stack gap={2} mt={10}>
           <FormLabel>User Group: { states.user_role || userRole}</FormLabel>
-          <Select placeholder='Select option' size='md'
+          <Select placeholder='Select User Group' size='md'
             //  onChange={ e => {
             //   setUserGroups( { ...values, departmentid: e.target.value } )}}
             //   value={usergroups.}
@@ -310,7 +310,7 @@ export default function UpdateProfile() {
               <option value="ITDepartment">ITDepartment</option>
               <option value="Default Department">Default Department</option>
             </Select> */}
-            <Select placeholder='Select option' size='md'
+            <Select placeholder='Select Position' size='md'
             //  onChange={ e => {
             //   setUserGroups( { ...values, departmentid: e.target.value } )}}
             //   value={usergroups.}
