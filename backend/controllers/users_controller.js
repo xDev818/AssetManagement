@@ -106,7 +106,7 @@ const loginUser = ( request, response ) => {
             }
         )
 
-        const stmt = "SELECT users.userDisplayID,users.displayName,CONCAT(users.lastname ,', ', users.firstname) as Name,"
+        const stmt = "SELECT users.userDisplayID,users.displayName, users.firstname, users.lastname,"
         + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
         + "department.departmentName, users.isRegister FROM tblUsers users"
         + " inner join tblUserCategory userCategory on users.groupTypeID = userCategory.categoryID"
@@ -357,51 +357,119 @@ const getUserProfile = ( request, response ) => {
 // An Intance to update a user
 const updateUserProfile = ( request, response ) => {
 
-    // const { userDisplayID } = request.params
+    const { id } = request.params
 
-    console.log(request.params)
-    console.log(request.body)
+    if ( !id || id.length !== 36 ) return response.status(400).send(
+        {
+            message: "Unable to update, Invalid ID"
+        }
+    )
 
-    // const {
+    const checkUser = "select tblusers.userDisplayID from tblusers where userDisplayID = ?"
 
-    //     firstname,
-    //     lastname,
-    //     email,
-    //     positionID,
-    //     categoryID,
-    //     displayname
+    mysql.query( checkUser, [ id ], ( err, result ) => {
 
-    // } = request.body
+        if ( err ) return response.status(400).send(
+            {
+                message: "An error has accured, unable to update"
+            }
+        )
 
-    // const stmt = "UPDATE tblUsers SET `firstname` = ?,`lastname`= ?,`email`= ?,positionID = ?,"  
-    // + "`groupTypeID` = ?,`displayName`= ?,`updatedBy`=?,`dateUpdated`=? WHERE `userDisplayID` = ?";
+        if ( !result.length ) return response.send(
+            {
+                message: "Unable to update, This account is no longer existed"
+            }
+        )
 
-    // mysql.query( stmt, [
-    //     firstname,
-    //     lastname,
-    //     email,
-    //     positionID,
-    //     categoryID,
-    //     displayname,
-    //     userDisplayID,
-    //     utils_getDate()
-    // ], ( err, result ) => {
+        const { firstname, lastname, email, role, department, } = request.body
 
-    //     if( err ) return response.status(400).send(
-    //         {
-    //             message: "Upload Error",
-    //             message2: err.message
-    //         }
-    //     )
+        const deparmentCategories = "select tblDepartments.departmentDisplayID from tblDepartments where departmentName = ?"
 
-    //     response.status(200).send(
-    //         {
-    //             message: "Upload Success"
-    //         }
-    //     )
+        mysql.query( deparmentCategories, [ department ], ( err, departmentResult ) => {
 
-    // })
+            if ( err ) return response.status(400).send(
+                {
+                    message: "An error has accured, unable to get department category"
+                }
+            )
+    
+            if ( !departmentResult.length ) return response.send(
+                {
+                    message: "This department is not existed"
+                }
+            )
+            
+            const { departmentDisplayID } = departmentResult[0]
 
+            const positionsCategory = "select tblpositions.positionDisplayID, tblpositions.positionName from tblpositions where departmentDisplayID = ?"
+
+            mysql.query( positionsCategory, [ departmentDisplayID ], ( err, positionResult ) => {
+
+                if ( err ) return response.status(400).send(
+                    {
+                        message: "An error has accured, unable to get positions data"
+                    }
+                )
+        
+                if ( !positionResult.length ) return response.send(
+                    {
+                        message: "This position is not existed"
+                    }
+                )
+
+                const { positionDisplayID } = positionResult[0]
+
+                const updateUser = "update tblusers set positionID = ?, firstname = ?, lastname = ?, email = ? where userDisplayID = ?"
+    
+                mysql.query( updateUser, [ positionDisplayID, firstname, lastname, email, id ], ( err, result ) => {
+    
+                    if ( err ) return response.status(400).send(
+                        {
+                            message: "An error has accured, unable to update",
+                            err
+                        }
+                    )
+        
+                    const stmt = "SELECT users.userDisplayID,users.displayName, users.firstname, users.lastname,"
+                    + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
+                    + "department.departmentName, users.isRegister FROM tblUsers users"
+                    + " inner join tblUserCategory userCategory on users.groupTypeID = userCategory.categoryID"
+                    + " inner join tblPositions positions on positions.positionDisplayID = users.positionID"
+                    + " inner join tblDepartments department on department.departmentDisplayID = positions.departmentDisplayID"
+                    + " where users.email = ? and users.active=1"
+
+                    mysql.query( stmt, [ email], ( err, result ) => {
+
+                        if( err || !result.length ) return response.status(404).send(
+                            {
+                                message: "No Record Found",
+                                message2: err
+                            }
+                        )
+
+                        const { isRegister } = result[0]
+                
+                        const token = jwt.sign( { result }, process.env.SECRET, { expiresIn: '1d' }  )
+                
+                        response.status(201).send(
+                            {
+                                message: "Updated Successfully",
+                                result,
+                                isRegister,
+                                token
+                            }
+                        )
+                
+                    })
+    
+                })
+
+            })
+
+        })
+
+    })
+    
 }
 
 // An Instance to delete an old user data by ID
