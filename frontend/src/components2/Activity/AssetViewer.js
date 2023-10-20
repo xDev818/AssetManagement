@@ -35,26 +35,34 @@ import { Link } from "react-router-dom";
 export default function AssetViewer() {
 
 
-  
-  var userID = ""
+  const [assets, setAssets] = useState([]);
+  const [userdata,setUser] = useState({
+    userID : ''
+  });
 
-  const [suppliers, setSuppliers] = useState([]);
+  const SetUsers = async () => { 
 
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
+
+     setUser({...userdata,
+
+      userID : tokenDecoded.result[0].userDisplayID
+
+  })
+  }
   useEffect(() => {
-    LoadAllSuppliers()
+    SetUsers()
+    LoadAllAssets()
   }, []);
 
-  const LoadAllSuppliers = async () => {
+  const LoadAllAssets = async () => {
     try {
-      const tokenStorage = localStorage.getItem("token");
-      const tokenDecoded = decoder(tokenStorage);
 
-      userID = tokenDecoded.result[0].userDisplayID;
-
-      const success = await axios.get("/suppliers/viewallsuppliers")
+      const success = await axios.get("/asset/view-AllAssets")
 
         .then((res) => {
-          setSuppliers(res.data.result);
+          setAssets(res.data.result);
 
         })
         .catch((err) => {
@@ -64,7 +72,7 @@ export default function AssetViewer() {
             "PositionViewer",
             "Function /LoadAllPositions",
             'LoadAllPositions',
-            userID
+            userdata.userID
           )
           
         });
@@ -74,12 +82,12 @@ export default function AssetViewer() {
     }
   }
 
-  const handleDelete = async (event,supplierid,suppliername) => {
+  const handleDelete = async (event,assetid,assetname) => {
 
     try {
       event.preventDefault()
       
-      const deleteSuccess = await axios.post("/suppliers/deleteSupplier",{supplierid})
+      const deleteSuccess = await axios.post("/asset/delete-AssetByID",{assetid})
       .then((res) => {
 
         alert("Delete succes")
@@ -90,9 +98,9 @@ export default function AssetViewer() {
           'Info',
           "Position Viewer",
           "Function /handleDelete",
-          'Delete statusID :  ' + supplierid
-          + '   Statusname :  ' + suppliername,
-          userID
+          'Delete statusID :  ' + assetid
+          + '   Statusname :  ' + assetname,
+          userdata.userID
         )
 
       
@@ -131,7 +139,7 @@ export default function AssetViewer() {
               <Anchor
                   to={{
                   pathname: "/admin/asset",
-                  state: { supplierID: '' },
+                  state: { assetID: '' },
                   }}>
                 New
               </Anchor>
@@ -150,20 +158,27 @@ export default function AssetViewer() {
               <Thead>
                 <Tr>
                   <Th>Actions</Th>
-                  <Th>Supplier</Th>
-                  <Th>Address</Th>
-                  <Th>Contact No</Th>
-                  <Th>Email</Th>
+                  <Th>Type</Th>
+                  <Th>Status</Th>
+                  <Th>Vendor</Th>
+                  <Th>Code</Th>
+                  <Th>Name</Th>
+                  <Th>Description</Th>
+                  <Th>Purchase</Th>
+                  <Th>Amount</Th>
+                  <Th>Depreciated</Th>
+                  <Th>Amount YR</Th>
+                 
                 </Tr>
               </Thead>
               <Tbody>
-                {suppliers.map((supplier) => (
-                  <Tr key={supplier.id}>
+                {assets.map((asset) => (
+                  <Tr key={asset.id}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={(e) => handleDelete(e,supplier.id,supplier.supplierName)}
+                          onClick={(e) => handleDelete(e,asset.id,asset.assetName)}
                         >
                           Delete
                         </Button>
@@ -174,7 +189,7 @@ export default function AssetViewer() {
                           <Link
                             to={{
                             pathname: "/admin/asset",
-                            state: { supplierID: supplier.id }
+                            state: { assetID: asset.id }
                             }}>
                            Edit
                           </Link>
@@ -182,10 +197,18 @@ export default function AssetViewer() {
                   
                       </ButtonGroup>
                     </Td>
-                    <Td>{supplier.supplierName}</Td>
-                    <Td>{supplier.address}</Td>
-                    <Td>{supplier.contactno}</Td>
-                    <Td>{supplier.email}</Td>
+                 
+                    <Td>{asset.assetCategName}</Td>
+                    <Td>{asset.statusName}</Td>
+                    <Td>{asset.name}</Td>
+                    <Td>{asset.assetCode}</Td>
+                    <Td>{asset.assetName}</Td>
+                    <Td>{asset.description}</Td>
+                    <Td>{asset.date_purchase}</Td>
+                    <Td>{asset.Amount}</Td>
+                    <Td>{asset.date_depreciated}</Td>
+                    <Td>{asset.AmountYR}</Td>
+                    
                   </Tr>
                 ))}
               </Tbody>
