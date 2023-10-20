@@ -66,7 +66,6 @@
 require('dotenv').config()
 var express = require("express");
 var cors = require('cors');
-const fileUpload = require('express-fileupload')
 
 // Routes
 const usersRoutes = require('./routes/users_routes')
@@ -88,6 +87,7 @@ var app = express();
 
 // Middlewares
 app.use(express.json());
+app.use(express.static('./assets'));
 app.use(cors(
         {
                 origin: "*"
