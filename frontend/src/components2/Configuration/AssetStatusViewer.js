@@ -41,9 +41,11 @@ import {
   Stack,
   Box,
 } from "@chakra-ui/react";
-import { Button, ButtonGroup,Wrap,WrapItem } from "@chakra-ui/react";
+import { Button, ButtonGroup, Wrap, WrapItem } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
+import Pagination from "components2/Pagination/Pagination";
+import Search from "components2/Search/Search";
 
 export default function AssetStatusViewer() {
   //const handleNew_Edit = (statusID) => {};
@@ -51,12 +53,38 @@ export default function AssetStatusViewer() {
   /* 
 
 */
-  var userID = ""
+  var userID = "";
 
   const [assetStatus, setStatus] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const tablePerPage = 6;
+  const lastIndex = currentPage * tablePerPage;
+  const firstIndex = lastIndex - tablePerPage;
+  const tables = assetStatus.slice(firstIndex, lastIndex);
+  const tablePages = Math.ceil(assetStatus.length / tablePerPage);
+  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+  const nextPage = () => {
+    console.log("cureentpage", currentPage);
+    if (currentPage !== tablePages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const currentNumber = (number) => {
+    setCurrentPage(number);
+  };
 
   useEffect(() => {
-    LoadAllStatus()
+    LoadAllStatus();
   }, []);
 
   const LoadAllStatus = async () => {
@@ -66,111 +94,77 @@ export default function AssetStatusViewer() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios.get("/getallStatus")
+      const success = await axios
+        .get("/getallStatus")
         //axios.get('/getViewallStatus')
         .then((res) => {
           setStatus(res.data.result);
-
         })
         .catch((err) => {
-          
           const InsertLogs = new Logs(
-            'Error',
+            "Error",
             "Asset Status Viewer",
             "Function /LoadAllStatus",
-            'LoadAllStatus',
+            "LoadAllStatus",
             userID
-          )
-
-          
+          );
         });
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-  }
+  };
 
-  const handleDelete = async (event,statusid,statusname) => {
-
+  const handleDelete = async (event, statusid, statusname) => {
     try {
-      event.preventDefault()
+      event.preventDefault();
       //alert("Delete ID : " + statusid)
-      const deleteSuccess = await axios.post("/deleteStatusbyID",{statusid})
-      .then((res) => {
+      const deleteSuccess = await axios
+        .post("/deleteStatusbyID", { statusid })
+        .then((res) => {
+          alert("Delete Successfull");
 
-        alert("Delete Successfull")
+          LoadAllStatus();
 
-        LoadAllStatus()
+          const deleteLogs = new Logs(
+            "Info",
+            "Asset Status Viewer",
+            "Function /handleDelete",
+            "Delete statusID :  " + statusid + "   Statusname :  " + statusname,
+            userID
+          );
 
-        const deleteLogs = new Logs(
-          'Info',
-          "Asset Status Viewer",
-          "Function /handleDelete",
-          'Delete statusID :  ' + statusid 
-          + '   Statusname :  ' + statusname,
-          userID
-        )
-
-        const request = axios.post('/log',deleteLogs.getLogs())
-        const response =  request.data
-        
-
-      })
-      .catch((err) => {
-        alert(err)
-      })
-    } catch(err) {
-        alert(err)
+          const request = axios.post("/log", deleteLogs.getLogs());
+          const response = request.data;
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    } catch (err) {
+      alert(err);
     }
+  };
 
-  }
-
-  const handleReport =() => {
+  const handleReport = () => {
     try {
-
-    
-
-        generate_PDF(assetStatus,'Asset Status')
-
+      generate_PDF(assetStatus, "Asset Status");
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-  }
+  };
 
   return (
     <>
       <Stack>
-        <Card>
+        <Card height={694} position="relative">
           <TableContainer>
-          <Wrap spacing={4}>
-          <WrapItem>
-            <Button   
-              colorScheme='messenger'
-            >
-              
-              <Link
-                  to={{
-                  pathname: "/admin/assetstatus",
-                  state: { assetstatID: '' },
-                  }}>
-                New
-              </Link>
+            {/*  pathname: "/admin/assetstatus",
+                      state: { assetstatID: "" }, */}
+            <Search
+              setSearch={setSearch}
+              handleReport={handleReport}
+              pathname="/admin/assetstatus"
+            />
 
-            </Button>
-            </WrapItem>
-            
-            <WrapItem>
-            <Button
-             colorScheme='green'
-              
-              onClick={handleReport}
-              
-            >        
-             PDF Report
-            </Button>
-            </WrapItem>
-            </Wrap>
             <Table size="lg">
               <Thead>
                 <Tr>
@@ -180,37 +174,56 @@ export default function AssetStatusViewer() {
                 </Tr>
               </Thead>
               <Tbody>
-                {assetStatus.map((status) => (
-                  <Tr key={status.assetStatusID}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="red"
-                          onClick={(e) => handleDelete(e,status.assetStatusID,status.statusName)}
-                        >
-                          Delete
-                        </Button>
-                        <Button
-                          colorScheme="blue"
-                          
-                        >
-                          <Link
-                            to={{
-                            pathname: "/admin/assetstatus",
-                            state: { assetstatID: status.assetStatusID }
-                            }}>
-                           Edit
-                          </Link>
-                        </Button>
-                  
-                      </ButtonGroup>
-                    </Td>
-                    <Td>{status.statusName}</Td>
-                    <Td>{status.statusDescription}</Td>
-                  </Tr>
-                ))}
+                {tables
+                  .filter((item) => {
+                    const searchLower = search.toLowerCase();
+                    const positionNameLower = item.statusName.toLowerCase();
+                    return search.toLowerCase() === ""
+                      ? item
+                      : positionNameLower.toLowerCase().includes(searchLower);
+                  })
+                  .map((status) => (
+                    <Tr key={status.assetStatusID}>
+                      <Td>
+                        <ButtonGroup>
+                          <Button
+                            colorScheme="red"
+                            onClick={(e) =>
+                              handleDelete(
+                                e,
+                                status.assetStatusID,
+                                status.statusName
+                              )
+                            }
+                          >
+                            Delete
+                          </Button>
+                          <Button colorScheme="blue">
+                            <Link
+                              to={{
+                                pathname: "/admin/assetstatus",
+                                state: { assetstatID: status.assetStatusID },
+                              }}
+                            >
+                              Edit
+                            </Link>
+                          </Button>
+                        </ButtonGroup>
+                      </Td>
+                      <Td>{status.statusName}</Td>
+                      <Td>{status.statusDescription}</Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
+            <Pagination
+              data={assetStatus}
+              currentPage={currentPage}
+              nextPage={nextPage}
+              prevPage={prevPage}
+              currentNumber={currentNumber}
+              pageNumber={pageNumber}
+            />
           </TableContainer>
         </Card>
       </Stack>

@@ -170,8 +170,6 @@ import {
   SupportIcon,
 } from "components/Icons/Icons";
 
-
-
 var dashRoutes = [
   {
     path: "/dashboard",
@@ -225,7 +223,7 @@ var dashRoutes = [
     component: PositionViewer,
     layout: "/admin",
   },
-  
+
   {
     path: "/position",
     name: "Create Position",
@@ -287,7 +285,6 @@ var dashRoutes = [
     layout: "/admin",
   },
 
-
   {
     submenu: "configuration",
     path: "/assetstype-viewer",
@@ -316,7 +313,6 @@ var dashRoutes = [
     component: UserGroup,
     layout: "/admin",
   },
-
 
   // End Configuration Menu
 
