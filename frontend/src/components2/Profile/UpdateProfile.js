@@ -86,20 +86,20 @@ export default function UpdateProfile() {
     password: "",
     confirm_password: "",
   });
+  const { id } = useParams();
   // End Jinshin
 
   //Nole
   var userID = "";
   const [usergroups, setUserGroups] = useState([]);
   const [positions, setPositions] = useState([]);
-  const { id } = useParams();
   const [data, setData] = useState();
+  const [ file, setFile ] = useState()
   const token = window.localStorage.getItem("token");
   const button = useRef(null);
   useEffect(() => {
     const decoded = decoder(token);
     setData(decoded?.result[0]);
-    console.log("id", id);
   }, [setData]);
   data && console.log(data);
   // Destructuring personal info
@@ -113,9 +113,10 @@ export default function UpdateProfile() {
 
   // Jinshin
   const updateHandler = async () => {
-    const buttonStatus = button.current;
-    buttonStatus.disabled = true;
 
+    let _image_upload = ''
+    const buttonStatus = button.current
+    buttonStatus.disabled = true;
     const values = {
       role: states.user_role || userRole,
       department: states.department || department,
@@ -125,20 +126,39 @@ export default function UpdateProfile() {
       password: states.password,
     };
 
-    // Tasks
-    //  fix the image . make a seperate api call for it
-    //  add password then match it, if match then update success else, use bcrypt if password has length else use the old one
-    //  fetch the password in the set data data?.password
-    //  is complete user will be redirected to dashboard
-
     try {
+
       const request = await axios.put(`/users/${displayID}`, values);
+
       const response = await request.data;
 
-      if (response.message.includes("Updated Successfully")) {
-        localStorage.setItem("token", response.token);
-        buttonStatus.disabled = false;
-        window.location.reload();
+      if ( file ) {
+
+        _image_upload = new FormData()
+        _image_upload.append("file", file)
+
+      } else {
+
+        _image_upload = ''
+
+      }
+
+      const requestImg = await axios.put(`/users/update/image/${displayID}`, _image_upload, {
+        headers: {
+          "Content-Type": 'multipart/form-data'
+        }
+      })  
+
+      const responseImageUpdate = await requestImg.data
+
+      if ( responseImageUpdate.message.includes('profile updated successfully') ) {
+
+        localStorage.setItem("token", responseImageUpdate.token);
+        setTimeout( () => {
+          buttonStatus.disabled = false;
+          window.location.reload()
+        }, 1000)
+
       }
     } catch (err) {
       const errorStatus = err.code;
@@ -263,15 +283,12 @@ export default function UpdateProfile() {
             justifyContent="center"
             alignItems="center"
           >
-            <Image
-              src={
-                imgFilename ||
-                "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"
-              }
-              w={{ base: 100 }}
-            />
+          <Image
+            src={ `http://localhost:5001/images/${imgFilename}` || "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"}
+            w={{ base: 100 }}
+          />
           </Box>
-          <input type="file" mt={4} />
+          <input type="file" name="file" mt={4} onChange={ e => setFile(e.target.files[0] ) }/>
         </Flex>
         <Stack gap={2} mt={10}>
           <FormLabel>User Group: { states.user_role || userRole}</FormLabel>

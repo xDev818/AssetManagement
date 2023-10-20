@@ -196,7 +196,7 @@ class OnType_Validate {
 
          } else {
 
-            input.style.border = "1px solid transparent"
+            input.style.border = "1px solid black"
 
          }
 
