@@ -15,16 +15,14 @@
       import generate_PDF from "components/Utils/generate_PDF";
 */
 
-
 import { Link as Anchor } from "react-router-dom";
 import axios from "axios";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 
 import Logs from "components/Utils/logs_helper";
-
 
 import {
   Table,
@@ -36,20 +34,50 @@ import {
   TableContainer,
   Stack,
   Box,
+  IconButton,
+  Flex,
+  Input,
 } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
-
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import Pagination from "components2/Pagination/Pagination";
+import { Link } from "react-router-dom";
+import Search from "components2/Search/Search";
 
 export default function DepartmentViewer() {
-
-  var userID = "" 
+  var userID = "";
 
   const [departments, setDepartments] = useState([]);
-  
+  const [search, setSearch] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const tablePerPage = 6;
+  const lastIndex = currentPage * tablePerPage;
+  const firstIndex = lastIndex - tablePerPage;
+  const tables = departments.slice(firstIndex, lastIndex);
+  const tablePages = Math.ceil(departments.length / tablePerPage);
+  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+  const nextPage = () => {
+    console.log("cureentpage", currentPage);
+    if (currentPage !== tablePages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const currentNumber = (number) => {
+    setCurrentPage(number);
+  };
+
   const LoadallDepartments = async () => {
     try {
-
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
 
@@ -57,89 +85,73 @@ export default function DepartmentViewer() {
 
       const res = await axios.get("/get_all_departments");
       const data = await res.data;
-      
-      setDepartments(res.data.result)
 
+      setDepartments(res.data.result);
     } catch (error) {
       alert(error);
     }
   };
 
-
   useEffect(() => {
-    LoadallDepartments()
+    LoadallDepartments();
   }, []);
 
-
-    const handleDelete = async (event,departmentid,departmentname) => {
-
-      try {
-        event.preventDefault()
-        //alert("Delete ID : " + statusid)
-        const deleteSuccess = await axios.post("/deleteDepartmentByID",{departmentid})
+  const handleDelete = async (
+    event,
+    departmentid,
+    departmentname,
+    pathname
+  ) => {
+    try {
+      event.preventDefault();
+      //alert("Delete ID : " + statusid)
+      const deleteSuccess = await axios
+        .post("/deleteDepartmentByID", { departmentid })
         .then((res) => {
+          alert("Delete Successfull");
 
-          alert("Delete Successfull")
-
-          LoadallDepartments()
+          LoadallDepartments();
 
           const deleteLogs = new Logs(
-            'Info',
+            "Info",
             "Department Viewer",
             "Function /handleDelete",
-            'Delete departmentID :  ' + departmentid 
-            + '   Departmentname :  ' + departmentname,
+            "Delete departmentID :  " +
+              departmentid +
+              "   Departmentname :  " +
+              departmentname,
             userID
-          )
+          );
 
-          const request = axios.post('/log',deleteLogs.getLogs())
-          const response =  request.data
-          
-
+          const request = axios.post("/log", deleteLogs.getLogs());
+          const response = request.data;
         })
         .catch((err) => {
-          alert(err)
-        })
-      } catch(err) {
-          alert(err)
-      }
-
+          alert(err);
+        });
+    } catch (err) {
+      alert(err);
     }
+  };
 
-    const handleReport =() => {
-      try {
-
-          generate_PDF(departments,'Department')
-
-      }
-      catch(err) {
-        alert(err)
-      }
+  const handleReport = () => {
+    try {
+      generate_PDF(departments, "Department");
+    } catch (err) {
+      alert(err);
     }
+  };
 
   return (
     <Box px={3}>
-      <Card>
+      <Card height={694} position="relative">
         <TableContainer>
-          <ButtonGroup>
-          <Button colorScheme="messenger">
-            <Anchor
-                to={{
-                pathname: "/admin/department",
-                state: { departmentID: '' }
-                }}>
-              Create
-            </Anchor>
-            </Button>
-            <Button
-             colorScheme='green'
-              
-              onClick={handleReport}
-              
-            >        
-             PDF Report
-            </Button>
-            </ButtonGroup>
+          {/*   state: { departmentID: '' } */}
+          <Search
+            setSearch={setSearch}
+            handleReport={handleReport}
+            pathname="/admin/department"
+          />
           <Table size="lg">
             <Thead>
               <Tr>
@@ -149,28 +161,41 @@ export default function DepartmentViewer() {
               </Tr>
             </Thead>
             <Tbody>
-                {departments.map((department) => (
+              {tables
+                .filter((item) => {
+                  const searchLower = search.toLowerCase();
+                  const positionNameLower = item.departmentName.toLowerCase();
+                  return search.toLowerCase() === ""
+                    ? item
+                    : positionNameLower.toLowerCase().includes(searchLower);
+                })
+                .map((department) => (
                   <Tr key={department.departmentDisplayID}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={(e) => handleDelete(e,department.departmentDisplayID,department.departmentName)}
+                          onClick={(e) =>
+                            handleDelete(
+                              e,
+                              department.departmentDisplayID,
+                              department.departmentName
+                            )
+                          }
                         >
                           Delete
                         </Button>
-                        <Button
-                          colorScheme="blue"
-                          
-                        >
-                           <Anchor
+                        <Button colorScheme="blue">
+                          <Anchor
                             to={{
-                            pathname: "/admin/department",
-                            state: { departmentID: department.departmentDisplayID }
-                            }}>
-                           Edit
+                              pathname: "/admin/department",
+                              state: {
+                                departmentID: department.departmentDisplayID,
+                              },
+                            }}
+                          >
+                            Edit
                           </Anchor>
-
                         </Button>
                       </ButtonGroup>
                     </Td>
@@ -178,8 +203,16 @@ export default function DepartmentViewer() {
                     <Td>{department.description}</Td>
                   </Tr>
                 ))}
-              </Tbody>
+            </Tbody>
           </Table>
+          <Pagination
+            data={departments}
+            currentPage={currentPage}
+            nextPage={nextPage}
+            prevPage={prevPage}
+            currentNumber={currentNumber}
+            pageNumber={pageNumber}
+          />
         </TableContainer>
       </Card>
     </Box>
