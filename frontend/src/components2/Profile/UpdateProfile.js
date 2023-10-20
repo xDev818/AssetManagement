@@ -94,6 +94,7 @@ export default function UpdateProfile() {
   const [positions, setPositions] = useState([]);
   const { id } = useParams();
   const [data, setData] = useState();
+  const [file, setFile] = useState();
   const token = window.localStorage.getItem("token");
   const button = useRef(null);
   useEffect(() => {
@@ -115,7 +116,6 @@ export default function UpdateProfile() {
   const updateHandler = async () => {
     const buttonStatus = button.current;
     buttonStatus.disabled = true;
-
     const values = {
       role: states.user_role || userRole,
       department: states.department || department,
@@ -271,7 +271,12 @@ export default function UpdateProfile() {
               w={{ base: 100 }}
             />
           </Box>
-          <input type="file" mt={4} />
+          <input
+            type="file"
+            name="file"
+            mt={4}
+            onChange={(e) => setFile(e.target.files[0])}
+          />
         </Flex>
         <Stack gap={2} mt={10}>
           <FormLabel>User Group: {states.user_role || userRole}</FormLabel>

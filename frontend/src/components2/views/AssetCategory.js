@@ -39,7 +39,7 @@ import {
   
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
- 
+  
   
   export default function AssetCategory () {
 

@@ -357,6 +357,8 @@ const getUserProfile = ( request, response ) => {
 // An Intance to update a user
 const updateUserProfile = ( request, response ) => {
 
+    console.log(request.body)
+
     const { id } = request.params
 
     if ( !id || id.length !== 36 ) return response.status(400).send(
@@ -419,9 +421,9 @@ const updateUserProfile = ( request, response ) => {
 
                 const { positionDisplayID } = positionResult[0]
 
-                const updateUser = "update tblusers set positionID = ?, firstname = ?, lastname = ?, email = ? where userDisplayID = ?"
+                const updateUser = "update tblusers set positionID = ?, firstname = ?, lastname = ?, email = ?, isRegister = ? where userDisplayID = ?"
     
-                mysql.query( updateUser, [ positionDisplayID, firstname, lastname, email, id ], ( err, result ) => {
+                mysql.query( updateUser, [ positionDisplayID, firstname, lastname, email, '0', id ], ( err, result ) => {
     
                     if ( err ) return response.status(400).send(
                         {
@@ -456,7 +458,7 @@ const updateUserProfile = ( request, response ) => {
                                 message: "Updated Successfully",
                                 result,
                                 isRegister,
-                                token
+                                // token
                             }
                         )
                 
