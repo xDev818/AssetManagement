@@ -24,6 +24,10 @@ import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 
+import Search from "components2/Search/Search";
+import Pagination from "components2/Pagination/Pagination";
+
+
 import {
   Table,
   Thead,
@@ -38,8 +42,7 @@ import {
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
-import Search from "components2/Search/Search";
-import Pagination from "components2/Pagination/Pagination";
+
 
 export default function AssetCategoryViewer() {
   var userID = "";
