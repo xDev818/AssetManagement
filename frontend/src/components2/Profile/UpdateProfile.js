@@ -274,10 +274,8 @@ export default function UpdateProfile() {
           <input type="file" mt={4} />
         </Flex>
         <Stack gap={2} mt={10}>
-          <FormLabel>User Group: {states.user_role || userRole}</FormLabel>
-          <Select
-            placeholder="Select option"
-            size="md"
+          <FormLabel>User Group: { states.user_role || userRole}</FormLabel>
+          <Select placeholder='Select User Group' size='md'
             //  onChange={ e => {
             //   setUserGroups( { ...values, departmentid: e.target.value } )}}
             //   value={usergroups.}
@@ -299,18 +297,18 @@ export default function UpdateProfile() {
               <option value="ITDepartment">ITDepartment</option>
               <option value="Default Department">Default Department</option>
             </Select> */}
-            <Select
-              placeholder="Select option"
-              size="md"
-              //  onChange={ e => {
-              //   setUserGroups( { ...values, departmentid: e.target.value } )}}
-              //   value={usergroups.}
-            >
+            <Select placeholder='Select Position' size='md'
+            //  onChange={ e => {
+            //   setUserGroups( { ...values, departmentid: e.target.value } )}}
+            //   value={usergroups.}
+             >
               {positions.map((position) => (
                 <option value={position.id} size="md">
                   {position.positionName}
                 </option>
-              ))}
+                ))
+                 
+              }
             </Select>
           </Box>
           <Grid templateColumns="repeat(2, 1fr)" gap={5}>

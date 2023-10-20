@@ -139,6 +139,8 @@ import User from "components2/Activity/User";
 import CheckIn from "components2/Activity/CheckIn";
 import CheckOut from "components2/Activity/CheckOut";
 import PullOut from "components2/Activity/PullOut";
+import AssetViewer from "components2/Activity/AssetViewer";
+import Asset from "components2/views/Activity/Asset";
 
 // Configuration submenus pages
 import UpdateProfile from "components2/Profile/UpdateProfile";
@@ -190,6 +192,20 @@ var dashRoutes = [
     path: "/update-profile",
     name: "Update Profile",
     component: UpdateProfile,
+    layout: "/admin",
+  },
+  {
+    submenu: "activity",
+    path: "/asset-viewer",
+    name: "Asset",
+    component: AssetViewer,
+    layout: "/admin",
+  },
+  {
+
+    path: "/asset",
+    name: "Create Asset",
+    component: Asset,
     layout: "/admin",
   },
   {
