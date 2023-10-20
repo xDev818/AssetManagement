@@ -33,7 +33,8 @@ import {
     Input,
     FormControl,
     Select,
-    
+    GridItem,
+    Grid
   } from "@chakra-ui/react";
   import { Button, ButtonGroup } from "@chakra-ui/react";
   
@@ -258,17 +259,19 @@ import {
         <Stack>
           <FormControl>
           <Card>
-            <Box>
-  
-            </Box>
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Vendor Name:  </FormLabel>
+            <Grid templateColumns="repeat(6, 1fr)" gap={0}>
+              <GridItem>
+                <FormLabel fontSize={{ base: "sm" }}>Vendor Name:  </FormLabel>
+              </GridItem>
+              <GridItem>
               <Input id='suppliername' label="Supplier name" placeholder="Supplier Name" 
               value={values.suppliername}
               onChange={ e => {
                 setSupplier( { ...values, suppliername: e.target.value } )}}
               />    
-            </Box>
+              </GridItem>
+            </Grid>
+            
             <Box>
               <FormLabel fontSize={{ base: "sm" }}>Address:  </FormLabel>
               <Input id='address' label="Address" placeholder="Address" 
@@ -278,7 +281,7 @@ import {
               />    
             </Box>
             <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Address:  </FormLabel>
+              <FormLabel fontSize={{ base: "sm" }}>Contact No:  </FormLabel>
               <Input id='contactno' label="Contact No" placeholder="Contact No" 
               value={values.contactno}
               onChange={ e => {
@@ -286,7 +289,7 @@ import {
               />    
             </Box>
             <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Address:  </FormLabel>
+              <FormLabel fontSize={{ base: "sm" }}>Email:  </FormLabel>
               <Input id='email' label="Email" placeholder="Email" 
               value={values.email}
               onChange={ e => {
