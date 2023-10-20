@@ -20,7 +20,6 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import React, { useState } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 
-
 import routes from "routes.js";
 // Custom Chakra theme
 import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
@@ -94,14 +93,17 @@ export default function Dashboard(props) {
       if (prop.category === "account") {
         return getRoutes(prop.views);
       }
+
       if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
+        if (prop.path == "/update-profile") {
+          return (
+            <Route
+              path={prop.layout + prop.path + "/:id"}
+              component={prop.component}
+              key={key}
+            />
+          );
+        }
       } else {
         return null;
       }
@@ -174,7 +176,7 @@ export default function Dashboard(props) {
             <PanelContainer>
               <Switch>
                 {getRoutes(routes)}
-                <Redirect from="/admin" to="/admin/dashboard" />
+                {/* <Redirect from="/admin" to="/admin/dashboard" /> */}
               </Switch>
             </PanelContainer>
           </PanelContent>

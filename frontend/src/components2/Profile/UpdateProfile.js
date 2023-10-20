@@ -31,85 +31,89 @@ import {
 import Card from "components/Card/Card";
 import React, { useEffect, useState, useReducer, useRef } from "react";
 import decoder from "jwt-decode";
-import axios from 'axios'
+import axios from "axios";
 import Logs from "components/Utils/logs_helper";
+import { useParams } from "react-router-dom";
 
 // Jinshin
-const myFunc = ( states, action ) => {
+const myFunc = (states, action) => {
+  const params = useParams();
+  switch (action.type) {
+    case "myRole":
+      return { ...states, user_role: action.payload };
 
-  switch( action.type ) {
+    case "myDepartment":
+      return { ...states, department: action.payload };
 
-    case 'myRole' : 
-        return { ...states, user_role: action.payload }
+    case "myFirstname":
+      return { ...states, firstname: action.payload };
 
-    case 'myDepartment' :
-        return { ...states, department: action.payload }
+    case "myLastname":
+      return { ...states, lastname: action.payload };
 
-    case 'myFirstname' :
-        return { ...states, firstname: action.payload }
+    case "myEmail":
+      return { ...states, email: action.payload };
 
-    case 'myLastname' :
-        return { ...states, lastname: action.payload }
+    case "myPassword":
+      return { ...states, password: action.payload };
 
-    case 'myEmail' :
-        return { ...states, email: action.payload }
+    case "myConfirmPassword":
+      return { ...states, confirm_password: action.payload };
 
-    case 'myPassword' :
-        return { ...states, password: action.payload }
-
-    case 'myConfirmPassword' :
-        return { ...states, confirm_password: action.payload }
-
-    default: states
-
+    default:
+      states;
   }
-
-}
+};
 
 const ACTION = {
-
-  ROLE : 'myRole',
-  DEPARTMENT : 'myDepartment',
-  FIRSTNAME : 'myFirstname',
-  LASTNAME : 'myLastname',
-  EMAIL : 'myEmail',
-  PASSWORD : 'myPassword',
-  CONFIRM_PASSWORD : 'myConfirmPassword'
-
-} // End Jinshin
+  ROLE: "myRole",
+  DEPARTMENT: "myDepartment",
+  FIRSTNAME: "myFirstname",
+  LASTNAME: "myLastname",
+  EMAIL: "myEmail",
+  PASSWORD: "myPassword",
+  CONFIRM_PASSWORD: "myConfirmPassword",
+}; // End Jinshin
 
 export default function UpdateProfile() {
-
   //Jinshin
-  const [ states, dispatch ] = useReducer( myFunc, { user_role: '', department: '', firstname: '', lastname: '', email: '', password: '', confirm_password: '' })
+  const [states, dispatch] = useReducer(myFunc, {
+    user_role: "",
+    department: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+  });
   // End Jinshin
 
   //Nole
-  var userID = ''
+  var userID = "";
   const [usergroups, setUserGroups] = useState([]);
   const [positions, setPositions] = useState([]);
-
+  const { id } = useParams();
   const [data, setData] = useState();
   const token = window.localStorage.getItem("token");
-  const button = useRef(null)
+  const button = useRef(null);
   useEffect(() => {
-    const decoded = decoder(token)
+    const decoded = decoder(token);
     setData(decoded?.result[0]);
+    console.log("id", id);
   }, [setData]);
-  data && console.log(data)
+  data && console.log(data);
   // Destructuring personal info
-  const firstname = data?.firstname
-  const lastname = data?.lastname
-  const displayID = data?.userDisplayID
-  const department = data?.departmentName
-  const email = data?.email
-  const userRole = data?.userRole
-  const imgFilename = data?.imgFilename
+  const firstname = data?.firstname;
+  const lastname = data?.lastname;
+  const displayID = data?.userDisplayID;
+  const department = data?.departmentName;
+  const email = data?.email;
+  const userRole = data?.userRole;
+  const imgFilename = data?.imgFilename;
 
   // Jinshin
   const updateHandler = async () => {
-
-    const buttonStatus = button.current
+    const buttonStatus = button.current;
     buttonStatus.disabled = true;
 
     const values = {
@@ -119,7 +123,7 @@ export default function UpdateProfile() {
       lastname: states.lastname || lastname,
       email: states.email || email,
       password: states.password,
-    }
+    };
 
     // Tasks
     //  fix the image . make a seperate api call for it
@@ -128,19 +132,15 @@ export default function UpdateProfile() {
     //  is complete user will be redirected to dashboard
 
     try {
+      const request = await axios.put(`/users/${displayID}`, values);
+      const response = await request.data;
 
-      const request = await axios.put(`/users/${displayID}`, values)
-      const response = await request.data
-      if ( response.message.includes('Updated Successfully') ) {
-
+      if (response.message.includes("Updated Successfully")) {
         localStorage.setItem("token", response.token);
         buttonStatus.disabled = false;
-        window.location.reload()
-
+        window.location.reload();
       }
-
-    } catch ( err ) {
-
+    } catch (err) {
       const errorStatus = err.code;
 
       if (errorStatus.includes("ERR_NETWORK")) {
@@ -171,26 +171,19 @@ export default function UpdateProfile() {
         console.log(useEffectLogs.getLogs());
         buttonStatus.disabled = false;
 
-        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
-
+        useEffectLogs.insertLogs(useEffectLogs.getLogs());
       }
-
     }
-
-  }
+  };
 
   useEffect(() => {
-    
     try {
-
-      LoadAllUserGroups()
-      LoadAllPositions()
+      LoadAllUserGroups();
+      LoadAllPositions();
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-
-  }, [])
+  }, []);
 
   const LoadAllUserGroups = async () => {
     try {
@@ -199,28 +192,25 @@ export default function UpdateProfile() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios.get("/usergroup/viewuser-group")
+      const success = await axios
+        .get("/usergroup/viewuser-group")
 
         .then((res) => {
           setUserGroups(res.data.result);
-
         })
         .catch((err) => {
-          
           const InsertLogs = new Logs(
-            'Error',
+            "Error",
             "PositionViewer",
             "Function /LoadAllPositions",
-            'LoadAllPositions',
+            "LoadAllPositions",
             userID
-          )
-          
+          );
         });
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-  }
+  };
 
   const LoadAllPositions = async () => {
     try {
@@ -229,28 +219,25 @@ export default function UpdateProfile() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios.get("/positions/viewallpositions")
+      const success = await axios
+        .get("/positions/viewallpositions")
 
         .then((res) => {
           setPositions(res.data.result);
-        
         })
         .catch((err) => {
-          
           const InsertLogs = new Logs(
-            'Error',
+            "Error",
             "PositionViewer",
             "Function /LoadAllPositions",
-            'LoadAllPositions',
+            "LoadAllPositions",
             userID
-          )
-          
+          );
         });
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-  }
+  };
 
   return (
     <Card
@@ -276,10 +263,13 @@ export default function UpdateProfile() {
             justifyContent="center"
             alignItems="center"
           >
-          <Image
-            src={ imgFilename || "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"}
-            w={{ base: 100 }}
-          />
+            <Image
+              src={
+                imgFilename ||
+                "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"
+              }
+              w={{ base: 100 }}
+            />
           </Box>
           <input type="file" mt={4} />
         </Flex>
@@ -289,16 +279,13 @@ export default function UpdateProfile() {
             //  onChange={ e => {
             //   setUserGroups( { ...values, departmentid: e.target.value } )}}
             //   value={usergroups.}
-             >
-              {usergroups.map((group) => (
-                <option value={group.id} size='md'> 
-                  {group.categoryName}
-                </option>
-                ))
-                
-              }
-
-            </Select>
+          >
+            {usergroups.map((group) => (
+              <option value={group.id} size="md">
+                {group.categoryName}
+              </option>
+            ))}
+          </Select>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Position : </FormLabel>
             {/* <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
@@ -316,40 +303,76 @@ export default function UpdateProfile() {
             //   value={usergroups.}
              >
               {positions.map((position) => (
-                <option value={position.id} size='md'> 
+                <option value={position.id} size="md">
                   {position.positionName}
                 </option>
                 ))
                  
               }
-
             </Select>
           </Box>
           <Grid templateColumns="repeat(2, 1fr)" gap={5}>
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>First Name</FormLabel>
-              <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
+              <Input
+                onChange={(e) =>
+                  dispatch({ type: ACTION.FIRSTNAME, payload: e.target.value })
+                }
+                placeholder="Firstname..."
+                defaultValue={states.firstname || firstname}
+              />
             </GridItem>
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>Last Name</FormLabel>
-              <Input onChange={ ( e ) => dispatch( { type: ACTION.LASTNAME, payload: e.target.value } )}  placeholder="Lastname..." defaultValue={ states.lastname || lastname } />
+              <Input
+                onChange={(e) =>
+                  dispatch({ type: ACTION.LASTNAME, payload: e.target.value })
+                }
+                placeholder="Lastname..."
+                defaultValue={states.lastname || lastname}
+              />
             </GridItem>
           </Grid>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Email Address</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.EMAIL, payload: e.target.value } )} defaultValue={ email } placeholder="Email..." />
+            <Input
+              onChange={(e) =>
+                dispatch({ type: ACTION.EMAIL, payload: e.target.value })
+              }
+              defaultValue={email}
+              placeholder="Email..."
+            />
           </Box>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Password</FormLabel>
-            <Input type="password" onChange={ ( e ) => dispatch( { type: ACTION.PASSWORD, payload: e.target.value } )}  placeholder="Password..." defaultValue={states.password || "************"} />
+            <Input
+              type="password"
+              onChange={(e) =>
+                dispatch({ type: ACTION.PASSWORD, payload: e.target.value })
+              }
+              placeholder="Password..."
+              defaultValue={states.password || "************"}
+            />
           </Box>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Confirm Password</FormLabel>
-            <Input type="password" onChange={ ( e ) => dispatch( { type: ACTION.CONFIRM_PASSWORD, payload: e.target.value } )}  placeholder="Confirm Password..." defaultValue={states.confirm_password || "************"} />
+            <Input
+              type="password"
+              onChange={(e) =>
+                dispatch({
+                  type: ACTION.CONFIRM_PASSWORD,
+                  payload: e.target.value,
+                })
+              }
+              placeholder="Confirm Password..."
+              defaultValue={states.confirm_password || "************"}
+            />
           </Box>
 
           <Box>
-            <Button ref={button} colorScheme="green" onClick={ updateHandler }>Update Profile</Button>
+            <Button ref={button} colorScheme="green" onClick={updateHandler}>
+              Update Profile
+            </Button>
           </Box>
         </Stack>
       </FormControl>

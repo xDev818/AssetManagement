@@ -1,4 +1,3 @@
-
 /* 
 
     Date : 10 / 19 / 23
@@ -30,16 +29,42 @@ import {
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
+import Search from "components2/Search/Search";
+import Pagination from "components2/Pagination/Pagination";
 
 export default function UserGroupViewer() {
-
-  
-  var userID = ""
+  var userID = "";
 
   const [usergroups, setUserGroups] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const tablePerPage = 6;
+  const lastIndex = currentPage * tablePerPage;
+  const firstIndex = lastIndex - tablePerPage;
+  const tables = usergroups.slice(firstIndex, lastIndex);
+  const tablePages = Math.ceil(usergroups.length / tablePerPage);
+  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+  const nextPage = () => {
+    console.log("cureentpage", currentPage);
+    if (currentPage !== tablePages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const currentNumber = (number) => {
+    setCurrentPage(number);
+  };
 
   useEffect(() => {
-    LoadAllUserGroups()
+    LoadAllUserGroups();
   }, []);
 
   const LoadAllUserGroups = async () => {
@@ -49,101 +74,79 @@ export default function UserGroupViewer() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios.get("/usergroup/viewuser-group")
+      const success = await axios
+        .get("/usergroup/viewuser-group")
 
         .then((res) => {
           setUserGroups(res.data.result);
-
         })
         .catch((err) => {
-          
           const InsertLogs = new Logs(
-            'Error',
+            "Error",
             "PositionViewer",
             "Function /LoadAllPositions",
-            'LoadAllPositions',
+            "LoadAllPositions",
             userID
-          )
-          
+          );
         });
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-  }
+  };
 
-  const handleDelete = async (event,usergroup_id,usergroupname) => {
-
+  const handleDelete = async (event, usergroup_id, usergroupname) => {
     try {
-      event.preventDefault()
-      
-      const deleteSuccess = await axios.post("/usergroup/delete-usergroup",{usergroup_id})
-      .then((res) => {
+      event.preventDefault();
 
-        alert("Delete succes")
+      const deleteSuccess = await axios
+        .post("/usergroup/delete-usergroup", { usergroup_id })
+        .then((res) => {
+          alert("Delete succes");
 
-        LoadAllUserGroups()
+          LoadAllUserGroups();
 
-        const deleteLogs = new Logs(
-          'Info',
-          "Position Viewer",
-          "Function /handleDelete",
-          'Delete statusID :  ' + usergroup_id
-          + '   Statusname :  ' + usergroupname,
-          userID
-        )
-
-      
-
-      })
-      .catch((err) => {
-        alert(err)
-      })
-    } catch(err) {
-        alert(err)
+          const deleteLogs = new Logs(
+            "Info",
+            "Position Viewer",
+            "Function /handleDelete",
+            "Delete statusID :  " +
+              usergroup_id +
+              "   Statusname :  " +
+              usergroupname,
+            userID
+          );
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    } catch (err) {
+      alert(err);
     }
+  };
 
-  }
-
-  const handleReport =() => {
-      try {
-   
-          generate_PDF(usergroups,'User Group')
-
-      }
-      catch(err) {
-        alert(err)
-      }
-  }
+  const handleReport = () => {
+    try {
+      generate_PDF(usergroups, "User Group");
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   return (
     <>
       <Stack>
-        <Card>
+        <Card height={694} position="relative">
           <TableContainer>
-            <ButtonGroup spacing={6}>
-            <Button
-              colorScheme='messenger'
-            >
-     
-              <Anchor
-                  to={{
+            {/*to={{
                   pathname: "/admin/usergroup",
                   state: { userGroupID: '' },
-                  }}>
-                New
-              </Anchor>
+                  }}  */}
+            <Search
+              setSearch={setSearch}
+              handleReport={handleReport}
+              pathname="/admin/usergroup"
+            />
 
-            </Button>
-            <Button
-             colorScheme='green'
-              
-              onClick={handleReport}
-              
-            >        
-             PDF Report
-            </Button>
-            </ButtonGroup>
             <Table size="lg">
               <Thead>
                 <Tr>
@@ -153,38 +156,54 @@ export default function UserGroupViewer() {
                 </Tr>
               </Thead>
               <Tbody>
-                {usergroups.map((group) => (
-                  <Tr key={group.id}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="red"
-                          onClick={(e) => handleDelete(e,group.id,group.categoryName)}
-                        >
-                          Delete
-                        </Button>
-                        <Button
-                          colorScheme="blue"
-                          
-                        >
-                          <Link
-                            to={{
-                            pathname: "/admin/usergroup",
-                            state: { userGroupID: group.id }
-                            }}>
-                           Edit
-                          </Link>
-                        </Button>
-                  
-                      </ButtonGroup>
-                    </Td>
-                    <Td>{group.categoryName}</Td>
-                    <Td>{group.categoryDesc}</Td>
-
-                  </Tr>
-                ))}
+                {tables
+                  .filter((item) => {
+                    const searchLower = search.toLowerCase();
+                    const itemText = Object.values(item)
+                      .join(" ")
+                      .toLowerCase();
+                    return search.toLowerCase() === ""
+                      ? item
+                      : itemText.includes(searchLower);
+                  })
+                  .map((group) => (
+                    <Tr key={group.id}>
+                      <Td>
+                        <ButtonGroup>
+                          <Button
+                            colorScheme="red"
+                            onClick={(e) =>
+                              handleDelete(e, group.id, group.categoryName)
+                            }
+                          >
+                            Delete
+                          </Button>
+                          <Button colorScheme="blue">
+                            <Link
+                              to={{
+                                pathname: "/admin/usergroup",
+                                state: { userGroupID: group.id },
+                              }}
+                            >
+                              Edit
+                            </Link>
+                          </Button>
+                        </ButtonGroup>
+                      </Td>
+                      <Td>{group.categoryName}</Td>
+                      <Td>{group.categoryDesc}</Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
+            <Pagination
+              data={usergroups}
+              currentPage={currentPage}
+              nextPage={nextPage}
+              prevPage={prevPage}
+              currentNumber={currentNumber}
+              pageNumber={pageNumber}
+            />
           </TableContainer>
         </Card>
       </Stack>
