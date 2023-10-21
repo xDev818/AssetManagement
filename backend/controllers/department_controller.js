@@ -15,6 +15,16 @@ const mysql = require('../database')
 const jwt = require('jsonwebtoken')
 const { randomUUID } = require('crypto')
 
+const {
+    create,
+    getByName,
+    getAll,
+    getByID , 
+    updateByID , 
+    deleteByID 
+}  = require('../_sqlstatement/department/sqldepartment')
+
+
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
 
@@ -26,10 +36,8 @@ const createDepartment = ( request, response ) => {
 
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-
-    const stmt = "INSERT INTO tblDepartments(departmentDisplayID,departmentName,"
-    + "description,createdBy,dateCreated) values (?)";
-
+    const stmt =  create()
+  
     const values = [
         id,
         departmentname,
@@ -60,8 +68,9 @@ const createDepartment = ( request, response ) => {
 const getDepartmentByName = ( request, response ) => {
 
     const defaultDepartment = 'Default Department'
+    
+    const stmt = getByName()
 
-    const stmt = "select departmentDisplayID from tbldepartments where departmentName = ?"
 
     mysql.query( stmt, [ defaultDepartment ], ( err, result ) => {
 
@@ -86,10 +95,10 @@ const getDepartmentByName = ( request, response ) => {
 //Load all Active Departments
 const getallDepartments = ( request, response ) => {
 
-    //const defaultDepartment = 'Default Department'
+    
 
-    const stmt = "SELECT departmentDisplayID,departmentName,description FROM tbldepartments" 
-        + " ORDER BY departmentName"
+    const stmt = getAll()
+   
 
     mysql.query( stmt, ( err, result ) => {
 
@@ -116,8 +125,8 @@ const getDepartmentByID = ( request, response ) => {
 
     const { id } = request.params
 
-    const stmt = "SELECT departmentDisplayID,departmentName,description FROM tbldepartments" 
-        + " WHERE departmentDisplayID = ?"
+    const stmt = getByID()
+
 
     mysql.query( stmt, [id],( err, result ) => {
 
@@ -142,16 +151,13 @@ const getDepartmentByID = ( request, response ) => {
 // An instance to update Department by ID
 const updateDepartmentByID = ( request, response ) => {
 
-    
     const { departmentid, departmentname, description, userID  } = request.body
 
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
 
-   const stmt = "UPDATE tblDepartments SET departmentName = ?,description = ?,"
-        + "updatedBy = ?,dateUpdated = ?"
-        + " where departmentDisplayID = ? "
-
+   const stmt = updateByID()
+   
     
     mysql.query( stmt, [departmentname,description,userID,utils_getDate(),departmentid], ( err, result ) => {
 
@@ -177,9 +183,8 @@ const deleteDepartmentByID = ( request, response ) => {
 
     const { departmentid} = request.body
 
-    const stmt = "DELETE FROM tblDepartments WHERE departmentDisplayID=?"
+    const stmt = deleteByID()
     
-
     mysql.query( stmt, [departmentid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
