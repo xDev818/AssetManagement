@@ -74,7 +74,7 @@ export default function AssetCategoryViewer() {
   const currentNumber = (number) => {
     setCurrentPage(number);
   };
-
+ 
   useEffect(() => {
     LoadAllCategories();
   }, []);
