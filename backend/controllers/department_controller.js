@@ -22,7 +22,7 @@ const {
     getByID , 
     updateByID , 
     deleteByID 
-}  = require('../_sqlstatement/department/sqldepartment')
+}  = require('../_sqlstatement/department/Department')
 
 
 // Date helper
