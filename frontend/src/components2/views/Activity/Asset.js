@@ -227,7 +227,7 @@ export default function Asset() {
                   {stat.statusName}
                 </option>
                 ))
-                
+                 
               }
             </Select>
 
