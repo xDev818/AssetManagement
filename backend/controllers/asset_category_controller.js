@@ -22,8 +22,8 @@ const { utils_getDate } = require('../utils/date_helper')
 const createAssetCategory = ( request, response ) => {
 
     const id = randomUUID() 
-    const { asset_categoryname, asset_description, userID  } = request.body
-   
+    const { asset_categoryname, asset_categorydescription, userID  } = request.body
+    
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
     const stmt = "INSERT INTO tblAssetCategory(assetCategID,assetCategName,description,"
@@ -32,7 +32,7 @@ const createAssetCategory = ( request, response ) => {
     const values = [
         id,
         asset_categoryname,
-        asset_description,
+        asset_categorydescription,
         userID,
         utils_getDate()
     ];

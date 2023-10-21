@@ -33,8 +33,9 @@ const generate_PDF =  (propdata,paramReportType) => {
     var icount = 0
     const rowdata = []
 
-    const ThreeColumn = ["#","Name","Description"];
-    const FourColumn = ["#","Position","Department", "Description"];
+    const reportColumn = ["#","Name","Description"];
+    const positionColumn = ["#","Position","Department", "Description"];
+    const assetTypeColumn = ["#","Category","Type", "Description"];
     const vendorColumn  = ["#","Vendor","Address", "Contact No", "Email"];
     
 
@@ -52,7 +53,7 @@ const generate_PDF =  (propdata,paramReportType) => {
                 rowdata.push(itempData)
             });
 
-            PDFReports(rowdata,ThreeColumn,paramReportType)
+            PDFReports(rowdata,reportColumn,paramReportType)
 
         } else if (paramReportType === 'Position') {
 
@@ -67,7 +68,7 @@ const generate_PDF =  (propdata,paramReportType) => {
                 ];
                 rowdata.push(itempData)
             });
-            PDFReports(rowdata,FourColumn,paramReportType)
+            PDFReports(rowdata,positionColumn,paramReportType)
            // PDFPosition(propdata)
 
         } else if (paramReportType === 'Department') {
@@ -81,7 +82,7 @@ const generate_PDF =  (propdata,paramReportType) => {
                 ];
                 rowdata.push(itempData)
             });
-            PDFReports(rowdata,ThreeColumn,paramReportType)
+            PDFReports(rowdata,reportColumn,paramReportType)
 
         } else if (paramReportType === 'Suppliers') {
             alert("working on presentation view")
@@ -112,7 +113,7 @@ const generate_PDF =  (propdata,paramReportType) => {
                 ];
                 rowdata.push(itempData)
             });
-            PDFReports(rowdata,ThreeColumn,paramReportType)
+            PDFReports(rowdata,reportColumn,paramReportType)
 
          } else if (paramReportType === 'User Group') {
  
@@ -127,9 +128,26 @@ const generate_PDF =  (propdata,paramReportType) => {
                 rowdata.push(itempData)
             });
 
-            PDFReports(rowdata,ThreeColumn,'User Group')
+            PDFReports(rowdata,reportColumn,paramReportType)
+
+         }  else if (paramReportType === 'Asset Type') {
+ 
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const itempData = [
+                    icount.toString(),
+                    item.assetCategName,
+                    item.typeName,
+                    item.description
+                ];
+                rowdata.push(itempData)
+            });
+
+            PDFReports(rowdata,assetTypeColumn,paramReportType)
 
          }
+
    
 }
 
