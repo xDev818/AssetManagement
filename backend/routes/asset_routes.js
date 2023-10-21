@@ -14,15 +14,20 @@ const { Router } = require('express')
 
 const {
     viewAllAssets,
-    deleteAsset
+    deleteAsset,
+    getAssetByID,
+    createAsset,
+    updateAsset,
 
 } = require('../controllers/asset_controller')
 
 const router = Router()
 
 router.get('/asset/view-AllAssets',viewAllAssets) 
-
+router.get('/asset/getAssetByID/:id',getAssetByID) 
 router.post('/asset/delete-AssetByID',deleteAsset) 
+router.post('/asset/create-AssetByID',createAsset) 
+router.post('/asset/update-AssetByID',updateAsset) 
 
 
 module.exports = router

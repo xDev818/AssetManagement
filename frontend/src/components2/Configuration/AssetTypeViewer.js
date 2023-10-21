@@ -2,11 +2,11 @@
 /* 
 
 
-    Date : 10 / 19 / 23
+    Date : 10 / 21 / 23
     Author : Nole
     Activities
     Purpose : 
-      create AssetCategoryViewer.js
+      create AssetTypeViewer.js
         
 */
 
@@ -27,7 +27,13 @@ import {
   TableContainer,
   Stack,
   Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  
 } from "@chakra-ui/react";
+import { ChevronDownIcon} from '@chakra-ui/icons'
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
@@ -136,7 +142,6 @@ export default function AssetTypeViewer() {
             <Button
               colorScheme='messenger'
             >
-     
               <Anchor
                   to={{
                   pathname: "/admin/assettype",
@@ -146,14 +151,17 @@ export default function AssetTypeViewer() {
               </Anchor>
 
             </Button>
-            <Button
-             colorScheme='green'
-              
-              onClick={handleReport}
-              
-            >        
-             PDF Report
-            </Button>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
+                Report
+              </MenuButton>
+              <MenuList>
+                <MenuItem   onClick={handleReport} colorScheme='twitter'>PDF </MenuItem>
+                <MenuItem  colorScheme='twitter'>Excel</MenuItem>
+                
+              </MenuList>
+          </Menu>
+   
             </ButtonGroup>
             <Table size="lg">
               <Thead>
