@@ -27,7 +27,12 @@ import {
   TableContainer,
   Stack,
   Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
+import { ChevronDownIcon} from '@chakra-ui/icons'
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
@@ -135,7 +140,6 @@ export default function AssetViewer() {
             <Button
               colorScheme='messenger'
             >
-     
               <Anchor
                   to={{
                   pathname: "/admin/asset",
@@ -145,14 +149,17 @@ export default function AssetViewer() {
               </Anchor>
 
             </Button>
-            <Button
-             colorScheme='green'
-              
-              onClick={handleReport}
-              
-            >        
-             PDF Report
-            </Button>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
+                Report
+              </MenuButton>
+              <MenuList>
+                <MenuItem   onClick={handleReport}  colorScheme='green'>PDF </MenuItem>
+                <MenuItem   colorScheme='green' >Excel</MenuItem>
+                
+              </MenuList>
+          </Menu>
+ 
             </ButtonGroup>
             <Table size="lg">
               <Thead>

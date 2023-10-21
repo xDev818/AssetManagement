@@ -6,6 +6,14 @@
     Purpose : 
         New Asset.js
 
+    Date : 10 / 21 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        Added
+          import DatePicker from 'react-datepicker'
+          import 'react-datepicker/dist/react-datepicker.css'
+
 */
 
 import {
@@ -23,11 +31,17 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
-import React, { useEffect, useState, useReducer, useRef } from "react";
-import decoder from "jwt-decode";
-import axios from 'axios'
-import Logs from "components/Utils/logs_helper";
 
+
+
+import { useLocation,Link } from 'react-router-dom'
+import Logs from 'components/Utils/logs_helper'
+import React, { useEffect, useState, useReducer, useRef } from "react";
+import axios from 'axios'
+import decoder from 'jwt-decode'
+
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 export default function Asset() {
 
@@ -42,11 +56,29 @@ export default function Asset() {
   const [categories, setCategory] = useState([]);
   const [status, setStatus] = useState([]);
   const [vendors, setVendors] = useState([]);
-  const [values,setAssets] = useState({
-    assetid:''
+  const [date ,setDate] = useState(new Date());
+  //const [date_purchase, setDatePurchase] = useState(new Date());
+  const [date_depreciated, setDateDepreciated] = useState(new Date());
 
+  const [values,setAssets] = useState({
+    asset_id: '',
+    asset_categoryid: '',
+    asset_statusid: '',
+    asset_supplierid: '',
+    asset_serialno: '',
+    asset_code: '',
+    asset_name: '',
+    asset_description: '',
+    asset_purchase_amout: '',
+    asset_purchase_date: new Date(),
+    assset_depreciated_amount: '',
+    asset_depreciated_date: new Date()
   })
   
+  const location = useLocation()
+  const  asset_ID  = location.state?.assetID
+  const [btnstate,setbtnState] = useState()
+
   const SetUsers = async () => { 
 
     const tokenStorage = localStorage.getItem("token");
@@ -64,6 +96,53 @@ export default function Asset() {
     LoadAllCategories()
     LoadAllStatus()
     LoadAllSuppliers()
+    
+
+      if(asset_ID) {
+          
+        axios.get('/asset/getAssetByID/' + asset_ID)
+        .then((res) => {
+          setbtnState("Update")
+          setAssets({
+            ...values,
+            asset_id: res.data.result[0].id,
+            asset_categoryid: res.data.result[0].assetCategID,
+            asset_statusid: res.data.result[0].assetStatusID,
+            asset_supplierid: res.data.result[0].supplierID,
+            asset_serialno: res.data.result[0].serialNo,
+            asset_code: res.data.result[0].assetCode,
+            asset_name: res.data.result[0].assetName,
+            asset_description: res.data.result[0].description,
+            asset_purchase_amout: res.data.result[0].Amount,
+            asset_purchase_date: res.data.result[0].date_purchase,
+            assset_depreciated_amount: res.data.result[0].AmountYR,
+            asset_depreciated_date: res.data.result[0].date_depreciated
+          })
+          
+        })
+        .catch((err) => {
+          alert(err);
+        });
+      
+    } else {
+      setbtnState("Save")
+      
+      setAssets({
+        ...values,
+        asset_id: '',
+        asset_categoryid: '',
+        asset_statusid: '',
+        asset_supplierid: '',
+        asset_serialno: '',
+        asset_code: '',
+        asset_name: '',
+        asset_description: '',
+        asset_purchase_amout: '',
+        asset_purchase_date: '',
+        assset_depreciated_amount: '',
+        asset_depreciated_date: ''
+      })
+    }
   }, [])
 
   const LoadAllCategories = async () => {
@@ -147,51 +226,159 @@ export default function Asset() {
     }
   }
 
+
   async function handleUpdate(event)  {
 
     try {
 
-     
+      event.preventDefault();
 
-    } catch ( err ) {
 
-      const errorStatus = err.code;
 
-      if (errorStatus.includes("ERR_NETWORK")) {
-        const useEffectLogs = new Logs(
-          "DB",
-          "Login",
-          "Function /loginHandler",
-          err,
-          ""
-        );
+      const assetvalues = {
 
-        alert(useEffectLogs.getMessage());
-        console.log(useEffectLogs.getLogs());
-       
+        asset_id: values.asset_id,
+        asset_categoryid: values.asset_categoryid,
+        asset_statusid: values.asset_statusid,
+        asset_supplierid: values.asset_supplierid,
+        asset_serialno: values.asset_serialno,
+        asset_code: values.asset_code,
+        asset_name: values.asset_name,
+        asset_description: values.asset_description,
+        asset_purchase_amout: values.asset_purchase_amout,
+        asset_purchase_date: values.asset_purchase_date,
+        assset_depreciated_amount: values.assset_depreciated_amount,
+        asset_depreciated_date: values.asset_depreciated_date
       }
 
-      if (errorStatus.includes("ERR_BAD_REQUEST")) {
-        const useEffectLogs = new Logs(
-          errorStatus,
-          "Login",
-          "Function /loginHandler",
-          err.response.data.message,
-          ""
-        );
-        useEffectLogs.getLogs();
+      if(assetvalues.asset_id === "") {
+          // insert here
+          const success = await axios.post('/asset/create-AssetByID',assetvalues)
+          .then((res) => {
+          
+            alert("Insert Successful")
 
-        alert(useEffectLogs.getMessage());
-        console.log(useEffectLogs.getLogs());
-       
+            const InsertLogs = new Logs(
+              'Info',
+              "Asset Status",
+              "Function /handleUpdate",
+              ' Create   Statusname :  ' + values.asset_id,
+              userdata.userID
+            )
+    
+           // const request = axios.post('/log',InsertLogs.getLogs())
+           // const response =  request.data
 
-        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
+           window.location.href = "/#/admin/asset-viewer"
+            
 
-      }
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      } else if(!typevalues.asset_typeid == "") {
+        /// update here
+        const success = await axios.post('/asset/update-AssetByID',assetvalues)
+        .then((res) => {
+        
+          alert("Update Successful")
+
+          const InsertLogs = new Logs(
+            'Info',
+            "Asset Status",
+            "Function /handleUpdate",
+            ' Update StatusID : ' +  assetvalues.asset_id
+            + ' Statusname :  ' + assetvalues.asset_name,
+            userdata.userID
+          )
+  
+        //  const request = axios.post('/log',InsertLogs.getLogs())
+        //  const response =  request.data
+
+         window.location.href = "/#/admin/asset-viewer"
+          
+        })
+        .catch((err) => {
+         
+          const errorStatus = err.code
+    
+          if( errorStatus.includes('ERR_NETWORK') ) 
+          {
+
+            
+            const submitLogs = new Logs(
+              "DB",
+              "AssetStatus",
+              "Function /HandleSubmit",
+              err,
+              userdata.userID
+            )
+            
+            alert( submitLogs.getMessage() )
+
+          } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
+           
+            const submitLogs = new Logs(
+              'Error',
+              "Asset Status",
+              "Function /HandleSubmit",
+              err.response.data.message,
+              userdata.userID
+            )
+    
+            try {
+    
+              const request = axios.post('/log',submitLogs.getLogs())
+              const response =  request.data
+              console.log(response)
+    
+            } catch ( err ) {
+              console.log(err)
+              const logStatus = err.code
+    
+              if( logStatus.includes("ERR_NETWOR") ) {
+    
+                const submitLogs = new Logs(
+                  "DB",
+                  "Asset Status",
+                  "Function /HandleSubmit",
+                  err,
+                  userdata.userID
+                )
+    
+                alert( submitLogs.getMessage() )
+                console.log( submitLogs.getLogs() )
+    
+              }
+    
+              if( logStatus.includes("ERR_BAD_REQUEST") ) {
+    
+                const submitLogs = new Logs(
+                  "Error",
+                  "Asset Status",
+                  "Function /HandleSubmit",
+                  err.response.data.message,
+                  userdata.userID
+                )
+                
+                alert( submitLogs.getMessage() )
+                console.log( submitLogs.getLogs() )
+    
+              }
+    
+            }
+
+        }});
+    }
 
     }
+    catch (err) {
+      alert(err)
+    }
   }
+  
 
+ 
   return (
     <>
     <Card
@@ -209,7 +396,10 @@ export default function Asset() {
 
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>Category </FormLabel>
-              <Select >
+              <Select id='asset_categoryid' placeholder='Select Category' size='md'
+             onChange={ e => {
+              setAssets( { ...values, asset_categoryid: e.target.value } )}}
+              value={values.asset_categoryid} >
               {categories.map((category) => (
                 <option value={category.id} size='md'> 
                   {category.assetCategName}
@@ -221,7 +411,10 @@ export default function Asset() {
 
             <FormLabel>Status: </FormLabel>
            
-              <Select >
+              <Select id='asset_statusid' placeholder='Select Status' size='md'
+              onChange={ e => {
+              setAssets( { ...values, asset_statusid: e.target.value } )}}
+              value={values.asset_statusid} >
               {status.map((stat) => (
                 <option value={stat.assetStatusID} size='md'> 
                   {stat.statusName}
@@ -233,7 +426,10 @@ export default function Asset() {
 
             <FormLabel>Supplier: </FormLabel>
            
-           <Select >
+           <Select  id='asset_supplierid' placeholder='Select Status' size='md'
+              onChange={ e => {
+              setAssets( { ...values, asset_supplierid: e.target.value } )}}
+              value={values.asset_supplierid} >
            {vendors.map((vendor) => (
                 <option value={vendor.id} size='md'> 
                   {vendor.supplierName}
@@ -273,48 +469,88 @@ export default function Asset() {
           <Grid templateColumns="repeat(2, 1fr)" gap={5}>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Serial No</FormLabel>
-          <Input type="text"/>
+          <Input type="text"  value={values.asset_serialno}
+            onChange={ e => {
+            setAssets( { ...values, asset_serialno: e.target.value } )}}
+          />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Asset Code</FormLabel>
-            <Input type="text"/>
+            <Input type="text" value={values.asset_code}
+            onChange={ e => {
+              setAssets( { ...values, asset_code: e.target.value } )}}
+            />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Asset Name</FormLabel>
-            <Input type="text"/>
+            <Input type="text" value={values.asset_name}
+            onChange={ e => {
+              setAssets( { ...values, asset_name: e.target.value } )}}
+            />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Description</FormLabel>
-            <Input type="text"/>
+            <Input type="text" value={values.asset_description}
+            onChange={ e => {
+              setAssets( { ...values, asset_description: e.target.value } )}}
+            />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Date Purchase</FormLabel>
-            <Input type="text"/>
-  
+
+            <DatePicker selected={date} 
+              value= {date}
+              onChange={(date_purchase) => setDate(date)} />
+            
+            
+            {/* 
+             onChange={(date) => setDate(date)}
+            <Input type="text" value={values.asset_purchase_date}
+            onChange={ e => {
+              setAssets( { ...values, asset_purchase_date: e.target.value } )}}
+            />
+   */}
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Purchase Amunt</FormLabel>
-            <Input type="text"/>
+            <Input type="text"  value={values.asset_purchase_amout}
+            onChange={ e => {
+              setAssets( { ...values, asset_purchase_amout: e.target.value } )}}
+            />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Depreciation Date</FormLabel>
-            <Input type="text"/>
-  
+            <Box>
+              
+            
+            <DatePicker selected={date_depreciated} 
+              value= {values.asset_depreciated_date}
+              onChange={(date_depreciated) => setDateDepreciated(date_depreciated)} />
+              </Box>
+            {/* <Input type="text" value={values.asset_depreciated_date}
+            onChange={ e => {
+              setAssets( { ...values, asset_depreciated_date: e.target.value } )}}
+            />
+   */}
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Amount Depreciation</FormLabel>
-            <Input type="text"/>
+
+            <Input type="text" value={values.assset_depreciated_amount}
+            onChange={ e => {
+              setAssets( { ...values, assset_depreciated_amount: e.target.value } )}}
+            />
   
             </GridItem>
           </Grid>
 
           <Box>
-            <Button  colorScheme="green" onClick={handleUpdate} > Save </Button>
+            <Button  colorScheme="green" onClick={handleUpdate} > {btnstate} </Button>
           </Box>
         </Stack>
       </FormControl>
