@@ -120,7 +120,31 @@
         },
       *** end menu 
 
+    Date : 10 / 21 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+
+      import AssetTypeViewer from "components2/Configuration/AssetTypeViewer";
+      import AssetType from "components2/views/AssetType";
+
+      {
+          submenu: "configuration",
+          path: "/assetstype-viewer",
+          name: "Asset Type",
+          icon: <HomeIcon color="inherit" />,
+          component: AssetTypeViewer,
+          layout: "/admin",
+        },
+        {
+          path: "/assettype",
+          name: "Create Assets Type",
+          component: AssetType,
+          layout: "/admin",
+        },
 */
+
+
 
 // import
 import React, { Component } from "react";
@@ -155,6 +179,9 @@ import SuppliersViewer from "components2/Configuration/SuppliersViewer";
 import Suppliers from "components2/views/Suppliers";
 import AssetCategoryViewer from "components2/Configuration/AssetCategoryViewer";
 import AssetCategory from "components2/views/AssetCategory";
+import AssetTypeViewer from "components2/Configuration/AssetTypeViewer";
+import AssetType from "components2/views/AssetType";
+
 import UserGroupViewer from "components2/Configuration/UserGroupViewer";
 import UserGroup from "components2/views/UserGroup";
 //import CreateStatusViewer from "components2/views/CreateStatusViewer";
@@ -306,13 +333,13 @@ var dashRoutes = [
     path: "/assetstype-viewer",
     name: "Asset Type",
     icon: <HomeIcon color="inherit" />,
-    component: AssetCategoryViewer,
+    component: AssetTypeViewer,
     layout: "/admin",
   },
   {
     path: "/assettype",
     name: "Create Assets Type",
-    component: AssetCategory,
+    component: AssetType,
     layout: "/admin",
   },
   {

@@ -34,24 +34,33 @@ import { Link } from "react-router-dom";
 
 export default function AssetTypeViewer() {
 
-
-  
-  var userID = ""
+  const [userdata,setUser] = useState({
+    userID : ''
+  });
 
   const [assettype, setAssetType] = useState([]);
 
   useEffect(() => {
+    SetUsers()
     LoadAllAssetType()
   }, []);
 
+  const SetUsers = async () => { 
+
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
+
+     setUser({...userdata,
+
+      userID : tokenDecoded.result[0].userDisplayID
+
+  })
+  }
+
   const LoadAllAssetType = async () => {
     try {
-      const tokenStorage = localStorage.getItem("token");
-      const tokenDecoded = decoder(tokenStorage);
-
-      userID = tokenDecoded.result[0].userDisplayID;
-
-      const success = await axios.get("/assetcategory/viewassetcategory")
+     
+      const success = await axios.get("/assettype/viewasset-type")
 
         .then((res) => {
           setAssetType(res.data.result);
@@ -64,7 +73,7 @@ export default function AssetTypeViewer() {
             "PositionViewer",
             "Function /LoadAllPositions",
             'LoadAllPositions',
-            userID
+            userdata.userID
           )
           
         });
@@ -74,25 +83,25 @@ export default function AssetTypeViewer() {
     }
   }
 
-  const handleDelete = async (event,asset_categoryid,asset_categoryname) => {
+  const handleDelete = async (event,asset_typeid,asset_typename) => {
 
     try {
       event.preventDefault()
       
-      const deleteSuccess = await axios.post("/assetcategory/deleteassetcategory",{asset_categoryid})
+      const deleteSuccess = await axios.post("/assettype/delete-assettype",{asset_typeid})
       .then((res) => {
 
         alert("Delete succes")
 
-        LoadAllCategories()
+        LoadAllAssetType()
 
         const deleteLogs = new Logs(
           'Info',
           "Position Viewer",
           "Function /handleDelete",
-          'Delete statusID :  ' + asset_categoryid
-          + '   Statusname :  ' + asset_categoryname,
-          userID
+          'Delete statusID :  ' + asset_typeid
+          + '   Statusname :  ' + asset_typename,
+          userdata.userID
         )
 
       
@@ -109,8 +118,8 @@ export default function AssetTypeViewer() {
 
   const handleReport =() => {
       try {
-          console.log(categories)
-          generate_PDF(categories,'Asset Category')
+          console.log(assettype)
+          generate_PDF(assettype,'Asset Type')
 
       }
       catch(err) {
@@ -130,8 +139,8 @@ export default function AssetTypeViewer() {
      
               <Anchor
                   to={{
-                  pathname: "/admin/assetcategory",
-                  state: { categoryID: '' },
+                  pathname: "/admin/assettype",
+                  state: { typeID: '' },
                   }}>
                 New
               </Anchor>
@@ -151,17 +160,18 @@ export default function AssetTypeViewer() {
                 <Tr>
                   <Th>Actions</Th>
                   <Th>Asset Category</Th>
+                  <Th>Asset Type</Th>
                   <Th>Description</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {categories.map((category) => (
-                  <Tr key={category.id}>
+                {assettype.map((type) => (
+                  <Tr key={type.id}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={(e) => handleDelete(e,category.id,category.assetCategName)}
+                          onClick={(e) => handleDelete(e,type.id,type.typeName)}
                         >
                           Delete
                         </Button>
@@ -171,8 +181,8 @@ export default function AssetTypeViewer() {
                         >
                           <Link
                             to={{
-                            pathname: "/admin/assetcategory",
-                            state: { categoryID: category.id }
+                            pathname: "/admin/assettype",
+                            state: { typeID: type.id }
                             }}>
                            Edit
                           </Link>
@@ -180,8 +190,9 @@ export default function AssetTypeViewer() {
                   
                       </ButtonGroup>
                     </Td>
-                    <Td>{category.assetCategName}</Td>
-                    <Td>{category.description}</Td>
+                    <Td>{type.assetCategName}</Td>
+                    <Td>{type.typeName}</Td>
+                    <Td>{type.description}</Td>
 
                   </Tr>
                 ))}

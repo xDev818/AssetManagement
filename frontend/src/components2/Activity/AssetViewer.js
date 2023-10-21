@@ -92,7 +92,7 @@ export default function AssetViewer() {
 
         alert("Delete succes")
 
-        LoadAllSuppliers()
+        LoadAllAssets()
 
         const deleteLogs = new Logs(
           'Info',

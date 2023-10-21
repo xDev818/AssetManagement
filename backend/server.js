@@ -60,6 +60,12 @@
         Activities
         Purpose : 
                 const asset_routes = require('./routes/asset_routes')
+
+        Date : 10 / 21 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+                
  */
 
 // Packages
@@ -77,6 +83,7 @@ const logsRoutes = require('./routes/log_routes')
 const asset_status_routes = require('./routes/asset_status_routes')
 const supplier_routes = require('./routes/supplier_routes')
 const asset_category_routes = require('./routes/asset_category_routes')
+const asset_type_routes = require('./routes/asset_type_routes')
 const asset_routes = require('./routes/asset_routes')
 
 const usergroup_routes = require('./routes/usergroup_routes')
@@ -119,6 +126,8 @@ app.use('/api', asset_status_routes)
 app.use('/api', supplier_routes)
 
 app.use('/api', asset_category_routes)
+app.use('/api', asset_type_routes)
+
 app.use('/api', usergroup_routes)
 app.use('/api', asset_routes)
 
