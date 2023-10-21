@@ -51,11 +51,12 @@ import {
   MenuItem,
   
 } from "@chakra-ui/react";
-import { ChevronDownIcon} from '@chakra-ui/icons'
+
 import { Button, ButtonGroup, Wrap, WrapItem } from "@chakra-ui/react";
 import {
   ChevronRightIcon,
   ChevronLeftIcon,
+  ChevronDownIcon,
   DeleteIcon,
   EditIcon,
 } from "@chakra-ui/icons";

@@ -17,6 +17,10 @@ import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 
+import Pagination from "components2/Pagination/Pagination";
+import { TbodyRes } from "components2/Pagination/Pagination";
+import Search from "components2/Search/Search";
+
 import {
   Table,
   Thead,
@@ -46,10 +50,60 @@ export default function AssetTypeViewer() {
 
   const [assettype, setAssetType] = useState([]);
 
+
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const tablePerPage = 6;
+  const lastIndex = currentPage * tablePerPage;
+  const firstIndex = lastIndex - tablePerPage;
+  const tables = assettype.slice(firstIndex, lastIndex);
+  const tablePages = Math.ceil(assettype.length / tablePerPage);
+  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+  const filteredTables = tables.filter((item) => {
+    const searchLower = search.toLowerCase();
+    const itemText = Object.values(item).join(" ").toLowerCase();
+    return searchLower === "" || itemText.includes(searchLower);
+  });
+  const displayedData = filteredTables.slice(firstIndex, lastIndex);
+
+  const nextPage = () => {
+    if (currentPage !== tablePages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // const nextPage = () => {
+  //   if (currentPage !== tablePages) {
+  //     setCurrentPage(currentPage + 1);
+  //   }
+  // };
+
+  // const prevPage = () => {
+  //   if (currentPage !== 1) {
+  //     setCurrentPage(currentPage - 1);
+  //   }
+  // };
+
+  const currentNumber = (number) => {
+    setCurrentPage(number);
+  };
+
+
+
   useEffect(() => {
     SetUsers()
     LoadAllAssetType()
   }, []);
+
+
+
 
   const SetUsers = async () => { 
 
@@ -138,7 +192,7 @@ export default function AssetTypeViewer() {
       <Stack>
         <Card>
           <TableContainer>
-            <ButtonGroup spacing={6}>
+            {/* <ButtonGroup spacing={6}>
             <Button
               colorScheme='messenger'
             >
@@ -162,7 +216,14 @@ export default function AssetTypeViewer() {
               </MenuList>
           </Menu>
    
-            </ButtonGroup>
+            </ButtonGroup> */}
+
+            <Search
+              setSearch={setSearch}
+              handleReport={handleReport}
+              pathname="/admin/position"
+            />
+
             <Table size="lg">
               <Thead>
                 <Tr>
