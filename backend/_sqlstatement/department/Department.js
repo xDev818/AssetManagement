@@ -10,20 +10,20 @@
 
 const create = () => {
 
-    return stmt = "INSERT INTO tblDepartments(departmentDisplayID,departmentName,"
+    return "INSERT INTO tblDepartments(departmentDisplayID,departmentName,"
              + "description,createdBy,dateCreated) values (?)"
     
  }
  
  const getByName = () => {
  
-     return stmt = "SELECT departmentDisplayID from tbldepartments where departmentName = ?"
+     return  "SELECT departmentDisplayID from tbldepartments where departmentName = ?"
     
  }
 
  const getAll = () => {
 
-    return stmt = "SELECT departmentDisplayID,departmentName,description FROM tbldepartments" 
+    return  "SELECT departmentDisplayID,departmentName,description FROM tbldepartments" 
                 + " ORDER BY departmentName"
     
  }
