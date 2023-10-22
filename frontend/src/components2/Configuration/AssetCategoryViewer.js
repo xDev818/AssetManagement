@@ -14,8 +14,10 @@
     Purpose : 
       create SuppliersViewer.js
 
-        
-*/
+
+ */
+
+
 
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
@@ -42,6 +44,7 @@ import {
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
+import { textChangeRangeIsUnchanged } from "typescript";
 
 
 export default function AssetCategoryViewer() {

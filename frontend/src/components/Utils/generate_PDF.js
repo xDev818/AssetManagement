@@ -20,6 +20,12 @@ Info : The code was made and controlled by Nole
     Purpose : 
         import PDFAssetCategory from 'components2/views/pdfreports/PDFAssetCategory'
 
+
+    Date : 10 / 22 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        Add Assets functionality Report
 */ 
 
 import PDFReports from 'components2/views/pdfreports/PDFReports'
@@ -37,6 +43,7 @@ const generate_PDF =  (propdata,paramReportType) => {
     const positionColumn = ["#","Position","Department", "Description"];
     const assetTypeColumn = ["#","Category","Type", "Description"];
     const vendorColumn  = ["#","Vendor","Address", "Contact No", "Email"];
+    const assetsColumn  = ["#","Type","Status", "Code", "Name", "Date Purchase"];
     
 
   
@@ -146,7 +153,27 @@ const generate_PDF =  (propdata,paramReportType) => {
 
             PDFReports(rowdata,assetTypeColumn,paramReportType)
 
+         } else if (paramReportType === 'Assets') {
+ 
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const assetsData = [
+                    icount.toString(),
+                    item.typeName,
+                    item.statusName,
+                    item.assetCode,
+                    item.assetName,
+                    item.date_purchase,
+                ];
+                rowdata.push(assetsData)
+
+            });
+
+            PDFReports(rowdata,assetsColumn,paramReportType)
+
          }
+
 
    
 }

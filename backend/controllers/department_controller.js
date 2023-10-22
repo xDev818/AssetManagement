@@ -22,7 +22,7 @@ const {
     getByID , 
     updateByID , 
     deleteByID 
-}  = require('../_sqlstatement/department/Department')
+}  = require('../_sqlstatement/Department')
 
 
 // Date helper
@@ -42,7 +42,7 @@ const createDepartment = ( request, response ) => {
     //   }
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-    const stmt =  create()
+   // const stmt = 
   
     const values = [
         id,
@@ -52,7 +52,7 @@ const createDepartment = ( request, response ) => {
         utils_getDate()
     ];
     
-    mysql.query( stmt, [values], ( err, result ) => {
+    mysql.query(  create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -75,10 +75,8 @@ const getDepartmentByName = ( request, response ) => {
 
     const defaultDepartment = 'Default Department'
     
-    const stmt = getByName()
-
-
-    mysql.query( stmt, [ defaultDepartment ], ( err, result ) => {
+    
+    mysql.query( getByName(), [ defaultDepartment ], ( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -101,12 +99,9 @@ const getDepartmentByName = ( request, response ) => {
 //Load all Active Departments
 const getallDepartments = ( request, response ) => {
 
-    
+ 
 
-    const stmt = getAll()
-   
-
-    mysql.query( stmt, ( err, result ) => {
+    mysql.query( getAll(), ( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -131,10 +126,7 @@ const getDepartmentByID = ( request, response ) => {
 
     const { id } = request.params
 
-    const stmt = getByID()
-
-
-    mysql.query( stmt, [id],( err, result ) => {
+    mysql.query(  getByID(), [id],( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -160,12 +152,9 @@ const updateDepartmentByID = ( request, response ) => {
     const { departmentid, departmentname, description, userID  } = request.body
 
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
-
-
-   const stmt = updateByID()
    
     
-    mysql.query( stmt, [departmentname,description,userID,utils_getDate(),departmentid], ( err, result ) => {
+    mysql.query( updateByID(), [departmentname,description,userID,utils_getDate(),departmentid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -188,10 +177,8 @@ const updateDepartmentByID = ( request, response ) => {
 const deleteDepartmentByID = ( request, response ) => {
 
     const { departmentid} = request.body
-
-    const stmt = deleteByID()
     
-    mysql.query( stmt, [departmentid], ( err, result ) => {
+    mysql.query( deleteByID(), [departmentid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
