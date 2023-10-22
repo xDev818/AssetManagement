@@ -14,6 +14,13 @@
           import DatePicker from 'react-datepicker'
           import 'react-datepicker/dist/react-datepicker.css'
 
+    Date : 10 / 21 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+         Update :
+          Remove Asset Category and change to Asset Type
+
 */
 
 import {
@@ -53,16 +60,17 @@ export default function Asset() {
     userID : ''
   });
 
-  const [categories, setCategory] = useState([]);
+  
+  const [assettype, setAssetType] = useState([]);
   const [status, setStatus] = useState([]);
   const [vendors, setVendors] = useState([]);
-  const [date ,setDate] = useState(new Date());
-  //const [date_purchase, setDatePurchase] = useState(new Date());
-  const [date_depreciated, setDateDepreciated] = useState(new Date());
+ 
+  const [date_purchase, setDatePurchase] = useState('');
+  const [date_depreciated, setDateDepreciated] = useState('');
 
   const [values,setAssets] = useState({
     asset_id: '',
-    asset_categoryid: '',
+    asset_typeid: '',
     asset_statusid: '',
     asset_supplierid: '',
     asset_serialno: '',
@@ -93,7 +101,7 @@ export default function Asset() {
 
   useEffect(() => {
     SetUsers()
-    LoadAllCategories()
+    LoadAllAssetType()
     LoadAllStatus()
     LoadAllSuppliers()
     
@@ -106,19 +114,21 @@ export default function Asset() {
           setAssets({
             ...values,
             asset_id: res.data.result[0].id,
-            asset_categoryid: res.data.result[0].assetCategID,
+            asset_typeid: res.data.result[0].typeID,
             asset_statusid: res.data.result[0].assetStatusID,
-            asset_supplierid: res.data.result[0].supplierID,
+            asset_supplierid: res.data.result[0].supplierid,
             asset_serialno: res.data.result[0].serialNo,
             asset_code: res.data.result[0].assetCode,
             asset_name: res.data.result[0].assetName,
             asset_description: res.data.result[0].description,
             asset_purchase_amout: res.data.result[0].Amount,
-            asset_purchase_date: res.data.result[0].date_purchase,
+            asset_purchase_date: new Date(res.data.result[0].date_purchase),
             assset_depreciated_amount: res.data.result[0].AmountYR,
-            asset_depreciated_date: res.data.result[0].date_depreciated
+            asset_depreciated_date: new Date(res.data.result[0].date_depreciated)
           })
-          
+
+          setDatePurchase( values.asset_purchase_date)
+          setDateDepreciated( values.asset_depreciated_date)
         })
         .catch((err) => {
           alert(err);
@@ -130,7 +140,7 @@ export default function Asset() {
       setAssets({
         ...values,
         asset_id: '',
-        asset_categoryid: '',
+        asset_typeid: '',
         asset_statusid: '',
         asset_supplierid: '',
         asset_serialno: '',
@@ -138,22 +148,23 @@ export default function Asset() {
         asset_name: '',
         asset_description: '',
         asset_purchase_amout: '',
-        asset_purchase_date: '',
+        asset_purchase_date: new Date(),
         assset_depreciated_amount: '',
-        asset_depreciated_date: ''
+        asset_depreciated_date: new Date()
       })
+
+        setDatePurchase(values.asset_purchase_date)
+        setDateDepreciated(values.asset_depreciated_date)
     }
   }, [])
 
-  const LoadAllCategories = async () => {
+  const LoadAllAssetType = async () => {
     try {
-      
-      const success = await axios.get("/assetcategory/viewassetcategory")
+     
+      const success = await axios.get("/assettype/viewasset-type")
 
         .then((res) => {
-
-          setCategory(res.data.result);
-
+          setAssetType(res.data.result);
 
         })
         .catch((err) => {
@@ -238,7 +249,7 @@ export default function Asset() {
       const assetvalues = {
 
         asset_id: values.asset_id,
-        asset_categoryid: values.asset_categoryid,
+        asset_typeid: values.asset_typeid,
         asset_statusid: values.asset_statusid,
         asset_supplierid: values.asset_supplierid,
         asset_serialno: values.asset_serialno,
@@ -246,9 +257,11 @@ export default function Asset() {
         asset_name: values.asset_name,
         asset_description: values.asset_description,
         asset_purchase_amout: values.asset_purchase_amout,
-        asset_purchase_date: values.asset_purchase_date,
+        asset_purchase_date: date_purchase,
+        //values.asset_purchase_date,
         assset_depreciated_amount: values.assset_depreciated_amount,
-        asset_depreciated_date: values.asset_depreciated_date
+        asset_depreciated_date: date_depreciated,
+        //values.asset_depreciated_date
       }
 
       if(assetvalues.asset_id === "") {
@@ -276,7 +289,7 @@ export default function Asset() {
           .catch((err) => {
             alert(err);
           });
-      } else if(!typevalues.asset_typeid == "") {
+      } else if(!assetvalues.asset_typeid == "") {
         /// update here
         const success = await axios.post('/asset/update-AssetByID',assetvalues)
         .then((res) => {
@@ -396,18 +409,21 @@ export default function Asset() {
 
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>Category </FormLabel>
-              <Select id='asset_categoryid' placeholder='Select Category' size='md'
-             onChange={ e => {
-              setAssets( { ...values, asset_categoryid: e.target.value } )}}
-              value={values.asset_categoryid} >
-              {categories.map((category) => (
-                <option value={category.id} size='md'> 
-                  {category.assetCategName}
-                </option>
-                ))
-                
-              }
-            </Select>
+              <Select id='asset_typeid' placeholder='Select Type' size='md'
+                  onChange={ e => {
+                  setAssets( { ...values, asset_typeid: e.target.value } )}}
+                  value={values.asset_typeid} 
+                  
+              >
+
+                  {assettype.map((type) => (
+                    <option value={type.id} size='md'> 
+                      {type.typeName}
+                    </option>
+                    ))
+                    
+                  }
+              </Select>
 
             <FormLabel>Status: </FormLabel>
            
@@ -420,13 +436,12 @@ export default function Asset() {
                   {stat.statusName}
                 </option>
                 ))
-                 
               }
             </Select>
 
             <FormLabel>Supplier: </FormLabel>
            
-           <Select  id='asset_supplierid' placeholder='Select Status' size='md'
+           <Select  id='asset_supplierid' placeholder='Select Supplier' size='md'
               onChange={ e => {
               setAssets( { ...values, asset_supplierid: e.target.value } )}}
               value={values.asset_supplierid} >
@@ -470,6 +485,7 @@ export default function Asset() {
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Serial No</FormLabel>
           <Input type="text"  value={values.asset_serialno}
+            
             onChange={ e => {
             setAssets( { ...values, asset_serialno: e.target.value } )}}
           />
@@ -502,10 +518,14 @@ export default function Asset() {
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Date Purchase</FormLabel>
 
-            <DatePicker selected={date} 
-              value= {date}
-              onChange={(date_purchase) => setDate(date)} />
-            
+            <DatePicker selected={date_purchase} 
+            showIcon
+    
+              onChange={(date_purchase) => setDatePurchase(date_purchase)} 
+              value= {date_purchase}
+              />
+
+
             
             {/* 
              onChange={(date) => setDate(date)}
@@ -526,11 +546,12 @@ export default function Asset() {
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Depreciation Date</FormLabel>
             <Box>
-              
-            
+
             <DatePicker selected={date_depreciated} 
-              value= {values.asset_depreciated_date}
-              onChange={(date_depreciated) => setDateDepreciated(date_depreciated)} />
+            showIcon
+              onChange={(date_depreciated) => setDateDepreciated(date_depreciated)} 
+              value= {date_depreciated}
+              />
               </Box>
             {/* <Input type="text" value={values.asset_depreciated_date}
             onChange={ e => {

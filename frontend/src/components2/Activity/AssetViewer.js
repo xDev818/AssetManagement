@@ -1,4 +1,11 @@
 
+/* -------------------------------------------------------------------------- */
+/*                                See Info Below                              */
+/*               Write Updates , Activities and Comments Below                */
+/*                              Before Coding                                 */
+/* -------------------------------------------------------------------------- */
+
+
 /* 
 
 
@@ -7,7 +14,16 @@
     Activities
     Purpose : 
       create AssetViewer.js
-        
+
+    Date : 10 / 22 / 23
+    Author : Nole
+    Activities 
+      Update Load Assets and Delete Assets
+      Add Assets PDF Report
+    Pattern From John
+      import Search from "components2/Search/Search";
+      import Pagination from "components2/Pagination/Pagination";
+
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -16,6 +32,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
+
+import Search from "components2/Search/Search";
+import Pagination from "components2/Pagination/Pagination";
 
 import {
   Table,
@@ -44,6 +63,36 @@ export default function AssetViewer() {
   const [userdata,setUser] = useState({
     userID : ''
   });
+
+
+  const [search, setSearch] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const tablePerPage = 6;
+  const lastIndex = currentPage * tablePerPage;
+  const firstIndex = lastIndex - tablePerPage;
+  const tables = assets.slice(firstIndex, lastIndex);
+  const tablePages = Math.ceil(assets.length / tablePerPage);
+  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+  const nextPage = () => {
+    console.log("cureentpage", currentPage);
+    if (currentPage !== tablePages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const currentNumber = (number) => {
+    setCurrentPage(number);
+  };
+ 
+
 
   const SetUsers = async () => { 
 
@@ -123,7 +172,7 @@ export default function AssetViewer() {
   const handleReport =() => {
       try {
 
-          generate_PDF(suppliers,'Suppliers')
+          generate_PDF(assets,'Assets')
 
       }
       catch(err) {
@@ -136,7 +185,7 @@ export default function AssetViewer() {
       <Stack>
         <Card>
           <TableContainer>
-            <ButtonGroup spacing={6}>
+            {/* <ButtonGroup spacing={6}>
             <Button
               colorScheme='messenger'
             >
@@ -160,7 +209,14 @@ export default function AssetViewer() {
               </MenuList>
           </Menu>
  
-            </ButtonGroup>
+            </ButtonGroup> */}
+
+            <Search
+              setSearch={setSearch}
+              handleReport={handleReport}
+              pathname="/admin/asset"
+            />
+
             <Table size="lg">
               <Thead>
                 <Tr>
@@ -168,6 +224,7 @@ export default function AssetViewer() {
                   <Th>Type</Th>
                   <Th>Status</Th>
                   <Th>Vendor</Th>
+                  <Th>Serial No</Th>
                   <Th>Code</Th>
                   <Th>Name</Th>
                   <Th>Description</Th>
@@ -205,9 +262,10 @@ export default function AssetViewer() {
                       </ButtonGroup>
                     </Td>
                  
-                    <Td>{asset.assetCategName}</Td>
+                    <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
                     <Td>{asset.name}</Td>
+                    <Td>{asset.serialNo}</Td>
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>
                     <Td>{asset.description}</Td>

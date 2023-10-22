@@ -8,6 +8,12 @@ Info : The routes was made and controlled by Jinshin
 
     Purpose : 
         create asset_controller.js
+
+   Date : 10 / 22 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Import sqlStatement(/_sqlstatement/Assets) controller
 */
 
 // Packages
@@ -18,30 +24,41 @@ const { randomUUID } = require('crypto')
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
 
+
+
+const {
+    create,
+    getByName,
+    getAll,
+    getByID , 
+    updateByID , 
+    deleteByID 
+  }  = require('../_sqlstatement/Assets')
+
 const createAsset = ( request, response ) => {
 
     const id = randomUUID() 
-    const { asset_categoryid, asset_statusid,asset_supplierid,
+    const { asset_typeid, asset_statusid,asset_supplierid,
         asset_serialno, asset_code,asset_name,asset_description,
         asset_purchase_amout,asset_purchase_date,
         assset_depreciated_amount,asset_depreciated_date,userID  } = request.body
     
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-    const stmt = "INSERT INTO tblAssets(assetID,assetCategID,assetStatusID,"
-            + "supplierID,serialNo,assetCode,assetName,description,"
-            + "amount,datePurchase,amountDepreciatedYr,dateDepreciated,"
-            + "createdBy,dateCreated) values (?)";
+   const dPurchase = new Date(asset_purchase_date)
+   const ddepreceiated = new Date(asset_depreciated_date)
     
     const values = [
-        id,asset_categoryid,asset_statusid,asset_supplierid,
+        id,asset_typeid,asset_statusid,asset_supplierid,
         asset_serialno,asset_code,asset_name,asset_description,
-        asset_purchase_amout,asset_purchase_date,
-        assset_depreciated_amount,asset_depreciated_date,
+        asset_purchase_amout,dPurchase,
+        assset_depreciated_amount,ddepreceiated,
         userID, utils_getDate()
     ];
+
+
     
-    mysql.query( stmt, [values], ( err, result ) => {
+    mysql.query( create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -63,21 +80,7 @@ const createAsset = ( request, response ) => {
 
 const viewAllAssets = ( request, response ) => {
 
-    const stmt = "SELECT assets.assetID as id,category.assetCategID,category.assetCategName,Assetstatus.statusName,"
-           + " vendor.name,assets.serialNo, assets.assetCode, assets.assetName,"
-            + "assets.description, FORMAT(assets.amount,2) as 'Amount', "
-            + "COALESCE(DATE_FORMAT(assets.datePurchase, '%m/%d/%Y'),'') as date_purchase ,"
-            + "FORMAT(assets.amountDepreciatedYr,2) as 'AmountYR' ,"
-            + "COALESCE(DATE_FORMAT(assets.dateDepreciated, '%m/%d/%Y'),'') as date_depreciated   FROM tblAssets assets"
-            + " INNER JOIN tblAssetCategory category on assets.assetCategID COLLATE utf8mb4_unicode_ci = category.assetCategID"
-            + " INNER JOIN tblAssetStatus Assetstatus on assets.assetStatusID COLLATE utf8mb4_unicode_ci = Assetstatus.assetStatusID"
-            + " INNER JOIN tblSuppliers vendor on assets.supplierID COLLATE utf8mb4_unicode_ci = vendor.supplierid"
-            + " WHERE assets.active = 1"
-            + " ORDER BY assets.assetName asc"
-
-    
-
-    mysql.query( stmt, ( err, result ) => {
+    mysql.query( getAll(), ( err, result ) => {
        
         if( err ) return response.status(400).send(
             {
@@ -99,10 +102,7 @@ const deleteAsset = ( request, response ) => {
 
     const { assetid } = request.body
 
-    const stmt = "DELETE FROM tblAssets WHERE assetID=?"
-    
-   
-    mysql.query( stmt, [assetid], ( err, result ) => {
+    mysql.query( deleteByID(), [assetid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -127,20 +127,7 @@ const getAssetByID = ( request, response ) => {
 
     const { id } = request.params
 
-    const stmt = "SELECT assets.assetID as id,assets.assetCategID,category.assetCategName,"
-    + " assets.assetStatusID, Assetstatus.statusName,"
-    + " assets.supplierID,,vendor.name,assets.serialNo, assets.assetCode, assets.assetName,"
-     + "assets.description, FORMAT(assets.amount,2) as 'Amount', "
-     + "COALESCE(DATE_FORMAT(assets.datePurchase, '%m/%d/%Y'),'') as date_purchase ,"
-     + "FORMAT(assets.amountDepreciatedYr,2) as 'AmountYR' ,"
-     + "COALESCE(DATE_FORMAT(assets.dateDepreciated, '%m/%d/%Y'),'') as date_depreciated   FROM tblAssets assets"
-     + " INNER JOIN tblAssetCategory category on assets.assetCategID COLLATE utf8mb4_unicode_ci = category.assetCategID"
-     + " INNER JOIN tblAssetStatus Assetstatus on assets.assetStatusID COLLATE utf8mb4_unicode_ci = Assetstatus.assetStatusID"
-     + " INNER JOIN tblSuppliers vendor on assets.supplierID COLLATE utf8mb4_unicode_ci = vendor.supplierid"
-     + " WHERE assets.active = 1 and assets.assetID = ?"
-     + " ORDER BY assets.assetName asc"
-    
-    mysql.query( stmt,[id], ( err, result ) => {
+    mysql.query( getByID(),[id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -161,27 +148,21 @@ const getAssetByID = ( request, response ) => {
 
 const updateAsset = ( request, response ) => {
 
-    const { asset_id, asset_categoryid,asset_statusid, 
+    const { asset_id, asset_typeid,asset_statusid, 
         asset_supplierid, asset_serialno,
         asset_code, asset_name, asset_description,
         asset_purchase_amout, asset_purchase_date, 
         assset_depreciated_amount, asset_depreciated_date, userID  } = request.body
 
-   
-    const stmt = "UPDATE tblAssets SET assetCategID = ?,"
-                + "assetStatusID = ?,supplierID = ?,"
-                + " serialNo = ?, assetCode = ?,"
-                + " assetName = ?, description = ?,"
-                + " amount = ?, datePurchase = ?,"
-                + " amountDepreciatedYr = ?, dateDepreciated = ?,"
-                + " updatedBy = ?, dateUpdated = ?,"
-                + " where assetID = ?"
-    
-  
-    mysql.query( stmt, [asset_categoryid,asset_statusid, 
+        const damount = parseFloat(asset_purchase_amout)
+        const damountdep = parseFloat(assset_depreciated_amount)
+        const dPurchase = new Date(asset_purchase_date)
+        const ddepreceiated = new Date(asset_depreciated_date)
+
+    mysql.query( updateByID(), [asset_typeid,asset_statusid, 
         asset_supplierid , asset_serialno ,asset_code, asset_name , 
-        asset_description, asset_purchase_amout, asset_purchase_date, 
-        assset_depreciated_amount , asset_depreciated_date , 
+        asset_description, damount, dPurchase, 
+        damountdep , ddepreceiated , 
         userID,utils_getDate(),asset_id], ( err, result ) => {
 
         if( err ) return response.status(400).send(

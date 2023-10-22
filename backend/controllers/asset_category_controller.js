@@ -8,6 +8,12 @@ Info : The routes was made and controlled by Jinshin
 
     Purpose : 
         create asset_category_controller.js
+
+   Date : 10 / 22 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Import sqlStatement(/_sqlstatement/AssetCategory) controller
 */
 
 // Packages
@@ -18,6 +24,14 @@ const { randomUUID } = require('crypto')
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
 
+const {
+    create,
+    getByName,
+    getAll,
+    getByID , 
+    updateByID , 
+    deleteByID 
+  }  = require('../_sqlstatement/AssetCategory')
 
 const createAssetCategory = ( request, response ) => {
 
@@ -26,9 +40,6 @@ const createAssetCategory = ( request, response ) => {
     
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-    const stmt = "INSERT INTO tblAssetCategory(assetCategID,assetCategName,description,"
-            + "createdBy,dateCreated) values (?)";
-    
     const values = [
         id,
         asset_categoryname,
@@ -37,7 +48,7 @@ const createAssetCategory = ( request, response ) => {
         utils_getDate()
     ];
     
-    mysql.query( stmt, [values], ( err, result ) => {
+    mysql.query( create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -59,11 +70,9 @@ const createAssetCategory = ( request, response ) => {
 // An instance to Load all Suppliers
 const viewAllCategory = ( request, response ) => {
 
-    const stmt = "SELECT assetCategID as id,assetCategName,description FROM tblAssetCategory"
-            + " ORDER BY assetCategName ASC"
-    
 
-    mysql.query( stmt, ( err, result ) => {
+
+    mysql.query( getAll(), ( err, result ) => {
        
         if( err ) return response.status(400).send(
             {
@@ -85,13 +94,8 @@ const viewAllCategory = ( request, response ) => {
 const getCategoryByID = ( request, response ) => {
 
     const { id } = request.params
-
-    const stmt = "SELECT assetCategID as id,assetCategName,description FROM tblAssetCategory"
-                + " WHERE assetCategID = ?"
     
-    
-
-    mysql.query( stmt,[id], ( err, result ) => {
+    mysql.query( getByID(),[id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -114,13 +118,9 @@ const updateAssetCategory = ( request, response ) => {
 
     const { asset_categoryid, asset_categoryname,asset_categorydescription, userID  } = request.body
 
-   
-    const stmt = "UPDATE tblAssetCategory SET assetCategName = ?,"
-                + "description=?, updateBy = ?,dateUpdate = ?"
-                + " where assetCategID = ?"
-    
+ 
   
-    mysql.query( stmt, [asset_categoryname,asset_categorydescription,userID,utils_getDate(),asset_categoryid], ( err, result ) => {
+    mysql.query( updateByID(), [asset_categoryname,asset_categorydescription,userID,utils_getDate(),asset_categoryid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -147,10 +147,8 @@ const deleteAssetCategory = ( request, response ) => {
 
     const { asset_categoryid } = request.body
 
-    const stmt = "DELETE FROM tblAssetCategory WHERE assetCategID=?"
-    
    
-    mysql.query( stmt, [asset_categoryid], ( err, result ) => {
+    mysql.query( deleteByID(), [asset_categoryid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {

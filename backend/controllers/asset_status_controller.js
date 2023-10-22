@@ -17,6 +17,13 @@
     Activities
     Purpose : 
       create function deleteAssetStatus
+
+
+    Date : 10 / 22 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Import sqlStatement(/_sqlstatement/AssetStatus) controller
 */
 
 // Packages
@@ -28,6 +35,16 @@ const { randomUUID } = require('crypto')
 const { utils_getDate } = require('../utils/date_helper')
 
 
+const {
+    create,
+    getByName,
+    getAll,
+    getByID , 
+    updateByID , 
+    deleteByID 
+  }  = require('../_sqlstatement/AssetStatus')
+
+
 // An instance to Create new Asset Status
 const createAssetStatus = ( request, response ) => {
 
@@ -36,8 +53,6 @@ const createAssetStatus = ( request, response ) => {
 
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-    const stmt = "INSERT INTO tblAssetStatus(assetStatusID,statusName,statusDescription,"
-            + "createdBy,dateCreated) values (?)";
     
     const values = [
         id,
@@ -47,7 +62,7 @@ const createAssetStatus = ( request, response ) => {
         utils_getDate()
     ];
     
-    mysql.query( stmt, [values], ( err, result ) => {
+    mysql.query( create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -70,10 +85,9 @@ const createAssetStatus = ( request, response ) => {
 
 const ViewAllAssetStatus = ( request, response ) => {
 
-    const stmt = "SELECT assetStatusID, statusName,statusDescription FROM tblAssetStatus"
-                + " order by statusName asc"
+
            
-    mysql.query( stmt, ( err, result ) => {
+    mysql.query( getAll(), ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -99,15 +113,9 @@ const ViewAllAssetStatus = ( request, response ) => {
 const getAssetStatusbyID = ( request, response ) => {
 
     const { id } = request.params
+   
 
-    
-
-
-    const stmt = "SELECT assetStatusID,statusName,statusDescription FROM tblAssetStatus"
-                + " where assetStatusID = ?"
-    
-
-    mysql.query( stmt,[id], ( err, result ) => {
+    mysql.query( getByID(),[id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -131,11 +139,7 @@ const updateAssetStatus = ( request, response ) => {
 
     const { statusid, statusname, description, userID  } = request.body
 
-   
-    const stmt = "UPDATE tblAssetStatus SET statusName = ?,"
-    + "statusDescription = ?,updateBy = ?,dateUpdate = ?"
-    + " where assetStatusID = ?"
-    
+
     // const values = [
     //     statusname,
     //     description,
@@ -145,7 +149,7 @@ const updateAssetStatus = ( request, response ) => {
     // ];
 
    // console.log(values)
-    mysql.query( stmt, [statusname,description,userID,utils_getDate(),statusid], ( err, result ) => {
+    mysql.query( updateByID(), [statusname,description,userID,utils_getDate(),statusid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -171,8 +175,6 @@ const deleteAssetStatus = ( request, response ) => {
 
     const { statusid} = request.body
 
-    const stmt = "DELETE FROM tblAssetStatus WHERE assetStatusID=?"
-    
     // const values = [
     //     statusname,
     //     description,
@@ -182,7 +184,7 @@ const deleteAssetStatus = ( request, response ) => {
     // ];
 
    // console.log(values)
-    mysql.query( stmt, [statusid], ( err, result ) => {
+    mysql.query( deleteByID(), [statusid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
