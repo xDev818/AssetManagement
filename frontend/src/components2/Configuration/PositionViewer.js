@@ -193,35 +193,49 @@ export default function PositionViewer() {
               </Thead>
 
               <Tbody>
-                {displayedData.map((position) => (
-                  <Tr key={position.id}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="red"
-                          onClick={(e) =>
-                            handleDelete(e, position.id, position.positionName)
-                          }
-                        >
-                          <DeleteIcon />
-                        </Button>
-                        <Button colorScheme="blue">
-                          <Link
-                            to={{
-                              pathname: "/admin/position",
-                              state: { positionID: position.id },
-                            }}
+                {tables
+                  .filter((item) => {
+                    const searchLower = search.toLowerCase();
+                    const itemText = Object.values(item)
+                      .join(" ")
+                      .toLowerCase();
+                    return search.toLowerCase() === ""
+                      ? item
+                      : itemText.includes(searchLower);
+                  })
+                  .map((position) => (
+                    <Tr key={position.id}>
+                      <Td>
+                        <ButtonGroup>
+                          <Button
+                            colorScheme="red"
+                            onClick={(e) =>
+                              handleDelete(
+                                e,
+                                position.id,
+                                position.positionName
+                              )
+                            }
                           >
-                            <EditIcon />
-                          </Link>
-                        </Button>
-                      </ButtonGroup>
-                    </Td>
-                    <Td>{position.positionName}</Td>
-                    <Td>{position.departmentName}</Td>
-                    <Td>{position.description}</Td>
-                  </Tr>
-                ))}
+                            <DeleteIcon />
+                          </Button>
+                          <Button colorScheme="blue">
+                            <Link
+                              to={{
+                                pathname: "/admin/position",
+                                state: { positionID: position.id },
+                              }}
+                            >
+                              <EditIcon />
+                            </Link>
+                          </Button>
+                        </ButtonGroup>
+                      </Td>
+                      <Td>{position.positionName}</Td>
+                      <Td>{position.departmentName}</Td>
+                      <Td>{position.description}</Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
 

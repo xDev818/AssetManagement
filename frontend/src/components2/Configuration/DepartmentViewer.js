@@ -164,10 +164,10 @@ export default function DepartmentViewer() {
               {tables
                 .filter((item) => {
                   const searchLower = search.toLowerCase();
-                  const positionNameLower = item.departmentName.toLowerCase();
+                  const itemText = Object.values(item).join(" ").toLowerCase();
                   return search.toLowerCase() === ""
                     ? item
-                    : positionNameLower.toLowerCase().includes(searchLower);
+                    : itemText.includes(searchLower);
                 })
                 .map((department) => (
                   <Tr key={department.departmentDisplayID}>

@@ -95,15 +95,13 @@ export default function Dashboard(props) {
       }
 
       if (prop.layout === "/admin") {
-        if (prop.path == "/update-profile") {
-          return (
-            <Route
-              path={prop.layout + prop.path + "/:id"}
-              component={prop.component}
-              key={key}
-            />
-          );
-        }
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+          />
+        );
       } else {
         return null;
       }
@@ -176,7 +174,7 @@ export default function Dashboard(props) {
             <PanelContainer>
               <Switch>
                 {getRoutes(routes)}
-                {/* <Redirect from="/admin" to="/admin/dashboard" /> */}
+                <Redirect from="/admin" to="/admin/dashboard" />
               </Switch>
             </PanelContainer>
           </PanelContent>

@@ -178,10 +178,12 @@ export default function AssetStatusViewer() {
                 {tables
                   .filter((item) => {
                     const searchLower = search.toLowerCase();
-                    const positionNameLower = item.statusName.toLowerCase();
+                    const itemText = Object.values(item)
+                      .join(" ")
+                      .toLowerCase();
                     return search.toLowerCase() === ""
                       ? item
-                      : positionNameLower.toLowerCase().includes(searchLower);
+                      : itemText.includes(searchLower);
                   })
                   .map((status) => (
                     <Tr key={status.assetStatusID}>

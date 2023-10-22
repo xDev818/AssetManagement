@@ -1,4 +1,3 @@
-
 /* 
 
 
@@ -31,17 +30,42 @@ import {
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
+import Search from "components2/Search/Search";
+import Pagination from "components2/Pagination/Pagination";
 
 export default function AssetViewer() {
-
-
-  
-  var userID = ""
+  var userID = "";
 
   const [suppliers, setSuppliers] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const tablePerPage = 6;
+  const lastIndex = currentPage * tablePerPage;
+  const firstIndex = lastIndex - tablePerPage;
+  const tables = suppliers.slice(firstIndex, lastIndex);
+  const tablePages = Math.ceil(suppliers.length / tablePerPage);
+  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+  const nextPage = () => {
+    console.log("cureentpage", currentPage);
+    if (currentPage !== tablePages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const currentNumber = (number) => {
+    setCurrentPage(number);
+  };
 
   useEffect(() => {
-    LoadAllSuppliers()
+    LoadAllSuppliers();
   }, []);
 
   const LoadAllSuppliers = async () => {
@@ -51,101 +75,78 @@ export default function AssetViewer() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios.get("/suppliers/viewallsuppliers")
+      const success = await axios
+        .get("/suppliers/viewallsuppliers")
 
         .then((res) => {
           setSuppliers(res.data.result);
-
         })
         .catch((err) => {
-          
           const InsertLogs = new Logs(
-            'Error',
+            "Error",
             "PositionViewer",
             "Function /LoadAllPositions",
-            'LoadAllPositions',
+            "LoadAllPositions",
             userID
-          )
-          
+          );
         });
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-  }
+  };
 
-  const handleDelete = async (event,supplierid,suppliername) => {
-
+  const handleDelete = async (event, supplierid, suppliername) => {
     try {
-      event.preventDefault()
-      
-      const deleteSuccess = await axios.post("/suppliers/deleteSupplier",{supplierid})
-      .then((res) => {
+      event.preventDefault();
 
-        alert("Delete succes")
+      const deleteSuccess = await axios
+        .post("/suppliers/deleteSupplier", { supplierid })
+        .then((res) => {
+          alert("Delete succes");
 
-        LoadAllSuppliers()
+          LoadAllSuppliers();
 
-        const deleteLogs = new Logs(
-          'Info',
-          "Position Viewer",
-          "Function /handleDelete",
-          'Delete statusID :  ' + supplierid
-          + '   Statusname :  ' + suppliername,
-          userID
-        )
-
-      
-
-      })
-      .catch((err) => {
-        alert(err)
-      })
-    } catch(err) {
-        alert(err)
+          const deleteLogs = new Logs(
+            "Info",
+            "Position Viewer",
+            "Function /handleDelete",
+            "Delete statusID :  " +
+              supplierid +
+              "   Statusname :  " +
+              suppliername,
+            userID
+          );
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    } catch (err) {
+      alert(err);
     }
+  };
 
-  }
-
-  const handleReport =() => {
-      try {
-
-          generate_PDF(suppliers,'Suppliers')
-
-      }
-      catch(err) {
-        alert(err)
-      }
-  }
+  const handleReport = () => {
+    try {
+      generate_PDF(suppliers, "Suppliers");
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   return (
     <>
       <Stack>
-        <Card>
+        <Card height={694} position="relative">
           <TableContainer>
-            <ButtonGroup spacing={6}>
-            <Button
-              colorScheme='messenger'
-            >
-     
-              <Anchor
-                  to={{
+            {/*  to={{
                   pathname: "/admin/asset",
                   state: { supplierID: '' },
-                  }}>
-                New
-              </Anchor>
-
-            </Button>
-            <Button
-             colorScheme='green'
-              
-              onClick={handleReport}
-              
-            >        
-             PDF Report
-            </Button>
-            </ButtonGroup>
+                  }} */}
+            <Search
+              setSearch={setSearch}
+              handleReport={handleReport}
+              pathname="/admin/asset"
+            />
             <Table size="lg">
               <Thead>
                 <Tr>
@@ -157,39 +158,60 @@ export default function AssetViewer() {
                 </Tr>
               </Thead>
               <Tbody>
-                {suppliers.map((supplier) => (
-                  <Tr key={supplier.id}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="red"
-                          onClick={(e) => handleDelete(e,supplier.id,supplier.supplierName)}
-                        >
-                          Delete
-                        </Button>
-                        <Button
-                          colorScheme="blue"
-                          
-                        >
-                          <Link
-                            to={{
-                            pathname: "/admin/asset",
-                            state: { supplierID: supplier.id }
-                            }}>
-                           Edit
-                          </Link>
-                        </Button>
-                  
-                      </ButtonGroup>
-                    </Td>
-                    <Td>{supplier.supplierName}</Td>
-                    <Td>{supplier.address}</Td>
-                    <Td>{supplier.contactno}</Td>
-                    <Td>{supplier.email}</Td>
-                  </Tr>
-                ))}
+                {tables
+                  .filter((item) => {
+                    const searchLower = search.toLowerCase();
+                    const itemText = Object.values(item)
+                      .join(" ")
+                      .toLowerCase();
+                    return search.toLowerCase() === ""
+                      ? item
+                      : itemText.includes(searchLower);
+                  })
+                  .map((supplier) => (
+                    <Tr key={supplier.id}>
+                      <Td>
+                        <ButtonGroup>
+                          <Button
+                            colorScheme="red"
+                            onClick={(e) =>
+                              handleDelete(
+                                e,
+                                supplier.id,
+                                supplier.supplierName
+                              )
+                            }
+                          >
+                            Delete
+                          </Button>
+                          <Button colorScheme="blue">
+                            <Link
+                              to={{
+                                pathname: "/admin/asset",
+                                state: { supplierID: supplier.id },
+                              }}
+                            >
+                              Edit
+                            </Link>
+                          </Button>
+                        </ButtonGroup>
+                      </Td>
+                      <Td>{supplier.supplierName}</Td>
+                      <Td>{supplier.address}</Td>
+                      <Td>{supplier.contactno}</Td>
+                      <Td>{supplier.email}</Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
+            <Pagination
+              data={suppliers}
+              currentPage={currentPage}
+              nextPage={nextPage}
+              prevPage={prevPage}
+              currentNumber={currentNumber}
+              pageNumber={pageNumber}
+            />
           </TableContainer>
         </Card>
       </Stack>
