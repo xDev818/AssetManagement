@@ -57,7 +57,18 @@ const Department = () => {
       const parts = hashFragment.split("/"); // Split the hash fragment by '/'
       const departmentID = parts[parts.length - 1]; // Get the last part, which is the ID
 
-      if (departmentID) {
+      if(departmentID === 'department') {
+        setbtnState("Save");
+
+        setDepartments({
+          ...values,
+          departmentid: "",
+          departmentname: "",
+          description: "",
+        });
+      }
+
+      else if (departmentID) {
         console.log("Dept ID : " + departmentID);
         axios
           .get("/getDepartmentByID/" + departmentID)

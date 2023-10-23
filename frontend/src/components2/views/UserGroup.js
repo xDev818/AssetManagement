@@ -61,7 +61,17 @@ import {
         const parts = hashFragment.split("/"); // Split the hash fragment by '/'
         const usergroup_id = parts[parts.length - 1]; // Get the last part, which is the ID
 
-        if(usergroup_id) {
+        if (usergroup_id === 'usergroup') {
+          setbtnState("Save")
+           
+          setUserGroup({
+            ...values,
+            usergroup_id: '',
+            usergroup_name: '',
+            usergroup_description: ''
+          })
+        }
+       else  if(usergroup_id) {
         
             axios.get('/usergroup/getUserGroupByID/' + usergroup_id)
             .then((res) => {

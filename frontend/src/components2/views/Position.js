@@ -72,9 +72,20 @@ export default function Position() {
         const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
         const parts = hashFragment.split("/"); // Split the hash fragment by '/'
         const id = parts[parts.length - 1]; // Get the last part, which is the ID
-        console.log(id)
         
-        if(id) {
+        if(id === 'position') {
+          setbtnState("Save");
+          setPosition({
+            ...values,
+            positionid: "",
+            positionname: "",
+            description: "",
+            departmentid: "",
+            departmentname: "",
+          });
+        }
+        
+        else if(id) {
         
             axios.get('/positions/getPositionID/' + id)
             .then((res) => {
@@ -97,17 +108,17 @@ export default function Position() {
             });
           
         }
-        else {
-          setbtnState("Save");
-          setPosition({
-            ...values,
-            positionid: "",
-            positionname: "",
-            description: "",
-            departmentid: "",
-            departmentname: "",
-          });
-        }
+       else {
+        setbtnState("Save");
+        setPosition({
+          ...values,
+          positionid: "",
+          positionname: "",
+          description: "",
+          departmentid: "",
+          departmentname: "",
+        });
+       }
        
 
       }
