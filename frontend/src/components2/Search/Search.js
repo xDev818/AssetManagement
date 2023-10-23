@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/icons";
 
 
-export default function Search({ setSearch, handleReport, pathname }) {
+export default function Search({ setSearch, handleReport, handleExcelReport,pathname }) {
   return (
     <Flex
       justifyContent="space-between"
@@ -39,7 +39,7 @@ export default function Search({ setSearch, handleReport, pathname }) {
               </MenuButton>
               <MenuList>
                 <MenuItem   onClick={handleReport} colorScheme='twitter'>PDF </MenuItem>
-                <MenuItem  colorScheme='twitter'>Excel</MenuItem>
+                <MenuItem  onClick={handleExcelReport} colorScheme='twitter'>Excel</MenuItem>
                 
               </MenuList>
           </Menu>
