@@ -13,6 +13,20 @@
       import { Button, ButtonGroup } from "@chakra-ui/react";
       Remove : import FourGraphs from "components/FourGraphs/FourGraphs";
       import generate_PDF from "components/Utils/generate_PDF";
+
+    Date : 10 / 23 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      import generate_EXCEL from "components/Utils/generate_EXCEL";
+      New Functionality
+        const handleExcelReport = () => {
+            try {
+              generate_EXCEL(positions, "Position");
+            } catch (err) {
+              alert(err);
+            }
+          };
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -21,6 +35,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
+import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 import Logs from "components/Utils/logs_helper";
 
@@ -134,6 +149,14 @@ export default function DepartmentViewer() {
     }
   };
 
+  const handleExcelReport = () => {
+    try {
+      generate_EXCEL(departments, "Department");
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   const handleReport = () => {
     try {
       generate_PDF(departments, "Department");
@@ -150,6 +173,7 @@ export default function DepartmentViewer() {
           <Search
             setSearch={setSearch}
             handleReport={handleReport}
+            handleExcelReport = {handleExcelReport}
             pathname="/admin/department"
           />
           <Table size="lg">

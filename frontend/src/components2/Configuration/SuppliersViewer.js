@@ -6,6 +6,21 @@
     Activities
     Purpose : 
       create SuppliersViewer.js
+
+
+    Date : 10 / 23 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      import generate_EXCEL from "components/Utils/generate_EXCEL";
+      New Functionality
+        const handleExcelReport = () => {
+            try {
+              generate_EXCEL(positions, "Position");
+            } catch (err) {
+              alert(err);
+            }
+          };
         
 */
 
@@ -15,6 +30,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
+import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 import {
   Table,
@@ -132,6 +148,14 @@ export default function SuppliersViewer() {
     }
   };
 
+  const handleExcelReport = () => {
+    try {
+      generate_EXCEL(suppliers, "Suppliers");
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   return (
     <>
       <Stack>
@@ -142,6 +166,7 @@ export default function SuppliersViewer() {
               pathname="/admin/suppliers"
               setSearch={setSearch}
               handleReport={handleReport}
+              handleExcelReport={handleExcelReport}
             />
             <Table size="lg">
               <Thead>

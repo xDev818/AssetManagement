@@ -22,6 +22,20 @@
           MenuItem,
       import { ChevronDownIcon} from '@chakra-ui/icons'
 
+
+    Date : 10 / 23 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      import generate_EXCEL from "components/Utils/generate_EXCEL";
+      New Functionality
+        const handleExcelReport = () => {
+            try {
+              generate_EXCEL(positions, "Position");
+            } catch (err) {
+              alert(err);
+            }
+          };
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -30,6 +44,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
+import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 import {
   Table,
@@ -44,11 +59,8 @@ import {
   IconButton,
   Icon,
   Input,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  Flex
+
 } from "@chakra-ui/react";
 
 import { Button, ButtonGroup, Wrap, WrapItem } from "@chakra-ui/react";
@@ -187,7 +199,15 @@ export default function PositionViewer() {
     }
   };
 
-  console.log("tables", tables, positions);
+
+  const handleExcelReport = () => {
+    try {
+      generate_EXCEL(positions, "Position");
+    } catch (err) {
+      alert(err);
+    }
+  };
+
 
   return (
     <>
@@ -198,6 +218,7 @@ export default function PositionViewer() {
             <Search
               setSearch={setSearch}
               handleReport={handleReport}
+              handleExcelReport = {handleExcelReport}
               pathname="/admin/position"
             />
 
@@ -212,6 +233,7 @@ export default function PositionViewer() {
               </Thead>
 
               <Tbody>
+
                 {tables
                   .filter((item) => {
                     const searchLower = search.toLowerCase();
@@ -235,6 +257,7 @@ export default function PositionViewer() {
                                 position.positionName
                               )
                             }
+
                           >
                             <DeleteIcon />
                           </Button>

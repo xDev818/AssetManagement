@@ -63,14 +63,54 @@ export default function Position() {
   const [departments, setDepartments] = useState([]);
   const [positionId, setPositionId] = useState();
 
-  const location = useLocation();
-  const positionID = location.state?.positionID;
-  const [btnstate, setbtnState] = useState();
+    useEffect(() => {
+      LoadallDepartments();
+      try {
+        
+        const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
+        const parts = hashFragment.split("/"); // Split the hash fragment by '/'
+        const id = parts[parts.length - 1]; // Get the last part, which is the ID
+        console.log(id)
+        
+        if(id) {
+        
+            axios.get('/positions/getPositionID/' + id)
+            .then((res) => {
+              setbtnState("Update")
+                setPosition({
+                  ...values,
+                  positionid: res.data.result[0].positionDisplayID,
+                  positionname: res.data.result[0].positionName,
+                  description: res.data.result[0].description,
+                  departmentid: res.data.result[0].departmentDisplayID,
+                  departmentname: res.data.result[0].departmentName
+                })
+               
+            })
+            .catch((err) => {
+              alert(err);
+            });
+          
+        }
+        else {
+          setbtnState("Save");
+          setPosition({
+            ...values,
+            positionid: "",
+            positionname: "",
+            description: "",
+            departmentid: "",
+            departmentname: "",
+          });
+        }
+       
 
-  const LoadallDepartments = async () => {
-    try {
-      const tokenStorage = localStorage.getItem("token");
-      const tokenDecoded = decoder(tokenStorage);
+      }
+      catch(err) {
+        alert(err)
+      }
+    }, [])
+
 
       userID = tokenDecoded.result[0].userDisplayID;
 

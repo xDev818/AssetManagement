@@ -42,16 +42,8 @@ const createDepartment = ( request, response ) => {
 
     const id = randomUUID() 
     const { departmentname, description, userID  } = request.body
-    //console.log(request.body)
-    // {
-    //     departmentid: '',
-    //     departmentname: ' www',
-    //     description: 'www',
-    //     userID: '250e53de-2742-45a5-a447-dfc164937461'
-    //   }
-   // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-    const stmt =  create()
+
   
     const values = [
         id,
