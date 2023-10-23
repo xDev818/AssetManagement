@@ -7,7 +7,20 @@
     Activities
     Purpose : 
       create AssetTypeViewer.js
-        
+
+    Date : 10 / 23 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      import generate_EXCEL from "components/Utils/generate_EXCEL";
+      New Functionality
+        const handleExcelReport = () => {
+            try {
+              generate_EXCEL(positions, "Position");
+            } catch (err) {
+              alert(err);
+            }
+          };
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -16,6 +29,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
+import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 import Pagination from "components2/Pagination/Pagination";
 import { TbodyRes } from "components2/Pagination/Pagination";
@@ -187,6 +201,14 @@ export default function AssetTypeViewer() {
       }
   }
 
+  const handleExcelReport = () => {
+    try {
+      generate_EXCEL(assettype, "Asset Type");
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   return (
     <>
       <Stack>
@@ -221,7 +243,7 @@ export default function AssetTypeViewer() {
             <Search
               setSearch={setSearch}
               handleReport={handleReport}
-
+              handleExcelReport={handleExcelReport}
               pathname="/admin/assettype"
 
             />

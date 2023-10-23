@@ -14,7 +14,19 @@
     Purpose : 
       create SuppliersViewer.js
 
-
+    Date : 10 / 23 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      import generate_EXCEL from "components/Utils/generate_EXCEL";
+      New Functionality
+        const handleExcelReport = () => {
+            try {
+              generate_EXCEL(positions, "Position");
+            } catch (err) {
+              alert(err);
+            }
+          };
  */
 
 
@@ -25,6 +37,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
+import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 import Search from "components2/Search/Search";
 import Pagination from "components2/Pagination/Pagination";
@@ -149,6 +162,14 @@ export default function AssetCategoryViewer() {
     }
   };
 
+  const handleExcelReport = () => {
+    try {
+      generate_EXCEL(categories, "Asset Category");
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   return (
     <>
       <Stack>
@@ -162,6 +183,7 @@ export default function AssetCategoryViewer() {
             <Search
               setSearch={setSearch}
               handleReport={handleReport}
+              handleExcelReport={handleExcelReport}
               pathname="/admin/assetcategory"
             />
 

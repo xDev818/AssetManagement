@@ -23,7 +23,7 @@
     Pattern From John
       import Search from "components2/Search/Search";
       import Pagination from "components2/Pagination/Pagination";
-
+ 
 */
 
 import { Link as Anchor } from "react-router-dom";

@@ -31,7 +31,7 @@ Info : The code was made and controlled by Nole
 import PDFReports from 'components2/views/pdfreports/PDFReports'
 
 
-import React, { useState } from 'react'
+//import React, { useState } from 'react'
 
 
 const generate_PDF =  (propdata,paramReportType) => {
