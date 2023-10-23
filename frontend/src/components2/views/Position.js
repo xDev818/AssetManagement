@@ -91,12 +91,17 @@ import {
   
 
     useEffect(() => {
-      
+      LoadallDepartments();
       try {
         
-        if(positionID) {
+        const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
+        const parts = hashFragment.split("/"); // Split the hash fragment by '/'
+        const id = parts[parts.length - 1]; // Get the last part, which is the ID
+        console.log(id)
         
-            axios.get('/positions/getPositionID/' + positionID)
+        if(id) {
+        
+            axios.get('/positions/getPositionID/' + id)
             .then((res) => {
               setbtnState("Update")
                 setPosition({
@@ -113,36 +118,24 @@ import {
               alert(err);
             });
           
-        } else {
-          setbtnState("Save")
-           
+        }
+        else {
+          setbtnState("Save");
           setPosition({
             ...values,
-            positionid: '',
-            positionname: '',
-            description: '',
-            departmentid: '',
-            departmentname: ''
-          })
+            positionid: "",
+            positionname: "",
+            description: "",
+            departmentid: "",
+            departmentname: "",
+          });
         }
+       
 
       }
       catch(err) {
         alert(err)
       }
-    }, [])
-
-    useEffect(() => {
-        
-      try { 
-
-        LoadallDepartments();
-      }
-      catch(err) {
-        alert(err)
-      }
-    
-  
     }, [])
     
 

@@ -247,8 +247,9 @@ export default function PositionViewer() {
                         <Button colorScheme="blue">
                           <Link
                             to={{
-                              pathname: "/admin/position",
-                              state: { positionID: position.id },
+                              pathname: "/admin/position/" + position.id,
+                                state: { positionID: position.id },
+                             
                             }}
                           >
                             <EditIcon />
