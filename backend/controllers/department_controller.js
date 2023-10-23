@@ -23,122 +23,205 @@ const {
   deleteByID,
 } = require("../_sqlstatement/Department");
 
+const {
+    create,
+    getByName,
+    getAll,
+    getByID , 
+    updateByID , 
+    deleteByID 
+}  = require('../_sqlstatement/department/Department')
+
+
 // Date helper
 const { utils_getDate } = require("../utils/date_helper");
 
 // An instance to Create new Department
-const createDepartment = (request, response) => {
-  const id = randomUUID();
-  const { departmentname, description, userID } = request.body;
 
-  const stmt = create();
-  {
-    const values = [id, departmentname, description, userID, utils_getDate()];
+const createDepartment = ( request, response ) => {
 
-    mysql.query(create(), [values], (err, result) => {
-      if (err)
-        return response.status(400).send({
-          message: "Insert Error",
-          message2: err.message,
-        });
+    const id = randomUUID() 
+    const { departmentname, description, userID  } = request.body
+    //console.log(request.body)
+    // {
+    //     departmentid: '',
+    //     departmentname: ' www',
+    //     description: 'www',
+    //     userID: '250e53de-2742-45a5-a447-dfc164937461'
+    //   }
+   // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-      response.status(200).send({
-        message: "Insert Success",
-      });
-    });
-  }
-};
+    const stmt =  create()
+  
+    const values = [
+        id,
+        departmentname,
+        description,
+        userID,
+        utils_getDate()
+    ];
+    
+    mysql.query( stmt, [values], ( err, result ) => {
 
-const getDepartmentByName = (request, response) => {
-  const defaultDepartment = "Default Department";
+        if( err ) return response.status(400).send(
+            {
+                message: "Insert Error",
+                message2: err.message
+            }
+        )
+        
+        response.status(200).send(
+            {
+                message: "Insert Success"
+            }
+        )
 
-  mysql.query(getByName(), [defaultDepartment], (err, result) => {
-    if (err || !result.length)
-      return response.status(404).send({
-        message: "No Record Found",
-        message2: err,
-      });
+    })
 
-    response.status(200).send({
-      message: "Record Found",
-      result,
-    });
-  });
-};
+}
+
+const getDepartmentByName = ( request, response ) => {
+
+    const defaultDepartment = 'Default Department'
+    
+    const stmt = getByName()
+
+
+    mysql.query( stmt, [ defaultDepartment ], ( err, result ) => {
+
+        if( err || !result.length ) return response.status(404).send(
+            {
+                message: "No Record Found",
+                message2: err
+            }
+        )
+
+        response.status(200).send(
+            {
+                message: "Record Found",
+                result
+            }
+        )
+
+    })
+
+}
 
 //Load all Active Departments
-const getallDepartments = (request, response) => {
-  mysql.query(getAll(), (err, result) => {
-    if (err || !result.length)
-      return response.status(404).send({
-        message: "No Record Found",
-        message2: err,
-      });
+const getallDepartments = ( request, response ) => {
 
-    response.status(200).send({
-      message: "Record Found",
-      result,
-    });
-  });
-};
+    
+
+    const stmt = getAll()
+   
+
+    mysql.query( stmt, ( err, result ) => {
+
+        if( err || !result.length ) return response.status(404).send(
+            {
+                message: "No Record Found",
+                message2: err
+            }
+        )
+
+        response.status(200).send(
+            {
+                message: "Record Found",
+                result
+            }
+        )
+           
+    })
+
+}
 
 //Load all Active Departments
-const getDepartmentByID = (request, response) => {
-  const { id } = request.params;
+const getDepartmentByID = ( request, response ) => {
 
-  mysql.query(getByID(), [id], (err, result) => {
-    if (err || !result.length)
-      return response.status(404).send({
-        message: "No Record Found",
-        message2: err,
-      });
+    const { id } = request.params
 
-    response.status(200).send({
-      message: "Record Found",
-      result,
-    });
-  });
-};
+    const stmt = getByID()
+
+
+    mysql.query( stmt, [id],( err, result ) => {
+
+        if( err || !result.length ) return response.status(404).send(
+            {
+                message: "No Record Found",
+                message2: err
+            }
+        )
+
+        response.status(200).send(
+            {
+                message: "Record Found",
+                result
+            }
+        )
+
+    })
+
+}
 
 // An instance to update Department by ID
-const updateDepartmentByID = (request, response) => {
-  const { departmentid, departmentname, description, userID } = request.body;
+const updateDepartmentByID = ( request, response ) => {
 
-  // if( !username ) return response.status(400).send( { message: "Username is required" } )
+    const { departmentid, departmentname, description, userID  } = request.body
 
-  mysql.query(
-    updateByID(),
-    [departmentname, description, userID, utils_getDate(), departmentid],
-    (err, result) => {
-      if (err)
-        return response.status(400).send({
-          message: "Update Error",
-          message2: err.message,
-        });
+   // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-      response.status(200).send({
-        message: "Update Success",
-      });
-    }
-  );
-};
+
+   const stmt = updateByID()
+   
+    
+    mysql.query( stmt, [departmentname,description,userID,utils_getDate(),departmentid], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+        
+        response.status(200).send(
+            {
+                message: "Update Success"
+            }
+        )
+
+    })
+
+}
 
 // An instance to Update Asset Status by ID
-const deleteDepartmentByID = (request, response) => {
-  const { departmentid } = request.body;
+const deleteDepartmentByID = ( request, response ) => {
 
-  mysql.query(deleteByID(), [departmentid], (err, result) => {
-    if (err)
-      return response.status(400).send({
-        message: "Delete Error",
-        message2: err.message,
-      });
+    const { departmentid} = request.body
 
-    response.status(200).send({
-      message: "Delete Success",
-    });
-  });
-};
+    const stmt = deleteByID()
+    
+    mysql.query( stmt, [departmentid], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "Delete Error",
+                message2: err.message
+            }
+        )
+        
+        response.status(200).send(
+            {
+                message: "Delete Success"
+            }
+        )
+        
+     
+
+    })
+
+}
+    
+
 
 module.exports = {
   createDepartment,
