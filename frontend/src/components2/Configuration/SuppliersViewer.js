@@ -208,7 +208,7 @@ export default function SuppliersViewer() {
                           <Button colorScheme="blue">
                             <Link
                               to={{
-                                pathname: "/admin/suppliers",
+                                pathname: "/admin/suppliers/" + supplier.id,
                                 state: { supplierID: supplier.id },
                               }}
                             >

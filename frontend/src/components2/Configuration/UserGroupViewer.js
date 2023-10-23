@@ -206,7 +206,7 @@ export default function UserGroupViewer() {
                           <Button colorScheme="blue">
                             <Link
                               to={{
-                                pathname: "/admin/usergroup",
+                                pathname: "/admin/usergroup/" + group.id ,
                                 state: { userGroupID: group.id },
                               }}
                             >

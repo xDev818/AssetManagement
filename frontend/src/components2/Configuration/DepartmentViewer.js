@@ -212,7 +212,7 @@ export default function DepartmentViewer() {
                         <Button colorScheme="blue">
                           <Anchor
                             to={{
-                              pathname: "/admin/department",
+                              pathname: "/admin/department/" + department.departmentDisplayID,
                               state: {
                                 departmentID: department.departmentDisplayID,
                               },

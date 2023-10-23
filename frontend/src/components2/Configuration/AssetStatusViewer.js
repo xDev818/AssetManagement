@@ -227,7 +227,7 @@ export default function AssetStatusViewer() {
                           <Button colorScheme="blue">
                             <Link
                               to={{
-                                pathname: "/admin/assetstatus",
+                                pathname: "/admin/assetstatus/" + status.assetStatusID,
                                 state: { assetstatID: status.assetStatusID },
                               }}
                             >

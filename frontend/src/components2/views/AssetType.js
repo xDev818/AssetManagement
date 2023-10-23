@@ -56,8 +56,8 @@ import {
   })
   const [categories, setCategories] = useState([]);
 
-    const location = useLocation()
-    const  asset_typeID  = location.state?.typeID
+    // const location = useLocation()
+    // const  asset_typeID  = location.state?.typeID
     const [btnstate,setbtnState] = useState()
 
 
@@ -92,13 +92,19 @@ import {
               );
             });
         } catch (err) {
+          
           alert(err);
+          window.location.href = '/'; 
         }
       };
 
     useEffect(() => {
       
       try {
+        const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
+        const parts = hashFragment.split("/"); // Split the hash fragment by '/'
+        const asset_typeID = parts[parts.length - 1]; // Get the last part, which is the ID
+
         SetUsers()  
         LoadAllCategories()
         if(asset_typeID) {

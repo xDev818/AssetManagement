@@ -225,7 +225,7 @@ export default function AssetCategoryViewer() {
                           <Button colorScheme="blue">
                             <Link
                               to={{
-                                pathname: "/admin/assetcategory",
+                                pathname: "/admin/assetcategory/" + category.id ,
                                 state: { categoryID: category.id },
                               }}
                             >
