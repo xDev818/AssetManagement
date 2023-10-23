@@ -49,8 +49,9 @@ import Card from "components/Card/Card";
 import { useParams } from "react-router-dom";
 
 export default function Position() {
-  const { id } = useParams();
-  console.log("poid", id);
+  
+  // const { id } = useParams();
+  // console.log("poid", id);
   var userID = "";
 
   const [values, setPosition] = useState({

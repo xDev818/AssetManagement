@@ -27,26 +27,16 @@ const { randomUUID } = require('crypto')
 const { utils_getDate } = require('../utils/date_helper')
 
 const {
-    viewAllAssetsAvailable
+    viewAllAssetsAvailable,
+    getAssetStatusByName,
+    create,
+    updateByID
   }  = require('../_sqlstatement/ITAssetCheckout')
 
   
-  const viewAllAssetsAvailable = ( request, response ) => {
-
-    const id = randomUUID() 
-    const { asset_categoryname, asset_categorydescription, userID  } = request.body
+  const ITCheckout_viewAllAssetsAvailable = ( request, response ) => {
     
-   // if( !username ) return response.status(400).send( { message: "Username is required" } )
-
-    const values = [
-        id,
-        asset_categoryname,
-        asset_categorydescription,
-        userID,
-        utils_getDate()
-    ];
-    
-    mysql.query(viewAllAssetsAvailable(), [values], ( err, result ) => {
+    mysql.query(viewAllAssetsAvailable(),  ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -66,21 +56,51 @@ const {
 
 }
 
-const createAssetCategory = ( request, response ) => {
+const ITCheckout_getAssetStatusByName = ( request, response ) => {
+    
+    mysql.query(getAssetStatusByName(),  ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
+
+    })
+
+}
+
+
+const createCheckout_Asset = ( request, response ) => {
 
     const id = randomUUID() 
-    const { asset_categoryname, asset_categorydescription, userID  } = request.body
-    
-   // if( !username ) return response.status(400).send( { message: "Username is required" } )
+    const { userid, assetid, statusid,positionid,departmentid,
+        notes,plancheckout,userid_checkout} = request.body
 
+
+   // if( !username ) return response.status(400).send( { message: "Username is required" } )
+    const dplan = new Date(plancheckout)
     const values = [
         id,
-        asset_categoryname,
-        asset_categorydescription,
-        userID,
+        userid,
+        assetid,
+        statusid,
+        positionid,
+        departmentid,
+        notes,
+        dplan,
+        userid_checkout,
         utils_getDate()
     ];
-    
+    console.log(values)
     mysql.query( create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
@@ -99,6 +119,36 @@ const createAssetCategory = ( request, response ) => {
     })
 
 }
+
+
+const updateAssetForDeploy = ( request, response ) => {
+
+   // const { statusid, userid_checkout,assetid} = request.body
+    const { userid, assetid, statusid,positionid,departmentid,
+        notes,plancheckout,userid_checkout} = request.body
+ 
+  
+    mysql.query( updateByID(), [statusid,userid_checkout,utils_getDate(),assetid], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+        
+        response.status(200).send(
+            {
+                message: "Update Success"
+            }
+        )
+        
+     
+
+    })
+
+}
+
 
 // An instance to Load all Suppliers
 const viewAllCategory = ( request, response ) => {
@@ -147,33 +197,6 @@ const getCategoryByID = ( request, response ) => {
     })
 }
 
-const updateAssetCategory = ( request, response ) => {
-
-    const { asset_categoryid, asset_categoryname,asset_categorydescription, userID  } = request.body
-
- 
-  
-    mysql.query( updateByID(), [asset_categoryname,asset_categorydescription,userID,utils_getDate(),asset_categoryid], ( err, result ) => {
-
-        if( err ) return response.status(400).send(
-            {
-                message: "Update Error",
-                message2: err.message
-            }
-        )
-        
-        response.status(200).send(
-            {
-                message: "Update Success"
-            }
-        )
-        
-     
-
-    })
-
-}
-
 
 // An instance to Delete Asset Category by ID
 const deleteAssetCategory = ( request, response ) => {
@@ -203,7 +226,9 @@ const deleteAssetCategory = ( request, response ) => {
 }
 
 module.exports = {
-    viewAllAssetsAvailable
-
+    ITCheckout_viewAllAssetsAvailable,
+    ITCheckout_getAssetStatusByName,
+    createCheckout_Asset,
+    updateAssetForDeploy
 
 }
