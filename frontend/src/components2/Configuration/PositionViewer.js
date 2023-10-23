@@ -49,7 +49,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  
 } from "@chakra-ui/react";
 
 import { Button, ButtonGroup, Wrap, WrapItem } from "@chakra-ui/react";
@@ -72,6 +71,7 @@ export default function PositionViewer() {
   const [positions, setPositions] = useState([]);
   const [search, setSearch] = useState("");
 
+  const [positionId, setPositionId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const tablePerPage = 6;
   const lastIndex = currentPage * tablePerPage;
@@ -85,7 +85,6 @@ export default function PositionViewer() {
     const itemText = Object.values(item).join(" ").toLowerCase();
     return searchLower === "" || itemText.includes(searchLower);
   });
-  const displayedData = filteredTables.slice(firstIndex, lastIndex);
 
   const nextPage = () => {
     if (currentPage !== tablePages) {
@@ -188,6 +187,8 @@ export default function PositionViewer() {
     }
   };
 
+  console.log("tables", tables, positions);
+
   return (
     <>
       <Stack>
@@ -240,7 +241,7 @@ export default function PositionViewer() {
                           <Button colorScheme="blue">
                             <Link
                               to={{
-                                pathname: "/admin/position",
+                                pathname: "/admin/position/" + position.id,
                                 state: { positionID: position.id },
                               }}
                             >

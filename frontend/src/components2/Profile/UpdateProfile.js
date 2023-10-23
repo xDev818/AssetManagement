@@ -13,6 +13,15 @@
           
 
 */
+import {
+  HomeIcon,
+  StatsIcon,
+  CreditIcon,
+  PersonIcon,
+  DocumentIcon,
+  RocketIcon,
+  SupportIcon,
+} from "components/Icons/Icons";
 
 import {
   Box,
@@ -34,6 +43,7 @@ import decoder from "jwt-decode";
 import axios from "axios";
 import Logs from "components/Utils/logs_helper";
 import { useParams } from "react-router-dom";
+import { column } from "stylis";
 
 // Jinshin
 const myFunc = (states, action) => {
@@ -240,14 +250,219 @@ export default function UpdateProfile() {
   };
 
   return (
-    <Card
-      w={{ base: "auto", md: "auto", lg: "auto" }}
-      mx={{ base: 0, md: 0, lg: 3 }}
-    >
-      <Text fontWeight="bold" mb={5}>
-        Profile
-      </Text>
-      <FormControl>
+    <>
+      {/* TABLET AND DESKTOP RESPONSIVE */}
+      <Card
+        w={{ base: "auto", md: "auto", lg: "auto" }}
+        mx={{ base: 0, md: 0, lg: 3 }}
+        display={{ base: "none", md: "block" }}
+        mt={{ lg: "-30px" }}
+      >
+        <Text fontWeight="bold" mb={5}>
+          Profile
+        </Text>
+        <FormControl>
+          <Grid
+            templateColumns={{
+              xs: "repeat(1, 1fr)",
+              sm: "repeat(1, 1fr)",
+              lg: "repeat(2, 1fr)",
+            }}
+            gap={5}
+          >
+            <Card>
+              <FormLabel fontWeight="bold">
+                <Flex alignItems="center" gap={2}>
+                  <PersonIcon />
+                  Edit Profile
+                </Flex>
+              </FormLabel>
+              <Flex gap={2} flexDirection={"column"}>
+                <Flex
+                  alignItems="center"
+                  justifyContent="flex-start"
+                  w="70%"
+                  gap={1}
+                >
+                  <FormLabel fontWeight="semibold" w={20}>
+                    Avatar
+                  </FormLabel>
+                  <Input
+                    display="none"
+                    type="file"
+                    name="file"
+                    mt={4}
+                    onChange={(e) => setFile(e.target.files[0])}
+                    id="file-input"
+                  />
+                  <FormLabel htmlFor="file-input">
+                    <Button
+                      as="span"
+                      size="sm"
+                      colorScheme="teal"
+                      py={5}
+                      rounded="4px"
+                    >
+                      Upload Image
+                    </Button>
+                  </FormLabel>
+                </Flex>
+                <Flex alignItems="center">
+                  <FormLabel w={100}>First Name</FormLabel>
+                  <Input
+                    onChange={(e) =>
+                      dispatch({
+                        type: ACTION.FIRSTNAME,
+                        payload: e.target.value,
+                      })
+                    }
+                    placeholder="Firstname..."
+                    defaultValue={states.firstname || firstname}
+                  />
+                </Flex>
+                <Flex alignItems="center">
+                  <FormLabel w={100}>Last Name</FormLabel>
+                  <Input
+                    onChange={(e) =>
+                      dispatch({
+                        type: ACTION.LASTNAME,
+                        payload: e.target.value,
+                      })
+                    }
+                    placeholder="Lastname..."
+                    defaultValue={states.lastname || lastname}
+                  />
+                </Flex>
+                <Flex alignItems="center">
+                  <FormLabel w={100}>Email </FormLabel>
+                  <Input
+                    onChange={(e) =>
+                      dispatch({ type: ACTION.EMAIL, payload: e.target.value })
+                    }
+                    defaultValue={email}
+                    placeholder="Email..."
+                  />
+                </Flex>
+              </Flex>
+            </Card>
+
+            <Card>
+              <FormLabel fontWeight="bold">
+                <Flex alignItems="center" gap={2}>
+                  <PersonIcon />
+                  Profile
+                </Flex>
+              </FormLabel>
+              <Flex justifyContent="center" flexDirection="column" gap={2}>
+                <Flex mx="auto">
+                  <Image
+                    src={
+                      imgFilename ||
+                      "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"
+                    }
+                    w={{ base: 100 }}
+                  />
+                </Flex>
+                <FormLabel>
+                  User Group: {states.user_role || userRole}
+                </FormLabel>
+                <Select
+                  placeholder="Select option"
+                  size="md"
+                  //  onChange={ e => {
+                  //   setUserGroups( { ...values, departmentid: e.target.value } )}}
+                  //   value={usergroups.}
+                >
+                  {usergroups.map((group) => (
+                    <option value={group.id} size="md">
+                      {group.categoryName}
+                    </option>
+                  ))}
+                </Select>
+                <Box>
+                  <FormLabel>Position : </FormLabel>
+                  {/* <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
+              <option value={ department }> { department } </option>
+              <option value="Production">Production</option>
+              <option value="Accounting">Accounting</option>
+              <option value="Marketing">Marketing</option>
+              <option value="HR">HR</option>
+              <option value="ITDepartment">ITDepartment</option>
+              <option value="Default Department">Default Department</option>
+            </Select> */}
+                  <Select
+                    placeholder="Select option"
+                    size="md"
+                    //  onChange={ e => {
+                    //   setUserGroups( { ...values, departmentid: e.target.value } )}}
+                    //   value={usergroups.}
+                  >
+                    {positions.map((position) => (
+                      <option value={position.id} size="md">
+                        {position.positionName}
+                      </option>
+                    ))}
+                  </Select>
+                </Box>
+              </Flex>
+            </Card>
+
+            <GridItem colSpan={2}>
+              <Card>
+                <FormLabel fontWeight="bold">
+                  <Flex alignItems="center" gap={2}>
+                    <PersonIcon />
+                    Change Password
+                  </Flex>
+                </FormLabel>
+                <Box>
+                  <FormLabel fontSize={{ base: "sm" }}>Password</FormLabel>
+                  <Input
+                    type="password"
+                    onChange={(e) =>
+                      dispatch({
+                        type: ACTION.PASSWORD,
+                        payload: e.target.value,
+                      })
+                    }
+                    placeholder="Password..."
+                    defaultValue={states.password || "************"}
+                  />
+                </Box>
+                <Box>
+                  <FormLabel fontSize={{ base: "sm" }}>
+                    Confirm Password
+                  </FormLabel>
+                  <Input
+                    type="password"
+                    onChange={(e) =>
+                      dispatch({
+                        type: ACTION.CONFIRM_PASSWORD,
+                        payload: e.target.value,
+                      })
+                    }
+                    placeholder="Confirm Password..."
+                    defaultValue={states.confirm_password || "************"}
+                  />
+                </Box>
+                <Box mt={3}>
+                  <Button
+                    rounded={5}
+                    size="md"
+                    ref={button}
+                    colorScheme="green"
+                    onClick={updateHandler}
+                  >
+                    Update Profile
+                  </Button>
+                </Box>
+              </Card>
+            </GridItem>
+          </Grid>
+        </FormControl>
+      </Card>
+      {/* MOBILE RESPONSIVE */}
+      <Card display={{ base: "flex", md: "none" }}>
         <Flex
           justifyContent="center"
           flexDirection="column"
@@ -375,14 +590,13 @@ export default function UpdateProfile() {
               defaultValue={states.confirm_password || "************"}
             />
           </Box>
-
           <Box>
             <Button ref={button} colorScheme="green" onClick={updateHandler}>
               Update Profile
             </Button>
           </Box>
         </Stack>
-      </FormControl>
-    </Card>
+      </Card>
+    </>
   );
 }

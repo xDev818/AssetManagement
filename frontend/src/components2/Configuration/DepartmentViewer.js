@@ -85,7 +85,7 @@ export default function DepartmentViewer() {
 
       const res = await axios.get("/get_all_departments");
       const data = await res.data;
-
+      console.log("data", data);
       setDepartments(res.data.result);
     } catch (error) {
       alert(error);
