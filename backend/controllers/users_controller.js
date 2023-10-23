@@ -108,7 +108,7 @@ const loginUser = ( request, response ) => {
 
         const stmt = "SELECT users.userDisplayID,users.displayName, users.firstname, users.lastname,"
         + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
-        + "department.departmentName, users.isRegister FROM tblUsers users"
+        + "department.departmentName,users.positionID, users.isRegister FROM tblUsers users"
         + " inner join tblUserCategory userCategory on users.groupTypeID = userCategory.categoryID"
         + " inner join tblPositions positions on positions.positionDisplayID = users.positionID"
         + " inner join tblDepartments department on department.departmentDisplayID = positions.departmentDisplayID"
