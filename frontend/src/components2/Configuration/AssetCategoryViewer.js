@@ -102,6 +102,7 @@ export default function AssetCategoryViewer() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
+      
       const success = await axios
         .get("/assetcategory/viewassetcategory")
 

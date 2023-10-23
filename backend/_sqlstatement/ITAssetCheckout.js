@@ -13,7 +13,28 @@
     Purpose : 
       To separate all the SQL Statement from the controller (Asset Checkout)
 
+ Date : 10 / 23 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      New function getAssetStatusByName
+
 */
+
+const create = () => {
+
+  return "INSERT INTO tblUserAssetDetails(detailID,userSelectedID,assetID,assetStatusID,positionID,"
+        + "departmentID,notescheckout,plancheckout,useridcheckout,dateInsert) values (?)";
+  
+}
+
+const updateByID = () => {
+
+  return   "UPDATE tblAssets SET assetStatusID = ?,"
+          + "checkout_updateBy = ?,checkout_updatedate=?"
+          + " where assetID = ?"
+
+}
 
 const viewAllAssetsAvailable = () => {
 
@@ -32,8 +53,16 @@ const viewAllAssetsAvailable = () => {
     
  }
 
+ const getAssetStatusByName = () => {
+
+  return   "SELECT assetStatusID FROM tblAssetStatus"
+          + " where statusName = 'For Deploy' "
+}
+
  module.exports = {
 
     viewAllAssetsAvailable,
-
+    getAssetStatusByName,
+    create,
+    updateByID
  }

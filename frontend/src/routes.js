@@ -142,8 +142,16 @@
           component: AssetType,
           layout: "/admin",
         },
-*/
 
+
+    Date : 10 / 21 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        update Checkout componet 
+          FROM : import CheckOut from 'components2/Activity/CheckOut'
+            TO : import ITCheckOut from 'components2/Activity/ITCheckOut'
+*/
 
 
 // import
@@ -161,7 +169,7 @@ import Configuration from "views/Dashboard/Configuration";
 //Activity User submenus pages
 import User from "components2/Activity/User";
 import CheckIn from "components2/Activity/CheckIn";
-import CheckOut from "components2/Activity/CheckOut";
+import ITCheckOut from 'components2/Activity/ITCheckOut'
 import PullOut from "components2/Activity/PullOut";
 import AssetViewer from "components2/Activity/AssetViewer";
 import Asset from "components2/views/Activity/Asset";
@@ -246,7 +254,7 @@ var dashRoutes = [
     submenu: "activity",
     path: "/check-out",
     name: "Check Out",
-    component: CheckOut,
+    component: ITCheckOut,
     layout: "/admin",
   },
   {
