@@ -70,6 +70,19 @@ import {
         const parts = hashFragment.split("/"); // Split the hash fragment by '/'
         const supplierID = parts[parts.length - 1]; // Get the last part, which is the ID
 
+        if(supplierID === 'suppliers') {
+          setbtnState("Save")
+           
+          setSupplier({
+            ...values,
+            supplierid: '',
+            suppliername: '',
+            address: '',
+            contactno: '',
+            email: ''
+          })
+        }
+
         if(supplierID) {
             console.log(supplierID)
             axios.get('/suppliers/getSupplierID/' + supplierID)
@@ -90,7 +103,7 @@ import {
               window.location.href = '/'; 
             });
           
-        } else {
+        }  else {
           setbtnState("Save")
            
           setSupplier({

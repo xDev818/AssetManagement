@@ -67,6 +67,17 @@ import {
         const parts = hashFragment.split("/"); // Split the hash fragment by '/'
         const statusID = parts[parts.length - 1]; // Get the last part, which is the ID
 
+        if (statusID === 'assetstatus') {
+          setbtnState("Save")
+           
+            setStatus({
+              ...values,
+              statusid: '',
+              statusname: '',
+              description: ''
+            })
+        }
+
         if(statusID) {
         
             axios.get('/getStatusbyID/' + statusID)
@@ -85,15 +96,15 @@ import {
               window.location.href = '/'; 
             });
           
-        } else {
+        }  else {
           setbtnState("Save")
            
-            setStatus({
-              ...values,
-              statusid: '',
-              statusname: '',
-              description: ''
-            })
+          setStatus({
+            ...values,
+            statusid: '',
+            statusname: '',
+            description: ''
+          })
         }
 
       }

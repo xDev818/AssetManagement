@@ -60,7 +60,18 @@ import {
         const parts = hashFragment.split("/"); // Split the hash fragment by '/'
         const asset_categoryID = parts[parts.length - 1]; // Get the last part, which is the ID
 
-        if(asset_categoryID) {
+        if(asset_categoryID === 'assetcategory') {
+          setbtnState("Save")
+           
+            setCaegory({
+              ...values,
+              asset_categoryid: '',
+                asset_categoryname: '',
+                asset_categorydescription: ''
+            })
+        }
+
+        else if(asset_categoryID) {
         
             axios.get('/assetcategory/getCategoryByID/' + asset_categoryID)
             .then((res) => {

@@ -107,6 +107,19 @@ import {
 
         SetUsers()  
         LoadAllCategories()
+
+        if(asset_typeID === 'assettype') {
+          setbtnState("Save")
+           
+          setAssetType({
+            ...values,
+            asset_typeid: '',
+            asset_categoryid: '',
+            asset_typename: '',
+            asset_typedescription: ''
+          })
+        }
+
         if(asset_typeID) {
         
             axios.get('/assettype/get-AssetTypeByID/' + asset_typeID)
