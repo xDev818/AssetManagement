@@ -55,13 +55,12 @@ import {
   Td,
   TableContainer,
   Stack,
-  // Box,
-  // IconButton,
-  // Icon,
-  // Input,
-  // Flex,
+  Box,
+  IconButton,
+  Icon,
+  Input,
+  Flex
 
-  
 } from "@chakra-ui/react";
 
 import { Button, ButtonGroup, Wrap, WrapItem } from "@chakra-ui/react";
@@ -84,6 +83,7 @@ export default function PositionViewer() {
   const [positions, setPositions] = useState([]);
   const [search, setSearch] = useState("");
 
+  const [positionId, setPositionId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const tablePerPage = 6;
   const lastIndex = currentPage * tablePerPage;
@@ -97,7 +97,6 @@ export default function PositionViewer() {
     const itemText = Object.values(item).join(" ").toLowerCase();
     return searchLower === "" || itemText.includes(searchLower);
   });
-  const displayedData = filteredTables.slice(firstIndex, lastIndex);
 
   const nextPage = () => {
     if (currentPage !== tablePages) {
@@ -200,6 +199,7 @@ export default function PositionViewer() {
     }
   };
 
+
   const handleExcelReport = () => {
     try {
       generate_EXCEL(positions, "Position");
@@ -207,6 +207,7 @@ export default function PositionViewer() {
       alert(err);
     }
   };
+
 
   return (
     <>
@@ -232,36 +233,51 @@ export default function PositionViewer() {
               </Thead>
 
               <Tbody>
-                {displayedData.map((position) => (
-                  <Tr key={position.id}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="red"
-                          onClick={(e) =>
-                            handleDelete(e, position.id, position.positionName)
-                          }
-                        >
-                          <DeleteIcon />
-                        </Button>
-                        <Button colorScheme="blue">
-                          <Link
-                            to={{
-                              pathname: "/admin/position/" + position.id,
-                                state: { positionID: position.id },
-                             
-                            }}
+
+                {tables
+                  .filter((item) => {
+                    const searchLower = search.toLowerCase();
+                    const itemText = Object.values(item)
+                      .join(" ")
+                      .toLowerCase();
+                    return search.toLowerCase() === ""
+                      ? item
+                      : itemText.includes(searchLower);
+                  })
+                  .map((position) => (
+                    <Tr key={position.id}>
+                      <Td>
+                        <ButtonGroup>
+                          <Button
+                            colorScheme="red"
+                            onClick={(e) =>
+                              handleDelete(
+                                e,
+                                position.id,
+                                position.positionName
+                              )
+                            }
+
                           >
-                            <EditIcon />
-                          </Link>
-                        </Button>
-                      </ButtonGroup>
-                    </Td>
-                    <Td>{position.positionName}</Td>
-                    <Td>{position.departmentName}</Td>
-                    <Td>{position.description}</Td>
-                  </Tr>
-                ))}
+                            <DeleteIcon />
+                          </Button>
+                          <Button colorScheme="blue">
+                            <Link
+                              to={{
+                                pathname: "/admin/position/" + position.id,
+                                state: { positionID: position.id },
+                              }}
+                            >
+                              <EditIcon />
+                            </Link>
+                          </Button>
+                        </ButtonGroup>
+                      </Td>
+                      <Td>{position.positionName}</Td>
+                      <Td>{position.departmentName}</Td>
+                      <Td>{position.description}</Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
 

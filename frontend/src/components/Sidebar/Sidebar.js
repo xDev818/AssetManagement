@@ -18,6 +18,7 @@ import {
   useColorModeValue,
   useDisclosure,
   Divider,
+  Link,
 } from "@chakra-ui/react";
 import IconBox from "components/Icons/IconBox";
 import {
@@ -47,7 +48,6 @@ import {
 import dashRoutes from "routes";
 
 // FUNCTIONS
-
 function Sidebar(props) {
   const [userDropdown, setUserDropdown] = useState(false);
   const [configDropdown, setConfigDropdown] = useState(false);
@@ -461,8 +461,10 @@ export function SidebarResponsive(props) {
                 gap="5"
               >
                 <Box display="flex" alignItems="center" gap="5">
-                  <HomeIcon />
-                  <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                  <Link to="/admin/dashboard">
+                    <HomeIcon />
+                    Dashboard
+                  </Link>
                 </Box>
                 {/* <Box display="flex" alignItems="center" gap="5">
                   <StatsIcon color="inherit" />

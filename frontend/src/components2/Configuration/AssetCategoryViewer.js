@@ -199,10 +199,12 @@ export default function AssetCategoryViewer() {
                 {tables
                   .filter((item) => {
                     const searchLower = search.toLowerCase();
-                    const positionNameLower = item.assetCategName.toLowerCase();
+                    const itemText = Object.values(item)
+                      .join(" ")
+                      .toLowerCase();
                     return search.toLowerCase() === ""
                       ? item
-                      : positionNameLower.toLowerCase().includes(searchLower);
+                      : itemText.includes(searchLower);
                   })
                   .map((category) => (
                     <Tr key={category.id}>

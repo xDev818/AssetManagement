@@ -1,4 +1,3 @@
-
 /*
 Date : 10 / 18 / 23
 Author : Nole
@@ -11,9 +10,18 @@ Purpose :
 */
 
 // Packages
-const mysql = require('../database')
-const jwt = require('jsonwebtoken')
-const { randomUUID } = require('crypto')
+const mysql = require("../database");
+const jwt = require("jsonwebtoken");
+const { randomUUID } = require("crypto");
+
+const {
+  create,
+  getByName,
+  getAll,
+  getByID,
+  updateByID,
+  deleteByID,
+} = require("../_sqlstatement/Department");
 
 const {
     create,
@@ -22,20 +30,18 @@ const {
     getByID , 
     updateByID , 
     deleteByID 
-
-}  = require('../_sqlstatement/Department')
-
+}  = require('../_sqlstatement/department/Department')
 
 
 // Date helper
-const { utils_getDate } = require('../utils/date_helper')
+const { utils_getDate } = require("../utils/date_helper");
 
 // An instance to Create new Department
+
 const createDepartment = ( request, response ) => {
 
     const id = randomUUID() 
     const { departmentname, description, userID  } = request.body
-
 
 
   
@@ -47,7 +53,7 @@ const createDepartment = ( request, response ) => {
         utils_getDate()
     ];
     
-    mysql.query(  create(), [values], ( err, result ) => {
+    mysql.query( stmt, [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -70,10 +76,10 @@ const getDepartmentByName = ( request, response ) => {
 
     const defaultDepartment = 'Default Department'
     
+    const stmt = getByName()
 
-    
-    mysql.query( getByName(), [ defaultDepartment ], ( err, result ) => {
 
+    mysql.query( stmt, [ defaultDepartment ], ( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -96,10 +102,12 @@ const getDepartmentByName = ( request, response ) => {
 //Load all Active Departments
 const getallDepartments = ( request, response ) => {
 
+    
 
+    const stmt = getAll()
+   
 
-    mysql.query( getAll(), ( err, result ) => {
-
+    mysql.query( stmt, ( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -124,9 +132,10 @@ const getDepartmentByID = ( request, response ) => {
 
     const { id } = request.params
 
+    const stmt = getByID()
 
-    mysql.query(  getByID(), [id],( err, result ) => {
 
+    mysql.query( stmt, [id],( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -153,9 +162,11 @@ const updateDepartmentByID = ( request, response ) => {
 
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
+
+   const stmt = updateByID()
    
     
-    mysql.query( updateByID(), [departmentname,description,userID,utils_getDate(),departmentid], ( err, result ) => {
+    mysql.query( stmt, [departmentname,description,userID,utils_getDate(),departmentid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -179,9 +190,9 @@ const deleteDepartmentByID = ( request, response ) => {
 
     const { departmentid} = request.body
 
+    const stmt = deleteByID()
     
-    mysql.query( deleteByID(), [departmentid], ( err, result ) => {
-
+    mysql.query( stmt, [departmentid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -205,10 +216,10 @@ const deleteDepartmentByID = ( request, response ) => {
 
 
 module.exports = {
-    createDepartment,
-   getDepartmentByName,
-   getallDepartments,
-   getDepartmentByID,
-   updateDepartmentByID,
-   deleteDepartmentByID
-}
+  createDepartment,
+  getDepartmentByName,
+  getallDepartments,
+  getDepartmentByID,
+  updateDepartmentByID,
+  deleteDepartmentByID,
+};

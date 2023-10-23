@@ -100,7 +100,7 @@ export default function DepartmentViewer() {
 
       const res = await axios.get("/get_all_departments");
       const data = await res.data;
-
+      console.log("data", data);
       setDepartments(res.data.result);
     } catch (error) {
       alert(error);
@@ -188,10 +188,10 @@ export default function DepartmentViewer() {
               {tables
                 .filter((item) => {
                   const searchLower = search.toLowerCase();
-                  const positionNameLower = item.departmentName.toLowerCase();
+                  const itemText = Object.values(item).join(" ").toLowerCase();
                   return search.toLowerCase() === ""
                     ? item
-                    : positionNameLower.toLowerCase().includes(searchLower);
+                    : itemText.includes(searchLower);
                 })
                 .map((department) => (
                   <Tr key={department.departmentDisplayID}>
