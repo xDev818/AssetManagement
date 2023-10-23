@@ -14,9 +14,10 @@
       Generate EXCEL data
 
 */
+
+
 import * as Filesaver from 'file-saver'
 import XLSX from 'sheetjs-style'
-
 const generate_EXCEL =  (propdata,paramReportType) => {
 
 
