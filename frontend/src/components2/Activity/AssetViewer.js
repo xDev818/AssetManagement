@@ -1,10 +1,8 @@
-
 /* -------------------------------------------------------------------------- */
 /*                                See Info Below                              */
 /*               Write Updates , Activities and Comments Below                */
 /*                              Before Coding                                 */
 /* -------------------------------------------------------------------------- */
-
 
 /* 
 
@@ -51,19 +49,16 @@ import {
   MenuList,
   MenuItem,
 } from "@chakra-ui/react";
-import { ChevronDownIcon} from '@chakra-ui/icons'
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
 export default function AssetViewer() {
-
-
   const [assets, setAssets] = useState([]);
-  const [userdata,setUser] = useState({
-    userID : ''
+  const [userdata, setUser] = useState({
+    userID: "",
   });
-
 
   const [search, setSearch] = useState("");
 
@@ -91,94 +86,78 @@ export default function AssetViewer() {
   const currentNumber = (number) => {
     setCurrentPage(number);
   };
- 
 
-
-  const SetUsers = async () => { 
-
+  const SetUsers = async () => {
     const tokenStorage = localStorage.getItem("token");
     const tokenDecoded = decoder(tokenStorage);
 
-     setUser({...userdata,
+    setUser({
+      ...userdata,
 
-      userID : tokenDecoded.result[0].userDisplayID
-
-  })
-  }
+      userID: tokenDecoded.result[0].userDisplayID,
+    });
+  };
   useEffect(() => {
-    SetUsers()
-    LoadAllAssets()
+    SetUsers();
+    LoadAllAssets();
   }, []);
 
   const LoadAllAssets = async () => {
     try {
-
-      const success = await axios.get("/asset/view-AllAssets")
+      const success = await axios
+        .get("/asset/view-AllAssets")
 
         .then((res) => {
           setAssets(res.data.result);
-
         })
         .catch((err) => {
-          
           const InsertLogs = new Logs(
-            'Error',
+            "Error",
             "PositionViewer",
             "Function /LoadAllPositions",
-            'LoadAllPositions',
+            "LoadAllPositions",
             userdata.userID
-          )
-          
+          );
         });
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-  }
+  };
 
-  const handleDelete = async (event,assetid,assetname) => {
-
+  const handleDelete = async (event, assetid, assetname) => {
     try {
-      event.preventDefault()
-      
-      const deleteSuccess = await axios.post("/asset/delete-AssetByID",{assetid})
-      .then((res) => {
+      event.preventDefault();
 
-        alert("Delete succes")
+      const deleteSuccess = await axios
+        .post("/asset/delete-AssetByID", { assetid })
+        .then((res) => {
+          alert("Delete succes");
 
-        LoadAllAssets()
+          LoadAllAssets();
 
-        const deleteLogs = new Logs(
-          'Info',
-          "Position Viewer",
-          "Function /handleDelete",
-          'Delete statusID :  ' + assetid
-          + '   Statusname :  ' + assetname,
-          userdata.userID
-        )
-
-      
-
-      })
-      .catch((err) => {
-        alert(err)
-      })
-    } catch(err) {
-        alert(err)
+          const deleteLogs = new Logs(
+            "Info",
+            "Position Viewer",
+            "Function /handleDelete",
+            "Delete statusID :  " + assetid + "   Statusname :  " + assetname,
+            userdata.userID
+          );
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    } catch (err) {
+      alert(err);
     }
+  };
 
-  }
-
-  const handleReport =() => {
-      try {
-
-          generate_PDF(assets,'Assets')
-
-      }
-      catch(err) {
-        alert(err)
-      }
-  }
+  const handleReport = () => {
+    try {
+      generate_PDF(assets, "Assets");
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   return (
     <>
@@ -232,7 +211,6 @@ export default function AssetViewer() {
                   <Th>Amount</Th>
                   <Th>Depreciated</Th>
                   <Th>Amount YR</Th>
-                 
                 </Tr>
               </Thead>
               <Tbody>
@@ -242,26 +220,25 @@ export default function AssetViewer() {
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
-                          onClick={(e) => handleDelete(e,asset.id,asset.assetName)}
+                          onClick={(e) =>
+                            handleDelete(e, asset.id, asset.assetName)
+                          }
                         >
                           Delete
                         </Button>
-                        <Button
-                          colorScheme="blue"
-                          
-                        >
+                        <Button colorScheme="blue">
                           <Link
                             to={{
-                            pathname: "/admin/asset",
-                            state: { assetID: asset.id }
-                            }}>
-                           Edit
+                              pathname: "/admin/asset",
+                              state: { assetID: asset.id },
+                            }}
+                          >
+                            Edit
                           </Link>
                         </Button>
-                  
                       </ButtonGroup>
                     </Td>
-                 
+
                     <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
                     <Td>{asset.name}</Td>
@@ -273,7 +250,6 @@ export default function AssetViewer() {
                     <Td>{asset.Amount}</Td>
                     <Td>{asset.date_depreciated}</Td>
                     <Td>{asset.AmountYR}</Td>
-                    
                   </Tr>
                 ))}
               </Tbody>

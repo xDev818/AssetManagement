@@ -274,7 +274,7 @@ export default function AssetTypeViewer() {
                         >
                           <Link
                             to={{
-                            pathname: "/admin/assettype",
+                            pathname: "/admin/assettype/" + type.id ,
                             state: { typeID: type.id }
                             }}>
                            Edit

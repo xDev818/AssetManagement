@@ -49,15 +49,18 @@ import {
       usergroup_description:''
   })
 
-    const location = useLocation()
-    const  usergroup_id  = location.state?.userGroupID
+    // const location = useLocation()
+    // const  usergroup_id  = location.state?.userGroupID
     const [btnstate,setbtnState] = useState()
 
 
     useEffect(() => {
       
       try {
-        
+        const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
+        const parts = hashFragment.split("/"); // Split the hash fragment by '/'
+        const usergroup_id = parts[parts.length - 1]; // Get the last part, which is the ID
+
         if(usergroup_id) {
         
             axios.get('/usergroup/getUserGroupByID/' + usergroup_id)
@@ -73,6 +76,7 @@ import {
             })
             .catch((err) => {
               alert(err);
+              window.location.href = '/'; 
             });
           
         } else {

@@ -182,10 +182,12 @@ export default function SuppliersViewer() {
                 {tables
                   .filter((item) => {
                     const searchLower = search.toLowerCase();
-                    const positionNameLower = item.supplierName.toLowerCase();
+                    const itemText = Object.values(item)
+                      .join(" ")
+                      .toLowerCase();
                     return search.toLowerCase() === ""
                       ? item
-                      : positionNameLower.toLowerCase().includes(searchLower);
+                      : itemText.includes(searchLower);
                   })
                   .map((supplier) => (
                     <Tr key={supplier.id}>
@@ -206,7 +208,7 @@ export default function SuppliersViewer() {
                           <Button colorScheme="blue">
                             <Link
                               to={{
-                                pathname: "/admin/suppliers",
+                                pathname: "/admin/suppliers/" + supplier.id,
                                 state: { supplierID: supplier.id },
                               }}
                             >
