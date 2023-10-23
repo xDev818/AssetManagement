@@ -9,6 +9,12 @@ Purpose :
   update function updatePosition
   create function deletePosition
 
+    Date : 10 / 22 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Import sqlStatement(/_sqlstatement/Position) controller
+
 */
 
 // Packages
@@ -19,6 +25,16 @@ const { randomUUID } = require('crypto')
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
 
+const {
+  create,
+  getByName,
+  getAll,
+  getByID , 
+  updateByID , 
+  deleteByID 
+}  = require('../_sqlstatement/Position')
+
+
 // An instance to Create new Department
 const createPosition = ( request, response ) => {
 
@@ -26,11 +42,6 @@ const createPosition = ( request, response ) => {
   const { positionname, description, departmentid, userID  } = request.body
 
  // if( !username ) return response.status(400).send( { message: "Username is required" } )
-
-
-  const stmt = "INSERT INTO tblPositions(positionDisplayID,positionName,"
-  + "description,departmentDisplayID,createdBy,dateCreated) values (?)";
-
 
   const values = [
       id,
@@ -42,7 +53,7 @@ const createPosition = ( request, response ) => {
   ];
   
   
-  mysql.query( stmt, [values], ( err, result ) => {
+  mysql.query( create(), [values], ( err, result ) => {
 
       if( err ) return response.status(400).send(
           {
@@ -64,10 +75,9 @@ const createPosition = ( request, response ) => {
 const getPositionByName = (request, response) => {
   const defaultPosition = "Default Position";
 
-  const stmt =
-    "select positionDisplayID from tblPositions where positionName = ?";
 
-  mysql.query(stmt, [defaultPosition], (err, result) => {
+
+  mysql.query(getByName(), [defaultPosition], (err, result) => {
     if (err || !result.length)
       return response.status(404).send({
         message: "No Record Found",
@@ -85,15 +95,8 @@ const getPositionById = (request, response) => {
 
   const { id } = request.params
 
-  const stmt =
-    "SELECT positions.positionDisplayID,positions.positionName,positions.description," +
-    "departments.departmentDisplayID," +
-    "departments.departmentName FROM tblPositions positions" +
-    " INNER JOIN tblDepartments departments on departments.departmentDisplayID = positions.departmentDisplayID" +
-    " WHERE positions.positionDisplayID = ?";
 
-
-      mysql.query( stmt, [id],( err, result ) => {
+      mysql.query( getByID(), [id],( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -115,13 +118,7 @@ const getPositionById = (request, response) => {
 
 const getViewAllPosition = (request, response) => {
 
-  const stmt =
-    "SELECT positions.positionDisplayID as id,positions.positionName,departments.departmentName,positions.description"
-    + " FROM tblPositions positions"
-    + " INNER JOIN tblDepartments departments on departments.departmentDisplayID = positions.departmentDisplayID"
-    + " ORDER BY positions.positionName"
-
-    mysql.query(stmt, (err, result) => {
+    mysql.query(getAll(), (err, result) => {
 
         if (err || !result.length)
           return response.status(404).send({
@@ -141,13 +138,7 @@ const updatePosition = (request, response) => {
 
   const { positionid, positionname, description, departmentid, userID  } = request.body
 
-  const stmt =
-    "UPDATE tblPositions SET positionName = ?,description = ?," 
-    + "departmentDisplayID = ?,updateBy = ?,dateUpdated = ?" 
-    + " where positionDisplayID = ? "
-
-  
-    mysql.query( stmt, [positionname,description,
+    mysql.query( updateByID(), [positionname,description,
                 departmentid,userID,utils_getDate(),positionid], ( err, result ) => {
 
       if( err ) return response.status(400).send(
@@ -171,11 +162,7 @@ const deletePosition = (request, response) => {
 
   const { positionID } = request.body
 
- 
-
-  const stmt = "DELETE FROM tblPositions WHERE positionDisplayID=?";
-
-    mysql.query(stmt, [positionID] ,(err, result) => {
+     mysql.query(deleteByID(), [positionID] ,(err, result) => {
 
       if (err) return response.status(400).send(
         {

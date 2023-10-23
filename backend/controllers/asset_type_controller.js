@@ -3,17 +3,25 @@
 Info : The routes was made and controlled by Jinshin 
         The current Author can add and update the routes
 
-    Date : 10 / 19 / 23
+    Date : 10 / 21 / 23
     Author : Nole
 
     Purpose : 
-        create asset_category_controller.js
+        create asset_type_controller.js
+        create function 
+            viewAllAssetType,
+            deleteAssetType,
+            getAssetTypeByID,
+            createAssetType,
+            updateAssetType
 
-   Date : 10 / 22 / 23
-    Author : Nole
-    Activities
-    Purpose : 
-      Import sqlStatement(/_sqlstatement/AssetCategory) controller
+
+    Date : 10 / 22 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+        Import sqlStatement(/_sqlstatement/AssetType) controller
+
 */
 
 // Packages
@@ -31,27 +39,31 @@ const {
     getByID , 
     updateByID , 
     deleteByID 
-  }  = require('../_sqlstatement/AssetCategory')
+  }  = require('../_sqlstatement/AssetType')
 
-const createAssetCategory = ( request, response ) => {
+const createAssetType = ( request, response ) => {
 
     const id = randomUUID() 
-    const { asset_categoryname, asset_categorydescription, userID  } = request.body
-    
+    const { asset_categoryid,asset_typename, asset_typedescription, userID  } = request.body
+  
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
+
+    
     const values = [
         id,
-        asset_categoryname,
-        asset_categorydescription,
+        asset_categoryid,
+        asset_typename,
+        asset_typedescription,
         userID,
         utils_getDate()
     ];
-    
+
     mysql.query( create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
+                
                 message: "Insert Error",
                 message2: err.message
             }
@@ -67,10 +79,9 @@ const createAssetCategory = ( request, response ) => {
 
 }
 
-// An instance to Load all Suppliers
-const viewAllCategory = ( request, response ) => {
+const viewAllAssetType = ( request, response ) => {
 
-
+    
 
     mysql.query( getAll(), ( err, result ) => {
        
@@ -90,65 +101,11 @@ const viewAllCategory = ( request, response ) => {
     })
 }
 
+const deleteAssetType = ( request, response ) => {
 
-const getCategoryByID = ( request, response ) => {
+    const { asset_typeid } = request.body
 
-    const { id } = request.params
-    
-    mysql.query( getByID(),[id], ( err, result ) => {
-
-        if( err ) return response.status(400).send(
-            {
-                message: "No Records Found",
-                message2: err.message
-            }
-        )
-       
-         response.status(200).send(
-             {
-                 message: "Records Found",
-                 result
-             }
-         )
-       
-    })
-}
-
-const updateAssetCategory = ( request, response ) => {
-
-    const { asset_categoryid, asset_categoryname,asset_categorydescription, userID  } = request.body
-
- 
-  
-    mysql.query( updateByID(), [asset_categoryname,asset_categorydescription,userID,utils_getDate(),asset_categoryid], ( err, result ) => {
-
-        if( err ) return response.status(400).send(
-            {
-                message: "Update Error",
-                message2: err.message
-            }
-        )
-        
-        response.status(200).send(
-            {
-                message: "Update Success"
-            }
-        )
-        
-     
-
-    })
-
-}
-
-
-// An instance to Delete Asset Category by ID
-const deleteAssetCategory = ( request, response ) => {
-
-    const { asset_categoryid } = request.body
-
-   
-    mysql.query( deleteByID(), [asset_categoryid], ( err, result ) => {
+    mysql.query( deleteByID(), [asset_typeid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -169,12 +126,62 @@ const deleteAssetCategory = ( request, response ) => {
 
 }
 
-module.exports = {
-    viewAllCategory,
-    deleteAssetCategory,
-    getCategoryByID,
-    createAssetCategory,
-    updateAssetCategory
+const getAssetTypeByID = ( request, response ) => {
 
+    const { id } = request.params
+
+
+    mysql.query( getByID(),[id], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+       
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
+       
+    })
+}
+
+const updateAssetType = ( request, response ) => {
+
+    const { asset_typeid,asset_categoryid, asset_typename,asset_typedescription, userID  } = request.body
+
+
+  
+    mysql.query( updateByID(), [asset_categoryid,asset_typename,asset_typedescription,userID,utils_getDate(),asset_typeid], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+        
+        response.status(200).send(
+            {
+                message: "Update Success"
+            }
+        )
+        
+     
+
+    })
+
+}
+
+module.exports = {
+    viewAllAssetType,
+    deleteAssetType,
+    getAssetTypeByID,
+    createAssetType,
+    updateAssetType
 
 }

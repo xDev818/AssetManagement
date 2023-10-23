@@ -1,6 +1,19 @@
-import { Button, ButtonGroup, Flex, Input } from "@chakra-ui/react";
+import { Button, ButtonGroup, Flex, Input,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem, } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
+
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  ChevronDownIcon,
+  DeleteIcon,
+  EditIcon,
+} from "@chakra-ui/icons";
+
 
 export default function Search({ setSearch, handleReport, pathname }) {
   return (
@@ -19,10 +32,22 @@ export default function Search({ setSearch, handleReport, pathname }) {
           >
             New
           </Link>
-        </Button>
-        <Button colorScheme="green" onClick={handleReport}>
+          </Button>
+          <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
+                Report
+              </MenuButton>
+              <MenuList>
+                <MenuItem   onClick={handleReport} colorScheme='twitter'>PDF </MenuItem>
+                <MenuItem  colorScheme='twitter'>Excel</MenuItem>
+                
+              </MenuList>
+          </Menu>
+
+      
+        {/* <Button colorScheme="green" onClick={handleReport}>
           PDF Report
-        </Button>
+        </Button> */}
       </ButtonGroup>
       <Input
         placeholder="Search"

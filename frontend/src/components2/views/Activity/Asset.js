@@ -6,6 +6,21 @@
     Purpose : 
         New Asset.js
 
+    Date : 10 / 21 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        Added
+          import DatePicker from 'react-datepicker'
+          import 'react-datepicker/dist/react-datepicker.css'
+
+    Date : 10 / 21 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+         Update :
+          Remove Asset Category and change to Asset Type
+
 */
 
 import {
@@ -23,180 +38,133 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
+
+
+
+import { useLocation,Link } from 'react-router-dom'
+import Logs from 'components/Utils/logs_helper'
 import React, { useEffect, useState, useReducer, useRef } from "react";
-import decoder from "jwt-decode";
 import axios from 'axios'
-import Logs from "components/Utils/logs_helper";
+import decoder from 'jwt-decode'
 
-// Jinshin
-const myFunc = ( states, action ) => {
-
-  switch( action.type ) {
-
-    case 'myRole' : 
-        return { ...states, user_role: action.payload }
-
-    case 'myDepartment' :
-        return { ...states, department: action.payload }
-
-    case 'myFirstname' :
-        return { ...states, firstname: action.payload }
-
-    case 'myLastname' :
-        return { ...states, lastname: action.payload }
-
-    case 'myEmail' :
-        return { ...states, email: action.payload }
-
-    case 'myPassword' :
-        return { ...states, password: action.payload }
-
-    case 'myConfirmPassword' :
-        return { ...states, confirm_password: action.payload }
-
-    default: states
-
-  }
-
-}
-
-const ACTION = {
-
-  ROLE : 'myRole',
-  DEPARTMENT : 'myDepartment',
-  FIRSTNAME : 'myFirstname',
-  LASTNAME : 'myLastname',
-  EMAIL : 'myEmail',
-  PASSWORD : 'myPassword',
-  CONFIRM_PASSWORD : 'myConfirmPassword'
-
-} // End Jinshin
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 export default function Asset() {
 
-  //Jinshin
-  const [ states, dispatch ] = useReducer( myFunc, { user_role: '', department: '', firstname: '', lastname: '', email: '', password: '', confirm_password: '' })
-  // End Jinshin
-
+  
   //Nole
-  var userID = ''
-  const [usergroups, setUserGroups] = useState([]);
-  const [positions, setPositions] = useState([]);
+  
+  var imgFilename=''
+  const [userdata,setUser] = useState({
+    userID : ''
+  });
 
-  const [data, setData] = useState();
-  const token = window.localStorage.getItem("token");
-  const button = useRef(null)
-  useEffect(() => {
-    const decoded = decoder(token)
-    setData(decoded?.result[0]);
-  }, [setData]);
-  data && console.log(data)
-  // Destructuring personal info
-  const firstname = data?.firstname
-  const lastname = data?.lastname
-  const displayID = data?.userDisplayID
-  const department = data?.departmentName
-  const email = data?.email
-  const userRole = data?.userRole
-  const imgFilename = data?.imgFilename
+  
+  const [assettype, setAssetType] = useState([]);
+  const [status, setStatus] = useState([]);
+  const [vendors, setVendors] = useState([]);
+ 
+  const [date_purchase, setDatePurchase] = useState('');
+  const [date_depreciated, setDateDepreciated] = useState('');
 
-  // Jinshin
-  const updateHandler = async () => {
+  const [values,setAssets] = useState({
+    asset_id: '',
+    asset_typeid: '',
+    asset_statusid: '',
+    asset_supplierid: '',
+    asset_serialno: '',
+    asset_code: '',
+    asset_name: '',
+    asset_description: '',
+    asset_purchase_amout: '',
+    asset_purchase_date: new Date(),
+    assset_depreciated_amount: '',
+    asset_depreciated_date: new Date()
+  })
+  
+  const location = useLocation()
+  const  asset_ID  = location.state?.assetID
+  const [btnstate,setbtnState] = useState()
 
-    const buttonStatus = button.current
-    buttonStatus.disabled = true;
+  const SetUsers = async () => { 
 
-    const values = {
-      role: states.user_role || userRole,
-      department: states.department || department,
-      firstname: states.firstname || firstname,
-      lastname: states.lastname || lastname,
-      email: states.email || email,
-      password: states.password,
-    }
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
 
-    // Tasks
-    //  fix the image . make a seperate api call for it
-    //  add password then match it, if match then update success else, use bcrypt if password has length else use the old one
-    //  fetch the password in the set data data?.password
-    //  is complete user will be redirected to dashboard
+     setUser({...userdata,
 
-    try {
+      userID : tokenDecoded.result[0].userDisplayID
 
-      const request = await axios.put(`/users/${displayID}`, values)
-      const response = await request.data
-      if ( response.message.includes('Updated Successfully') ) {
-
-        localStorage.setItem("token", response.token);
-        buttonStatus.disabled = false;
-        window.location.reload()
-
-      }
-
-    } catch ( err ) {
-
-      const errorStatus = err.code;
-
-      if (errorStatus.includes("ERR_NETWORK")) {
-        const useEffectLogs = new Logs(
-          "DB",
-          "Login",
-          "Function /loginHandler",
-          err,
-          ""
-        );
-
-        alert(useEffectLogs.getMessage());
-        console.log(useEffectLogs.getLogs());
-        buttonStatus.disabled = false;
-      }
-
-      if (errorStatus.includes("ERR_BAD_REQUEST")) {
-        const useEffectLogs = new Logs(
-          errorStatus,
-          "Login",
-          "Function /loginHandler",
-          err.response.data.message,
-          ""
-        );
-        useEffectLogs.getLogs();
-
-        alert(useEffectLogs.getMessage());
-        console.log(useEffectLogs.getLogs());
-        buttonStatus.disabled = false;
-
-        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
-
-      }
-
-    }
-
+  })
   }
 
   useEffect(() => {
+    SetUsers()
+    LoadAllAssetType()
+    LoadAllStatus()
+    LoadAllSuppliers()
     
-    try {
 
-      LoadAllUserGroups()
-      LoadAllPositions()
-    }
-    catch(err) {
-      alert(err)
-    }
+      if(asset_ID) {
+          
+        axios.get('/asset/getAssetByID/' + asset_ID)
+        .then((res) => {
+          setbtnState("Update")
+          setAssets({
+            ...values,
+            asset_id: res.data.result[0].id,
+            asset_typeid: res.data.result[0].typeID,
+            asset_statusid: res.data.result[0].assetStatusID,
+            asset_supplierid: res.data.result[0].supplierid,
+            asset_serialno: res.data.result[0].serialNo,
+            asset_code: res.data.result[0].assetCode,
+            asset_name: res.data.result[0].assetName,
+            asset_description: res.data.result[0].description,
+            asset_purchase_amout: res.data.result[0].Amount,
+            asset_purchase_date: new Date(res.data.result[0].date_purchase),
+            assset_depreciated_amount: res.data.result[0].AmountYR,
+            asset_depreciated_date: new Date(res.data.result[0].date_depreciated)
+          })
 
+          setDatePurchase( values.asset_purchase_date)
+          setDateDepreciated( values.asset_depreciated_date)
+        })
+        .catch((err) => {
+          alert(err);
+        });
+      
+    } else {
+      setbtnState("Save")
+      
+      setAssets({
+        ...values,
+        asset_id: '',
+        asset_typeid: '',
+        asset_statusid: '',
+        asset_supplierid: '',
+        asset_serialno: '',
+        asset_code: '',
+        asset_name: '',
+        asset_description: '',
+        asset_purchase_amout: '',
+        asset_purchase_date: new Date(),
+        assset_depreciated_amount: '',
+        asset_depreciated_date: new Date()
+      })
+
+        setDatePurchase(values.asset_purchase_date)
+        setDateDepreciated(values.asset_depreciated_date)
+    }
   }, [])
 
-  const LoadAllUserGroups = async () => {
+  const LoadAllAssetType = async () => {
     try {
-      const tokenStorage = localStorage.getItem("token");
-      const tokenDecoded = decoder(tokenStorage);
-
-      userID = tokenDecoded.result[0].userDisplayID;
-
-      const success = await axios.get("/usergroup/viewuser-group")
+     
+      const success = await axios.get("/assettype/viewasset-type")
 
         .then((res) => {
-          setUserGroups(res.data.result);
+          setAssetType(res.data.result);
 
         })
         .catch((err) => {
@@ -206,7 +174,7 @@ export default function Asset() {
             "PositionViewer",
             "Function /LoadAllPositions",
             'LoadAllPositions',
-            userID
+            userdata.userID
           )
           
         });
@@ -216,37 +184,216 @@ export default function Asset() {
     }
   }
 
-  const LoadAllPositions = async () => {
+  const LoadAllStatus = async () => {
     try {
-      const tokenStorage = localStorage.getItem("token");
-      const tokenDecoded = decoder(tokenStorage);
 
-      userID = tokenDecoded.result[0].userDisplayID;
+      const success = await axios.get("/getallStatus")
+        //axios.get('/getViewallStatus')
+        .then((res) => {
+          setStatus(res.data.result);
 
-      const success = await axios.get("/positions/viewallpositions")
+        })
+        .catch((err) => {
+          
+          const InsertLogs = new Logs(
+            'Error',
+            "Asset Status Viewer",
+            "Function /LoadAllStatus",
+            'LoadAllStatus',
+            userdata.userID
+          )
+
+          
+        });
+    }
+    catch(err) {
+      alert(err)
+    }
+  }
+
+  const LoadAllSuppliers = async () => {
+    try {
+
+      const success = await axios.get("/suppliers/viewallsuppliers")
 
         .then((res) => {
-          setPositions(res.data.result);
+          setVendors(res.data.result);
+
+        })
+        .catch((err) => {
+          
+          const InsertLogs = new Logs(
+            'Error',
+            "PositionViewer",
+            "Function /LoadAllPositions",
+            'LoadAllPositions',
+            userdata.userID
+          )
+          
+        });
+    }
+    catch(err) {
+      alert(err)
+    }
+  }
+
+
+  async function handleUpdate(event)  {
+
+    try {
+
+      event.preventDefault();
+
+
+
+      const assetvalues = {
+
+        asset_id: values.asset_id,
+        asset_typeid: values.asset_typeid,
+        asset_statusid: values.asset_statusid,
+        asset_supplierid: values.asset_supplierid,
+        asset_serialno: values.asset_serialno,
+        asset_code: values.asset_code,
+        asset_name: values.asset_name,
+        asset_description: values.asset_description,
+        asset_purchase_amout: values.asset_purchase_amout,
+        asset_purchase_date: date_purchase,
+        //values.asset_purchase_date,
+        assset_depreciated_amount: values.assset_depreciated_amount,
+        asset_depreciated_date: date_depreciated,
+        //values.asset_depreciated_date
+      }
+
+      if(assetvalues.asset_id === "") {
+          // insert here
+          const success = await axios.post('/asset/create-AssetByID',assetvalues)
+          .then((res) => {
+          
+            alert("Insert Successful")
+
+            const InsertLogs = new Logs(
+              'Info',
+              "Asset Status",
+              "Function /handleUpdate",
+              ' Create   Statusname :  ' + values.asset_id,
+              userdata.userID
+            )
+    
+           // const request = axios.post('/log',InsertLogs.getLogs())
+           // const response =  request.data
+
+           window.location.href = "/#/admin/asset-viewer"
+            
+
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      } else if(!assetvalues.asset_typeid == "") {
+        /// update here
+        const success = await axios.post('/asset/update-AssetByID',assetvalues)
+        .then((res) => {
         
+          alert("Update Successful")
+
+          const InsertLogs = new Logs(
+            'Info',
+            "Asset Status",
+            "Function /handleUpdate",
+            ' Update StatusID : ' +  assetvalues.asset_id
+            + ' Statusname :  ' + assetvalues.asset_name,
+            userdata.userID
+          )
+  
+        //  const request = axios.post('/log',InsertLogs.getLogs())
+        //  const response =  request.data
+
+         window.location.href = "/#/admin/asset-viewer"
+          
         })
         .catch((err) => {
-          
-          const InsertLogs = new Logs(
-            'Error',
-            "PositionViewer",
-            "Function /LoadAllPositions",
-            'LoadAllPositions',
-            userID
-          )
-          
-        });
+         
+          const errorStatus = err.code
+    
+          if( errorStatus.includes('ERR_NETWORK') ) 
+          {
+
+            
+            const submitLogs = new Logs(
+              "DB",
+              "AssetStatus",
+              "Function /HandleSubmit",
+              err,
+              userdata.userID
+            )
+            
+            alert( submitLogs.getMessage() )
+
+          } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
+           
+            const submitLogs = new Logs(
+              'Error',
+              "Asset Status",
+              "Function /HandleSubmit",
+              err.response.data.message,
+              userdata.userID
+            )
+    
+            try {
+    
+              const request = axios.post('/log',submitLogs.getLogs())
+              const response =  request.data
+              console.log(response)
+    
+            } catch ( err ) {
+              console.log(err)
+              const logStatus = err.code
+    
+              if( logStatus.includes("ERR_NETWOR") ) {
+    
+                const submitLogs = new Logs(
+                  "DB",
+                  "Asset Status",
+                  "Function /HandleSubmit",
+                  err,
+                  userdata.userID
+                )
+    
+                alert( submitLogs.getMessage() )
+                console.log( submitLogs.getLogs() )
+    
+              }
+    
+              if( logStatus.includes("ERR_BAD_REQUEST") ) {
+    
+                const submitLogs = new Logs(
+                  "Error",
+                  "Asset Status",
+                  "Function /HandleSubmit",
+                  err.response.data.message,
+                  userdata.userID
+                )
+                
+                alert( submitLogs.getMessage() )
+                console.log( submitLogs.getLogs() )
+    
+              }
+    
+            }
+
+        }});
     }
-    catch(err) {
+
+    }
+    catch (err) {
       alert(err)
     }
   }
+  
 
+ 
   return (
+    <>
     <Card
       w={{ base: "auto", md: "auto", lg: "auto" }}
       mx={{ base: 0, md: 0, lg: 3 }}
@@ -259,44 +406,61 @@ export default function Asset() {
         <Stack gap={2} mt={10}>
         
         <Grid templateColumns="repeat(2, 1fr)" gap={3}>
+
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>Category </FormLabel>
-              <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
-              <option value={ department }> { department } </option>
-              <option value="Software">Software</option>
-              <option value="Accessories">Accessories</option>
-            </Select>
+              <Select id='asset_typeid' placeholder='Select Type' size='md'
+                  onChange={ e => {
+                  setAssets( { ...values, asset_typeid: e.target.value } )}}
+                  value={values.asset_typeid} 
+                  
+              >
+
+                  {assettype.map((type) => (
+                    <option value={type.id} size='md'> 
+                      {type.typeName}
+                    </option>
+                    ))
+                    
+                  }
+              </Select>
 
             <FormLabel>Status: </FormLabel>
            
-              <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
-              <option value={ department }> { department } </option>
-              <option value="Available">Available</option>
-              <option value="Broken  Not Fixable">Broken  Not Fixable</option>
+              <Select id='asset_statusid' placeholder='Select Status' size='md'
+              onChange={ e => {
+              setAssets( { ...values, asset_statusid: e.target.value } )}}
+              value={values.asset_statusid} >
+              {status.map((stat) => (
+                <option value={stat.assetStatusID} size='md'> 
+                  {stat.statusName}
+                </option>
+                ))
+              }
             </Select>
 
             <FormLabel>Supplier: </FormLabel>
            
-           <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
-            <option value={ department }> { department } </option>
-            <option value="Available">Available</option>
-            <option value="Broken  Not Fixable">Broken  Not Fixable</option>
+           <Select  id='asset_supplierid' placeholder='Select Supplier' size='md'
+              onChange={ e => {
+              setAssets( { ...values, asset_supplierid: e.target.value } )}}
+              value={values.asset_supplierid} >
+           {vendors.map((vendor) => (
+                <option value={vendor.id} size='md'> 
+                  {vendor.supplierName}
+                </option>
+                ))
+                
+              }
           
           </Select>
-
-
-         
-          
-         
             </GridItem>
-
             <GridItem>
               <Flex
                 justifyContent="center"
                 flexDirection="column"
                 alignItems="center"
               >
- 
                 <Box
                   borderRadius="100%"
                   bg="blackAlpha.100"
@@ -317,55 +481,102 @@ export default function Asset() {
             </GridItem>
           </Grid>
 
-   
           <Grid templateColumns="repeat(2, 1fr)" gap={5}>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Serial No</FormLabel>
-          <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
+          <Input type="text"  value={values.asset_serialno}
+            
+            onChange={ e => {
+            setAssets( { ...values, asset_serialno: e.target.value } )}}
+          />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Asset Code</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
+            <Input type="text" value={values.asset_code}
+            onChange={ e => {
+              setAssets( { ...values, asset_code: e.target.value } )}}
+            />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Asset Name</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
+            <Input type="text" value={values.asset_name}
+            onChange={ e => {
+              setAssets( { ...values, asset_name: e.target.value } )}}
+            />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Description</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
+            <Input type="text" value={values.asset_description}
+            onChange={ e => {
+              setAssets( { ...values, asset_description: e.target.value } )}}
+            />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Date Purchase</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
-  
+
+            <DatePicker selected={date_purchase} 
+            showIcon
+    
+              onChange={(date_purchase) => setDatePurchase(date_purchase)} 
+              value= {date_purchase}
+              />
+
+
+            
+            {/* 
+             onChange={(date) => setDate(date)}
+            <Input type="text" value={values.asset_purchase_date}
+            onChange={ e => {
+              setAssets( { ...values, asset_purchase_date: e.target.value } )}}
+            />
+   */}
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Purchase Amunt</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
+            <Input type="text"  value={values.asset_purchase_amout}
+            onChange={ e => {
+              setAssets( { ...values, asset_purchase_amout: e.target.value } )}}
+            />
   
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Depreciation Date</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
-  
+            <Box>
+
+            <DatePicker selected={date_depreciated} 
+            showIcon
+              onChange={(date_depreciated) => setDateDepreciated(date_depreciated)} 
+              value= {date_depreciated}
+              />
+              </Box>
+            {/* <Input type="text" value={values.asset_depreciated_date}
+            onChange={ e => {
+              setAssets( { ...values, asset_depreciated_date: e.target.value } )}}
+            />
+   */}
             </GridItem>
             <GridItem>
             <FormLabel fontSize={{ base: "sm" }}>Amount Depreciation</FormLabel>
-            <Input onChange={ ( e ) => dispatch( { type: ACTION.FIRSTNAME, payload: e.target.value } )}  placeholder="Firstname..." defaultValue={ states.firstname || firstname } />
+
+            <Input type="text" value={values.assset_depreciated_amount}
+            onChange={ e => {
+              setAssets( { ...values, assset_depreciated_amount: e.target.value } )}}
+            />
   
             </GridItem>
           </Grid>
 
           <Box>
-            <Button ref={button} colorScheme="green" onClick={ updateHandler }> Save </Button>
+            <Button  colorScheme="green" onClick={handleUpdate} > {btnstate} </Button>
           </Box>
         </Stack>
       </FormControl>
     </Card>
+    </>
   );
+
 }

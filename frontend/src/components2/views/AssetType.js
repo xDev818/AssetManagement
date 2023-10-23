@@ -1,16 +1,18 @@
 
 /* 
 
-
-    Date : 10 / 18 / 23
+   
+    Date : 10 / 21 / 23
     Author : Nole
     Activities
     Purpose : 
-      create Suppliers.js
-        
+      create new AssetType.js
+      import { useLocation,Link } from 'react-router-dom'
+      import Logs from 'components/Utils/logs_helper'
+      import  { useEffect, useState } from 'react'
+      import axios from 'axios'
+      import decoder from 'jwt-decode'
 */
-
-
 
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
@@ -32,52 +34,84 @@ import {
     Box,
     Input,
     FormControl,
-    Select,
-    GridItem,
-    Grid
+    Select
   } from "@chakra-ui/react";
   import { Button, ButtonGroup } from "@chakra-ui/react";
   
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
- 
   
-  export default function Suppliers () {
+  
+  export default function AssetType () {
 
-    var userID =''
-    const [values,setSupplier] = useState({
-      supplierid:'',
-      suppliername:'',
-      address:'',
-      contactno: '',
-      email: ''
+    const [userdata,setUser] = useState({
+        userID : ''
+      });
+
+    const [values,setAssetType] = useState({
+      asset_typeid:'',
+      asset_categoryid:'',
+      asset_typename:'',
+      asset_typedescription:''
   })
-
-
+  const [categories, setCategories] = useState([]);
 
     const location = useLocation()
-    const  supplierID  = location.state?.supplierID
+    const  asset_typeID  = location.state?.typeID
     const [btnstate,setbtnState] = useState()
 
 
-  
+    const SetUsers = async () => { 
+
+        const tokenStorage = localStorage.getItem("token");
+        const tokenDecoded = decoder(tokenStorage);
+    
+         setUser({...userdata,
+    
+          userID : tokenDecoded.result[0].userDisplayID
+    
+      })
+      }
+
+      const LoadAllCategories = async () => {
+        try {
+
+          const success = await axios
+            .get("/assetcategory/viewassetcategory")
+    
+            .then((res) => {
+              setCategories(res.data.result);
+            })
+            .catch((err) => {
+              const InsertLogs = new Logs(
+                "Error",
+                "PositionViewer",
+                "Function /LoadAllPositions",
+                "LoadAllPositions",
+                userID
+              );
+            });
+        } catch (err) {
+          alert(err);
+        }
+      };
 
     useEffect(() => {
       
       try {
+        SetUsers()  
+        LoadAllCategories()
+        if(asset_typeID) {
         
-        if(supplierID) {
-            console.log(supplierID)
-            axios.get('/suppliers/getSupplierID/' + supplierID)
+            axios.get('/assettype/get-AssetTypeByID/' + asset_typeID)
             .then((res) => {
               setbtnState("Update")
-                setSupplier({
+                setAssetType({
                   ...values,
-                  supplierid: res.data.result[0].id,
-                  suppliername: res.data.result[0].supplierName,
-                  address: res.data.result[0].address,
-                  contactno: res.data.result[0].contactno,
-                  email: res.data.result[0].email
+                  asset_typeid: res.data.result[0].id,
+                  asset_categoryid: res.data.result[0].assetCategID,
+                  asset_typename: res.data.result[0].typeName,
+                  asset_typedescription: res.data.result[0].description
                 })
                
             })
@@ -88,13 +122,12 @@ import {
         } else {
           setbtnState("Save")
            
-          setSupplier({
+          setAssetType({
             ...values,
-            supplierid: '',
-            suppliername: '',
-            address: '',
-            contactno: '',
-            email: ''
+            asset_typeid: '',
+            asset_categoryid: '',
+            asset_typename: '',
+            asset_typedescription: ''
           })
         }
 
@@ -104,33 +137,26 @@ import {
       }
     }, [])
 
-
     async function handleUpdate(event)  {
 
       try {
 
         event.preventDefault();
-        const tokenStorage = localStorage.getItem("token");
-        const tokenDecoded = decoder(tokenStorage);
 
-        const userID = tokenDecoded.result[0].userDisplayID;
 
-      
 
-        const suppliervalues = {
-          supplierid: values.supplierid,
-          suppliername: values.suppliername,
-          address: values.address,
-          contactno: values.contactno,
-          email: values.email,
-          userID: userID
+        const typevalues = {
+
+          asset_typeid: values.asset_typeid,
+          asset_categoryid: values.asset_categoryid,
+          asset_typename: values.asset_typename,
+          asset_typedescription: values.asset_typedescription,
+          userID: userdata.userID
         }
 
-
-
-        if(suppliervalues.supplierid === "") {
+        if(typevalues.asset_typeid === "") {
             // insert here
-            const success = await axios.post('/suppliers/createSupplier',suppliervalues)
+            const success = await axios.post('/assettype/create-AssetType',typevalues)
             .then((res) => {
             
               alert("Insert Successful")
@@ -139,23 +165,23 @@ import {
                 'Info',
                 "Asset Status",
                 "Function /handleUpdate",
-                ' Create   Position name :  ' + suppliervalues.suppliername,
-                userID
+                ' Create   Statusname :  ' + typevalues.asset_typename,
+                userdata.userID
               )
       
              // const request = axios.post('/log',InsertLogs.getLogs())
              // const response =  request.data
 
-             window.location.href = "/#/admin/suppliers-viewer"
+             window.location.href = "/#/admin/assetstype-viewer"
               
 
             })
             .catch((err) => {
               alert(err);
             });
-        } else if(!suppliervalues.supplierid == "") {
+        } else if(!typevalues.asset_typeid == "") {
           /// update here
-          const success = await axios.post('/suppliers/updateSupplier',suppliervalues)
+          const success = await axios.post('/assettype/update-AssetType',typevalues)
           .then((res) => {
           
             alert("Update Successful")
@@ -164,15 +190,15 @@ import {
               'Info',
               "Asset Status",
               "Function /handleUpdate",
-              ' Update Position ID : ' +  suppliervalues.supplierid
-              + ' Position Name :  ' + suppliervalues.suppliername,
-              userID
+              ' Update StatusID : ' +  typevalues.asset_typeid
+              + ' Statusname :  ' + typevalues.asset_typename,
+              userdata.userID
             )
     
           //  const request = axios.post('/log',InsertLogs.getLogs())
           //  const response =  request.data
 
-           window.location.href = "/#/admin/suppliers-viewer"
+           window.location.href = "/#/admin/assetstype-viewer"
             
           })
           .catch((err) => {
@@ -188,7 +214,7 @@ import {
                 "AssetStatus",
                 "Function /HandleSubmit",
                 err,
-                userID
+                userdata.userID
               )
               
               alert( submitLogs.getMessage() )
@@ -200,7 +226,7 @@ import {
                 "Asset Status",
                 "Function /HandleSubmit",
                 err.response.data.message,
-                userID
+                userdata.userID
               )
       
               try {
@@ -210,7 +236,7 @@ import {
                 console.log(response)
       
               } catch ( err ) {
-      
+                console.log(err)
                 const logStatus = err.code
       
                 if( logStatus.includes("ERR_NETWOR") ) {
@@ -220,7 +246,7 @@ import {
                     "Asset Status",
                     "Function /HandleSubmit",
                     err,
-                    userID
+                    userdata.userID
                   )
       
                   alert( submitLogs.getMessage() )
@@ -235,7 +261,7 @@ import {
                     "Asset Status",
                     "Function /HandleSubmit",
                     err.response.data.message,
-                    userID
+                    userdata.userID
                   )
                   
                   alert( submitLogs.getMessage() )
@@ -259,41 +285,37 @@ import {
         <Stack>
           <FormControl>
           <Card>
-            <Grid templateColumns="repeat(6, 1fr)" gap={0}>
-              <GridItem>
-                <FormLabel fontSize={{ base: "sm" }}>Vendor Name:  </FormLabel>
-              </GridItem>
-              <GridItem>
-              <Input id='suppliername' label="Supplier name" placeholder="Supplier Name" 
-              value={values.suppliername}
-              onChange={ e => {
-                setSupplier( { ...values, suppliername: e.target.value } )}}
-              />    
-              </GridItem>
-            </Grid>
-            
+          <Box>
+            <Select id= 'asset_categoryid' placeholder='Select option' size='md'
+             onChange={ e => {
+              setAssetType( { ...values, asset_categoryid: e.target.value } )}}
+              value={values.asset_categoryid}
+             >
+              {categories.map((category) => (
+                <option value={category.id} size='md'> 
+                  {category.assetCategName}
+                </option>
+                ))
+                
+              }
+
+            </Select>
+
+            </Box>
             <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Address:  </FormLabel>
-              <Input id='address' label="Address" placeholder="Address" 
-              value={values.address}
+              <FormLabel fontSize={{ base: "sm" }}>Status Name:  </FormLabel>
+              <Input id='asset_typename' label="Asset Type name" placeholder="Asset Type Name" 
+              value={values.asset_typename}
               onChange={ e => {
-                setSupplier( { ...values, address: e.target.value } )}}
+                setAssetType( { ...values, asset_typename: e.target.value } )}}
               />    
             </Box>
             <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Contact No:  </FormLabel>
-              <Input id='contactno' label="Contact No" placeholder="Contact No" 
-              value={values.contactno}
+              <FormLabel fontSize={{ base: "sm" }}>Description:  </FormLabel>
+              <Input id='asset_typedescription' label="Description" placeholder="Description" 
+              value={values.asset_typedescription}
               onChange={ e => {
-                setSupplier( { ...values, contactno: e.target.value } )}}
-              />    
-            </Box>
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Email:  </FormLabel>
-              <Input id='email' label="Email" placeholder="Email" 
-              value={values.email}
-              onChange={ e => {
-                setSupplier( { ...values, email: e.target.value } )}}
+                setAssetType( { ...values, asset_typedescription: e.target.value } )}}
               />    
             </Box>
             <Box>

@@ -11,6 +11,17 @@
       import decoder from "jwt-decode";
       import generate_PDF from "components/Utils/generate_PDF";
 
+    Date : 10 / 18 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Added in import 
+          Menu
+          MenuButton,
+          MenuList,
+          MenuItem,
+      import { ChevronDownIcon} from '@chakra-ui/icons'
+
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -34,11 +45,18 @@ import {
   Icon,
   Input,
   Flex,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  
 } from "@chakra-ui/react";
+
 import { Button, ButtonGroup, Wrap, WrapItem } from "@chakra-ui/react";
 import {
   ChevronRightIcon,
   ChevronLeftIcon,
+  ChevronDownIcon,
   DeleteIcon,
   EditIcon,
 } from "@chakra-ui/icons";

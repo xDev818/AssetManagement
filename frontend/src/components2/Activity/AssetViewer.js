@@ -1,3 +1,9 @@
+/* -------------------------------------------------------------------------- */
+/*                                See Info Below                              */
+/*               Write Updates , Activities and Comments Below                */
+/*                              Before Coding                                 */
+/* -------------------------------------------------------------------------- */
+
 /* 
 
 
@@ -6,7 +12,16 @@
     Activities
     Purpose : 
       create AssetViewer.js
-        
+
+    Date : 10 / 22 / 23
+    Author : Nole
+    Activities 
+      Update Load Assets and Delete Assets
+      Add Assets PDF Report
+    Pattern From John
+      import Search from "components2/Search/Search";
+      import Pagination from "components2/Pagination/Pagination";
+
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -15,6 +30,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
+
+import Search from "components2/Search/Search";
+import Pagination from "components2/Pagination/Pagination";
 
 import {
   Table,
@@ -26,25 +44,30 @@ import {
   TableContainer,
   Stack,
   Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
-import Search from "components2/Search/Search";
-import Pagination from "components2/Pagination/Pagination";
 
 export default function AssetViewer() {
-  var userID = "";
+  const [assets, setAssets] = useState([]);
+  const [userdata, setUser] = useState({
+    userID: "",
+  });
 
-  const [suppliers, setSuppliers] = useState([]);
   const [search, setSearch] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const tablePerPage = 6;
   const lastIndex = currentPage * tablePerPage;
   const firstIndex = lastIndex - tablePerPage;
-  const tables = suppliers.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(suppliers.length / tablePerPage);
+  const tables = assets.slice(firstIndex, lastIndex);
+  const tablePages = Math.ceil(assets.length / tablePerPage);
   const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
 
   const nextPage = () => {
@@ -64,22 +87,28 @@ export default function AssetViewer() {
     setCurrentPage(number);
   };
 
+  const SetUsers = async () => {
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
+
+    setUser({
+      ...userdata,
+
+      userID: tokenDecoded.result[0].userDisplayID,
+    });
+  };
   useEffect(() => {
-    LoadAllSuppliers();
+    SetUsers();
+    LoadAllAssets();
   }, []);
 
-  const LoadAllSuppliers = async () => {
+  const LoadAllAssets = async () => {
     try {
-      const tokenStorage = localStorage.getItem("token");
-      const tokenDecoded = decoder(tokenStorage);
-
-      userID = tokenDecoded.result[0].userDisplayID;
-
       const success = await axios
-        .get("/suppliers/viewallsuppliers")
+        .get("/asset/view-AllAssets")
 
         .then((res) => {
-          setSuppliers(res.data.result);
+          setAssets(res.data.result);
         })
         .catch((err) => {
           const InsertLogs = new Logs(
@@ -87,7 +116,7 @@ export default function AssetViewer() {
             "PositionViewer",
             "Function /LoadAllPositions",
             "LoadAllPositions",
-            userID
+            userdata.userID
           );
         });
     } catch (err) {
@@ -95,26 +124,23 @@ export default function AssetViewer() {
     }
   };
 
-  const handleDelete = async (event, supplierid, suppliername) => {
+  const handleDelete = async (event, assetid, assetname) => {
     try {
       event.preventDefault();
 
       const deleteSuccess = await axios
-        .post("/suppliers/deleteSupplier", { supplierid })
+        .post("/asset/delete-AssetByID", { assetid })
         .then((res) => {
           alert("Delete succes");
 
-          LoadAllSuppliers();
+          LoadAllAssets();
 
           const deleteLogs = new Logs(
             "Info",
             "Position Viewer",
             "Function /handleDelete",
-            "Delete statusID :  " +
-              supplierid +
-              "   Statusname :  " +
-              suppliername,
-            userID
+            "Delete statusID :  " + assetid + "   Statusname :  " + assetname,
+            userdata.userID
           );
         })
         .catch((err) => {
@@ -127,7 +153,7 @@ export default function AssetViewer() {
 
   const handleReport = () => {
     try {
-      generate_PDF(suppliers, "Suppliers");
+      generate_PDF(assets, "Assets");
     } catch (err) {
       alert(err);
     }
@@ -136,82 +162,98 @@ export default function AssetViewer() {
   return (
     <>
       <Stack>
-        <Card height={694} position="relative">
+        <Card>
           <TableContainer>
-            {/*  to={{
+            {/* <ButtonGroup spacing={6}>
+            <Button
+              colorScheme='messenger'
+            >
+              <Anchor
+                  to={{
                   pathname: "/admin/asset",
-                  state: { supplierID: '' },
-                  }} */}
+                  state: { assetID: '' },
+                  }}>
+                New
+              </Anchor>
+
+            </Button>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
+                Report
+              </MenuButton>
+              <MenuList>
+                <MenuItem   onClick={handleReport}  colorScheme='green'>PDF </MenuItem>
+                <MenuItem   colorScheme='green' >Excel</MenuItem>
+                
+              </MenuList>
+          </Menu>
+ 
+            </ButtonGroup> */}
+
             <Search
               setSearch={setSearch}
               handleReport={handleReport}
               pathname="/admin/asset"
             />
+
             <Table size="lg">
               <Thead>
                 <Tr>
                   <Th>Actions</Th>
-                  <Th>Supplier</Th>
-                  <Th>Address</Th>
-                  <Th>Contact No</Th>
-                  <Th>Email</Th>
+                  <Th>Type</Th>
+                  <Th>Status</Th>
+                  <Th>Vendor</Th>
+                  <Th>Serial No</Th>
+                  <Th>Code</Th>
+                  <Th>Name</Th>
+                  <Th>Description</Th>
+                  <Th>Purchase</Th>
+                  <Th>Amount</Th>
+                  <Th>Depreciated</Th>
+                  <Th>Amount YR</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {tables
-                  .filter((item) => {
-                    const searchLower = search.toLowerCase();
-                    const itemText = Object.values(item)
-                      .join(" ")
-                      .toLowerCase();
-                    return search.toLowerCase() === ""
-                      ? item
-                      : itemText.includes(searchLower);
-                  })
-                  .map((supplier) => (
-                    <Tr key={supplier.id}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={(e) =>
-                              handleDelete(
-                                e,
-                                supplier.id,
-                                supplier.supplierName
-                              )
-                            }
+                {assets.map((asset) => (
+                  <Tr key={asset.id}>
+                    <Td>
+                      <ButtonGroup>
+                        <Button
+                          colorScheme="red"
+                          onClick={(e) =>
+                            handleDelete(e, asset.id, asset.assetName)
+                          }
+                        >
+                          Delete
+                        </Button>
+                        <Button colorScheme="blue">
+                          <Link
+                            to={{
+                              pathname: "/admin/asset",
+                              state: { assetID: asset.id },
+                            }}
                           >
-                            Delete
-                          </Button>
-                          <Button colorScheme="blue">
-                            <Link
-                              to={{
-                                pathname: "/admin/asset",
-                                state: { supplierID: supplier.id },
-                              }}
-                            >
-                              Edit
-                            </Link>
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{supplier.supplierName}</Td>
-                      <Td>{supplier.address}</Td>
-                      <Td>{supplier.contactno}</Td>
-                      <Td>{supplier.email}</Td>
-                    </Tr>
-                  ))}
+                            Edit
+                          </Link>
+                        </Button>
+                      </ButtonGroup>
+                    </Td>
+
+                    <Td>{asset.typeName}</Td>
+                    <Td>{asset.statusName}</Td>
+                    <Td>{asset.name}</Td>
+                    <Td>{asset.serialNo}</Td>
+                    <Td>{asset.assetCode}</Td>
+                    <Td>{asset.assetName}</Td>
+                    <Td>{asset.description}</Td>
+                    <Td>{asset.date_purchase}</Td>
+                    <Td>{asset.Amount}</Td>
+                    <Td>{asset.date_depreciated}</Td>
+                    <Td>{asset.AmountYR}</Td>
+                  </Tr>
+                ))}
               </Tbody>
             </Table>
-            <Pagination
-              data={suppliers}
-              currentPage={currentPage}
-              nextPage={nextPage}
-              prevPage={prevPage}
-              currentNumber={currentNumber}
-              pageNumber={pageNumber}
-            />
           </TableContainer>
         </Card>
       </Stack>

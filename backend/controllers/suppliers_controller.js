@@ -5,6 +5,12 @@
     Purpose : 
       create suppliers_controller.js
       create function ViewAllAssetStatus
+
+    Date : 10 / 22 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Import sqlStatement(/_sqlstatement/Suppliers) controller
 */
 
 // Packages
@@ -15,6 +21,14 @@ const { randomUUID } = require('crypto')
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
 
+const {
+    create,
+    getByName,
+    getAll,
+    getByID , 
+    updateByID , 
+    deleteByID 
+  }  = require('../_sqlstatement/Suppliers')
 
 const createSupplier = ( request, response ) => {
 
@@ -23,8 +37,6 @@ const createSupplier = ( request, response ) => {
    
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-    const stmt = "INSERT INTO tblSuppliers(supplierid,name,address,"
-            + "contactno,email,createdBy,dateCreated) values (?)";
     
     const values = [
         id,
@@ -36,7 +48,7 @@ const createSupplier = ( request, response ) => {
         utils_getDate()
     ];
     
-    mysql.query( stmt, [values], ( err, result ) => {
+    mysql.query( create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -58,11 +70,10 @@ const createSupplier = ( request, response ) => {
 // An instance to Load all Suppliers
 const viewAllSuppliers = ( request, response ) => {
 
-    const stmt = "SELECT supplierid as id,name as supplierName,address,contactno,email FROM tblSuppliers"
-            + " ORDER BY supplierName ASC"
+ 
     
              
-    mysql.query( stmt, ( err, result ) => {
+    mysql.query( getAll(), ( err, result ) => {
        
         if( err ) return response.status(400).send(
             {
@@ -84,12 +95,7 @@ const getSupplierID = ( request, response ) => {
 
     const { id } = request.params
 
-    const stmt = "SELECT supplierid as id,name as supplierName,address,contactno,email FROM tblSuppliers"
-            + " WHERE supplierid = ?"
-    
-    
-
-    mysql.query( stmt,[id], ( err, result ) => {
+     mysql.query( getByID(),[id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -112,13 +118,7 @@ const updateAssetStatus = ( request, response ) => {
 
     const { supplierid, suppliername, address,contactno,email, userID  } = request.body
 
-   
-    const stmt = "UPDATE tblSuppliers SET name = ?,"
-    + "address = ?,contactno = ?,email = ?, updateBy = ?,dateUpdate = ?"
-    + " where supplierid = ?"
-    
-  
-    mysql.query( stmt, [suppliername,address,contactno,email,userID,utils_getDate(),supplierid], ( err, result ) => {
+    mysql.query( updateByID(), [suppliername,address,contactno,email,userID,utils_getDate(),supplierid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -143,11 +143,9 @@ const updateAssetStatus = ( request, response ) => {
 const deleteSupplier = ( request, response ) => {
 
     const { supplierid} = request.body
-
-    const stmt = "DELETE FROM tblSuppliers WHERE supplierid=?"
-    
+  
    
-    mysql.query( stmt, [supplierid], ( err, result ) => {
+    mysql.query( deleteByID(), [supplierid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {

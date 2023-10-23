@@ -15,6 +15,18 @@ const mysql = require('../database')
 const jwt = require('jsonwebtoken')
 const { randomUUID } = require('crypto')
 
+const {
+    create,
+    getByName,
+    getAll,
+    getByID , 
+    updateByID , 
+    deleteByID 
+
+}  = require('../_sqlstatement/Department')
+
+
+
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
 
@@ -23,13 +35,19 @@ const createDepartment = ( request, response ) => {
 
     const id = randomUUID() 
     const { departmentname, description, userID  } = request.body
-
+    //console.log(request.body)
+    // {
+    //     departmentid: '',
+    //     departmentname: ' www',
+    //     description: 'www',
+    //     userID: '250e53de-2742-45a5-a447-dfc164937461'
+    //   }
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
 
-    const stmt = "INSERT INTO tblDepartments(departmentDisplayID,departmentName,"
-    + "description,createdBy,dateCreated) values (?)";
-
+    const stmt =  create()
+    {
+  
     const values = [
         id,
         departmentname,
@@ -38,7 +56,7 @@ const createDepartment = ( request, response ) => {
         utils_getDate()
     ];
     
-    mysql.query( stmt, [values], ( err, result ) => {
+    mysql.query(  create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -60,10 +78,11 @@ const createDepartment = ( request, response ) => {
 const getDepartmentByName = ( request, response ) => {
 
     const defaultDepartment = 'Default Department'
+    
 
-    const stmt = "select departmentDisplayID from tbldepartments where departmentName = ?"
+    
+    mysql.query( getByName(), [ defaultDepartment ], ( err, result ) => {
 
-    mysql.query( stmt, [ defaultDepartment ], ( err, result ) => {
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -86,12 +105,10 @@ const getDepartmentByName = ( request, response ) => {
 //Load all Active Departments
 const getallDepartments = ( request, response ) => {
 
-    //const defaultDepartment = 'Default Department'
 
-    const stmt = "SELECT departmentDisplayID,departmentName,description FROM tbldepartments" 
-        + " ORDER BY departmentName"
 
-    mysql.query( stmt, ( err, result ) => {
+    mysql.query( getAll(), ( err, result ) => {
+
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -116,10 +133,9 @@ const getDepartmentByID = ( request, response ) => {
 
     const { id } = request.params
 
-    const stmt = "SELECT departmentDisplayID,departmentName,description FROM tbldepartments" 
-        + " WHERE departmentDisplayID = ?"
 
-    mysql.query( stmt, [id],( err, result ) => {
+    mysql.query(  getByID(), [id],( err, result ) => {
+
 
         if( err || !result.length ) return response.status(404).send(
             {
@@ -142,18 +158,13 @@ const getDepartmentByID = ( request, response ) => {
 // An instance to update Department by ID
 const updateDepartmentByID = ( request, response ) => {
 
-    
     const { departmentid, departmentname, description, userID  } = request.body
 
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-
-   const stmt = "UPDATE tblDepartments SET departmentName = ?,description = ?,"
-        + "updatedBy = ?,dateUpdated = ?"
-        + " where departmentDisplayID = ? "
-
+   
     
-    mysql.query( stmt, [departmentname,description,userID,utils_getDate(),departmentid], ( err, result ) => {
+    mysql.query( updateByID(), [departmentname,description,userID,utils_getDate(),departmentid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -177,10 +188,9 @@ const deleteDepartmentByID = ( request, response ) => {
 
     const { departmentid} = request.body
 
-    const stmt = "DELETE FROM tblDepartments WHERE departmentDisplayID=?"
     
+    mysql.query( deleteByID(), [departmentid], ( err, result ) => {
 
-    mysql.query( stmt, [departmentid], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
