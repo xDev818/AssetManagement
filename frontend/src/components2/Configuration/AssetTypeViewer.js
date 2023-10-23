@@ -221,7 +221,8 @@ export default function AssetTypeViewer() {
             <Search
               setSearch={setSearch}
               handleReport={handleReport}
-              pathname="/admin/position"
+              pathname="/admin/assettype"
+
             />
 
             <Table size="lg">

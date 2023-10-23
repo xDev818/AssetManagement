@@ -1,4 +1,3 @@
-
 /* 
 
     Date : 10 / 13 / 23
@@ -49,6 +48,9 @@ ReactDOM.render(
         {/* {!token ? <Redirect from={`/signin`} to="/admin/dashboard" />: null} */}
         <Route path={`/auth`} component={AuthLayout} />
         <Route path={`/admin`} component={AdminLayout} />
+        {/* <Route path={`/admin/update-profile/:id`} component={AdminLayout} />
+        <Route path={`/admin/asset-viewer/:id`} component={AdminLayout} /> */}
+        <Route path={`/admin/position/:id`} component={AdminLayout} />
         {/* <Route path={`/admin/configuration`} component={Configuration} /> */}
         <Redirect from={`/`} to="/admin/dashboard" />
       </Switch>

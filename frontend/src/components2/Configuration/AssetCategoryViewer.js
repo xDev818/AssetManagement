@@ -14,8 +14,10 @@
     Purpose : 
       create SuppliersViewer.js
 
-        
-*/
+
+ */
+
+
 
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
@@ -42,6 +44,7 @@ import {
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
+import { textChangeRangeIsUnchanged } from "typescript";
 
 
 export default function AssetCategoryViewer() {
@@ -74,7 +77,7 @@ export default function AssetCategoryViewer() {
   const currentNumber = (number) => {
     setCurrentPage(number);
   };
-
+ 
   useEffect(() => {
     LoadAllCategories();
   }, []);
@@ -174,10 +177,12 @@ export default function AssetCategoryViewer() {
                 {tables
                   .filter((item) => {
                     const searchLower = search.toLowerCase();
-                    const positionNameLower = item.assetCategName.toLowerCase();
+                    const itemText = Object.values(item)
+                      .join(" ")
+                      .toLowerCase();
                     return search.toLowerCase() === ""
                       ? item
-                      : positionNameLower.toLowerCase().includes(searchLower);
+                      : itemText.includes(searchLower);
                   })
                   .map((category) => (
                     <Tr key={category.id}>

@@ -9,6 +9,13 @@ Info : The routes was made and controlled by Jinshin
 
     Purpose : 
         create usergroup_controller.js
+
+
+    Date : 10 / 22 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+        Import sqlStatement(/_sqlstatement/User Group) controller
 */
 
 // Packages
@@ -19,6 +26,15 @@ const { randomUUID } = require('crypto')
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
 
+const {
+    create,
+    getByName,
+    getAll,
+    getByID , 
+    updateByID , 
+    deleteByID 
+  }  = require('../_sqlstatement/UserGroup')
+
 
 const createUserGroup = ( request, response ) => {
 
@@ -27,8 +43,6 @@ const createUserGroup = ( request, response ) => {
    
    // if( !username ) return response.status(400).send( { message: "Username is required" } )
 
-    const stmt = "INSERT INTO tblUserCategory(categoryID,categoryName,categoryDesc,"
-            + "createdBy,dateCreated) values (?)";
     
     const values = [
         id,
@@ -38,7 +52,7 @@ const createUserGroup = ( request, response ) => {
         utils_getDate()
     ];
     
-    mysql.query( stmt, [values], ( err, result ) => {
+    mysql.query( create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -60,11 +74,8 @@ const createUserGroup = ( request, response ) => {
 
 const viewAllUserGroup = ( request, response ) => {
 
-    const stmt = "SELECT categoryID as id,categoryName,categoryDesc FROM tblUserCategory"
-            + " ORDER BY categoryName ASC"
-    
 
-    mysql.query( stmt, ( err, result ) => {
+    mysql.query( getAll(), ( err, result ) => {
        
         if( err ) return response.status(400).send(
             {
@@ -86,10 +97,9 @@ const deleteUserGroup = ( request, response ) => {
 
     const { usergroup_id } = request.body
 
-    const stmt = "DELETE FROM tblUserCategory WHERE categoryID=?"
     
    
-    mysql.query( stmt, [usergroup_id], ( err, result ) => {
+    mysql.query( deleteByID(), [usergroup_id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -114,11 +124,9 @@ const getUserGroupByID = ( request, response ) => {
 
     const { id } = request.params
 
-    const stmt = "SELECT categoryID as id,categoryName,categoryDesc FROM tblUserCategory"
-                + " WHERE categoryID = ?"
     
     
-    mysql.query( stmt,[id], ( err, result ) => {
+    mysql.query( getByID(),[id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -141,13 +149,8 @@ const updateAssetCategory = ( request, response ) => {
 
     const { usergroup_id, usergroup_name,usergroup_description, userID  } = request.body
 
-   
-    const stmt = "UPDATE tblUserCategory SET categoryName = ?,"
-                + "categoryDesc=?, updateBy = ?,dateUpdate = ?"
-                + " where categoryID = ?"
-    
   
-    mysql.query( stmt, [usergroup_name,usergroup_description,userID,utils_getDate(),usergroup_id], ( err, result ) => {
+    mysql.query( updateByID(), [usergroup_name,usergroup_description,userID,utils_getDate(),usergroup_id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {

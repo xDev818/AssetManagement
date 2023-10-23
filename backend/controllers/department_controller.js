@@ -1,4 +1,3 @@
-
 /*
 Date : 10 / 18 / 23
 Author : Nole
@@ -11,9 +10,18 @@ Purpose :
 */
 
 // Packages
-const mysql = require('../database')
-const jwt = require('jsonwebtoken')
-const { randomUUID } = require('crypto')
+const mysql = require("../database");
+const jwt = require("jsonwebtoken");
+const { randomUUID } = require("crypto");
+
+const {
+  create,
+  getByName,
+  getAll,
+  getByID,
+  updateByID,
+  deleteByID,
+} = require("../_sqlstatement/Department");
 
 const {
     create,
@@ -26,9 +34,10 @@ const {
 
 
 // Date helper
-const { utils_getDate } = require('../utils/date_helper')
+const { utils_getDate } = require("../utils/date_helper");
 
 // An instance to Create new Department
+
 const createDepartment = ( request, response ) => {
 
     const id = randomUUID() 
@@ -215,10 +224,10 @@ const deleteDepartmentByID = ( request, response ) => {
 
 
 module.exports = {
-    createDepartment,
-   getDepartmentByName,
-   getallDepartments,
-   getDepartmentByID,
-   updateDepartmentByID,
-   deleteDepartmentByID
-}
+  createDepartment,
+  getDepartmentByName,
+  getallDepartments,
+  getDepartmentByID,
+  updateDepartmentByID,
+  deleteDepartmentByID,
+};
