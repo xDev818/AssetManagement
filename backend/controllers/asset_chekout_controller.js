@@ -100,7 +100,7 @@ const createCheckout_Asset = ( request, response ) => {
         userid_checkout,
         utils_getDate()
     ];
-    console.log(values)
+    
     mysql.query( create(), [values], ( err, result ) => {
 
         if( err ) return response.status(400).send(
