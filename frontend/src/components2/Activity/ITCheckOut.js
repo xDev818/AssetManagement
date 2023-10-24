@@ -6,7 +6,12 @@
     Activities
     Purpose : 
       created Checkout Asset
-        
+
+    Date : 10 / 25 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      // Generate UUID for DocReference
 */
 
 import { useLocation,Link } from 'react-router-dom'
@@ -14,7 +19,8 @@ import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
 import axios from 'axios'
 import decoder from 'jwt-decode'
-
+import Datehelper from 'components/Utils/datehelper'
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   FormLabel,
@@ -65,6 +71,10 @@ import {
     const [userSelected,setUserSelected] = useState('')
     const [notes,setNotes] = useState('')
     const [statID,setStatusID] = useState('')
+
+     const [receiver_posid,setRecevierPosID] = useState('')
+     const [receiver_deptid,setRecevierDepID] = useState('')
+
 
     const [btnstate,setbtnState] = useState()
 
@@ -214,57 +224,51 @@ import {
     }
 
 
+
     const handlleCheck = async (event,key) => {
 
       event.preventDefault();
-
+     
       try {
-
+        // Generate UUID for DocReference
+        const datehelper = new Datehelper()
+        const docid = uuidv4();
+        var docRef_Checkin =  docid.slice(0,5).toUpperCase()
+        docRef_Checkin = docRef_Checkin + datehelper.dateformat_MMDDHR()
+        
         if(checkoutData.dataArray.length > 0)
          {
+          
+          var id = userSelected
+          const res = await axios.get("/assetcheckout/get-userdeptpos_byID/" + id);
+          const data = await res.data;
 
-        for (let i = 0; i < checkoutData.dataArray.length; i++) {
-          // Access each element of the array
-          const value = checkoutData.dataArray[i];
+          var receiver_posid = res.data.result[0].positionDisplayID
+          var receiver_deptid = res.data.result[0].departmentDisplayID
 
-        const checkoutvalues = {
-          userid:userSelected ,
-          assetid: value,
-          statusid: statID,
-          positionid: userdata.positionid,
-          departmentid: userdata.deptid,
-          notes: notes,
-          plancheckout: plan_date,
-          userid_checkout: userdata.userid
-        }
 
-        // if(checkoutData.dataArray.length > 0)
-        // {
+            for (let i = 0; i < checkoutData.dataArray.length; i++) {
+              // Access each element of the array
+              const value = checkoutData.dataArray[i];
 
-          var success = await axios.post('/assetcheckout/create-checkoutasset',checkoutvalues)
-          .then((res) => {
-         
-            alert("Insert Successful")
+            const checkoutvalues = {
+              userid:userSelected ,
+              assetid: value,
+              statusid: statID,
+              positionid: receiver_posid,
+              departmentid: receiver_deptid,
+              notes: notes,
+              plancheckout: plan_date,
+              userid_checkout: userdata.userid,
+              docref: docRef_Checkin
+            }
 
-            const InsertLogs = new Logs(
-              'Info',
-              "Asset Status",
-              "Function /handleUpdate",
-              ' Create   Position name :  ' + checkoutvalues.assetid,
-              userdata.userid
-            )
-   
-            var request =  axios.post('/log',InsertLogs.getLogs())
-            var response =  request.data
 
-            /* 
-              Update the Assets to mark as deploy
-            */
-              success = axios.post('/assetcheckout/update-checkoutasset_ForDeploy',checkoutvalues)
+              var success = await axios.post('/assetcheckout/create-checkoutasset',checkoutvalues)
               .then((res) => {
-             
-                alert("update Successful")
-    
+            
+                alert("Insert Successful")
+
                 const InsertLogs = new Logs(
                   'Info',
                   "Asset Status",
@@ -272,25 +276,46 @@ import {
                   ' Create   Position name :  ' + checkoutvalues.assetid,
                   userdata.userid
                 )
-       
-                request = axios.post('/log',InsertLogs.getLogs())
-                 response =  request.data
+      
+                var request =  axios.post('/log',InsertLogs.getLogs())
+                var response =  request.data
+
+                /* 
+                  Update the Assets to mark as deploy
+                */
+                  success = axios.post('/assetcheckout/update-checkoutasset_ForDeploy',checkoutvalues)
+                  .then((res) => {
+                
+                  // alert("update Successful")
+        
+                    const InsertLogs = new Logs(
+                      'Info',
+                      "Asset Status",
+                      "Function /handleUpdate",
+                      ' Create   Position name :  ' + checkoutvalues.assetid,
+                      userdata.userid
+                    )
+          
+                    request = axios.post('/log',InsertLogs.getLogs())
+                    response =  request.data
+
+                    // window.location.reload()
+                  })
+                  .catch((err) => {
+                    alert(err);
+                  });
+                  
+
               })
               .catch((err) => {
                 alert(err);
               });
-              
 
-          })
-          .catch((err) => {
-            alert(err);
-          });
-
-      }
-    }
-    else {
-        alert("Select Asset to Checkout")
-       }
+          }
+        }
+        else {
+            alert("Select Asset to Checkout")
+          }
 
        
       }
@@ -375,7 +400,7 @@ import {
                   <Th> </Th>
                   {/* <Th>Actions</Th> */}
                   <Th>Status</Th>
-                  <Th>Vendor</Th>
+                  <Th>Type</Th>
                   <Th>Serial No</Th>
                   <Th>Asset Code</Th>
                   <Th>Asset Name</Th>
@@ -389,7 +414,8 @@ import {
                         <input type="checkbox" value={asset.id}
                         
                         onClick={(e) => handleSelectedAsset(e,asset.id)}
-                        ></input>
+                        >
+                        </input>
                       </Td>
                       {/* <Td>
 
@@ -420,7 +446,7 @@ import {
                       </Td> */}
 
                       <Td>{asset.statusName}</Td>
-                      <Td>{asset.name}</Td>
+                      <Td>{asset.typeName}</Td>
                       <Td>{asset.serialNo}</Td>
                       <Td>{asset.assetCode}</Td>
                       <Td>{asset.assetName}</Td>

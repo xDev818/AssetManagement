@@ -120,7 +120,7 @@ import {
           })
         }
 
-        if(asset_typeID) {
+        else if(asset_typeID) {
         
             axios.get('/assettype/get-AssetTypeByID/' + asset_typeID)
             .then((res) => {

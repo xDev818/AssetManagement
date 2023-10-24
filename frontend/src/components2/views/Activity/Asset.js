@@ -153,7 +153,6 @@ export default function Asset() {
     }
   }, []);
 
-  console.log("data", values);
 
   const LoadAllAssetType = async () => {
     try {

@@ -28,11 +28,23 @@ export default class Datehelper {
          return dateGenerate
     }
 
+    dateformat_MMDDHR() {
+
+        let newDate = new Date()
+        
+        let year = newDate.getFullYear();
+        let month = newDate.getMonth() + 1;
+        let day = newDate.getDate();
+        let hr = newDate.getHours();
+        //let minute = newDate.getMinutes();
+       // let secs = newDate.getSeconds();
+        return month + "" + "" + day + "" + hr
+        // year+"/"+month+"/"+day +" " + hr+":"+minute+":"+secs
     
-
-
-
-
-
+    
+       
+    
+    }
+    
 
 }
