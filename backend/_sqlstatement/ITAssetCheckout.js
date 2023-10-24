@@ -24,7 +24,7 @@
 const create = () => {
 
   return "INSERT INTO tblUserAssetDetails(detailID,userSelectedID,assetID,assetStatusID,positionID,"
-        + "departmentID,notescheckout,plancheckout,useridcheckout,dateInsert) values (?)";
+        + "departmentID,notescheckout,plancheckout,useridcheckout,docRef_Checkin,dateInsert) values (?)";
   
 }
 
@@ -53,10 +53,38 @@ const viewAllAssetsAvailable = () => {
     
  }
 
- const getAssetStatusByName = () => {
+ const viewAllAssetsCheckout = () => {
+
+  return   "SELECT assetsdetail.detailID,assetsdetail.assetID,asset.serialNo, "
+            + "asset.assetCode,asset.assetName,status.statusName,type.typeName,department.departmentName,"
+            + "COALESCE(DATE_FORMAT(assetsdetail.plancheckout, '%m/%d/%Y'),'') as date_checkout ,"
+            + "concat(user.lastname,', ' , user.firstname) as fullname,assetsdetail.docRef_Checkin  "
+            + "FROM tblUserAssetDetails assetsdetail"
+            + " inner join tblAssets asset on asset.assetID COLLATE utf8mb4_unicode_ci = assetsdetail.assetID"
+            + " inner join tblAssetStatus status on status.assetStatusID COLLATE utf8mb4_unicode_ci = assetsdetail.assetStatusID"
+            + " inner join tblDepartments department on department.departmentDisplayID COLLATE utf8mb4_unicode_ci  = assetsdetail.departmentID"
+            + " inner join tblUsers user on user.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.useridcheckout"
+            + " inner join  tblAssetType type on type.typeID COLLATE utf8mb4_unicode_ci = asset.typeID"
+            + " where checkinby is null"
+            + " ORDER BY assetsdetail.plancheckout ASC"
+
+  
+}
+
+const getAssetStatusByName = () => {
 
   return   "SELECT assetStatusID FROM tblAssetStatus"
           + " where statusName = 'For Deploy' "
+}
+
+const getUserPosition_Department_ByID = () => {
+
+  return   "SELECT position.positionDisplayID,department.departmentDisplayID,"
+          + "user.lastname,position.positionName,department.departmentName FROM tblUsers user"
+          + " left join tblPositions position on position.positionDisplayID COLLATE utf8mb4_unicode_ci = user.positionID"
+          + " left join tblDepartments department on department.departmentDisplayID COLLATE utf8mb4_unicode_ci = position.departmentDisplayID"
+          + " where user.userDisplayID = ?"
+
 }
 
  module.exports = {
@@ -64,5 +92,7 @@ const viewAllAssetsAvailable = () => {
     viewAllAssetsAvailable,
     getAssetStatusByName,
     create,
-    updateByID
+    updateByID,
+    viewAllAssetsCheckout,
+    getUserPosition_Department_ByID
  }

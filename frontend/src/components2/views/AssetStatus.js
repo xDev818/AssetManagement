@@ -78,7 +78,7 @@ import {
             })
         }
 
-        if(statusID) {
+        else if(statusID) {
         
             axios.get('/getStatusbyID/' + statusID)
             .then((res) => {

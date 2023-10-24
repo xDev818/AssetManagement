@@ -173,6 +173,7 @@ import ITCheckOut from 'components2/Activity/ITCheckOut'
 import PullOut from "components2/Activity/PullOut";
 import AssetViewer from "components2/Activity/AssetViewer";
 import Asset from "components2/views/Activity/Asset";
+import ITCheckoutViewer from "components2/Activity/ITCheckoutViewer";
 
 // Configuration submenus pages
 import UpdateProfile from "components2/Profile/UpdateProfile";
@@ -250,10 +251,18 @@ var dashRoutes = [
     component: CheckIn,
     layout: "/admin",
   },
+  
   {
     submenu: "activity",
-    path: "/check-out",
+    path: "/checkout-viewer",
     name: "Check Out",
+    component: ITCheckoutViewer,
+    layout: "/admin",
+  },
+  {
+   
+    path: "/checkout",
+    name: "Create Check Out",
     component: ITCheckOut,
     layout: "/admin",
   },

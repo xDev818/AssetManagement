@@ -83,7 +83,7 @@ import {
           })
         }
 
-        if(supplierID) {
+        else if(supplierID) {
             console.log(supplierID)
             axios.get('/suppliers/getSupplierID/' + supplierID)
             .then((res) => {
