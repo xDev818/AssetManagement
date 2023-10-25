@@ -153,7 +153,6 @@
             TO : import ITCheckOut from 'components2/Activity/ITCheckOut'
 */
 
-
 // import
 import React, { Component } from "react";
 import Dashboard from "views/Dashboard/Dashboard.js";
@@ -169,7 +168,7 @@ import Configuration from "views/Dashboard/Configuration";
 //Activity User submenus pages
 import User from "components2/Activity/User";
 import CheckIn from "components2/Activity/CheckIn";
-import ITCheckOut from 'components2/Activity/ITCheckOut'
+import ITCheckOut from "components2/Activity/ITCheckOut";
 import PullOut from "components2/Activity/PullOut";
 import AssetViewer from "components2/Activity/AssetViewer";
 import Asset from "components2/views/Activity/Asset";
@@ -190,6 +189,7 @@ import AssetCategoryViewer from "components2/Configuration/AssetCategoryViewer";
 import AssetCategory from "components2/views/AssetCategory";
 import AssetTypeViewer from "components2/Configuration/AssetTypeViewer";
 import AssetType from "components2/views/AssetType";
+import DataTable from "components2/TanstackTable/DataTable";
 
 import UserGroupViewer from "components2/Configuration/UserGroupViewer";
 import UserGroup from "components2/views/UserGroup";
@@ -238,7 +238,6 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-
     path: "/asset",
     name: "Create Asset",
     component: Asset,
@@ -251,7 +250,7 @@ var dashRoutes = [
     component: CheckIn,
     layout: "/admin",
   },
-  
+
   {
     submenu: "activity",
     path: "/checkout-viewer",
@@ -260,7 +259,6 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-   
     path: "/checkout",
     name: "Create Check Out",
     component: ITCheckOut,
@@ -283,7 +281,6 @@ var dashRoutes = [
     component: PositionViewer,
     layout: "/admin",
   },
-
   {
     path: "/position",
     name: "Create Position",
