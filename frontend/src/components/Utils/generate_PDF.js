@@ -26,15 +26,22 @@ Info : The code was made and controlled by Nole
     Activities
     Purpose : 
         Add Assets functionality Report
+
+    Date : 10 / 25 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        Add Asset Receiving DOcument
+
 */ 
 
 import PDFReports from 'components2/views/pdfreports/PDFReports'
-
+import PDFReportReceiving from 'components2/views/pdfreports/PDFReportReceiving'
 
 //import React, { useState } from 'react'
 
 
-const generate_PDF =  (propdata,paramReportType) => {
+const generate_PDF =  (propdata,paramReportType,docref) => {
 
     var icount = 0
     const rowdata = []
@@ -44,8 +51,8 @@ const generate_PDF =  (propdata,paramReportType) => {
     const assetTypeColumn = ["#","Category","Type", "Description"];
     const vendorColumn  = ["#","Vendor","Address", "Contact No", "Email"];
     const assetsColumn  = ["#","Type","Status", "Code", "Name", "Date Purchase"];
+    const receivingColumn = ["#","Code", "Serial","Name", "Type"];
     
-
   
         if(paramReportType === 'Asset Status') {
 
@@ -171,6 +178,25 @@ const generate_PDF =  (propdata,paramReportType) => {
             });
 
             PDFReports(rowdata,assetsColumn,paramReportType)
+
+         } else if (paramReportType === 'Receiving') {
+ 
+            // propdata.forEach(item => {
+            //     icount = icount + 1
+                
+            //     const assetsData = [
+            //         icount.toString(),
+            //         item.typeName,
+            //         item.statusName,
+            //         item.assetCode,
+            //         item.assetName,
+            //         item.date_purchase,
+            //     ];
+            //     rowdata.push(assetsData)
+
+            // });
+            
+            PDFReportReceiving(propdata,receivingColumn,paramReportType,docref)
 
          }
 

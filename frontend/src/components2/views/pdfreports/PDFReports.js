@@ -28,13 +28,7 @@ const PDFReports = (propdata,propColumn,propReportName) => {
         var img = new Image()
         img.src = DefaultLogoReport
 
-        // define the columns we want and their titles
-       // const tableColumn = propColumn
-        //["#","Position","Department", "Description"];
-
-        // define an empty array of rows
-        const tableRows = [];
-       
+            
         doc.addImage(img, 'webp',10 ,5, 40,15)  // margin-left,margin-top,width , height
         doc.text("List : " + propReportName,150, 12 ); // margin-left,margin-top
         doc.setFontSize(10)
@@ -51,8 +45,7 @@ const PDFReports = (propdata,propColumn,propReportName) => {
             doc.setPage(i)
         
             var curretPage = doc.getCurrentPageInfo().pageNumber
-            //WriteLog("For Testing"," ")
-        // doc.autoTable(tableRows,{startY:30})
+       
 
             doc.line(10,280,200,280)
             doc.text("Page : " + curretPage + "/" + pageCount, 10,285)

@@ -127,34 +127,34 @@ export default function ITCheckoutViewer() {
     }
   };
 
-  const handleDelete = async (event, assetid, assetname,statname) => {
-    try {
-      event.preventDefault();
+  // const handleDelete = async (event, assetid, assetname,statname) => {
+  //   try {
+  //     event.preventDefault();
 
     
 
-      const deleteSuccess = await axios
-        .post("/asset/delete-AssetByID", { assetid })
-        .then((res) => {
-          alert("Delete succes");
+  //     const deleteSuccess = await axios
+  //       .post("/asset/delete-AssetByID", { assetid })
+  //       .then((res) => {
+  //         alert("Delete succes");
 
-          LoadAllAssets();
+  //         LoadAllAssets();
 
-          const deleteLogs = new Logs(
-            "Info",
-            "Position Viewer",
-            "Function /handleDelete",
-            "Delete statusID :  " + assetid + "   Statusname :  " + assetname,
-            userdata.userid
-          );
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    } catch (err) {
-      alert(err);
-    }
-  };
+  //         const deleteLogs = new Logs(
+  //           "Info",
+  //           "Position Viewer",
+  //           "Function /handleDelete",
+  //           "Delete statusID :  " + assetid + "   Statusname :  " + assetname,
+  //           userdata.userid
+  //         );
+  //       })
+  //       .catch((err) => {
+  //         alert(err);
+  //       });
+  //   } catch (err) {
+  //     alert(err);
+  //   }
+  // };
 
   const handleReport = () => {
     try {
@@ -172,12 +172,36 @@ export default function ITCheckoutViewer() {
     }
   };
 
-  
-  const handleGenerateReceiving = (e,id,serialno,name,docref) => {
+  // No need to routes to server
+  const handleGenerateReceiving = (docref) => {
       try {
-
-        generate_PDF(assets, "Receiving");
-
+        //alert(docref)
+            // Loop to existing data
+            // const rowdata = []
+            // var icount  =0
+            //  assets.map(asset => {
+              
+              
+            // //   alert(asset.fullname)
+               
+            //   if(asset.docRef_Checkin === docref ) {
+            //     icount = icount + 1
+               
+            //     const itempData = [
+            //       icount.toString(),
+            //       asset.fullname,
+            //       asset.assetCode,
+            //       asset.serialNo,
+            //       asset.assetName,
+            //       asset.typeName,
+            //       asset.ReleasedBy,
+            //       ];
+            //       rowdata.push(itempData)
+                
+            //    }
+            //  })
+            
+            generate_PDF(assets, "Receiving",docref)
       } catch(err) {
 
       }
@@ -256,15 +280,14 @@ export default function ITCheckoutViewer() {
                         <Button
                           colorScheme="red"
                           onClick={(e) =>
-                            handleGenerateReceiving(e, asset.id, asset.serialNo,asset.assetName,asset.docRef_Checkin)
+                            handleGenerateReceiving( asset.docRef_Checkin)
                           }
                         >
-                          Receiving Document
+                          Document {" " + asset.docRef_Checkin}
                         </Button>
                      
                       </ButtonGroup>
                     </Td>
-
                     <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
                     <Td>{asset.serialNo}</Td>
