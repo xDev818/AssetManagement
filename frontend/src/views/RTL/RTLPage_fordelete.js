@@ -230,7 +230,7 @@ export default function Dashboard() {
             </Text>
             <Text color='#fff' fontSize='sm'>
               <Text as='span' color='green.400' fontWeight='bold'>
-                (+5) more{" "}
+                (+5) more{" "} ralph
               </Text>
               in 2022
             </Text>

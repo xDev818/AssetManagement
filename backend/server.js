@@ -76,6 +76,14 @@ Date : 10 / 23 / 23
                 Add new 
                 const four_graph_routes = require('./routes/four_graphs_routes')
                 app.use('/api', four_graph_routes)
+
+Date : 10 / 26 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+                from const asset_checkout = require('./routes/asset_checkout_routes')
+                to   const it_checkout = require('./routes/it_checkout_routes')
+                   
  */
 
 // Packages
@@ -96,7 +104,7 @@ const asset_category_routes = require('./routes/asset_category_routes')
 const asset_type_routes = require('./routes/asset_type_routes')
 const asset_routes = require('./routes/asset_routes')
 
-const asset_checkout = require('./routes/asset_checkout_routes')
+const it_checkout = require('./routes/it_checkout_routes')
 
 const usergroup_routes = require('./routes/usergroup_routes')
 
@@ -143,5 +151,5 @@ app.use('/api', asset_type_routes)
 
 app.use('/api', usergroup_routes)
 app.use('/api', asset_routes)
-app.use('/api', asset_checkout)
+app.use('/api', it_checkout)
 app.use('/api', four_graph_routes)

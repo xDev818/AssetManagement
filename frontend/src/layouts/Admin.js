@@ -32,7 +32,7 @@ import FourGraphs from "components/FourGraphs/FourGraphs";
 
 export default function Dashboard(props) {
   const location = useLocation();
-  console.log("location", location.pathname);
+ // console.log("location", location.pathname);
   const { ...rest } = props;
   // states and functions
   const [fixed, setFixed] = useState(false);

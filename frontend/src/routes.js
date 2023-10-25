@@ -151,6 +151,20 @@
         update Checkout componet 
           FROM : import CheckOut from 'components2/Activity/CheckOut'
             TO : import ITCheckOut from 'components2/Activity/ITCheckOut'
+
+
+    Date : 10 / 26 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+          New MEnu functionality
+            {
+              submenu: "activity",
+              path: "/checkin-viewer",
+              name: "Check In",
+              component: UserCheckin_Viewer,
+              layout: "/admin",
+            },
 */
 
 // import
@@ -158,7 +172,7 @@ import React, { Component } from "react";
 import Dashboard from "views/Dashboard/Dashboard.js";
 import Tables from "views/Dashboard/Tables.js";
 import Billing from "views/Dashboard/Billing.js";
-import RTLPage from "views/RTL/RTLPage.js";
+//import RTLPage from "views/RTL/RTLPage.js";
 import Profile from "views/Dashboard/Profile.js";
 import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
@@ -166,16 +180,15 @@ import Users from "views/Dashboard/Users";
 import Configuration from "views/Dashboard/Configuration";
 
 //Activity User submenus pages
-import User from "components2/Activity/User";
-import CheckIn from "components2/Activity/CheckIn";
-import ITCheckOut from "components2/Activity/ITCheckOut";
-import PullOut from "components2/Activity/PullOut";
+
+//import PullOut from "components2/Activity/PullOut";
 import AssetViewer from "components2/Activity/AssetViewer";
 import Asset from "components2/views/Activity/Asset";
 import ITCheckoutViewer from "components2/Activity/ITCheckoutViewer";
-
+import ITCheckOut from "components2/views/Activity/ITCheckOut";
 // Configuration submenus pages
 import UpdateProfile from "components2/Profile/UpdateProfile";
+import UserCheckin_Viewer from "components2/Activity/UserCheckin_Viewer";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 import AssetStatus from "components2/views/AssetStatus";
@@ -216,13 +229,13 @@ var dashRoutes = [
     layout: "/admin",
   },
   // Activity Menu
-  {
-    submenu: "activity",
-    path: "/user-profile",
-    name: "Profile",
-    component: User,
-    layout: "/admin",
-  },
+  // {
+  //   submenu: "activity",
+  //   path: "/user-profile",
+  //   name: "Profile",
+  //   component: User,
+  //   layout: "/admin",
+  // },
   {
     submenu: "activity",
     path: "/update-profile",
@@ -243,13 +256,7 @@ var dashRoutes = [
     component: Asset,
     layout: "/admin",
   },
-  {
-    submenu: "activity",
-    path: "/check-in",
-    name: "Check In",
-    component: CheckIn,
-    layout: "/admin",
-  },
+
 
   {
     submenu: "activity",
@@ -259,18 +266,19 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
+    submenu: "activity",
+    path: "/checkin-viewer",
+    name: "Check In",
+    component: UserCheckin_Viewer,
+    layout: "/admin",
+  },
+  {
     path: "/checkout",
     name: "Create Check Out",
     component: ITCheckOut,
     layout: "/admin",
   },
-  {
-    submenu: "activity",
-    path: "/pull-out",
-    name: "Pull Out",
-    component: PullOut,
-    layout: "/admin",
-  },
+
   // End Activity Menu
 
   // Configuration Menu

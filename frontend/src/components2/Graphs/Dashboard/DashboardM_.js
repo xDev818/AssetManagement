@@ -240,7 +240,7 @@ export default function Dashboard() {
         >
           <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
             <Text color="#fff" fontSize="lg" fontWeight="bold" mb="6px">
-              Sales Overview
+              Sales Overview 
             </Text>
             <Text color="#fff" fontSize="sm">
               <Text as="span" color="green.400" fontWeight="bold">
