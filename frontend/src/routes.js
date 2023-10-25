@@ -189,6 +189,7 @@ import ITCheckOut from "components2/views/Activity/ITCheckOut";
 // Configuration submenus pages
 import UpdateProfile from "components2/Profile/UpdateProfile";
 import UserCheckin_Viewer from "components2/Activity/UserCheckin_Viewer";
+import UsersViewer from "components2/Activity/UsersViewer";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 import AssetStatus from "components2/views/AssetStatus";
@@ -276,6 +277,13 @@ var dashRoutes = [
     path: "/checkout",
     name: "Create Check Out",
     component: ITCheckOut,
+    layout: "/admin",
+  },
+  {
+    submenu: "activity",
+    path: "/users-viewer",
+    name: "Users",
+    component:   UsersViewer,
     layout: "/admin",
   },
 
