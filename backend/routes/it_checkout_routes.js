@@ -18,9 +18,11 @@ const {
     createCheckout_Asset,
     updateAssetForDeploy,
     ITCheckout_getAssetsCheckout,
-    ITCheckout_getUserDepartmentPosition_ByID
+    ITCheckout_getUserDepartmentPosition_ByID,
+    updateAssetReceiving 
 
-} = require('../controllers/asset_chekout_controller')
+} = require('../controllers/it_checkout_controller')
+
 
 const router = Router()
 
@@ -31,6 +33,6 @@ router.get('/assetcheckout/get-userdeptpos_byID/:id',ITCheckout_getUserDepartmen
 router.post('/assetcheckout/create-checkoutasset',createCheckout_Asset) 
 router.post('/assetcheckout/update-checkoutasset_ForDeploy',updateAssetForDeploy) 
 
-
+router.post('/assetcheckout/activate-receiving',updateAssetReceiving) 
 
 module.exports = router

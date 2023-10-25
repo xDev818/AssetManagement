@@ -64,6 +64,7 @@ import decoder from "jwt-decode";
 import axios from "axios";
 import Logs from "../../components/Utils/logs_helper";
 import FourGraphs from "components/FourGraphs/FourGraphs";
+import AssetViewer from "components2/Activity/AssetViewer";
 // End Jinshin
 
 export default function Dashboard() {
@@ -169,6 +170,7 @@ export default function Dashboard() {
         templateRows={{ lg: "repeat(2, auto)" }}
         gap="20px"
       >
+
         <Card
           bg={
             colorMode === "dark"
@@ -184,7 +186,7 @@ export default function Dashboard() {
             </Text>
             <Text color="#fff" fontSize="sm">
               <Text as="span" color="green.400" fontWeight="bold">
-                (+5) more{" "}
+                (+5) more{" "} ralph
               </Text>
               in 2022
             </Text>

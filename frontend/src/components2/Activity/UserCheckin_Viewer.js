@@ -7,11 +7,11 @@
 /* 
 
 
-    Date : 10 / 20 / 23
+    Date : 10 / 26 / 23
     Author : Nole
     Activities
     Purpose : 
-      create Asset Checkout viewer
+      create User Checkin Viewer
 
 */
 
@@ -49,7 +49,7 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
-export default function ITCheckoutViewer() {
+export default function UserCheckin_Viewer() {
   
 
   const [assets, setAssets] = useState([]);
@@ -130,10 +130,9 @@ export default function ITCheckoutViewer() {
     }
   };
 
-
   const handleReport = () => {
     try {
-      generate_PDF(assets, "Checkout");
+      generate_PDF(assets, "CheckIn");
     } catch (err) {
       alert(err);
     }
@@ -141,48 +140,50 @@ export default function ITCheckoutViewer() {
 
   const handleExcelReport = () => {
     try {
-      generate_EXCEL(assets, "Checkout");
+      generate_EXCEL(assets, "CheckIn");
     } catch (err) {
       alert(err);
     }
   };
 
-  // No need to routes to server
-  const handleGenerateReceiving = (docref) => {
-      try {
-            generate_PDF(assets, "Receiving",docref)
-      } catch(err) {
+  // // No need to routes to server
+  // const handleGenerateReceiving = (docref) => {
+  //     try {
+  //           generate_PDF(assets, "Receiving",docref)
+  //     } catch(err) {
 
-      }
-  }
-  const handleActivateReceiving = async (e,detailID,active) => {
-
-    try {
-        e.preventDefault()
+  //     }
+  // }
+  const handleReceiving = async (e,detailID,active) => {
+      return <Button>
+                Test
+            </Button>
+    // try {
+    //     e.preventDefault()
        
-        if( active == 0) {
-            const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
+    //     if( active == 0) {
+    //         const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
 
-            .then((res) => {
-              alert("activate successful")
-              LoadAllAssetsCheckout()
-            })
-            .catch((err) => {
-              const InsertLogs = new Logs(
-                "Error",
-                "PositionViewer",
-                "Function /LoadAllPositions",
-                "LoadAllPositions",
-                userdata.userid
-              );
-            });
-        } else {
-          alert("already activated")
-        }
+    //         .then((res) => {
+    //           alert("activate successful")
+    //           LoadAllAssetsCheckout()
+    //         })
+    //         .catch((err) => {
+    //           const InsertLogs = new Logs(
+    //             "Error",
+    //             "PositionViewer",
+    //             "Function /LoadAllPositions",
+    //             "LoadAllPositions",
+    //             userdata.userid
+    //           );
+    //         });
+    //     } else {
+    //       alert("already activated")
+    //     }
 
-    } catch (err) {
-      alert(err);
-    }
+    // } catch (err) {
+    //   alert(err);
+    // }
   };
 
 
@@ -227,9 +228,9 @@ export default function ITCheckoutViewer() {
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Receiving</Th>
-                  <Th>Type</Th>
                   <Th>Status</Th>
+                  <Th>Ref No</Th>
+                  <Th>Type</Th>
                   <Th>Serial No</Th>
                   <Th>Code</Th>
                   <Th>Name</Th>
@@ -242,26 +243,19 @@ export default function ITCheckoutViewer() {
                   <Tr key={asset.detailID}>
                     <Td>
                       <ButtonGroup>
-                        <Button
-                          colorScheme="red"
-                          onClick={(e) =>
-                            handleGenerateReceiving( asset.docRef_Checkin)
-                          }
-                        >
-                        { asset.docRef_Checkin}
-                        </Button>
+                        
                         <Button
                           colorScheme="green"
 
                           onClick={(e) =>
-                            handleActivateReceiving( e,asset.detailID,asset.active_checkin)}
+                            handleReceiving( e,asset.detailID,asset.active_checkin)}
                         >
-                        Activate
+                        {asset.statusName}
                         </Button>
                       </ButtonGroup>
                     </Td>
+                    <Td>{asset.docRef_Checkin}</Td>
                     <Td>{asset.typeName}</Td>
-                    <Td>{asset.statusName}</Td>
                     <Td>{asset.serialNo}</Td>
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>

@@ -36,6 +36,14 @@ const updateByID = () => {
 
 }
 
+const updateReceiving = () => {
+
+  return   "UPDATE tblUserAssetDetails SET active_checkin = ?"
+          + " where detailID = ?"
+
+}
+
+
 const viewAllAssetsAvailable = () => {
 
     return  "SELECT assets.assetID as id,assets.typeID,type.typeName,assets.assetStatusID,Assetstatus.statusName,"
@@ -59,7 +67,7 @@ const viewAllAssetsAvailable = () => {
             + "asset.assetCode,asset.assetName,status.statusName,type.typeName,department.departmentName,"
             + "COALESCE(DATE_FORMAT(assetsdetail.plancheckout, '%m/%d/%Y'),'') as date_checkout ,"
             + "concat(user.lastname,', ' , user.firstname) as fullname,assetsdetail.docRef_Checkin,"
-            + "concat(userCheckout.lastname,', ' , userCheckout.firstname) as ReleasedBy"
+            + "concat(userCheckout.lastname,', ' , userCheckout.firstname) as ReleasedBy,assetsdetail.active_checkin"
             + " FROM tblUserAssetDetails assetsdetail"
             + " inner join tblAssets asset on asset.assetID COLLATE utf8mb4_unicode_ci = assetsdetail.assetID"
             + " inner join tblAssetStatus status on status.assetStatusID COLLATE utf8mb4_unicode_ci = assetsdetail.assetStatusID"
@@ -95,5 +103,6 @@ const getUserPosition_Department_ByID = () => {
     create,
     updateByID,
     viewAllAssetsCheckout,
-    getUserPosition_Department_ByID
+    getUserPosition_Department_ByID,
+    updateReceiving
  }
