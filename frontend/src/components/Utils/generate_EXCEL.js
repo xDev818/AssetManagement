@@ -24,19 +24,41 @@ const generate_EXCEL =  (propdata,paramReportType) => {
 
 
   var icount = 0
+  var ws;
   const rowdata = []
 
-  const reportColumn = ["#","Name","Description"];
-  const positionColumn = ["#","Position","Department", "Description"];
-  const assetTypeColumn = ["#","Category","Type", "Description"];
-  const vendorColumn  = ["#","Vendor","Address", "Contact No", "Email"];
-  const assetsColumn  = ["#","Type","Status", "Code", "Name", "Date Purchase"];
+  // const reportColumn = ["#","Name","Description"];
+  // const positionColumn = ["#","Position","Department", "Description"];
+  // const assetTypeColumn = ["#","Category","Type", "Description"];
+  // const vendorColumn  = ["#","Vendor","Address", "Contact No", "Email"];
+  // const assetsColumn  = ["#","Type","Status", "Code", "Name", "Date Purchase"];
+      if(paramReportType === 'Checkout') {
+          propdata.forEach(item => {
+            icount = icount + 1
+            
+            const itempData = [
+                icount.toString(),
+                item.typeName,
+                item.statusName,
+                item.serialNo,
+                item.assetCode,
+                item.assetName,
+                item.departmentName,
+                item.date_checkout
+            ];
+            rowdata.push(itempData)
+        });
+        ws = XLSX.utils.json_to_sheet(rowdata);
+      }
+      else {
+        ws = XLSX.utils.json_to_sheet(propdata);
+      }
 
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
   const fileExtension = ".xlsx";
 
-    const ws = XLSX.utils.json_to_sheet(propdata);
+    
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });

@@ -13,7 +13,28 @@
     Purpose : 
       To separate all the SQL Statement from the controller (Asset Checkout)
 
+ Date : 10 / 23 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      New function getAssetStatusByName
+
 */
+
+const create = () => {
+
+  return "INSERT INTO tblUserAssetDetails(detailID,userSelectedID,assetID,assetStatusID,positionID,"
+        + "departmentID,notescheckout,plancheckout,useridcheckout,docRef_Checkin,dateInsert) values (?)";
+  
+}
+
+const updateByID = () => {
+
+  return   "UPDATE tblAssets SET assetStatusID = ?,"
+          + "checkout_updateBy = ?,checkout_updatedate=?"
+          + " where assetID = ?"
+
+}
 
 const viewAllAssetsAvailable = () => {
 
@@ -32,8 +53,46 @@ const viewAllAssetsAvailable = () => {
     
  }
 
+ const viewAllAssetsCheckout = () => {
+
+  return   "SELECT assetsdetail.detailID,assetsdetail.assetID,asset.serialNo, "
+            + "asset.assetCode,asset.assetName,status.statusName,type.typeName,department.departmentName,"
+            + "COALESCE(DATE_FORMAT(assetsdetail.plancheckout, '%m/%d/%Y'),'') as date_checkout ,"
+            + "concat(user.lastname,', ' , user.firstname) as fullname,assetsdetail.docRef_Checkin  "
+            + "FROM tblUserAssetDetails assetsdetail"
+            + " inner join tblAssets asset on asset.assetID COLLATE utf8mb4_unicode_ci = assetsdetail.assetID"
+            + " inner join tblAssetStatus status on status.assetStatusID COLLATE utf8mb4_unicode_ci = assetsdetail.assetStatusID"
+            + " inner join tblDepartments department on department.departmentDisplayID COLLATE utf8mb4_unicode_ci  = assetsdetail.departmentID"
+            + " inner join tblUsers user on user.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.useridcheckout"
+            + " inner join  tblAssetType type on type.typeID COLLATE utf8mb4_unicode_ci = asset.typeID"
+            + " where checkinby is null"
+            + " ORDER BY assetsdetail.plancheckout ASC"
+
+  
+}
+
+const getAssetStatusByName = () => {
+
+  return   "SELECT assetStatusID FROM tblAssetStatus"
+          + " where statusName = 'For Deploy' "
+}
+
+const getUserPosition_Department_ByID = () => {
+
+  return   "SELECT position.positionDisplayID,department.departmentDisplayID,"
+          + "user.lastname,position.positionName,department.departmentName FROM tblUsers user"
+          + " left join tblPositions position on position.positionDisplayID COLLATE utf8mb4_unicode_ci = user.positionID"
+          + " left join tblDepartments department on department.departmentDisplayID COLLATE utf8mb4_unicode_ci = position.departmentDisplayID"
+          + " where user.userDisplayID = ?"
+
+}
+
  module.exports = {
 
     viewAllAssetsAvailable,
-
+    getAssetStatusByName,
+    create,
+    updateByID,
+    viewAllAssetsCheckout,
+    getUserPosition_Department_ByID
  }

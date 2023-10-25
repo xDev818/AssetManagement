@@ -66,7 +66,24 @@ import {
       
       try {
         
-        if(supplierID) {
+        const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
+        const parts = hashFragment.split("/"); // Split the hash fragment by '/'
+        const supplierID = parts[parts.length - 1]; // Get the last part, which is the ID
+
+        if(supplierID === 'suppliers') {
+          setbtnState("Save")
+           
+          setSupplier({
+            ...values,
+            supplierid: '',
+            suppliername: '',
+            address: '',
+            contactno: '',
+            email: ''
+          })
+        }
+
+        else if(supplierID) {
             console.log(supplierID)
             axios.get('/suppliers/getSupplierID/' + supplierID)
             .then((res) => {
@@ -83,9 +100,10 @@ import {
             })
             .catch((err) => {
               alert(err);
+              window.location.href = '/'; 
             });
           
-        } else {
+        }  else {
           setbtnState("Save")
            
           setSupplier({

@@ -61,11 +61,21 @@
         Purpose : 
                 const asset_routes = require('./routes/asset_routes')
 
-        Date : 10 / 21 / 23
+        Date : 10 / 23 / 23
         Author : Nole
         Activities
         Purpose : 
-                
+                Add new 
+                const asset_checkout = require('./routes/asset_checkout_routes')
+                app.use('/api', asset_checkout)
+
+Date : 10 / 23 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+                Add new 
+                const four_graph_routes = require('./routes/four_graphs_routes')
+                app.use('/api', four_graph_routes)
  */
 
 // Packages
@@ -86,8 +96,11 @@ const asset_category_routes = require('./routes/asset_category_routes')
 const asset_type_routes = require('./routes/asset_type_routes')
 const asset_routes = require('./routes/asset_routes')
 
+const asset_checkout = require('./routes/asset_checkout_routes')
+
 const usergroup_routes = require('./routes/usergroup_routes')
 
+const four_graph_routes = require('./routes/four_graphs_routes')
 
 // Server Initialization
 var app = express();
@@ -130,4 +143,5 @@ app.use('/api', asset_type_routes)
 
 app.use('/api', usergroup_routes)
 app.use('/api', asset_routes)
-
+app.use('/api', asset_checkout)
+app.use('/api', four_graph_routes)

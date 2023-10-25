@@ -40,8 +40,8 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 
 const Department = () => {
-  const location = useLocation();
-  const departmentID = location.state?.departmentID;
+  // const location = useLocation();
+  // const departmentID = location.state?.departmentID;
 
   const [btnstate, setbtnState] = useState("Save");
 
@@ -53,7 +53,22 @@ const Department = () => {
 
   useEffect(() => {
     try {
-      if (departmentID) {
+      const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
+      const parts = hashFragment.split("/"); // Split the hash fragment by '/'
+      const departmentID = parts[parts.length - 1]; // Get the last part, which is the ID
+
+      if(departmentID === 'department') {
+        setbtnState("Save");
+
+        setDepartments({
+          ...values,
+          departmentid: "",
+          departmentname: "",
+          description: "",
+        });
+      }
+
+      else if (departmentID) {
         console.log("Dept ID : " + departmentID);
         axios
           .get("/getDepartmentByID/" + departmentID)
@@ -68,6 +83,7 @@ const Department = () => {
           })
           .catch((err) => {
             alert(err);
+            window.location.href = '/'; 
           });
       } else {
         setbtnState("Save");

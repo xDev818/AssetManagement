@@ -11,16 +11,9 @@
     Author : Nole
     Activities
     Purpose : 
-      create AssetViewer.js
+      create Asset Checkout viewer
 
-    Date : 10 / 22 / 23
-    Author : Nole
-    Activities 
-      Update Load Assets and Delete Assets
-      Add Assets PDF Report
-    Pattern From John
-      import Search from "components2/Search/Search";
-      import Pagination from "components2/Pagination/Pagination";
+  
  
 */
 
@@ -30,6 +23,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
+import generate_EXCEL from "components/Utils/generate_EXCEL";
+
 
 import Search from "components2/Search/Search";
 import Pagination from "components2/Pagination/Pagination";
@@ -54,10 +49,13 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
-export default function AssetViewer() {
+export default function ITCheckoutViewer() {
   const [assets, setAssets] = useState([]);
-  const [userdata, setUser] = useState({
-    userID: "",
+ 
+  const [userdata,setUser] = useState({
+    userid : '',
+    deptid:'',
+    positionid:''
   });
 
   const [search, setSearch] = useState("");
@@ -91,21 +89,26 @@ export default function AssetViewer() {
     const tokenStorage = localStorage.getItem("token");
     const tokenDecoded = decoder(tokenStorage);
 
+  
     setUser({
       ...userdata,
 
-      userID: tokenDecoded.result[0].userDisplayID,
+      userid: tokenDecoded.result[0].userDisplayID,
+      deptid: tokenDecoded.result[0].departmentDisplayID,
+      positionid : tokenDecoded.result[0].positionID
+
+
     });
   };
   useEffect(() => {
     SetUsers();
-    LoadAllAssets();
+    LoadAllAssetsCheckout();
   }, []);
 
-  const LoadAllAssets = async () => {
+  const LoadAllAssetsCheckout = async () => {
     try {
       const success = await axios
-        .get("/asset/view-AllAssets")
+        .get("/assetcheckout/get-assetcheckout-byIT")
 
         .then((res) => {
           setAssets(res.data.result);
@@ -116,7 +119,7 @@ export default function AssetViewer() {
             "PositionViewer",
             "Function /LoadAllPositions",
             "LoadAllPositions",
-            userdata.userID
+            userdata.userid
           );
         });
     } catch (err) {
@@ -142,7 +145,7 @@ export default function AssetViewer() {
             "Position Viewer",
             "Function /handleDelete",
             "Delete statusID :  " + assetid + "   Statusname :  " + assetname,
-            userdata.userID
+            userdata.userid
           );
         })
         .catch((err) => {
@@ -155,14 +158,42 @@ export default function AssetViewer() {
 
   const handleReport = () => {
     try {
-      generate_PDF(assets, "Assets");
+      generate_PDF(assets, "Checkout");
     } catch (err) {
       alert(err);
     }
   };
 
-  const handleEdit = (e,statname) => {
+  const handleExcelReport = () => {
+    try {
+      generate_EXCEL(assets, "Checkout");
+    } catch (err) {
+      alert(err);
+    }
+  };
 
+  
+  const handleGenerateReceiving = (e,id,serialno,name,docref) => {
+      try {
+
+        generate_PDF(assets, "Receiving");
+
+      } catch(err) {
+
+      }
+  }
+  const handleEdit = (e,statname) => {
+    try {
+     
+      if (statname === 'Available') {
+        alert(statname)   
+       
+      } else {
+        alert("Not allowed to edit if asset already in process for upgrade")
+      }
+    } catch (err) {
+      alert(err);
+    }
   };
 
 
@@ -200,66 +231,48 @@ export default function AssetViewer() {
             <Search
               setSearch={setSearch}
               handleReport={handleReport}
-              pathname="/admin/asset"
+              handleExcelReport = {handleExcelReport}
+              pathname="/admin/checkout"
             />
 
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Actions</Th>
+                  <Th>Receiving</Th>
                   <Th>Type</Th>
                   <Th>Status</Th>
-                  <Th>Vendor</Th>
                   <Th>Serial No</Th>
                   <Th>Code</Th>
                   <Th>Name</Th>
-                  <Th>Description</Th>
-                  <Th>Purchase</Th>
-                  <Th>Amount</Th>
-                  <Th>Depreciated</Th>
-                  <Th>Amount YR</Th>
+                  <Th>Department</Th>
+                  <Th>Checkout Date</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {assets.map((asset) => (
-                  <Tr key={asset.id}>
+                  <Tr key={asset.detailID}>
                     <Td>
                       <ButtonGroup>
                         <Button
                           colorScheme="red"
                           onClick={(e) =>
-                            handleDelete(e, asset.id, asset.assetName,asset.statusName)
+                            handleGenerateReceiving(e, asset.id, asset.serialNo,asset.assetName,asset.docRef_Checkin)
                           }
                         >
-                          Delete
+                          Receiving Document
                         </Button>
-                        <Button colorScheme="blue"
-                        onClick={(e) =>
-                          handleEdit(e, asset.statusName)}
-                        >
-                          <Link
-                            to={{
-                              pathname: "/admin/asset",
-                              state: { assetID: asset.id },
-                            }}
-                          >
-                            Edit
-                          </Link>
-                        </Button>
+                     
                       </ButtonGroup>
                     </Td>
 
                     <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
-                    <Td>{asset.name}</Td>
                     <Td>{asset.serialNo}</Td>
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>
-                    <Td>{asset.description}</Td>
-                    <Td>{asset.date_purchase}</Td>
-                    <Td>{asset.Amount}</Td>
-                    <Td>{asset.date_depreciated}</Td>
-                    <Td>{asset.AmountYR}</Td>
+                    <Td>{asset.departmentName}</Td>
+                    <Td>{asset.date_checkout}</Td>
+
                   </Tr>
                 ))}
               </Tbody>

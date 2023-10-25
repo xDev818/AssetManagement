@@ -21,10 +21,18 @@
               alert(err);
             }
           };
+          
+    Date : 10 / 25 / 23
+    Author : John
+    Activities
+    Purpose : 
+      import DataTable from "components2/TanstackTable/DataTable";
+      - Removed unnecessary imports to make code neat and clean
+      - Added Data Table from Tanstack React Table
+      - Fixed global search
         
 */
 
-import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -32,52 +40,16 @@ import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Stack,
-  Box,
-} from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { TableContainer, Stack } from "@chakra-ui/react";
+
 import Card from "components/Card/Card";
-import { Link } from "react-router-dom";
-import Pagination from "components2/Pagination/Pagination";
-import Search from "components2/Search/Search";
+
+import DataTable from "components2/TanstackTable/DataTable";
 
 export default function SuppliersViewer() {
   var userID = "";
 
   const [suppliers, setSuppliers] = useState([]);
-  const [search, setSearch] = useState("");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const tablePerPage = 6;
-  const lastIndex = currentPage * tablePerPage;
-  const firstIndex = lastIndex - tablePerPage;
-  const tables = suppliers.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(suppliers.length / tablePerPage);
-  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
-
-  const nextPage = () => {
-    if (currentPage !== tablePages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const currentNumber = (number) => {
-    setCurrentPage(number);
-  };
 
   useEffect(() => {
     LoadAllSuppliers();
@@ -156,82 +128,39 @@ export default function SuppliersViewer() {
     }
   };
 
+  const columns = [
+    {
+      header: "Suppliers",
+      accessorKey: "supplierName",
+    },
+    {
+      header: "Address",
+      accessorKey: "address",
+    },
+    {
+      header: "Conact No",
+      accessorKey: "contactno",
+    },
+    {
+      header: "Email",
+      accessorKey: "email",
+    },
+  ];
+
   return (
     <>
       <Stack>
-        <Card height={694} position="relative">
+        <Card position="relative">
           <TableContainer>
             {/* state: {supplierID:} */}
-            <Search
-              pathname="/admin/suppliers"
-              setSearch={setSearch}
+            <DataTable
+              dataGrid={suppliers}
+              columns={columns}
               handleReport={handleReport}
               handleExcelReport={handleExcelReport}
-            />
-            <Table size="lg">
-              <Thead>
-                <Tr>
-                  <Th>Actions</Th>
-                  <Th>Supplier</Th>
-                  <Th>Address</Th>
-                  <Th>Contact No</Th>
-                  <Th>Email</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {tables
-                  .filter((item) => {
-                    const searchLower = search.toLowerCase();
-                    const itemText = Object.values(item)
-                      .join(" ")
-                      .toLowerCase();
-                    return search.toLowerCase() === ""
-                      ? item
-                      : itemText.includes(searchLower);
-                  })
-                  .map((supplier) => (
-                    <Tr key={supplier.id}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={(e) =>
-                              handleDelete(
-                                e,
-                                supplier.id,
-                                supplier.supplierName
-                              )
-                            }
-                          >
-                            Delete
-                          </Button>
-                          <Button colorScheme="blue">
-                            <Link
-                              to={{
-                                pathname: "/admin/suppliers",
-                                state: { supplierID: supplier.id },
-                              }}
-                            >
-                              Edit
-                            </Link>
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{supplier.supplierName}</Td>
-                      <Td>{supplier.address}</Td>
-                      <Td>{supplier.contactno}</Td>
-                      <Td>{supplier.email}</Td>
-                    </Tr>
-                  ))}
-              </Tbody>
-            </Table>
-            <Pagination
-              data={suppliers}
-              currentPage={currentPage}
-              nextPage={nextPage}
-              prevPage={prevPage}
-              currentNumber={currentNumber}
-              pageNumber={pageNumber}
+              handleDelete={handleDelete}
+              pathname="/admin/suppliers"
+              idType={"id"}
             />
           </TableContainer>
         </Card>

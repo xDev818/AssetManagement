@@ -49,9 +49,11 @@ import Card from "components/Card/Card";
 import { useParams } from "react-router-dom";
 
 export default function Position() {
-  const { id } = useParams();
-  console.log("poid", id);
+  
+  // const { id } = useParams();
+  // console.log("poid", id);
   var userID = "";
+
   const [values, setPosition] = useState({
     positionid: "",
     positionname: "",
@@ -61,7 +63,8 @@ export default function Position() {
   });
 
   const [departments, setDepartments] = useState([]);
-  const [positionId, setPositionId] = useState();
+  const [btnstate,setbtnState] = useState()
+
 
     useEffect(() => {
       LoadallDepartments();
@@ -70,9 +73,22 @@ export default function Position() {
         const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
         const parts = hashFragment.split("/"); // Split the hash fragment by '/'
         const id = parts[parts.length - 1]; // Get the last part, which is the ID
-        console.log(id)
+
         
-        if(id) {
+
+        if(id === 'position') {
+          setbtnState("Save");
+          setPosition({
+            ...values,
+            positionid: "",
+            positionname: "",
+            description: "",
+            departmentid: "",
+            departmentname: "",
+          });
+        }
+        
+        else if(id) {
         
             axios.get('/positions/getPositionID/' + id)
             .then((res) => {
@@ -88,21 +104,24 @@ export default function Position() {
                
             })
             .catch((err) => {
-              alert(err);
+             // setbtnState("Save")
+             alert(err);
+             window.location.href = '/'; 
+             
             });
           
         }
-        else {
-          setbtnState("Save");
-          setPosition({
-            ...values,
-            positionid: "",
-            positionname: "",
-            description: "",
-            departmentid: "",
-            departmentname: "",
-          });
-        }
+       else {
+        setbtnState("Save");
+        setPosition({
+          ...values,
+          positionid: "",
+          positionname: "",
+          description: "",
+          departmentid: "",
+          departmentname: "",
+        });
+       }
        
 
       }
@@ -111,6 +130,10 @@ export default function Position() {
       }
     }, [])
 
+  const LoadallDepartments = async () => {
+    try {
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
 
       userID = tokenDecoded.result[0].userDisplayID;
 
@@ -121,55 +144,7 @@ export default function Position() {
     } catch (err) {
       alert(err);
     }
-  };
-  console.log("id", positionId);
-  useEffect(() => {
-    const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
-    const parts = hashFragment.split("/"); // Split the hash fragment by '/'
-    const id = parts[parts.length - 1]; // Get the last part, which is the ID
-    try {
-      if (id) {
-        axios
-          .get("/positions/getPositionID/" + id)
-          .then((res) => {
-            setbtnState("Update");
-            setPosition({
-              ...values,
-
-              positionid: res.data.result[0].positionDisplayID,
-              positionname: res.data.result[0].positionName,
-              description: res.data.result[0].description,
-              departmentid: res.data.result[0].departmentDisplayID,
-              departmentname: res.data.result[0].departmentName,
-            });
-            setPositionId(res.data.result[0].positionDisplayID);
-          })
-          .catch((err) => {
-            alert(err);
-          });
-      } else {
-        setbtnState("Save");
-        setPosition({
-          ...values,
-          positionid: "",
-          positionname: "",
-          description: "",
-          departmentid: "",
-          departmentname: "",
-        });
-      }
-    } catch (err) {
-      alert(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      LoadallDepartments();
-    } catch (err) {
-      alert(err);
-    }
-  }, []);
+  }
 
   async function handleUpdate(event) {
     try {
@@ -300,7 +275,7 @@ export default function Position() {
   return (
     <Stack>
       <FormControl>
-        {id}
+        
         <Card>
           <Box>
             <Select

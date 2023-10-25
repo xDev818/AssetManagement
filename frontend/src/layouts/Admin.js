@@ -115,13 +115,14 @@ export default function Dashboard(props) {
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         backgroundSize="convert"
-        h="120vh"
+        h="130vh"
         w="100%"
         position="absolute"
         bgImage={colorMode === "light" ? bgAdmin : "none"}
         bg={colorMode === "light" ? bgAdmin : "navy.900"}
         bgSize="cover"
         top="0"
+        // bg={"#E9E9E9"}
       />
 
       <Sidebar

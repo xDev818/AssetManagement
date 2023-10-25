@@ -48,7 +48,10 @@ ReactDOM.render(
         {/* {!token ? <Redirect from={`/signin`} to="/admin/dashboard" />: null} */}
         <Route path={`/auth`} component={AuthLayout} />
         <Route path={`/admin`} component={AdminLayout} />
-        <Route path={`/admin/position/:id`} component={AdminLayout} />
+         {/*  <Route path={`/admin/position/:id`} component={AdminLayout} />
+     <Route path={`/admin/department/:id`} component={AdminLayout} />
+        <Route path={`/admin/suppliers/:id`} component={AdminLayout} />
+        <Route path={`/admin/assetstatus/:id`} component={AdminLayout} /> */}
         {/* <Route path={`/admin/configuration`} component={Configuration} /> */}
         <Redirect from={`/`} to="/admin/dashboard" />
       </Switch>

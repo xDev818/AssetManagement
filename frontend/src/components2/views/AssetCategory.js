@@ -49,8 +49,6 @@ import {
       asset_categorydescription:''
   })
 
-    const location = useLocation()
-    const  asset_categoryID  = location.state?.categoryID
     const [btnstate,setbtnState] = useState()
 
 
@@ -58,7 +56,22 @@ import {
       
       try {
         
-        if(asset_categoryID) {
+        const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
+        const parts = hashFragment.split("/"); // Split the hash fragment by '/'
+        const asset_categoryID = parts[parts.length - 1]; // Get the last part, which is the ID
+
+        if(asset_categoryID === 'assetcategory') {
+          setbtnState("Save")
+           
+            setCaegory({
+              ...values,
+              asset_categoryid: '',
+                asset_categoryname: '',
+                asset_categorydescription: ''
+            })
+        }
+
+        else if(asset_categoryID) {
         
             axios.get('/assetcategory/getCategoryByID/' + asset_categoryID)
             .then((res) => {
@@ -72,7 +85,9 @@ import {
                
             })
             .catch((err) => {
+              //setbtnState("Save")
               alert(err);
+              window.location.href = '/'; 
             });
           
         } else {

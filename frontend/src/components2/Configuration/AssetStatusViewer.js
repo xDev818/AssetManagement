@@ -35,6 +35,14 @@
               alert(err);
             }
           };
+    Date : 10 / 25 / 23
+    Author : John
+    Activities
+    Purpose : 
+      import DataTable from "components2/TanstackTable/DataTable";
+      - Removed unnecessary imports to make code neat and clean
+      - Added Data Table from Tanstack React Table
+      - Fixed global search
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -45,58 +53,16 @@ import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Stack,
-  Box,
-} from "@chakra-ui/react";
-import { Button, ButtonGroup, Wrap, WrapItem } from "@chakra-ui/react";
+import { TableContainer, Stack } from "@chakra-ui/react";
+
 import Card from "components/Card/Card";
-import { Link } from "react-router-dom";
-import Pagination from "components2/Pagination/Pagination";
-import Search from "components2/Search/Search";
+
+import DataTable from "components2/TanstackTable/DataTable";
 
 export default function AssetStatusViewer() {
-  //const handleNew_Edit = (statusID) => {};
-
-  /* 
-
-*/
   var userID = "";
 
   const [assetStatus, setStatus] = useState([]);
-  const [search, setSearch] = useState("");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const tablePerPage = 6;
-  const lastIndex = currentPage * tablePerPage;
-  const firstIndex = lastIndex - tablePerPage;
-  const tables = assetStatus.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(assetStatus.length / tablePerPage);
-  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
-
-  const nextPage = () => {
-    console.log("cureentpage", currentPage);
-    if (currentPage !== tablePages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const currentNumber = (number) => {
-    setCurrentPage(number);
-  };
 
   useEffect(() => {
     LoadAllStatus();
@@ -175,80 +141,32 @@ export default function AssetStatusViewer() {
     }
   };
 
+  const columns = [
+    {
+      header: "Status Name",
+      accessorKey: "statusName",
+    },
+    {
+      header: "Description",
+      accessorKey: "statusDescription",
+    },
+  ];
+
   return (
     <>
       <Stack>
-        <Card height={694} position="relative">
+        <Card position="relative">
           <TableContainer>
             {/*  pathname: "/admin/assetstatus",
                       state: { assetstatID: "" }, */}
-            <Search
-              setSearch={setSearch}
+            <DataTable
+              dataGrid={assetStatus}
+              columns={columns}
               handleReport={handleReport}
               handleExcelReport={handleExcelReport}
+              handleDelete={handleDelete}
               pathname="/admin/assetstatus"
-            />
-
-            <Table size="lg">
-              <Thead>
-                <Tr>
-                  <Th>Actions</Th>
-                  <Th>Status Name</Th>
-                  <Th>Description</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {tables
-                  .filter((item) => {
-                    const searchLower = search.toLowerCase();
-                    const itemText = Object.values(item)
-                      .join(" ")
-                      .toLowerCase();
-                    return search.toLowerCase() === ""
-                      ? item
-                      : itemText.includes(searchLower);
-                  })
-                  .map((status) => (
-                    <Tr key={status.assetStatusID}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={(e) =>
-                              handleDelete(
-                                e,
-                                status.assetStatusID,
-                                status.statusName
-                              )
-                            }
-                          >
-                            Delete
-                          </Button>
-                          <Button colorScheme="blue">
-                            <Link
-                              to={{
-                                pathname: "/admin/assetstatus",
-                                state: { assetstatID: status.assetStatusID },
-                              }}
-                            >
-                              Edit
-                            </Link>
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{status.statusName}</Td>
-                      <Td>{status.statusDescription}</Td>
-                    </Tr>
-                  ))}
-              </Tbody>
-            </Table>
-            <Pagination
-              data={assetStatus}
-              currentPage={currentPage}
-              nextPage={nextPage}
-              prevPage={prevPage}
-              currentNumber={currentNumber}
-              pageNumber={pageNumber}
+              idType={"assetStatusID"}
             />
           </TableContainer>
         </Card>

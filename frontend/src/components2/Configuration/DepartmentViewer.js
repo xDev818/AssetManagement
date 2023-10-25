@@ -27,9 +27,16 @@
               alert(err);
             }
           };
+    Date : 10 / 25 / 23
+    Author : John
+    Activities
+    Purpose : 
+      import DataTable from "components2/TanstackTable/DataTable";
+      - Removed unnecessary imports to make code neat and clean
+      - Added Data Table from Tanstack React Table
+      - Fixed global search
 */
 
-import { Link as Anchor } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -39,57 +46,16 @@ import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 import Logs from "components/Utils/logs_helper";
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Stack,
-  Box,
-  IconButton,
-  Flex,
-  Input,
-} from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { TableContainer, Box } from "@chakra-ui/react";
+
 import Card from "components/Card/Card";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import Pagination from "components2/Pagination/Pagination";
-import { Link } from "react-router-dom";
-import Search from "components2/Search/Search";
+
+import DataTable from "components2/TanstackTable/DataTable";
 
 export default function DepartmentViewer() {
   var userID = "";
 
   const [departments, setDepartments] = useState([]);
-  const [search, setSearch] = useState("");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const tablePerPage = 6;
-  const lastIndex = currentPage * tablePerPage;
-  const firstIndex = lastIndex - tablePerPage;
-  const tables = departments.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(departments.length / tablePerPage);
-  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
-
-  const nextPage = () => {
-    console.log("cureentpage", currentPage);
-    if (currentPage !== tablePages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const currentNumber = (number) => {
-    setCurrentPage(number);
-  };
 
   const LoadallDepartments = async () => {
     try {
@@ -100,7 +66,7 @@ export default function DepartmentViewer() {
 
       const res = await axios.get("/get_all_departments");
       const data = await res.data;
-      console.log("data", data);
+      console.log("data", data.result);
       setDepartments(res.data.result);
     } catch (error) {
       alert(error);
@@ -165,77 +131,29 @@ export default function DepartmentViewer() {
     }
   };
 
+  const columns = [
+    {
+      header: "Department",
+      accessorKey: "departmentName",
+    },
+    {
+      header: "Description",
+      accessorKey: "description",
+    },
+  ];
+
   return (
     <Box px={3}>
-      <Card height={694} position="relative">
+      <Card position="relative">
         <TableContainer>
-          {/*   state: { departmentID: '' } */}
-          <Search
-            setSearch={setSearch}
+          <DataTable
+            dataGrid={departments}
+            columns={columns}
             handleReport={handleReport}
-            handleExcelReport = {handleExcelReport}
+            handleExcelReport={handleExcelReport}
+            handleDelete={handleDelete}
             pathname="/admin/department"
-          />
-          <Table size="lg">
-            <Thead>
-              <Tr>
-                <Th>actions</Th>
-                <Th>Department</Th>
-                <Th>Description</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {tables
-                .filter((item) => {
-                  const searchLower = search.toLowerCase();
-                  const itemText = Object.values(item).join(" ").toLowerCase();
-                  return search.toLowerCase() === ""
-                    ? item
-                    : itemText.includes(searchLower);
-                })
-                .map((department) => (
-                  <Tr key={department.departmentDisplayID}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="red"
-                          onClick={(e) =>
-                            handleDelete(
-                              e,
-                              department.departmentDisplayID,
-                              department.departmentName
-                            )
-                          }
-                        >
-                          Delete
-                        </Button>
-                        <Button colorScheme="blue">
-                          <Anchor
-                            to={{
-                              pathname: "/admin/department",
-                              state: {
-                                departmentID: department.departmentDisplayID,
-                              },
-                            }}
-                          >
-                            Edit
-                          </Anchor>
-                        </Button>
-                      </ButtonGroup>
-                    </Td>
-                    <Td>{department.departmentName}</Td>
-                    <Td>{department.description}</Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
-          <Pagination
-            data={departments}
-            currentPage={currentPage}
-            nextPage={nextPage}
-            prevPage={prevPage}
-            currentNumber={currentNumber}
-            pageNumber={pageNumber}
+            idType={"departmentDisplayID"}
           />
         </TableContainer>
       </Card>

@@ -57,16 +57,28 @@ import {
       description:''
   })
 
-    const location = useLocation()
-    const  statusID  = location.state?.assetstatID
+    
     const [btnstate,setbtnState] = useState()
-
 
     useEffect(() => {
       
       try {
-        
-        if(statusID) {
+        const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
+        const parts = hashFragment.split("/"); // Split the hash fragment by '/'
+        const statusID = parts[parts.length - 1]; // Get the last part, which is the ID
+
+        if (statusID === 'assetstatus') {
+          setbtnState("Save")
+           
+            setStatus({
+              ...values,
+              statusid: '',
+              statusname: '',
+              description: ''
+            })
+        }
+
+        else if(statusID) {
         
             axios.get('/getStatusbyID/' + statusID)
             .then((res) => {
@@ -81,17 +93,18 @@ import {
             })
             .catch((err) => {
               alert(err);
+              window.location.href = '/'; 
             });
           
-        } else {
+        }  else {
           setbtnState("Save")
            
-            setStatus({
-              ...values,
-              statusid: '',
-              statusname: '',
-              description: ''
-            })
+          setStatus({
+            ...values,
+            statusid: '',
+            statusname: '',
+            description: ''
+          })
         }
 
       }

@@ -1,4 +1,3 @@
-
 /* 
 
 
@@ -21,6 +20,15 @@
               alert(err);
             }
           };
+
+    Date : 10 / 25 / 23
+    Author : John
+    Activities
+    Purpose : 
+      import DataTable from "components2/TanstackTable/DataTable";
+      - Removed unnecessary imports to make code neat and clean
+      - Added Data Table from Tanstack React Table
+      - Fixed global search
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -35,171 +43,94 @@ import Pagination from "components2/Pagination/Pagination";
 import { TbodyRes } from "components2/Pagination/Pagination";
 import Search from "components2/Search/Search";
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Stack,
-  Box,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  
-} from "@chakra-ui/react";
-import { ChevronDownIcon} from '@chakra-ui/icons'
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { TableContainer, Stack } from "@chakra-ui/react";
+
 import Card from "components/Card/Card";
-import { Link } from "react-router-dom";
+import DataTable from "components2/TanstackTable/DataTable";
 
 export default function AssetTypeViewer() {
-
-  const [userdata,setUser] = useState({
-    userID : ''
+  const [userdata, setUser] = useState({
+    userID: "",
   });
 
   const [assettype, setAssetType] = useState([]);
 
-
-  const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const tablePerPage = 6;
-  const lastIndex = currentPage * tablePerPage;
-  const firstIndex = lastIndex - tablePerPage;
-  const tables = assettype.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(assettype.length / tablePerPage);
-  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
-
-  const filteredTables = tables.filter((item) => {
-    const searchLower = search.toLowerCase();
-    const itemText = Object.values(item).join(" ").toLowerCase();
-    return searchLower === "" || itemText.includes(searchLower);
-  });
-  const displayedData = filteredTables.slice(firstIndex, lastIndex);
-
-  const nextPage = () => {
-    if (currentPage !== tablePages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  // const nextPage = () => {
-  //   if (currentPage !== tablePages) {
-  //     setCurrentPage(currentPage + 1);
-  //   }
-  // };
-
-  // const prevPage = () => {
-  //   if (currentPage !== 1) {
-  //     setCurrentPage(currentPage - 1);
-  //   }
-  // };
-
-  const currentNumber = (number) => {
-    setCurrentPage(number);
-  };
-
-
-
   useEffect(() => {
-    SetUsers()
-    LoadAllAssetType()
+    SetUsers();
+    LoadAllAssetType();
   }, []);
 
-
-
-
-  const SetUsers = async () => { 
-
+  const SetUsers = async () => {
     const tokenStorage = localStorage.getItem("token");
     const tokenDecoded = decoder(tokenStorage);
 
-     setUser({...userdata,
+    setUser({
+      ...userdata,
 
-      userID : tokenDecoded.result[0].userDisplayID
-
-  })
-  }
+      userID: tokenDecoded.result[0].userDisplayID,
+    });
+  };
 
   const LoadAllAssetType = async () => {
     try {
-     
-      const success = await axios.get("/assettype/viewasset-type")
+      const success = await axios
+        .get("/assettype/viewasset-type")
 
         .then((res) => {
           setAssetType(res.data.result);
-
         })
         .catch((err) => {
-          
           const InsertLogs = new Logs(
-            'Error',
+            "Error",
             "PositionViewer",
             "Function /LoadAllPositions",
-            'LoadAllPositions',
+            "LoadAllPositions",
             userdata.userID
-          )
-          
+          );
         });
+    } catch (err) {
+      alert(err);
     }
-    catch(err) {
-      alert(err)
-    }
-  }
+  };
 
-  const handleDelete = async (event,asset_typeid,asset_typename) => {
-
+  const handleDelete = async (event, asset_typeid, asset_typename) => {
     try {
-      event.preventDefault()
-      
-      const deleteSuccess = await axios.post("/assettype/delete-assettype",{asset_typeid})
-      .then((res) => {
+      event.preventDefault();
 
-        alert("Delete succes")
+      const deleteSuccess = await axios
+        .post("/assettype/delete-assettype", { asset_typeid })
+        .then((res) => {
+          alert("Delete succes");
 
-        LoadAllAssetType()
+          LoadAllAssetType();
 
-        const deleteLogs = new Logs(
-          'Info',
-          "Position Viewer",
-          "Function /handleDelete",
-          'Delete statusID :  ' + asset_typeid
-          + '   Statusname :  ' + asset_typename,
-          userdata.userID
-        )
-
-      
-
-      })
-      .catch((err) => {
-        alert(err)
-      })
-    } catch(err) {
-        alert(err)
+          const deleteLogs = new Logs(
+            "Info",
+            "Position Viewer",
+            "Function /handleDelete",
+            "Delete statusID :  " +
+              asset_typeid +
+              "   Statusname :  " +
+              asset_typename,
+            userdata.userID
+          );
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    } catch (err) {
+      alert(err);
     }
+  };
 
-  }
-
-  const handleReport =() => {
-      try {
-          console.log(assettype)
-          generate_PDF(assettype,'Asset Type')
-
-      }
-      catch(err) {
-        alert(err)
-      }
-  }
+  const handleReport = () => {
+    try {
+      console.log(assettype);
+      generate_PDF(assettype, "Asset Type");
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   const handleExcelReport = () => {
     try {
@@ -209,88 +140,35 @@ export default function AssetTypeViewer() {
     }
   };
 
+  const columns = [
+    {
+      header: "Asset category",
+      accessorKey: "assetCategName",
+    },
+    {
+      header: "Asset type",
+      accessorKey: "typeName",
+    },
+    {
+      header: "Description",
+      accessorKey: "description",
+    },
+  ];
+
   return (
     <>
       <Stack>
         <Card>
           <TableContainer>
-            {/* <ButtonGroup spacing={6}>
-            <Button
-              colorScheme='messenger'
-            >
-              <Anchor
-                  to={{
-                  pathname: "/admin/assettype",
-                  state: { typeID: '' },
-                  }}>
-                New
-              </Anchor>
-
-            </Button>
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
-                Report
-              </MenuButton>
-              <MenuList>
-                <MenuItem   onClick={handleReport} colorScheme='twitter'>PDF </MenuItem>
-                <MenuItem  colorScheme='twitter'>Excel</MenuItem>
-                
-              </MenuList>
-          </Menu>
-   
-            </ButtonGroup> */}
-
-            <Search
-              setSearch={setSearch}
+            <DataTable
+              dataGrid={assettype}
+              columns={columns}
               handleReport={handleReport}
               handleExcelReport={handleExcelReport}
+              handleDelete={handleDelete}
               pathname="/admin/assettype"
-
+              idType={"id"}
             />
-
-            <Table size="lg">
-              <Thead>
-                <Tr>
-                  <Th>Actions</Th>
-                  <Th>Asset Category</Th>
-                  <Th>Asset Type</Th>
-                  <Th>Description</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {assettype.map((type) => (
-                  <Tr key={type.id}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="red"
-                          onClick={(e) => handleDelete(e,type.id,type.typeName)}
-                        >
-                          Delete
-                        </Button>
-                        <Button
-                          colorScheme="blue"
-                          
-                        >
-                          <Link
-                            to={{
-                            pathname: "/admin/assettype",
-                            state: { typeID: type.id }
-                            }}>
-                           Edit
-                          </Link>
-                        </Button>
-                  
-                      </ButtonGroup>
-                    </Td>
-                    <Td>{type.assetCategName}</Td>
-                    <Td>{type.typeName}</Td>
-                    <Td>{type.description}</Td>
-
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
           </TableContainer>
         </Card>
       </Stack>

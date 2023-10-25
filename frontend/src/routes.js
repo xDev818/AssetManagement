@@ -142,9 +142,16 @@
           component: AssetType,
           layout: "/admin",
         },
+
+
+    Date : 10 / 21 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        update Checkout componet 
+          FROM : import CheckOut from 'components2/Activity/CheckOut'
+            TO : import ITCheckOut from 'components2/Activity/ITCheckOut'
 */
-
-
 
 // import
 import React, { Component } from "react";
@@ -161,10 +168,11 @@ import Configuration from "views/Dashboard/Configuration";
 //Activity User submenus pages
 import User from "components2/Activity/User";
 import CheckIn from "components2/Activity/CheckIn";
-import CheckOut from "components2/Activity/CheckOut";
+import ITCheckOut from "components2/Activity/ITCheckOut";
 import PullOut from "components2/Activity/PullOut";
 import AssetViewer from "components2/Activity/AssetViewer";
 import Asset from "components2/views/Activity/Asset";
+import ITCheckoutViewer from "components2/Activity/ITCheckoutViewer";
 
 // Configuration submenus pages
 import UpdateProfile from "components2/Profile/UpdateProfile";
@@ -181,6 +189,7 @@ import AssetCategoryViewer from "components2/Configuration/AssetCategoryViewer";
 import AssetCategory from "components2/views/AssetCategory";
 import AssetTypeViewer from "components2/Configuration/AssetTypeViewer";
 import AssetType from "components2/views/AssetType";
+import DataTable from "components2/TanstackTable/DataTable";
 
 import UserGroupViewer from "components2/Configuration/UserGroupViewer";
 import UserGroup from "components2/views/UserGroup";
@@ -229,7 +238,6 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-
     path: "/asset",
     name: "Create Asset",
     component: Asset,
@@ -242,11 +250,18 @@ var dashRoutes = [
     component: CheckIn,
     layout: "/admin",
   },
+
   {
     submenu: "activity",
-    path: "/check-out",
+    path: "/checkout-viewer",
     name: "Check Out",
-    component: CheckOut,
+    component: ITCheckoutViewer,
+    layout: "/admin",
+  },
+  {
+    path: "/checkout",
+    name: "Create Check Out",
+    component: ITCheckOut,
     layout: "/admin",
   },
   {
@@ -266,7 +281,6 @@ var dashRoutes = [
     component: PositionViewer,
     layout: "/admin",
   },
-
   {
     path: "/position",
     name: "Create Position",

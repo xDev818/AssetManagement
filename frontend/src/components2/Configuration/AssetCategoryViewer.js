@@ -27,9 +27,16 @@
               alert(err);
             }
           };
+
+    Date : 10 / 25 / 23
+    Author : John
+    Activities
+    Purpose : 
+      import DataTable from "components2/TanstackTable/DataTable";
+      - Removed unnecessary imports to make code neat and clean
+      - Added Data Table from Tanstack React Table
+      - Fixed global search
  */
-
-
 
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
@@ -41,7 +48,6 @@ import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 import Search from "components2/Search/Search";
 import Pagination from "components2/Pagination/Pagination";
-
 
 import {
   Table,
@@ -58,39 +64,13 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 import { textChangeRangeIsUnchanged } from "typescript";
-
+import DataTable from "components2/TanstackTable/DataTable";
 
 export default function AssetCategoryViewer() {
   var userID = "";
 
   const [categories, setCategories] = useState([]);
-  const [search, setSearch] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const tablePerPage = 6;
-  const lastIndex = currentPage * tablePerPage;
-  const firstIndex = lastIndex - tablePerPage;
-  const tables = categories.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(categories.length / tablePerPage);
-  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
-
-  const nextPage = () => {
-    console.log("cureentpage", currentPage);
-    if (currentPage !== tablePages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const currentNumber = (number) => {
-    setCurrentPage(number);
-  };
- 
   useEffect(() => {
     LoadAllCategories();
   }, []);
@@ -170,84 +150,35 @@ export default function AssetCategoryViewer() {
     }
   };
 
+  const columns = [
+    {
+      header: "Asset Category",
+      accessorKey: "assetCategName",
+    },
+    {
+      header: "Description",
+      accessorKey: "description",
+    },
+  ];
+
   return (
     <>
       <Stack>
-        <Card height={694} position="relative">
+        <Card position="relative">
           <TableContainer>
             {/*   to={{
                   pathname: "/admin/assetcategory",
 
                   state: { categoryID: '' },
                   }}> */}
-            <Search
-              setSearch={setSearch}
+            <DataTable
+              dataGrid={categories}
+              columns={columns}
               handleReport={handleReport}
               handleExcelReport={handleExcelReport}
+              handleDelete={handleDelete}
               pathname="/admin/assetcategory"
-            />
-
-            <Table size="lg">
-              <Thead>
-                <Tr>
-                  <Th>Actions</Th>
-                  <Th>Asset Category</Th>
-                  <Th>Description</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {tables
-                  .filter((item) => {
-                    const searchLower = search.toLowerCase();
-                    const itemText = Object.values(item)
-                      .join(" ")
-                      .toLowerCase();
-                    return search.toLowerCase() === ""
-                      ? item
-                      : itemText.includes(searchLower);
-                  })
-                  .map((category) => (
-                    <Tr key={category.id}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={(e) =>
-                              handleDelete(
-                                e,
-                                category.id,
-                                category.assetCategName
-                              )
-                            }
-                          >
-                            Delete
-                          </Button>
-                          <Button colorScheme="blue">
-                            <Link
-                              to={{
-                                pathname: "/admin/assetcategory",
-                                state: { categoryID: category.id },
-                              }}
-                            >
-                              Edit
-                            </Link>
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{category.assetCategName}</Td>
-                      <Td>{category.description}</Td>
-                    </Tr>
-                  ))}
-              </Tbody>
-            </Table>
-
-            <Pagination
-              data={categories}
-              currentPage={currentPage}
-              nextPage={nextPage}
-              prevPage={prevPage}
-              currentNumber={currentNumber}
-              pageNumber={pageNumber}
+              idType={"id"}
             />
           </TableContainer>
         </Card>
