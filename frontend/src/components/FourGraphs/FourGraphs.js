@@ -97,6 +97,7 @@ export default function FourGraphs() {
       var pullout = "";
       const successAmount = await axios
         .get("fourgraphs/total-asset-available")
+
         .then((res) => {
           amount = res.data.result[0].Amount;
         })
@@ -198,8 +199,6 @@ export default function FourGraphs() {
       alert(err);
     }
   }, []);
-
-  console.log("four", fourgraphs);
 
   return (
     <SimpleGrid
