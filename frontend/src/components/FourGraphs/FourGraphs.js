@@ -199,6 +199,8 @@ export default function FourGraphs() {
     }
   }, []);
 
+  console.log("four", fourgraphs);
+
   return (
     <SimpleGrid
       columns={{ sm: 1, md: 2, xl: 4 }}
