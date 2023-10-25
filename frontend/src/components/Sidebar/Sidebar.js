@@ -93,6 +93,8 @@ function Sidebar(props) {
     <Box ref={mainPanel}>
       <Box display={{ sm: "none", xl: "block" }} position="fixed">
         <Box
+          // bg={"#5A57FF"}
+          // color="white"
           bg={sidebarBg}
           transition={variantChange}
           w="260px"
