@@ -36,6 +36,16 @@
               alert(err);
             }
           };
+          
+    Date : 10 / 25 / 23
+    Author : John
+    Activities
+    Purpose : 
+      import DataTable from "components2/TanstackTable/DataTable";
+      - Removed unnecessary imports to make code neat and clean
+      - Added Data Table from Tanstack React Table
+      - Fixed global search
+   
 */
 
 import { Link as Anchor } from "react-router-dom";
@@ -46,85 +56,15 @@ import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Stack,
-  Box,
-  IconButton,
-  Icon,
-  Input,
-  Flex
+import { TableContainer, Stack } from "@chakra-ui/react";
 
-} from "@chakra-ui/react";
-
-import { Button, ButtonGroup, Wrap, WrapItem } from "@chakra-ui/react";
-import {
-  ChevronRightIcon,
-  ChevronLeftIcon,
-  ChevronDownIcon,
-  DeleteIcon,
-  EditIcon,
-} from "@chakra-ui/icons";
 import Card from "components/Card/Card";
-import { Link } from "react-router-dom";
-import Pagination from "components2/Pagination/Pagination";
-import { TbodyRes } from "components2/Pagination/Pagination";
-import Search from "components2/Search/Search";
+import DataTable from "components2/TanstackTable/DataTable";
 
 export default function PositionViewer() {
   var userID = "";
 
   const [positions, setPositions] = useState([]);
-  const [search, setSearch] = useState("");
-
-  const [positionId, setPositionId] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const tablePerPage = 6;
-  const lastIndex = currentPage * tablePerPage;
-  const firstIndex = lastIndex - tablePerPage;
-  const tables = positions.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(positions.length / tablePerPage);
-  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
-
-  const filteredTables = tables.filter((item) => {
-    const searchLower = search.toLowerCase();
-    const itemText = Object.values(item).join(" ").toLowerCase();
-    return searchLower === "" || itemText.includes(searchLower);
-  });
-
-  const nextPage = () => {
-    if (currentPage !== tablePages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  // const nextPage = () => {
-  //   if (currentPage !== tablePages) {
-  //     setCurrentPage(currentPage + 1);
-  //   }
-  // };
-
-  // const prevPage = () => {
-  //   if (currentPage !== 1) {
-  //     setCurrentPage(currentPage - 1);
-  //   }
-  // };
-
-  const currentNumber = (number) => {
-    setCurrentPage(number);
-  };
 
   useEffect(() => {
     LoadAllPositions();
@@ -199,7 +139,6 @@ export default function PositionViewer() {
     }
   };
 
-
   const handleExcelReport = () => {
     try {
       generate_EXCEL(positions, "Position");
@@ -208,86 +147,42 @@ export default function PositionViewer() {
     }
   };
 
+  const columns = [
+    {
+      header: "Position Name",
+      accessorKey: "positionName",
+    },
+    {
+      header: "Department Name",
+      accessorKey: "departmentName",
+    },
+    {
+      header: "Description",
+      accessorKey: "description",
+    },
+  ];
 
   return (
     <>
       <Stack>
-        <Card height={694} position="relative">
+        <Card height="auto" position="relative">
           <TableContainer>
             {/*   state: { positionID: '' }, */}
-            <Search
+            {/* <Search
               setSearch={setSearch}
               handleReport={handleReport}
-              handleExcelReport = {handleExcelReport}
+              handleExcelReport={handleExcelReport}
               pathname="/admin/position"
-            />
+            /> */}
 
-            <Table size="lg">
-              <Thead>
-                <Tr>
-                  <Th>Actions</Th>
-                  <Th>Position Name</Th>
-                  <Th>Department Name</Th>
-                  <Th>Description</Th>
-                </Tr>
-              </Thead>
-
-              <Tbody>
-
-                {tables
-                  .filter((item) => {
-                    const searchLower = search.toLowerCase();
-                    const itemText = Object.values(item)
-                      .join(" ")
-                      .toLowerCase();
-                    return search.toLowerCase() === ""
-                      ? item
-                      : itemText.includes(searchLower);
-                  })
-                  .map((position) => (
-                    <Tr key={position.id}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={(e) =>
-                              handleDelete(
-                                e,
-                                position.id,
-                                position.positionName
-                              )
-                            }
-
-                          >
-                            <DeleteIcon />
-                          </Button>
-                          <Button colorScheme="blue">
-                            <Link
-                              to={{
-                                pathname: "/admin/position/" + position.id,
-                                state: { positionID: position.id },
-                              }}
-                            >
-                              <EditIcon />
-                            </Link>
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{position.positionName}</Td>
-                      <Td>{position.departmentName}</Td>
-                      <Td>{position.description}</Td>
-                    </Tr>
-                  ))}
-              </Tbody>
-            </Table>
-
-            <Pagination
-              data={positions}
-              currentPage={currentPage}
-              nextPage={nextPage}
-              prevPage={prevPage}
-              currentNumber={currentNumber}
-              pageNumber={pageNumber}
+            <DataTable
+              dataGrid={positions}
+              columns={columns}
+              handleReport={handleReport}
+              handleExcelReport={handleExcelReport}
+              handleDelete={handleDelete}
+              pathname="/admin/position"
+              idType={"id"}
             />
           </TableContainer>
         </Card>
