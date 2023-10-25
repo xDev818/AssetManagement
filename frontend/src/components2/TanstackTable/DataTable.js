@@ -1,3 +1,29 @@
+
+/* -------------------------------------------------------------------------- */
+/*                                See Info Below                              */
+/*               Write Updates , Activities and Comments Below                */
+/*                              Before Coding                                 */
+/* -------------------------------------------------------------------------- */
+
+/* 
+
+
+    Date : 10 / 25 / 23
+    Author : John Ogama
+    Activities
+    Purpose : 
+      create Data Component for Pagination
+
+  
+    Date : 10 / 25 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Update pagination add 5 rows display
+ 
+*/
+
+
 import React, { useState, useEffect, useMemo } from "react";
 import {
   Table,
@@ -68,7 +94,9 @@ export default function DataTable({
 
   return (
     <Card>
-      <Box position="sticky" top={0}>
+
+      <Box>
+
         <Flex
           justifyContent="space-between"
           gap="5"
@@ -133,7 +161,8 @@ export default function DataTable({
                 table.setPageSize(e.target.value);
               }}
             >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
