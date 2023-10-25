@@ -13,8 +13,6 @@
     Purpose : 
       create Asset Checkout viewer
 
-  
- 
 */
 
 import { Link as Anchor } from "react-router-dom";

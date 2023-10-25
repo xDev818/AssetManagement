@@ -29,11 +29,7 @@ router.get('/fourgraphs/totalno-asset-available',fourgraphs_AssetsAvailable)
 router.get('/fourgraphs/totalno-asset-fordeploy',fourgraphs_AssetsForDeploy) 
 router.get('/fourgraphs/totalno-asset-pullout',fourgraphs_AssetsPullout) 
 
-// router.get('/assetcheckout/get-assetstatus-byname',ITCheckout_getAssetStatusByName) 
-// router.get('/assetcheckout/get-assetcheckout-byIT',ITCheckout_getAssetsCheckout) 
-// router.get('/assetcheckout/get-userdeptpos_byID/:id',ITCheckout_getUserDepartmentPosition_ByID) 
-// router.post('/assetcheckout/create-checkoutasset',createCheckout_Asset) 
-// router.post('/assetcheckout/update-checkoutasset_ForDeploy',updateAssetForDeploy) 
+
 
 
 

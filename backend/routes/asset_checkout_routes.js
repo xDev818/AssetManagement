@@ -30,8 +30,7 @@ router.get('/assetcheckout/get-assetcheckout-byIT',ITCheckout_getAssetsCheckout)
 router.get('/assetcheckout/get-userdeptpos_byID/:id',ITCheckout_getUserDepartmentPosition_ByID) 
 router.post('/assetcheckout/create-checkoutasset',createCheckout_Asset) 
 router.post('/assetcheckout/update-checkoutasset_ForDeploy',updateAssetForDeploy) 
-//router.post('/assetcategory/createAssetCategory',createAssetCategory) 
-//router.post('/assetcategory/updateAssetCategory',updateAssetCategory) 
+
 
 
 module.exports = router
