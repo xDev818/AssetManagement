@@ -33,6 +33,6 @@ router.get('/assetcheckout/get-userdeptpos_byID/:id',ITCheckout_getUserDepartmen
 router.post('/assetcheckout/create-checkoutasset',createCheckout_Asset) 
 router.post('/assetcheckout/update-checkoutasset_ForDeploy',updateAssetForDeploy) 
 router.post('/assetcheckout/activate-receiving',updateAssetReceiving) 
-
+ 
 
 module.exports = router
