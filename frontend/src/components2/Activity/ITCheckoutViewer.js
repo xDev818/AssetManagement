@@ -175,32 +175,6 @@ export default function ITCheckoutViewer() {
   // No need to routes to server
   const handleGenerateReceiving = (docref) => {
       try {
-        //alert(docref)
-            // Loop to existing data
-            // const rowdata = []
-            // var icount  =0
-            //  assets.map(asset => {
-              
-              
-            // //   alert(asset.fullname)
-               
-            //   if(asset.docRef_Checkin === docref ) {
-            //     icount = icount + 1
-               
-            //     const itempData = [
-            //       icount.toString(),
-            //       asset.fullname,
-            //       asset.assetCode,
-            //       asset.serialNo,
-            //       asset.assetName,
-            //       asset.typeName,
-            //       asset.ReleasedBy,
-            //       ];
-            //       rowdata.push(itempData)
-                
-            //    }
-            //  })
-            
             generate_PDF(assets, "Receiving",docref)
       } catch(err) {
 
