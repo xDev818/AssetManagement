@@ -22,6 +22,7 @@ import axios from "axios";
 import decoder from "jwt-decode";
 
 import {
+  Box,
   Flex,
   SimpleGrid,
   Stat,
@@ -29,6 +30,19 @@ import {
   StatNumber,
   Text,
   useColorModeValue,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import IconBox from "components/Icons/IconBox";
@@ -39,11 +53,16 @@ import {
   GlobeIcon,
   WalletIcon,
 } from "components/Icons/Icons.js";
+import Performance from "components2/Graphs/Dashboard/Performance";
+import BarChart from "components/Charts/BarChart";
+import { barChartData } from "variables/charts";
+import { barChartOptions } from "variables/charts";
 
 export default function FourGraphs() {
   const iconBlue = useColorModeValue("blue.500", "blue.500");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [userdata, setUser] = useState({
     userid: "",
@@ -78,7 +97,6 @@ export default function FourGraphs() {
       var pullout = "";
       const successAmount = await axios
         .get("fourgraphs/total-asset-available")
-
         .then((res) => {
           amount = res.data.result[0].Amount;
         })
@@ -212,23 +230,50 @@ export default function FourGraphs() {
                 </StatNumber>
               </Flex>
             </Stat>
-            <IconBox
-              borderRadius="50%"
-              as="box"
-              h={"45px"}
-              w={"45px"}
-              bg={iconBlue}
-            >
-              <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />
-            </IconBox>
+
+            <Menu>
+              <MenuButton>
+                <IconBox
+                  borderRadius="50%"
+                  as="box"
+                  h={"45px"}
+                  w={"45px"}
+                  bg={iconBlue}
+                  cursor="pointer"
+                ></IconBox>
+              </MenuButton>
+              <MenuList>
+                <MenuItem colorScheme="twitter">PDF </MenuItem>
+                <MenuItem colorScheme="twitter">Excel</MenuItem>
+                <MenuItem colorScheme="twitter" onClick={onOpen}>
+                  Show Graph
+                </MenuItem>
+              </MenuList>
+            </Menu>
+            <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />
           </Flex>
-          <Text color="gray.400" fontSize="sm">
-            <Text as="span" color="green.400" fontWeight="bold">
-              +3.48%{" "}
-            </Text>
-            Since last month
-          </Text>
         </Flex>
+        {/* performance */}
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent w="100%" h="500px">
+            <ModalHeader>Graph</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Box minH="300px" minW={"100%"}>
+                <BarChart
+                  chartData={barChartData}
+                  chartOptions={barChartOptions}
+                />
+              </Box>
+            </ModalBody>
+            <ModalFooter>
+              <Button>PDF</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        {/* performance */}
       </Card>
       <Card minH="125px">
         <Flex direction="column">
