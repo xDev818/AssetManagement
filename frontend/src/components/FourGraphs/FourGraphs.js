@@ -54,7 +54,7 @@ import {
   WalletIcon,
 } from "components/Icons/Icons.js";
 
-import Performance from "components2/Graphs/Dashboard/Performance";
+//import Performance from "components2/Graphs/Dashboard/Performance";
 
 import BarChart from "components/Charts/BarChart";
 import { barChartData } from "variables/charts";
