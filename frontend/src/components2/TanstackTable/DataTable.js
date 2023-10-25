@@ -1,3 +1,27 @@
+/* -------------------------------------------------------------------------- */
+/*                                See Info Below                              */
+/*               Write Updates , Activities and Comments Below                */
+/*                              Before Coding                                 */
+/* -------------------------------------------------------------------------- */
+
+/* 
+
+
+    Date : 10 / 25 / 23
+    Author : John Ogama
+    Activities
+    Purpose : 
+      create Data Component for Pagination
+
+  
+    Date : 10 / 25 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Update pagination add 5 rows display
+ 
+*/
+
 import React, { useState, useEffect, useMemo } from "react";
 import {
   Table,
