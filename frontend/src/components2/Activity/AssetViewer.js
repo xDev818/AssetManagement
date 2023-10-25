@@ -53,6 +53,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
+import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 export default function AssetViewer() {
   const [assets, setAssets] = useState([]);
@@ -162,6 +163,14 @@ export default function AssetViewer() {
     }
   };
 
+  const handleExcelReport = () => {
+    try {
+      generate_EXCEL(assets, "Assets");
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   const handleEdit = (e,statname) => {
 
   };
@@ -177,6 +186,7 @@ export default function AssetViewer() {
             <Search
               setSearch={setSearch}
               handleReport={handleReport}
+              handleExcelReport = {handleExcelReport} 
               pathname="/admin/asset"
             />
 

@@ -130,34 +130,6 @@ export default function ITCheckoutViewer() {
     }
   };
 
-  // const handleDelete = async (event, assetid, assetname,statname) => {
-  //   try {
-  //     event.preventDefault();
-
-    
-
-  //     const deleteSuccess = await axios
-  //       .post("/asset/delete-AssetByID", { assetid })
-  //       .then((res) => {
-  //         alert("Delete succes");
-
-  //         LoadAllAssets();
-
-  //         const deleteLogs = new Logs(
-  //           "Info",
-  //           "Position Viewer",
-  //           "Function /handleDelete",
-  //           "Delete statusID :  " + assetid + "   Statusname :  " + assetname,
-  //           userdata.userid
-  //         );
-  //       })
-  //       .catch((err) => {
-  //         alert(err);
-  //       });
-  //   } catch (err) {
-  //     alert(err);
-  //   }
-  // };
 
   const handleReport = () => {
     try {
