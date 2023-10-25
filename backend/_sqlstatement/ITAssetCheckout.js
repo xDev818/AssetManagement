@@ -58,17 +58,18 @@ const viewAllAssetsAvailable = () => {
   return   "SELECT assetsdetail.detailID,assetsdetail.assetID,asset.serialNo, "
             + "asset.assetCode,asset.assetName,status.statusName,type.typeName,department.departmentName,"
             + "COALESCE(DATE_FORMAT(assetsdetail.plancheckout, '%m/%d/%Y'),'') as date_checkout ,"
-            + "concat(user.lastname,', ' , user.firstname) as fullname,assetsdetail.docRef_Checkin  "
-            + "FROM tblUserAssetDetails assetsdetail"
+            + "concat(user.lastname,', ' , user.firstname) as fullname,assetsdetail.docRef_Checkin,"
+            + "concat(userCheckout.lastname,', ' , userCheckout.firstname) as ReleasedBy"
+            + " FROM tblUserAssetDetails assetsdetail"
             + " inner join tblAssets asset on asset.assetID COLLATE utf8mb4_unicode_ci = assetsdetail.assetID"
             + " inner join tblAssetStatus status on status.assetStatusID COLLATE utf8mb4_unicode_ci = assetsdetail.assetStatusID"
             + " inner join tblDepartments department on department.departmentDisplayID COLLATE utf8mb4_unicode_ci  = assetsdetail.departmentID"
-            + " inner join tblUsers user on user.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.useridcheckout"
+            + " inner join tblUsers user on user.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.userSelectedID"
+            + " inner join tblUsers userCheckout on userCheckout.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.useridcheckout"
             + " inner join  tblAssetType type on type.typeID COLLATE utf8mb4_unicode_ci = asset.typeID"
             + " where checkinby is null"
             + " ORDER BY assetsdetail.plancheckout ASC"
 
-  
 }
 
 const getAssetStatusByName = () => {

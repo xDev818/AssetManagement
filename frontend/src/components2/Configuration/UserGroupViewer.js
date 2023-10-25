@@ -19,10 +19,18 @@
               alert(err);
             }
           };
+    
+    Date : 10 / 25 / 23
+    Author : John
+    Activities
+    Purpose : 
+      import DataTable from "components2/TanstackTable/DataTable";
+      - Removed unnecessary imports to make code neat and clean
+      - Added Data Table from Tanstack React Table
+      - Fixed global search
 
 */
 
-import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -30,54 +38,16 @@ import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
 
+import { TableContainer, Stack } from "@chakra-ui/react";
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Stack,
-  Box,
-} from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
-import { Link } from "react-router-dom";
-import Search from "components2/Search/Search";
-import Pagination from "components2/Pagination/Pagination";
+
+import DataTable from "components2/TanstackTable/DataTable";
 
 export default function UserGroupViewer() {
   var userID = "";
 
   const [usergroups, setUserGroups] = useState([]);
-  const [search, setSearch] = useState("");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const tablePerPage = 6;
-  const lastIndex = currentPage * tablePerPage;
-  const firstIndex = lastIndex - tablePerPage;
-  const tables = usergroups.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(usergroups.length / tablePerPage);
-  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
-
-  const nextPage = () => {
-    console.log("cureentpage", currentPage);
-    if (currentPage !== tablePages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const currentNumber = (number) => {
-    setCurrentPage(number);
-  };
 
   useEffect(() => {
     LoadAllUserGroups();
@@ -156,78 +126,30 @@ export default function UserGroupViewer() {
     }
   };
 
+  const columns = [
+    {
+      header: "Name",
+      accessorKey: "categoryName",
+    },
+    {
+      header: "Description",
+      accessorKey: "categoryDesc",
+    },
+  ];
+
   return (
     <>
       <Stack>
         <Card height={694} position="relative">
           <TableContainer>
-            {/*to={{
-                  pathname: "/admin/usergroup",
-                  state: { userGroupID: '' },
-                  }}  */}
-            <Search
-              setSearch={setSearch}
+            <DataTable
+              dataGrid={usergroups}
+              columns={columns}
               handleReport={handleReport}
               handleExcelReport={handleExcelReport}
+              handleDelete={handleDelete}
               pathname="/admin/usergroup"
-            />
-
-            <Table size="lg">
-              <Thead>
-                <Tr>
-                  <Th>Actions</Th>
-                  <Th>Name</Th>
-                  <Th>Description</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {tables
-                  .filter((item) => {
-                    const searchLower = search.toLowerCase();
-                    const itemText = Object.values(item)
-                      .join(" ")
-                      .toLowerCase();
-                    return search.toLowerCase() === ""
-                      ? item
-                      : itemText.includes(searchLower);
-                  })
-                  .map((group) => (
-                    <Tr key={group.id}>
-                      <Td>
-                        <ButtonGroup>
-                          <Button
-                            colorScheme="red"
-                            onClick={(e) =>
-                              handleDelete(e, group.id, group.categoryName)
-                            }
-                          >
-                            Delete
-                          </Button>
-                          <Button colorScheme="blue">
-                            <Link
-                              to={{
-                                pathname: "/admin/usergroup/" + group.id ,
-                                state: { userGroupID: group.id },
-                              }}
-                            >
-                              Edit
-                            </Link>
-                          </Button>
-                        </ButtonGroup>
-                      </Td>
-                      <Td>{group.categoryName}</Td>
-                      <Td>{group.categoryDesc}</Td>
-                    </Tr>
-                  ))}
-              </Tbody>
-            </Table>
-            <Pagination
-              data={usergroups}
-              currentPage={currentPage}
-              nextPage={nextPage}
-              prevPage={prevPage}
-              currentNumber={currentNumber}
-              pageNumber={pageNumber}
+              idType={"id"}
             />
           </TableContainer>
         </Card>
