@@ -23,7 +23,8 @@ const {
     ViewAllAssetStatus,
     getAssetStatusbyID,
     updateAssetStatus,
-    deleteAssetStatus
+    deleteAssetStatus,
+    getAssetStatusByName
 } = require('../controllers/asset_status_controller')
 
 const router = Router()
@@ -31,6 +32,8 @@ const router = Router()
 router.post('/status',createAssetStatus) //api call to create Asset Status
 router.get('/getallStatus',ViewAllAssetStatus) // api to view all Asset Status
 router.get('/getStatusbyID/:id',getAssetStatusbyID) // api to view all Asset Status by ID
+router.get('/getStatusbyname/:name',getAssetStatusByName) // api to view all Asset Status by Name
+
 router.post('/updateStatusbyID',updateAssetStatus) // api to update Asset Status by ID
 router.post('/deleteStatusbyID',deleteAssetStatus) // api to delete Asset Status by ID
 module.exports = router

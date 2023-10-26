@@ -6,7 +6,6 @@
 
 /* 
 
-
     Date : 10 / 26 / 23
     Author : Nole
     Activities
@@ -36,12 +35,12 @@ import {
   Td,
   TableContainer,
   Stack,
-  Box,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  StatLabel,
+  // Box,
+  // Menu,
+  // MenuButton,
+  // MenuList,
+  // MenuItem,
+  // StatLabel,
 
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -53,6 +52,9 @@ export default function UserCheckin_Viewer() {
   
 
   const [assets, setAssets] = useState([]);
+  const [statusvalues,setStatusID] = useState({
+    statusid: ''
+  })
  
   const [userdata,setUser] = useState({
     userid : '',
@@ -104,19 +106,25 @@ export default function UserCheckin_Viewer() {
   };
   useEffect(() => {
     SetUsers();
-    LoadAllAssetsCheckout();
-  }, []);
+    getStatusByName()
+    LoadAllAssetsForDeploy();
+  }, [userdata.userid]);
 
-  const LoadAllAssetsCheckout = async () => {
+  const getStatusByName = async () => {
     try {
-      const success = await axios
-        .get("/assetcheckout/get-assetcheckout-byIT")
+     
+      const name = 'Deployed'
+      const success = await axios.get('/getStatusbyname/' + name)
 
         .then((res) => {
-          setAssets(res.data.result);
-          console.log(assets)
+        
+          setStatusID({...statusvalues , 
+            statusid : res.data.result[0].assetStatusID });
+          
+        
         })
         .catch((err) => {
+          //alert(err)
           const InsertLogs = new Logs(
             "Error",
             "PositionViewer",
@@ -125,6 +133,35 @@ export default function UserCheckin_Viewer() {
             userdata.userid
           );
         });
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const LoadAllAssetsForDeploy = async () => {
+    try {
+    
+      if(userdata.userid ) {
+        const success = await axios.get('/user-checkin/view-fordeploy/' + userdata.userid )
+
+        .then((res) => {
+       
+          setAssets(res.data.result);
+        
+        })
+        .catch((err) => {
+          //alert(err)
+          const InsertLogs = new Logs(
+            "Error",
+            "PositionViewer",
+            "Function /LoadAllPositions",
+            "LoadAllPositions",
+            userdata.userid
+          );
+        });
+
+      }
+
     } catch (err) {
       alert(err);
     }
@@ -146,46 +183,95 @@ export default function UserCheckin_Viewer() {
     }
   };
 
-  // // No need to routes to server
-  // const handleGenerateReceiving = (docref) => {
-  //     try {
-  //           generate_PDF(assets, "Receiving",docref)
-  //     } catch(err) {
 
-  //     }
-  // }
-  const handleReceiving = async (e,detailID,active) => {
-      return <Button>
-                Test
-            </Button>
-    // try {
-    //     e.preventDefault()
-       
-    //     if( active == 0) {
-    //         const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
+  const UpdateAsseteDetailStatus = (detailID,statID) => {
+   
+    try {
+     
+        const updateDetail = axios.post("/user-checkin/update-checkin-status",{detailID,statID})
 
-    //         .then((res) => {
-    //           alert("activate successful")
-    //           LoadAllAssetsCheckout()
-    //         })
-    //         .catch((err) => {
-    //           const InsertLogs = new Logs(
-    //             "Error",
-    //             "PositionViewer",
-    //             "Function /LoadAllPositions",
-    //             "LoadAllPositions",
-    //             userdata.userid
-    //           );
-    //         });
-    //     } else {
-    //       alert("already activated")
-    //     }
+          .then((res) => {
+            alert("Asset Details updated")
 
-    // } catch (err) {
-    //   alert(err);
-    // }
+          })
+          .catch((err) => {
+            const InsertLogs = new Logs(
+              "Error",
+              "PositionViewer",
+              "Function /LoadAllPositions",
+              "LoadAllPositions",
+              userdata.userid
+            );
+          });
+     
+
+  } catch (err) {
+    alert(err);
+  }
   };
 
+
+  const UpdateAssetStatus = (assetID,statID,userid) => {
+   
+    try {
+    
+         const success = axios.post("/user-checkin/update-checkin-status-asset",{assetID,statID,userid})
+
+          .then((res) => {
+            alert("Asset Status updated")
+
+     
+          })
+          .catch((err) => {
+            const InsertLogs = new Logs(
+              "Error",
+              "PositionViewer",
+              "Function /LoadAllPositions",
+              "LoadAllPositions",
+              userdata.userid
+            );
+          });
+     
+
+  } catch (err) {
+    alert(err);
+  }
+  };
+
+
+  const handleCheckin = async (e,detailID,userid,assetID) => {
+     
+    try {
+        e.preventDefault()
+
+          //alert(statusvalues.statusid)
+          const statID = statusvalues.statusid
+    
+            const success = await axios.post("/user-checkin/update-checkin",{detailID,statID})
+
+            .then((res) => {
+              alert("Asset checkin by user")
+
+              UpdateAsseteDetailStatus(detailID,statID)
+              UpdateAssetStatus(assetID,statID,userid)
+
+           //   LoadAllAssetsForDeploy()
+            })
+            .catch((err) => {
+              const InsertLogs = new Logs(
+                "Error",
+                "PositionViewer",
+                "Function /LoadAllPositions",
+                "LoadAllPositions",
+                userdata.userid
+              );
+            });
+       
+
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   return (
     <>
@@ -230,12 +316,9 @@ export default function UserCheckin_Viewer() {
                 <Tr>
                   <Th>Status</Th>
                   <Th>Ref No</Th>
-                  <Th>Type</Th>
-                  <Th>Serial No</Th>
                   <Th>Code</Th>
                   <Th>Name</Th>
-                  <Th>Department</Th>
-                  <Th>Checkout Date</Th>
+                  <Th>Release By</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -248,20 +331,16 @@ export default function UserCheckin_Viewer() {
                           colorScheme="green"
 
                           onClick={(e) =>
-                            handleReceiving( e,asset.detailID,asset.active_checkin)}
+                            handleCheckin( e,asset.detailID,asset.userDisplayID,asset.assetID)}
                         >
-                        {asset.statusName}
+                        Receive
                         </Button>
                       </ButtonGroup>
                     </Td>
                     <Td>{asset.docRef_Checkin}</Td>
-                    <Td>{asset.typeName}</Td>
-                    <Td>{asset.serialNo}</Td>
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>
-                    <Td>{asset.departmentName}</Td>
-                    <Td>{asset.date_checkout}</Td>
-
+                    <Td>{asset.ReleasedBy}</Td>
                   </Tr>
                 ))}
               </Tbody>

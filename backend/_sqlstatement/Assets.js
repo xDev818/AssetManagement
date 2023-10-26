@@ -76,6 +76,14 @@ const updateByID = () => {
 
 }
 
+const updateStatusByID = () => {
+
+    return   "UPDATE tblAssets SET assetStatusID = ?,"
+            + " updatedBy = ?, dateUpdated = ?"
+            + " where assetID = ?"
+
+}
+
 const deleteByID = () => {
     return  "DELETE FROM tblAssets WHERE assetID=?"
 }
@@ -87,5 +95,6 @@ const deleteByID = () => {
     getAll,
     getByID , 
     updateByID , 
-    deleteByID 
+    deleteByID ,
+    updateStatusByID
  }

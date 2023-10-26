@@ -114,7 +114,7 @@ export default function ITCheckoutViewer() {
 
         .then((res) => {
           setAssets(res.data.result);
-          console.log(assets)
+       
         })
         .catch((err) => {
           const InsertLogs = new Logs(

@@ -13,6 +13,12 @@
     Purpose : 
       To separate all the SQL Statement from the controller (Asset Status)
 
+    Date : 10 / 26 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      New SQL Statement to get Status ID of 'Deploy'
+
 */
 
 
@@ -23,10 +29,10 @@ const create = () => {
     
  }
  
- const getByName = () => {
+ const getIDByName = () => {
  
-     return ''
-     // "select positionDisplayID from tblPositions where positionName = ?";
+     return "SELECT assetStatusID,statusName,statusDescription FROM tblAssetStatus"
+        + " where statusName = ?"
     
  }
 
@@ -57,7 +63,7 @@ const deleteByID = () => {
  module.exports = {
 
     create,
-    getByName,
+    getIDByName,
     getAll,
     getByID , 
     updateByID , 

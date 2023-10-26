@@ -12,11 +12,18 @@
     Activities
     Purpose : 
       // Generate UUID for DocReference
+
+    Date : 10 / 26 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Add Dialog Box for Checkout
 */
 
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
+import React from "react";
 import axios from 'axios'
 import decoder from 'jwt-decode'
 import Datehelper from 'components/Utils/datehelper'
@@ -39,15 +46,19 @@ import {
     Grid,
     GridItem,
     Text,
-    Textarea
+    Textarea,
+    Button,
+    ButtonGroup,
   } from "@chakra-ui/react";
-  import { Button, ButtonGroup } from "@chakra-ui/react";
+
   
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
   import DatePicker from "react-datepicker";
-  
   export default function ITCheckOut () {
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = React.useRef()
 
     var userID = ''
     var department_id = ''
@@ -299,7 +310,7 @@ import {
                     request = axios.post('/log',InsertLogs.getLogs())
                     response =  request.data
 
-                    // window.location.reload()
+                    window.location.href = "/#/admin/checkout-viewer";
                   })
                   .catch((err) => {
                     alert(err);
@@ -460,14 +471,18 @@ import {
 
           
 
-            <Button colorScheme="green" onClick={handlleCheck}>
+            <Button colorScheme="green" onClick={onOpen} >
               {/* <Link
                   to={{
                   pathname: "/admin/assetstatusviewer"
                   }}>
               </Link> */}
               {btnstate}
-
+              <AssetDialog
+                handlleCheck={handlleCheck}
+                alertheader = {"Checkout Asset"}
+                alertbody = { " Are you sure you want to Checkout Selected Assets?"}
+              />
             </Button>
           </Box>
           </Card>
