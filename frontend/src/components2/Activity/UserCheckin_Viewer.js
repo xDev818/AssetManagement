@@ -35,6 +35,7 @@ import {
   Td,
   TableContainer,
   Stack,
+  useToast
   // Box,
   // Menu,
   // MenuButton,
@@ -191,7 +192,7 @@ export default function UserCheckin_Viewer() {
         const updateDetail = axios.post("/user-checkin/update-checkin-status",{detailID,statID})
 
           .then((res) => {
-            alert("Asset Details updated")
+        //    alert("Asset Details updated")
 
           })
           .catch((err) => {
@@ -218,7 +219,7 @@ export default function UserCheckin_Viewer() {
          const success = axios.post("/user-checkin/update-checkin-status-asset",{assetID,statID,userid})
 
           .then((res) => {
-            alert("Asset Status updated")
+      //      alert("Asset Status updated")
 
      
           })
@@ -250,12 +251,13 @@ export default function UserCheckin_Viewer() {
             const success = await axios.post("/user-checkin/update-checkin",{detailID,statID})
 
             .then((res) => {
-              alert("Asset checkin by user")
+              //alert("Asset checkin by user")
 
               UpdateAsseteDetailStatus(detailID,statID)
               UpdateAssetStatus(assetID,statID,userid)
 
-           //   LoadAllAssetsForDeploy()
+              LoadAllAssetsForDeploy()
+              
             })
             .catch((err) => {
               const InsertLogs = new Logs(
@@ -273,6 +275,7 @@ export default function UserCheckin_Viewer() {
     }
   };
 
+ 
   return (
     <>
       <Stack>
@@ -331,7 +334,8 @@ export default function UserCheckin_Viewer() {
                           colorScheme="green"
 
                           onClick={(e) =>
-                            handleCheckin( e,asset.detailID,asset.userDisplayID,asset.assetID)}
+                            handleCheckin( e,asset.detailID,asset.userDisplayID,asset.assetID
+                            )}
                         >
                         Receive
                         </Button>

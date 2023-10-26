@@ -155,7 +155,7 @@ export default function ITCheckoutViewer() {
 
       }
   }
-  const handleActivateReceiving = async (e,detailID,active) => {
+  const handleActivateReceiving = async (e,detailID,active,docref) => {
 
     try {
         e.preventDefault()
@@ -165,6 +165,7 @@ export default function ITCheckoutViewer() {
 
             .then((res) => {
               alert("activate successful")
+              handleGenerateReceiving(docref)
               LoadAllAssetsCheckout()
             })
             .catch((err) => {
@@ -227,7 +228,7 @@ export default function ITCheckoutViewer() {
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Receiving</Th>
+                  <Th>Reference</Th>
                   <Th>Type</Th>
                   <Th>Status</Th>
                   <Th>Serial No</Th>
@@ -245,19 +246,19 @@ export default function ITCheckoutViewer() {
                         <Button
                           colorScheme="red"
                           onClick={(e) =>
-                            handleGenerateReceiving( asset.docRef_Checkin)
+                            // handleGenerateReceiving( asset.docRef_Checkin)
+                            handleActivateReceiving( e,asset.detailID,asset.active_checkin,asset.docRef_Checkin)
                           }
                         >
                         { asset.docRef_Checkin}
                         </Button>
-                        <Button
+                        {/* <Button
                           colorScheme="green"
 
-                          onClick={(e) =>
-                            handleActivateReceiving( e,asset.detailID,asset.active_checkin)}
+                         
                         >
                         Activate
-                        </Button>
+                        </Button> */}
                       </ButtonGroup>
                     </Td>
                     <Td>{asset.typeName}</Td>

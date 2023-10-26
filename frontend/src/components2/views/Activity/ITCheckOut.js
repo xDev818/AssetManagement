@@ -22,12 +22,13 @@
 
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
-import  { useEffect, useState } from 'react'
+import  { useEffect, useMemo, useState } from 'react'
 import React from "react";
 import axios from 'axios'
 import decoder from 'jwt-decode'
 import Datehelper from 'components/Utils/datehelper'
 import { v4 as uuidv4 } from 'uuid';
+import AssetDialog from 'components2/Configuration/AssetDialog/AssetDialog';
 
 import {
   FormLabel,
@@ -49,6 +50,18 @@ import {
     Textarea,
     Button,
     ButtonGroup,
+    
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    AlertDialogCloseButton,
+     useDisclosure,
+
+     useToast
+
   } from "@chakra-ui/react";
 
   
@@ -91,15 +104,19 @@ import {
 
     var array = [];
     
+
+    
     var checkoutData = {
       dataArray: [] // Replace [...arrayValues] with your initial array values
-    };
+    }
 
     const [userdata,setUser] = useState({
       userid : '',
       deptid:'',
       positionid:''
     });
+
+    
 
     const LoadallUsers = async () => {
       try {
@@ -230,17 +247,17 @@ import {
           }
 
         }
-       // alert(checkoutData.dataArray)
+      
 
     }
 
 
 
-    const handlleCheck = async (event,key) => {
-
-      event.preventDefault();
+    const handleCheck = async (event) => {
+      
      
       try {
+        event.preventDefault()
         // Generate UUID for DocReference
         const datehelper = new Datehelper()
         const docid = uuidv4();
@@ -274,11 +291,11 @@ import {
               docref: docRef_Checkin
             }
 
-
+          
               var success = await axios.post('/assetcheckout/create-checkoutasset',checkoutvalues)
               .then((res) => {
-            
-                alert("Insert Successful")
+                
+              //  alert("Insert Successful")
 
                 const InsertLogs = new Logs(
                   'Info',
@@ -310,7 +327,10 @@ import {
                     request = axios.post('/log',InsertLogs.getLogs())
                     response =  request.data
 
-                    window.location.href = "/#/admin/checkout-viewer";
+                  //  window.location.href = "/#/admin/checkout-viewer";
+                  LoadAllAssets()
+                  
+                 
                   })
                   .catch((err) => {
                     alert(err);
@@ -323,6 +343,7 @@ import {
               });
 
           }
+          checkoutData.dataArray = []
         }
         else {
             alert("Select Asset to Checkout")
@@ -471,26 +492,67 @@ import {
 
           
 
-            <Button colorScheme="green" onClick={onOpen} >
-              {/* <Link
+            <Button colorScheme="green" 
+            onClick={(e) => handleCheck(e)}  >
+              {/*
+              onClick={onOpen}
+              <Link
                   to={{
                   pathname: "/admin/assetstatusviewer"
                   }}>
               </Link> */}
               {btnstate}
-              <AssetDialog
-                handlleCheck={handlleCheck}
-                alertheader = {"Checkout Asset"}
-                alertbody = { " Are you sure you want to Checkout Selected Assets?"}
-              />
+             
             </Button>
+            {/* <AssetDialog
+                 handlleCheck={handleCheck}
+                 alertheader = {"Checkout Asset"}
+                 alertbody = { " Are you sure you want to Checkout Selected Assets?"}
+                // onOpen={onOpen}
+                 isOpen={isOpen}
+                 onClose={onClose}
+             //    cancelRef = {cancelRef}
+                // leastDestructiveRef={cancelRef}
+              /> */}
+
+          
           </Box>
           </Card>
           </FormControl>
         </Stack>
 
         </Card>
-
+        {/* <AlertDialog
+            onOpen={onOpen}
+              motionPreset='slideInBottom'
+              leastDestructiveRef={cancelRef}
+              onClose={onClose}
+              isOpen={isOpen}
+              isCentered
+            >
+              <AlertDialogOverlay />
+      
+              <AlertDialogContent>
+                <AlertDialogHeader></AlertDialogHeader>
+                 Check-out
+              
+                <AlertDialogCloseButton />
+                <AlertDialogBody>
+                Are you sure you want to assign assets?
+                
+                 
+                </AlertDialogBody>
+                <AlertDialogFooter>
+                  <Button  ref={cancelRef} onClick={onClose}>
+                    No
+                  </Button>
+                  <Button colorScheme='green' ml={3} onClick = {(e) => handleCheck(e) }>
+              
+                    Yes
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+          </AlertDialog> */}
       </>
 
       
