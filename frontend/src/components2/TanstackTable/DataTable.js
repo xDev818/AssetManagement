@@ -96,7 +96,6 @@ export default function DataTable({
     <Card>
 
       <Box>
-
         <Flex
           justifyContent="space-between"
           gap="5"
@@ -162,7 +161,6 @@ export default function DataTable({
               }}
             >
               {[5, 10, 20, 30, 40, 50].map((pageSize) => (
-
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

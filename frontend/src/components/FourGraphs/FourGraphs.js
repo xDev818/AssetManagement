@@ -57,7 +57,9 @@ import Performance from "components2/Graphs/Dashboard/Performance";
 import BarChart from "components/Charts/BarChart";
 import { barChartData } from "variables/charts";
 import { barChartOptions } from "variables/charts";
+
 import useFourGraphsStore from "store/useFourGraphsStore";
+
 
 export default function FourGraphs() {
   const iconBlue = useColorModeValue("blue.500", "blue.500");
@@ -71,6 +73,7 @@ export default function FourGraphs() {
     const amountAssets = await getAmount("fourgraphs/total-asset-available");
     console.log("zx", amount);
   }, []);
+
 
   const [userdata, setUser] = useState({
     userid: "",
