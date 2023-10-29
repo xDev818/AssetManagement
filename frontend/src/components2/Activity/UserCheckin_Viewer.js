@@ -94,7 +94,16 @@ export default function UserCheckin_Viewer() {
     const tokenStorage = localStorage.getItem("token");
     const tokenDecoded = decoder(tokenStorage);
 
-  
+  const toast = useToast()
+    toast({
+      title: 'Account created.',
+      description: "We've created your account for you.",
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+      action: handleCheckin
+    })
+
     setUser({
       ...userdata,
 

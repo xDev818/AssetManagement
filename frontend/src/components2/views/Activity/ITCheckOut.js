@@ -329,8 +329,7 @@ import {
 
                   //  window.location.href = "/#/admin/checkout-viewer";
                   LoadAllAssets()
-                  
-                 
+
                   })
                   .catch((err) => {
                     alert(err);
