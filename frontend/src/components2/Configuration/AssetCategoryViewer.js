@@ -50,20 +50,19 @@ import Search from "components2/Search/Search";
 import Pagination from "components2/Pagination/Pagination";
 
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
+  // Table,
+  // Thead,
+  // Tbody,
+  // Tr,
+  // Th,
+  // Td,
   TableContainer,
   Stack,
   Box,
 } from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+
 import Card from "components/Card/Card";
-import { Link } from "react-router-dom";
-import { textChangeRangeIsUnchanged } from "typescript";
+
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function AssetCategoryViewer() {

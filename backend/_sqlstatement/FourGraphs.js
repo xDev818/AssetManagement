@@ -17,13 +17,22 @@
 */
 
 
-const getTotal_Assets = () => {
+const getTotalAmount_Assets = () => {
 
     return  "SELECT FORMAT(sum(assets.amount),2) as 'Amount' "
             + "  FROM tblAssets assets"
             + " WHERE assets.active = 1"
     
  }
+
+//  const getTotal_AssetsAvailable = () => {
+
+//         return  "SELECT count(assets.assetID) as 'Count' "
+//                 + "  FROM tblAssets assets"
+//                 + " inner join tblAssetStatus stat on stat.assetStatusID = assets.assetStatusID"
+//                 + " WHERE assets.active = 1  and stat.statusName = 'Available' "
+        
+//      }
 
  const getCount_Assets_Deployed = () => {
 
@@ -65,7 +74,8 @@ const getTotal_Assets = () => {
 
 module.exports = {
 
-    getTotal_Assets,
+        getTotalAmount_Assets,
+   
     getCount_Assets_Deployed,
     getCount_Assets_Available,
     getCount_Assets_ForDeploy,

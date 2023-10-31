@@ -52,6 +52,7 @@ const generate_PDF =  (propdata,paramReportType,docref) => {
     const vendorColumn  = ["#","Vendor","Address", "Contact No", "Email"];
     const assetsColumn  = ["#","Type","Status", "Code", "Name", "Date Purchase"];
     const receivingColumn = ["#","Code", "Serial","Name", "Type"];
+    const CheckoutColumn = ["#","Type", "Serial","Name"];
     
   
         if(paramReportType === 'Asset Status') {
@@ -197,6 +198,21 @@ const generate_PDF =  (propdata,paramReportType,docref) => {
             // });
             
             PDFReportReceiving(propdata,receivingColumn,paramReportType,docref)
+
+         } else if (paramReportType === 'Checkout') {
+
+            propdata.forEach(item => {
+                icount = icount + 1
+                
+                const checkoutData = [
+                    icount.toString(),
+                    item.typeName,
+                    item.serialNo,
+                    item.assetName
+                ];
+                rowdata.push(checkoutData)
+            });
+            PDFReports(rowdata,CheckoutColumn,paramReportType)
 
          }
 

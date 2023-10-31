@@ -53,6 +53,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
+import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 export default function AssetViewer() {
   const [assets, setAssets] = useState([]);
@@ -70,22 +71,23 @@ export default function AssetViewer() {
   const tablePages = Math.ceil(assets.length / tablePerPage);
   const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
 
-  const nextPage = () => {
-    console.log("cureentpage", currentPage);
-    if (currentPage !== tablePages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  // const nextPage = () => {
+  //   console.log("cureentpage", currentPage);
+  //   if (currentPage !== tablePages) {
+  //     setCurrentPage(currentPage + 1);
+  //   }
+  // };
 
-  const prevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // const prevPage = () => {
+  //   if (currentPage !== 1) {
+  //     setCurrentPage(currentPage - 1);
+  //   }
+  // };
 
-  const currentNumber = (number) => {
-    setCurrentPage(number);
-  };
+  // const currentNumber = (number) => {
+  //   setCurrentPage(number);
+  // };
+
 
   const SetUsers = async () => {
     const tokenStorage = localStorage.getItem("token");
@@ -161,6 +163,14 @@ export default function AssetViewer() {
     }
   };
 
+  const handleExcelReport = () => {
+    try {
+      generate_EXCEL(assets, "Assets");
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   const handleEdit = (e,statname) => {
 
   };
@@ -171,35 +181,12 @@ export default function AssetViewer() {
       <Stack>
         <Card>
           <TableContainer>
-            {/* <ButtonGroup spacing={6}>
-            <Button
-              colorScheme='messenger'
-            >
-              <Anchor
-                  to={{
-                  pathname: "/admin/asset",
-                  state: { assetID: '' },
-                  }}>
-                New
-              </Anchor>
-
-            </Button>
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
-                Report
-              </MenuButton>
-              <MenuList>
-                <MenuItem   onClick={handleReport}  colorScheme='green'>PDF </MenuItem>
-                <MenuItem   colorScheme='green' >Excel</MenuItem>
-                
-              </MenuList>
-          </Menu>
- 
-            </ButtonGroup> */}
+          
 
             <Search
               setSearch={setSearch}
               handleReport={handleReport}
+              handleExcelReport = {handleExcelReport} 
               pathname="/admin/asset"
             />
 

@@ -172,6 +172,7 @@ export default function Dashboard() {
         templateRows={{ lg: "repeat(2, auto)" }}
         gap="20px"
       >
+
         <GridItem colSpan={2}>
           <Card mb="30px">
             <AssetViewer />
@@ -200,6 +201,7 @@ export default function Dashboard() {
             </Box>
           </Card>
         </GridItem>
+
         <Card
           bg={
             colorMode === "dark"
@@ -215,7 +217,7 @@ export default function Dashboard() {
             </Text>
             <Text color="#fff" fontSize="sm">
               <Text as="span" color="green.400" fontWeight="bold">
-                (+5) more{" "}
+                (+5) more{" "} ralph
               </Text>
               in 2022
             </Text>

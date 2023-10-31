@@ -33,6 +33,7 @@ const generate_EXCEL =  (propdata,paramReportType) => {
   // const vendorColumn  = ["#","Vendor","Address", "Contact No", "Email"];
   // const assetsColumn  = ["#","Type","Status", "Code", "Name", "Date Purchase"];
       if(paramReportType === 'Checkout') {
+       
           propdata.forEach(item => {
             icount = icount + 1
             
@@ -49,7 +50,27 @@ const generate_EXCEL =  (propdata,paramReportType) => {
             rowdata.push(itempData)
         });
         ws = XLSX.utils.json_to_sheet(rowdata);
-      }
+
+      } else if (paramReportType === 'Assets') {
+        
+        propdata.forEach(item => {
+            icount = icount + 1
+            
+            const assetsData = [
+                icount.toString(),
+                item.typeName,
+                item.statusName,
+                item.assetCode,
+                item.assetName,
+                item.date_purchase
+            ];
+            rowdata.push(assetsData)
+
+        });
+
+        ws = XLSX.utils.json_to_sheet(rowdata);
+
+     } 
       else {
         ws = XLSX.utils.json_to_sheet(propdata);
       }

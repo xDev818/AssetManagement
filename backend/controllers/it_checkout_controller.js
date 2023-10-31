@@ -32,7 +32,8 @@ const {
     create,
     updateByID,
     viewAllAssetsCheckout,
-    getUserPosition_Department_ByID
+    getUserPosition_Department_ByID,
+    updateReceiving
 
   }  = require('../_sqlstatement/ITAssetCheckout')
 
@@ -81,7 +82,6 @@ const ITCheckout_getAssetStatusByName = ( request, response ) => {
 
 }
 
-
 const ITCheckout_getAssetsCheckout = ( request, response ) => {
     
     mysql.query(viewAllAssetsCheckout(),  ( err, result ) => {
@@ -107,7 +107,7 @@ const ITCheckout_getAssetsCheckout = ( request, response ) => {
 const ITCheckout_getUserDepartmentPosition_ByID = ( request, response ) => {
     
     const { id } = request.params
-    console.log(id)
+    
     mysql.query(getUserPosition_Department_ByID(), [id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
@@ -179,6 +179,7 @@ const updateAssetForDeploy = ( request, response ) => {
     const { userid, assetid, statusid,positionid,departmentid,
         notes,plancheckout,userid_checkout} = request.body
  
+       // console.log(request.body)
   
     mysql.query( updateByID(), [statusid,userid_checkout,utils_getDate(),assetid], ( err, result ) => {
 
@@ -202,6 +203,37 @@ const updateAssetForDeploy = ( request, response ) => {
 }
 
 
+const updateAssetReceiving = ( request, response ) => {
+
+    // const { statusid, userid_checkout,assetid} = request.body
+     const {detailID} = request.body
+  
+     const activate = parseInt('1')
+
+
+
+     mysql.query( updateReceiving(), [activate,detailID], ( err, result ) => {
+ 
+         if( err ) return response.status(400).send(
+             {
+                 message: "Update Error",
+                 message2: err.message
+             }
+         )
+         
+         response.status(200).send(
+             {
+                 message: "Update Success"
+             }
+         )
+         
+      
+ 
+     })
+ 
+ }
+ 
+
 
 
 
@@ -213,6 +245,7 @@ module.exports = {
     createCheckout_Asset,
     updateAssetForDeploy,
     ITCheckout_getAssetsCheckout,
-    ITCheckout_getUserDepartmentPosition_ByID
+    ITCheckout_getUserDepartmentPosition_ByID,
+    updateAssetReceiving
 
 }

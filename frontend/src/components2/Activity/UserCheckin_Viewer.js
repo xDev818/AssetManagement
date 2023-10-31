@@ -6,12 +6,11 @@
 
 /* 
 
-
-    Date : 10 / 20 / 23
+    Date : 10 / 26 / 23
     Author : Nole
     Activities
     Purpose : 
-      create Asset Checkout viewer
+      create User Checkin Viewer
 
 */
 
@@ -36,12 +35,13 @@ import {
   Td,
   TableContainer,
   Stack,
-  Box,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  StatLabel,
+  useToast
+  // Box,
+  // Menu,
+  // MenuButton,
+  // MenuList,
+  // MenuItem,
+  // StatLabel,
 
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -49,10 +49,13 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
-export default function ITCheckoutViewer() {
+export default function UserCheckin_Viewer() {
   
 
   const [assets, setAssets] = useState([]);
+  const [statusvalues,setStatusID] = useState({
+    statusid: ''
+  })
  
   const [userdata,setUser] = useState({
     userid : '',
@@ -104,19 +107,25 @@ export default function ITCheckoutViewer() {
   };
   useEffect(() => {
     SetUsers();
-    LoadAllAssetsCheckout();
-  }, []);
+    getStatusByName()
+    LoadAllAssetsForDeploy();
+  }, [userdata.userid]);
 
-  const LoadAllAssetsCheckout = async () => {
+  const getStatusByName = async () => {
     try {
-      const success = await axios
-        .get("/assetcheckout/get-assetcheckout-byIT")
+     
+      const name = 'Deployed'
+      const success = await axios.get('/getStatusbyname/' + name)
 
         .then((res) => {
-          setAssets(res.data.result);
-       
+        
+          setStatusID({...statusvalues , 
+            statusid : res.data.result[0].assetStatusID });
+          
+        
         })
         .catch((err) => {
+          //alert(err)
           const InsertLogs = new Logs(
             "Error",
             "PositionViewer",
@@ -130,10 +139,38 @@ export default function ITCheckoutViewer() {
     }
   };
 
+  const LoadAllAssetsForDeploy = async () => {
+    try {
+    
+      if(userdata.userid ) {
+        const success = await axios.get('/user-checkin/view-fordeploy/' + userdata.userid )
+
+        .then((res) => {
+       
+          setAssets(res.data.result);
+        
+        })
+        .catch((err) => {
+          //alert(err)
+          const InsertLogs = new Logs(
+            "Error",
+            "PositionViewer",
+            "Function /LoadAllPositions",
+            "LoadAllPositions",
+            userdata.userid
+          );
+        });
+
+      }
+
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   const handleReport = () => {
     try {
-      generate_PDF(assets, "Checkout");
+      generate_PDF(assets, "CheckIn");
     } catch (err) {
       alert(err);
     }
@@ -141,32 +178,86 @@ export default function ITCheckoutViewer() {
 
   const handleExcelReport = () => {
     try {
-      generate_EXCEL(assets, "Checkout");
+      generate_EXCEL(assets, "CheckIn");
     } catch (err) {
       alert(err);
     }
   };
 
-  // No need to routes to server
-  const handleGenerateReceiving = (docref) => {
-      try {
-            generate_PDF(assets, "Receiving",docref)
-      } catch(err) {
 
-      }
+  const UpdateAsseteDetailStatus = (detailID,statID) => {
+   
+    try {
+     
+        const updateDetail = axios.post("/user-checkin/update-checkin-status",{detailID,statID})
+
+          .then((res) => {
+        //    alert("Asset Details updated")
+
+          })
+          .catch((err) => {
+            const InsertLogs = new Logs(
+              "Error",
+              "PositionViewer",
+              "Function /LoadAllPositions",
+              "LoadAllPositions",
+              userdata.userid
+            );
+          });
+     
+
+  } catch (err) {
+    alert(err);
   }
-  const handleActivateReceiving = async (e,detailID,active,docref) => {
+  };
 
+
+  const UpdateAssetStatus = (assetID,statID,userid) => {
+   
+    try {
+    
+         const success = axios.post("/user-checkin/update-checkin-status-asset",{assetID,statID,userid})
+
+          .then((res) => {
+      //      alert("Asset Status updated")
+
+     
+          })
+          .catch((err) => {
+            const InsertLogs = new Logs(
+              "Error",
+              "PositionViewer",
+              "Function /LoadAllPositions",
+              "LoadAllPositions",
+              userdata.userid
+            );
+          });
+     
+
+  } catch (err) {
+    alert(err);
+  }
+  };
+
+
+  const handleCheckin = async (e,detailID,userid,assetID) => {
+     
     try {
         e.preventDefault()
-       
-        if( active == 0) {
-            const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
+
+          //alert(statusvalues.statusid)
+          const statID = statusvalues.statusid
+    
+            const success = await axios.post("/user-checkin/update-checkin",{detailID,statID})
 
             .then((res) => {
-              alert("activate successful")
-              handleGenerateReceiving(docref)
-              LoadAllAssetsCheckout()
+              //alert("Asset checkin by user")
+
+              UpdateAsseteDetailStatus(detailID,statID)
+              UpdateAssetStatus(assetID,statID,userid)
+
+              LoadAllAssetsForDeploy()
+              
             })
             .catch((err) => {
               const InsertLogs = new Logs(
@@ -177,16 +268,14 @@ export default function ITCheckoutViewer() {
                 userdata.userid
               );
             });
-        } else {
-          alert("already activated")
-        }
+       
 
     } catch (err) {
       alert(err);
     }
   };
 
-
+ 
   return (
     <>
       <Stack>
@@ -228,14 +317,11 @@ export default function ITCheckoutViewer() {
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Reference</Th>
-                  <Th>Type</Th>
                   <Th>Status</Th>
-                  <Th>Serial No</Th>
+                  <Th>Ref No</Th>
                   <Th>Code</Th>
                   <Th>Name</Th>
-                  <Th>Department</Th>
-                  <Th>Checkout Date</Th>
+                  <Th>Release By</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -243,32 +329,22 @@ export default function ITCheckoutViewer() {
                   <Tr key={asset.detailID}>
                     <Td>
                       <ButtonGroup>
+                        
                         <Button
-                          colorScheme="red"
-                          onClick={(e) =>
-                            // handleGenerateReceiving( asset.docRef_Checkin)
-                            handleActivateReceiving( e,asset.detailID,asset.active_checkin,asset.docRef_Checkin)
-                          }
-                        >
-                        { asset.docRef_Checkin}
-                        </Button>
-                        {/* <Button
                           colorScheme="green"
 
-                         
+                          onClick={(e) =>
+                            handleCheckin( e,asset.detailID,asset.userDisplayID,asset.assetID
+                            )}
                         >
-                        Activate
-                        </Button> */}
+                        Receive
+                        </Button>
                       </ButtonGroup>
                     </Td>
-                    <Td>{asset.typeName}</Td>
-                    <Td>{asset.statusName}</Td>
-                    <Td>{asset.serialNo}</Td>
+                    <Td>{asset.docRef_Checkin}</Td>
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>
-                    <Td>{asset.departmentName}</Td>
-                    <Td>{asset.date_checkout}</Td>
-
+                    <Td>{asset.ReleasedBy}</Td>
                   </Tr>
                 ))}
               </Tbody>

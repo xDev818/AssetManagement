@@ -36,6 +36,7 @@ import {
   FormControl,
   Grid,
   GridItem,
+  Checkbox,
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 
@@ -566,6 +567,12 @@ export default function Asset() {
                 />
               </GridItem>
             </Grid>
+            
+            <Box>
+              <Checkbox colorScheme='green' defaultChecked>
+                  Active
+              </Checkbox>
+            </Box>
 
             <Box>
               <Button colorScheme="green" onClick={handleUpdate}>
