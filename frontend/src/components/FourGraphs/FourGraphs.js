@@ -53,6 +53,13 @@ import {
   GlobeIcon,
   WalletIcon,
 } from "components/Icons/Icons.js";
+import Performance from "components2/Graphs/Dashboard/Performance";
+import BarChart from "components/Charts/BarChart";
+import { barChartData } from "variables/charts";
+import { barChartOptions } from "variables/charts";
+
+import useFourGraphsStore from "store/useFourGraphsStore";
+
 
 //import Performance from "components2/Graphs/Dashboard/Performance";
 
@@ -65,6 +72,15 @@ export default function FourGraphs() {
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+
+  const { amount, getAmount } = useFourGraphsStore((state) => state);
+
+  useEffect(async () => {
+    const amountAssets = await getAmount("fourgraphs/total-asset-available");
+    console.log("zx", amount);
+  }, []);
+
 
   const [userdata, setUser] = useState({
     userid: "",
@@ -99,8 +115,12 @@ export default function FourGraphs() {
       var available = "";
       var fordeploy = "";
       var pullout = "";
-      const successAmount = await axios
+    //  const successAmount = await axios
+
+     //   .get("fourgraphs/total-asset-available")
+
         .get("/fourgraphs/totalAmount-asset-available")
+
 
         .then((res) => {
           amount = res.data.result[0].Amount;
@@ -224,6 +244,8 @@ export default function FourGraphs() {
       alert(err);
     }
   }, []);
+
+  console.log("four", fourgraphs);
 
   return (
     <SimpleGrid
