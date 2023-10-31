@@ -43,17 +43,31 @@ const {
 
         if( err ) return response.status(400).send(
             {
-                message: "No Records Found",
+                message: "Error in loading asset by user",
                 message2: err.message
             }
         )
 
-         response.status(200).send(
-             {
-                 message: "Records Found",
-                 result
-             }
-         )
+        if(result.count > 0) {
+            return {
+                message: "Records Found",
+                result}
+        } else {
+            return {
+                message: "No Records Found"
+                }
+        }
+
+        //  response.status(200).send(
+        //      {
+               
+                    
+        //             message: "Records Found",
+        //             result
+               
+                
+        //      }
+        //  )
 
     })
 

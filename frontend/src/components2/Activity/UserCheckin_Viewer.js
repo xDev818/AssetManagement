@@ -74,7 +74,7 @@ export default function UserCheckin_Viewer() {
  // const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
 
   const nextPage = () => {
-    console.log("cureentpage", currentPage);
+    //console.log("cureentpage", currentPage);
     if (currentPage !== tablePages) {
       setCurrentPage(currentPage + 1);
     }
@@ -94,31 +94,41 @@ export default function UserCheckin_Viewer() {
     const tokenStorage = localStorage.getItem("token");
     const tokenDecoded = decoder(tokenStorage);
 
-  const toast = useToast()
-    toast({
-      title: 'Account created.',
-      description: "We've created your account for you.",
-      status: 'success',
-      duration: 9000,
-      isClosable: true,
-      action: handleCheckin
-    })
+ 
 
     setUser({
       ...userdata,
-
       userid: tokenDecoded.result[0].userDisplayID,
       deptid: tokenDecoded.result[0].departmentDisplayID,
       positionid : tokenDecoded.result[0].positionID
-
-
     });
+
+
   };
+
+
+
   useEffect(() => {
-    SetUsers();
+
+    //SetUsers();
+
+    //  const tokenStorage = localStorage.getItem("token");
+    //  const tokenDecoded = decoder(tokenStorage);
+
+ 
+
+    // setUser({
+    //   ...userdata,
+    //   userid: tokenDecoded.result[0].userDisplayID,
+    //   deptid: tokenDecoded.result[0].departmentDisplayID,
+    //   positionid : tokenDecoded.result[0].positionID
+    // });
+// setUser(tokenDecoded)
     getStatusByName()
     LoadAllAssetsForDeploy();
-  }, [userdata.userid]);
+  }, []);
+
+ // userdata && console.log(userdata)
 
   const getStatusByName = async () => {
     try {
@@ -127,7 +137,7 @@ export default function UserCheckin_Viewer() {
       const success = await axios.get('/getStatusbyname/' + name)
 
         .then((res) => {
-        
+          
           setStatusID({...statusvalues , 
             statusid : res.data.result[0].assetStatusID });
           
@@ -149,18 +159,48 @@ export default function UserCheckin_Viewer() {
   };
 
   const LoadAllAssetsForDeploy = async () => {
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
+
+
+    // setUser({
+    //   ...userdata,
+    //   userid: tokenDecoded.result[0].userDisplayID,
+    //   deptid: tokenDecoded.result[0].departmentDisplayID,
+    //   positionid : tokenDecoded.result[0].positionID
+    // });
+
+
     try {
-    
+
+      const temp_user = tokenDecoded.result[0].userDisplayID
+      alert ("dsgsdfg", temp_user)
       if(userdata.userid ) {
         const success = await axios.get('/user-checkin/view-fordeploy/' + userdata.userid )
 
         .then((res) => {
-       
+
+         if(res.data.message == "Record Found") {
+          
           setAssets(res.data.result);
+         } else {
+          alert(res.data.message)
+          const InsertLogs = new Logs(
+            "Error",
+            "User-CheckinViewer",
+            "Function /LoadAllPositions",
+            "LoadAllPositions",
+            userdata.userid
+          );
+
+         }
+
+          
         
         })
         .catch((err) => {
-          //alert(err)
+          alert(err)
+          //setAssets([])
           const InsertLogs = new Logs(
             "Error",
             "PositionViewer",
@@ -170,6 +210,9 @@ export default function UserCheckin_Viewer() {
           );
         });
 
+      }
+      else  {
+        alert("No user ID, redirect to dashboard")
       }
 
     } catch (err) {
@@ -194,11 +237,11 @@ export default function UserCheckin_Viewer() {
   };
 
 
-  const UpdateAsseteDetailStatus = (detailID,statID) => {
+  const UpdateAsseteDetailStatus = async (detailID,statID) => {
    
     try {
      
-        const updateDetail = axios.post("/user-checkin/update-checkin-status",{detailID,statID})
+        const updateDetail = await axios.post("/user-checkin/update-checkin-status",{detailID,statID})
 
           .then((res) => {
         //    alert("Asset Details updated")
