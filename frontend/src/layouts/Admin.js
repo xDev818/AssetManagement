@@ -31,8 +31,10 @@ import bgAdmin from "assets/img/admin-background.png";
 import FourGraphs from "components/FourGraphs/FourGraphs";
 
 export default function Dashboard(props) {
+
   const location = useLocation();
  // console.log("location", location.pathname);
+
   const { ...rest } = props;
   // states and functions
   const [fixed, setFixed] = useState(false);
@@ -115,14 +117,14 @@ export default function Dashboard(props) {
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         backgroundSize="convert"
-        h="130vh"
+        h="300vh"
         w="100%"
         position="absolute"
         bgImage={colorMode === "light" ? bgAdmin : "none"}
         bg={colorMode === "light" ? bgAdmin : "navy.900"}
         bgSize="cover"
         top="0"
-        // bg={"#E9E9E9"}
+        // bg={"#96BFE6"}
       />
 
       <Sidebar
