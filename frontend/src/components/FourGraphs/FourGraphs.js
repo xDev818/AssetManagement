@@ -58,11 +58,22 @@ import BarChart from "components/Charts/BarChart";
 import { barChartData } from "variables/charts";
 import { barChartOptions } from "variables/charts";
 
+import useFourGraphsStore from "store/useFourGraphsStore";
+
+
 export default function FourGraphs() {
   const iconBlue = useColorModeValue("blue.500", "blue.500");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { amount, getAmount } = useFourGraphsStore((state) => state);
+
+  useEffect(async () => {
+    const amountAssets = await getAmount("fourgraphs/total-asset-available");
+    console.log("zx", amount);
+  }, []);
+
 
   const [userdata, setUser] = useState({
     userid: "",
@@ -97,7 +108,6 @@ export default function FourGraphs() {
       var pullout = "";
       const successAmount = await axios
         .get("fourgraphs/total-asset-available")
-
         .then((res) => {
           amount = res.data.result[0].Amount;
         })
@@ -199,6 +209,8 @@ export default function FourGraphs() {
       alert(err);
     }
   }, []);
+
+  console.log("four", fourgraphs);
 
   return (
     <SimpleGrid

@@ -1,16 +1,15 @@
-// /* 
+// /*
 
 //     Date : 10 / 19 / 23
 //     Author : Nole
 //     Activities
-//     Purpose : 
+//     Purpose :
 //       Update Profile
 //           *** add var userID = ''
 //           *** Add useEffect() to get all User Group
 //           *** function  LoadAllUserGroups()
 //           *** function LoadAllPositions()
 //           *** later to fix Load Data based on userGroup assgined (LoadAllUserGroups() , LoadAllPositions())
-          
 
 // */
 
@@ -147,7 +146,7 @@
 //         headers: {
 //           "Content-Type": 'multipart/form-data'
 //         }
-//       })  
+//       })
 
 //       const responseImageUpdate = await requestImg.data
 
@@ -324,7 +323,7 @@
 //                   {position.positionName}
 //                 </option>
 //                 ))
-                 
+
 //               }
 //             </Select>
 //           </Box>
@@ -396,7 +395,6 @@
 //     </Card>
 //   );
 // }
-
 
 /* 
 
@@ -656,7 +654,6 @@ export default function UpdateProfile() {
         w={{ base: "auto", md: "auto", lg: "auto" }}
         mx={{ base: 0, md: 0, lg: 3 }}
         display={{ base: "none", md: "block" }}
-        mt={{ lg: "-30px" }}
       >
         <Text fontWeight="bold" mb={5}>
           Profile

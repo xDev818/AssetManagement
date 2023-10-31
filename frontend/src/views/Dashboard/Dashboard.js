@@ -22,6 +22,7 @@ import {
   Button,
   Flex,
   Grid,
+  GridItem,
   Progress,
   SimpleGrid,
   Stat,
@@ -37,6 +38,7 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
+import bgAdmin from "assets/img/admin-background.png";
 // Custom components
 import Card from "components/Card/Card.js";
 import BarChart from "components/Charts/BarChart";
@@ -64,6 +66,7 @@ import decoder from "jwt-decode";
 import axios from "axios";
 import Logs from "../../components/Utils/logs_helper";
 import FourGraphs from "components/FourGraphs/FourGraphs";
+import AssetViewer from "components2/Activity/AssetViewer";
 // End Jinshin
 
 export default function Dashboard() {
@@ -169,6 +172,34 @@ export default function Dashboard() {
         templateRows={{ lg: "repeat(2, auto)" }}
         gap="20px"
       >
+        <GridItem colSpan={2}>
+          <Card mb="30px">
+            <AssetViewer />
+          </Card>
+        </GridItem>
+        <GridItem>
+          <Card maxW={{ sm: "320px", md: "1000px" }}>
+            <AssetViewer />
+          </Card>
+        </GridItem>
+        <GridItem>
+          <Card>
+            <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
+              <Text color="gray.400" fontSize="sm" fontWeight="bold" mb="6px">
+                PERFORMANCE
+              </Text>
+              <Text color={textColor} fontSize="lg" fontWeight="bold">
+                Total orders
+              </Text>
+            </Flex>
+            <Box minH="520px">
+              <BarChart
+                chartData={barChartData}
+                chartOptions={barChartOptions}
+              />
+            </Box>
+          </Card>
+        </GridItem>
         <Card
           bg={
             colorMode === "dark"
