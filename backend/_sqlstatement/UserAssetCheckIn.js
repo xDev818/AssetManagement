@@ -30,7 +30,7 @@
             + " inner join tblUsers user on user.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.userSelectedID"
             + " inner join tblUsers userCheckout on userCheckout.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.useridcheckout"
             + " inner join  tblAssetType type on type.typeID COLLATE utf8mb4_unicode_ci = asset.typeID"
-            + " where assetsdetail.checkinby is null and user.userDisplayID = ? and assetsdetail.active_checkin = 1"
+            + " where assetsdetail.checkinby is null and assetsdetail.userSelectedID = ? and assetsdetail.active_checkin = 1"
             + " ORDER BY assetsdetail.plancheckout ASC"
 
         

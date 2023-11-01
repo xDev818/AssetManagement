@@ -51,17 +51,22 @@ import { Link } from "react-router-dom";
 
 export default function UserCheckin_Viewer() {
   
+  const toast = useToast()
 
   const [assets, setAssets] = useState([]);
   const [statusvalues,setStatusID] = useState({
     statusid: ''
   })
+
+  var userid = ''
+  var deptid = ''
+  var positionid = ''
  
-  const [userdata,setUser] = useState({
-    userid : '',
-    deptid:'',
-    positionid:''
-  });
+  // const [userdata,setUser] = useState({
+  //   userid : '',
+  //   deptid:'',
+  //   positionid:''
+  // });
 
   const [search, setSearch] = useState("");
 
@@ -90,115 +95,134 @@ export default function UserCheckin_Viewer() {
     setCurrentPage(number);
   };
 
-  const SetUsers = async () => {
-    const tokenStorage = localStorage.getItem("token");
-    const tokenDecoded = decoder(tokenStorage);
+  // const SetUsers = async () => {
+  //   const tokenStorage = localStorage.getItem("token");
+  //   const tokenDecoded = decoder(tokenStorage);
 
  
 
-    setUser({
-      ...userdata,
-      userid: tokenDecoded.result[0].userDisplayID,
-      deptid: tokenDecoded.result[0].departmentDisplayID,
-      positionid : tokenDecoded.result[0].positionID
-    });
+  //   setUser({
+  //     ...userdata,
+  //     userid: tokenDecoded.result[0].userDisplayID,
+  //     deptid: tokenDecoded.result[0].departmentDisplayID,
+  //     positionid : tokenDecoded.result[0].positionID
+  //   });
 
 
-  };
+  // };
 
 
 
-  useEffect(() => {
+  useEffect( () => {
 
-    //SetUsers();
 
-    //  const tokenStorage = localStorage.getItem("token");
-    //  const tokenDecoded = decoder(tokenStorage);
 
- 
+    /* 
+    Get StatusbyName (Deployed)
+    */
+    try {
 
-    // setUser({
-    //   ...userdata,
-    //   userid: tokenDecoded.result[0].userDisplayID,
-    //   deptid: tokenDecoded.result[0].departmentDisplayID,
-    //   positionid : tokenDecoded.result[0].positionID
-    // });
-// setUser(tokenDecoded)
-    getStatusByName()
-    LoadAllAssetsForDeploy();
+
+    const name = 'Deployed'
+    const success =  axios.get('/getStatusbyname/' + name)
+
+      .then((res) => {
+       
+        setStatusID({...statusvalues , 
+          statusid : res.data.result[0].assetStatusID });
+         
+          LoadAllAssetsForDeploy()
+
+      })
+      .catch((err) => {
+        //alert(err)
+        const InsertLogs = new Logs(
+          "Error",
+          "PositionViewer",
+          "Function /LoadAllPositions",
+          "LoadAllPositions",
+          userid
+        );
+      });
+
+
+      /* 
+        LoadAllAssetsForDeploy
+      */
+
+    }
+    catch (err) {
+      alert(err);
+    }
+
+    
+
+      try {
+
+
+  
+      } catch (err) {
+        alert(err);
+      }
+
+
   }, []);
 
  // userdata && console.log(userdata)
 
-  const getStatusByName = async () => {
-    try {
+  // const getStatusByName = async () => {
+  //   try {
      
-      const name = 'Deployed'
-      const success = await axios.get('/getStatusbyname/' + name)
+  //     const name = 'Deployed'
+  //     const success = await axios.get('/getStatusbyname/' + name)
 
-        .then((res) => {
+  //       .then((res) => {
           
-          setStatusID({...statusvalues , 
-            statusid : res.data.result[0].assetStatusID });
+  //         setStatusID({...statusvalues , 
+  //           statusid : res.data.result[0].assetStatusID });
           
         
-        })
-        .catch((err) => {
-          //alert(err)
-          const InsertLogs = new Logs(
-            "Error",
-            "PositionViewer",
-            "Function /LoadAllPositions",
-            "LoadAllPositions",
-            userdata.userid
-          );
-        });
-    } catch (err) {
-      alert(err);
-    }
-  };
+  //       })
+  //       .catch((err) => {
+  //         //alert(err)
+  //         const InsertLogs = new Logs(
+  //           "Error",
+  //           "PositionViewer",
+  //           "Function /LoadAllPositions",
+  //           "LoadAllPositions",
+  //           userdata.userid
+  //         );
+  //       });
+  //   } catch (err) {
+  //     alert(err);
+  //   }
+  // };
 
   const LoadAllAssetsForDeploy = async () => {
-    const tokenStorage = localStorage.getItem("token");
-    const tokenDecoded = decoder(tokenStorage);
-
-
-    // setUser({
-    //   ...userdata,
-    //   userid: tokenDecoded.result[0].userDisplayID,
-    //   deptid: tokenDecoded.result[0].departmentDisplayID,
-    //   positionid : tokenDecoded.result[0].positionID
-    // });
-
 
     try {
 
-      const temp_user = tokenDecoded.result[0].userDisplayID
-      alert ("dsgsdfg", temp_user)
-      if(userdata.userid ) {
-        const success = await axios.get('/user-checkin/view-fordeploy/' + userdata.userid )
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage); 
+  
+      userid = tokenDecoded.result[0].userDisplayID
+      deptid = tokenDecoded.result[0].departmentDisplayID
+      positionid = tokenDecoded.result[0].positionID
+
+      if(userid ) {
+
+      const dep =  axios.get('/user-checkin/view-fordeploy/' + userid )
 
         .then((res) => {
+      
+          if(res.data.message === 'Record Found') {
 
-         if(res.data.message == "Record Found") {
-          
-          setAssets(res.data.result);
-         } else {
-          alert(res.data.message)
-          const InsertLogs = new Logs(
-            "Error",
-            "User-CheckinViewer",
-            "Function /LoadAllPositions",
-            "LoadAllPositions",
-            userdata.userid
-          );
-
-         }
-
-          
+            setAssets(res.data.result);
+          }
         
         })
         .catch((err) => {
+          alert("dito ba")
           alert(err)
           //setAssets([])
           const InsertLogs = new Logs(
@@ -206,7 +230,7 @@ export default function UserCheckin_Viewer() {
             "PositionViewer",
             "Function /LoadAllPositions",
             "LoadAllPositions",
-            userdata.userid
+            userid
           );
         });
 
@@ -253,7 +277,7 @@ export default function UserCheckin_Viewer() {
               "PositionViewer",
               "Function /LoadAllPositions",
               "LoadAllPositions",
-              userdata.userid
+              userid
             );
           });
      
@@ -281,7 +305,7 @@ export default function UserCheckin_Viewer() {
               "PositionViewer",
               "Function /LoadAllPositions",
               "LoadAllPositions",
-              userdata.userid
+              userid
             );
           });
      
@@ -291,10 +315,30 @@ export default function UserCheckin_Viewer() {
   }
   };
 
+  
+  function viewToastify(title,desc,status) {
+    // const toast = useToast()
+     return (
+       
+           toast({
+             title: title,
+             description: desc,
+             status: status,
+             duration: 3000,
+             isClosable: true,
+             position: "top"
+           })
+       
+      
+     )
+   }
+
 
   const handleCheckin = async (e,detailID,userid,assetID) => {
      
     try {
+     
+
         e.preventDefault()
 
           //alert(statusvalues.statusid)
@@ -309,6 +353,15 @@ export default function UserCheckin_Viewer() {
               UpdateAssetStatus(assetID,statID,userid)
 
               LoadAllAssetsForDeploy()
+
+              viewToastify(
+                "Check-in",
+                "Asset is now received",
+                "success"
+              )
+
+              window.location.href = "/#/admin/dashboard"
+             
               
             })
             .catch((err) => {
@@ -317,7 +370,7 @@ export default function UserCheckin_Viewer() {
                 "PositionViewer",
                 "Function /LoadAllPositions",
                 "LoadAllPositions",
-                userdata.userid
+                userid
               );
             });
        

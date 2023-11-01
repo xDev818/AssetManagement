@@ -1,400 +1,3 @@
-// /*
-
-//     Date : 10 / 19 / 23
-//     Author : Nole
-//     Activities
-//     Purpose :
-//       Update Profile
-//           *** add var userID = ''
-//           *** Add useEffect() to get all User Group
-//           *** function  LoadAllUserGroups()
-//           *** function LoadAllPositions()
-//           *** later to fix Load Data based on userGroup assgined (LoadAllUserGroups() , LoadAllPositions())
-
-// */
-
-// import {
-//   Box,
-//   Flex,
-//   FormLabel,
-//   Image,
-//   Input,
-//   Stack,
-//   Text,
-//   Select,
-//   Button,
-//   FormControl,
-//   Grid,
-//   GridItem,
-// } from "@chakra-ui/react";
-// import Card from "components/Card/Card";
-// import React, { useEffect, useState, useReducer, useRef } from "react";
-// import decoder from "jwt-decode";
-// import axios from "axios";
-// import Logs from "components/Utils/logs_helper";
-// import { useParams } from "react-router-dom";
-
-// // Jinshin
-// const myFunc = (states, action) => {
-//   const params = useParams();
-//   switch (action.type) {
-//     case "myRole":
-//       return { ...states, user_role: action.payload };
-
-//     case "myDepartment":
-//       return { ...states, department: action.payload };
-
-//     case "myFirstname":
-//       return { ...states, firstname: action.payload };
-
-//     case "myLastname":
-//       return { ...states, lastname: action.payload };
-
-//     case "myEmail":
-//       return { ...states, email: action.payload };
-
-//     case "myPassword":
-//       return { ...states, password: action.payload };
-
-//     case "myConfirmPassword":
-//       return { ...states, confirm_password: action.payload };
-
-//     default:
-//       states;
-//   }
-// };
-
-// const ACTION = {
-//   ROLE: "myRole",
-//   DEPARTMENT: "myDepartment",
-//   FIRSTNAME: "myFirstname",
-//   LASTNAME: "myLastname",
-//   EMAIL: "myEmail",
-//   PASSWORD: "myPassword",
-//   CONFIRM_PASSWORD: "myConfirmPassword",
-// }; // End Jinshin
-
-// export default function UpdateProfile() {
-//   //Jinshin
-//   const [states, dispatch] = useReducer(myFunc, {
-//     user_role: "",
-//     department: "",
-//     firstname: "",
-//     lastname: "",
-//     email: "",
-//     password: "",
-//     confirm_password: "",
-//   });
-//   const { id } = useParams();
-//   // End Jinshin
-
-//   //Nole
-//   var userID = "";
-//   const [usergroups, setUserGroups] = useState([]);
-//   const [positions, setPositions] = useState([]);
-//   const [data, setData] = useState();
-//   const [ file, setFile ] = useState()
-//   const token = window.localStorage.getItem("token");
-//   const button = useRef(null);
-//   useEffect(() => {
-//     const decoded = decoder(token);
-//     setData(decoded?.result[0]);
-//   }, [setData]);
-//   data && console.log(data);
-//   // Destructuring personal info
-//   const firstname = data?.firstname;
-//   const lastname = data?.lastname;
-//   const displayID = data?.userDisplayID;
-//   const department = data?.departmentName;
-//   const email = data?.email;
-//   const userRole = data?.userRole;
-//   const imgFilename = data?.imgFilename;
-
-//   // Jinshin
-//   const updateHandler = async () => {
-
-//     let _image_upload = ''
-//     const buttonStatus = button.current
-//     buttonStatus.disabled = true;
-//     const values = {
-//       role: states.user_role || userRole,
-//       department: states.department || department,
-//       firstname: states.firstname || firstname,
-//       lastname: states.lastname || lastname,
-//       email: states.email || email,
-//       password: states.password,
-//     };
-
-//     try {
-
-//       const request = await axios.put(`/users/${displayID}`, values);
-
-//       const response = await request.data;
-
-//       if ( file ) {
-
-//         _image_upload = new FormData()
-//         _image_upload.append("file", file)
-
-//       } else {
-
-//         _image_upload = ''
-
-//       }
-
-//       const requestImg = await axios.put(`/users/update/image/${displayID}`, _image_upload, {
-//         headers: {
-//           "Content-Type": 'multipart/form-data'
-//         }
-//       })
-
-//       const responseImageUpdate = await requestImg.data
-
-//       if ( responseImageUpdate.message.includes('profile updated successfully') ) {
-
-//         localStorage.setItem("token", responseImageUpdate.token);
-//         setTimeout( () => {
-//           buttonStatus.disabled = false;
-//           window.location.reload()
-//         }, 1000)
-
-//       }
-//     } catch (err) {
-//       const errorStatus = err.code;
-
-//       if (errorStatus.includes("ERR_NETWORK")) {
-//         const useEffectLogs = new Logs(
-//           "DB",
-//           "Login",
-//           "Function /loginHandler",
-//           err,
-//           ""
-//         );
-
-//         alert(useEffectLogs.getMessage());
-//         console.log(useEffectLogs.getLogs());
-//         buttonStatus.disabled = false;
-//       }
-
-//       if (errorStatus.includes("ERR_BAD_REQUEST")) {
-//         const useEffectLogs = new Logs(
-//           errorStatus,
-//           "Login",
-//           "Function /loginHandler",
-//           err.response.data.message,
-//           ""
-//         );
-//         useEffectLogs.getLogs();
-
-//         alert(useEffectLogs.getMessage());
-//         console.log(useEffectLogs.getLogs());
-//         buttonStatus.disabled = false;
-
-//         useEffectLogs.insertLogs(useEffectLogs.getLogs());
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     try {
-//       LoadAllUserGroups();
-//       LoadAllPositions();
-//     } catch (err) {
-//       alert(err);
-//     }
-//   }, []);
-
-//   const LoadAllUserGroups = async () => {
-//     try {
-//       const tokenStorage = localStorage.getItem("token");
-//       const tokenDecoded = decoder(tokenStorage);
-
-//       userID = tokenDecoded.result[0].userDisplayID;
-
-//       const success = await axios
-//         .get("/usergroup/viewuser-group")
-
-//         .then((res) => {
-//           setUserGroups(res.data.result);
-//         })
-//         .catch((err) => {
-//           const InsertLogs = new Logs(
-//             "Error",
-//             "PositionViewer",
-//             "Function /LoadAllPositions",
-//             "LoadAllPositions",
-//             userID
-//           );
-//         });
-//     } catch (err) {
-//       alert(err);
-//     }
-//   };
-
-//   const LoadAllPositions = async () => {
-//     try {
-//       const tokenStorage = localStorage.getItem("token");
-//       const tokenDecoded = decoder(tokenStorage);
-
-//       userID = tokenDecoded.result[0].userDisplayID;
-
-//       const success = await axios
-//         .get("/positions/viewallpositions")
-
-//         .then((res) => {
-//           setPositions(res.data.result);
-//         })
-//         .catch((err) => {
-//           const InsertLogs = new Logs(
-//             "Error",
-//             "PositionViewer",
-//             "Function /LoadAllPositions",
-//             "LoadAllPositions",
-//             userID
-//           );
-//         });
-//     } catch (err) {
-//       alert(err);
-//     }
-//   };
-
-//   return (
-//     <Card
-//       w={{ base: "auto", md: "auto", lg: "auto" }}
-//       mx={{ base: 0, md: 0, lg: 3 }}
-//     >
-//       <Text fontWeight="bold" mb={5}>
-//         Profile
-//       </Text>
-//       <FormControl>
-//         <Flex
-//           justifyContent="center"
-//           flexDirection="column"
-//           alignItems="center"
-//         >
-//           <Box
-//             borderRadius="100%"
-//             bg="blackAlpha.100"
-//             w={150}
-//             h={150}
-//             overflow="hidden"
-//             display="flex"
-//             justifyContent="center"
-//             alignItems="center"
-//           >
-//           <Image
-//             src={ `http://localhost:5001/images/${imgFilename}` || "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"}
-//             w={{ base: 100 }}
-//           />
-//           </Box>
-//           <input type="file" name="file" mt={4} onChange={ e => setFile(e.target.files[0] ) }/>
-//         </Flex>
-//         <Stack gap={2} mt={10}>
-//           <FormLabel>User Group: { states.user_role || userRole}</FormLabel>
-//           <Select placeholder='Select User Group' size='md'
-//             //  onChange={ e => {
-//             //   setUserGroups( { ...values, departmentid: e.target.value } )}}
-//             //   value={usergroups.}
-//           >
-//             {usergroups.map((group) => (
-//               <option value={group.id} size="md">
-//                 {group.categoryName}
-//               </option>
-//             ))}
-//           </Select>
-//           <Box>
-//             <FormLabel fontSize={{ base: "sm" }}>Position : </FormLabel>
-//             {/* <Select onChange={ e => dispatch( { type: ACTION.DEPARTMENT, payload: e.target.value } )}>
-//               <option value={ department }> { department } </option>
-//               <option value="Production">Production</option>
-//               <option value="Accounting">Accounting</option>
-//               <option value="Marketing">Marketing</option>
-//               <option value="HR">HR</option>
-//               <option value="ITDepartment">ITDepartment</option>
-//               <option value="Default Department">Default Department</option>
-//             </Select> */}
-//             <Select placeholder='Select Position' size='md'
-//             //  onChange={ e => {
-//             //   setUserGroups( { ...values, departmentid: e.target.value } )}}
-//             //   value={usergroups.}
-//              >
-//               {positions.map((position) => (
-//                 <option value={position.id} size="md">
-//                   {position.positionName}
-//                 </option>
-//                 ))
-
-//               }
-//             </Select>
-//           </Box>
-//           <Grid templateColumns="repeat(2, 1fr)" gap={5}>
-//             <GridItem>
-//               <FormLabel fontSize={{ base: "sm" }}>First Name</FormLabel>
-//               <Input
-//                 onChange={(e) =>
-//                   dispatch({ type: ACTION.FIRSTNAME, payload: e.target.value })
-//                 }
-//                 placeholder="Firstname..."
-//                 defaultValue={states.firstname || firstname}
-//               />
-//             </GridItem>
-//             <GridItem>
-//               <FormLabel fontSize={{ base: "sm" }}>Last Name</FormLabel>
-//               <Input
-//                 onChange={(e) =>
-//                   dispatch({ type: ACTION.LASTNAME, payload: e.target.value })
-//                 }
-//                 placeholder="Lastname..."
-//                 defaultValue={states.lastname || lastname}
-//               />
-//             </GridItem>
-//           </Grid>
-//           <Box>
-//             <FormLabel fontSize={{ base: "sm" }}>Email Address</FormLabel>
-//             <Input
-//               onChange={(e) =>
-//                 dispatch({ type: ACTION.EMAIL, payload: e.target.value })
-//               }
-//               defaultValue={email}
-//               placeholder="Email..."
-//             />
-//           </Box>
-//           <Box>
-//             <FormLabel fontSize={{ base: "sm" }}>Password</FormLabel>
-//             <Input
-//               type="password"
-//               onChange={(e) =>
-//                 dispatch({ type: ACTION.PASSWORD, payload: e.target.value })
-//               }
-//               placeholder="Password..."
-//               defaultValue={states.password || "************"}
-//             />
-//           </Box>
-//           <Box>
-//             <FormLabel fontSize={{ base: "sm" }}>Confirm Password</FormLabel>
-//             <Input
-//               type="password"
-//               onChange={(e) =>
-//                 dispatch({
-//                   type: ACTION.CONFIRM_PASSWORD,
-//                   payload: e.target.value,
-//                 })
-//               }
-//               placeholder="Confirm Password..."
-//               defaultValue={states.confirm_password || "************"}
-//             />
-//           </Box>
-
-//           <Box>
-//             <Button ref={button} colorScheme="green" onClick={updateHandler}>
-//               Update Profile
-//             </Button>
-//           </Box>
-//         </Stack>
-//       </FormControl>
-//     </Card>
-//   );
-// }
 
 /* 
 
@@ -409,6 +12,12 @@
           *** function LoadAllPositions()
           *** later to fix Load Data based on userGroup assgined (LoadAllUserGroups() , LoadAllPositions())
           
+    Date : 11 / 11 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Update Profile
+           add handleLogout to re-direct to signin
 
 */
 import {
@@ -434,6 +43,7 @@ import {
   FormControl,
   Grid,
   GridItem,
+  useToast
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import React, { useEffect, useState, useReducer, useRef } from "react";
@@ -443,110 +53,126 @@ import Logs from "components/Utils/logs_helper";
 import { useParams } from "react-router-dom";
 import { column } from "stylis";
 
-// Jinshin
-const myFunc = (states, action) => {
-  const params = useParams();
-  switch (action.type) {
-    case "myRole":
-      return { ...states, user_role: action.payload };
-
-    case "myDepartment":
-      return { ...states, department: action.payload };
-
-    case "myFirstname":
-      return { ...states, firstname: action.payload };
-
-    case "myLastname":
-      return { ...states, lastname: action.payload };
-
-    case "myEmail":
-      return { ...states, email: action.payload };
-
-    case "myPassword":
-      return { ...states, password: action.payload };
-
-    case "myConfirmPassword":
-      return { ...states, confirm_password: action.payload };
-
-    default:
-      states;
-  }
-};
-
-const ACTION = {
-  ROLE: "myRole",
-  DEPARTMENT: "myDepartment",
-  FIRSTNAME: "myFirstname",
-  LASTNAME: "myLastname",
-  EMAIL: "myEmail",
-  PASSWORD: "myPassword",
-  CONFIRM_PASSWORD: "myConfirmPassword",
-}; // End Jinshin
+import imgDefault from "../../assets/img/defaultImage.webp";
+//import t from '../../../../backend/images/static/'
 
 export default function UpdateProfile() {
-  //Jinshin
-  const [states, dispatch] = useReducer(myFunc, {
-    user_role: "",
-    department: "",
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-    confirm_password: "",
-  });
-  // End Jinshin
+
+  // const toast = useToast()
+
+ 
 
   //Nole
   var userID = "";
   const [usergroups, setUserGroups] = useState([]);
   const [positions, setPositions] = useState([]);
-  const { id } = useParams();
+ 
   const [data, setData] = useState();
-  const [file, setFile] = useState();
-  const token = window.localStorage.getItem("token");
-  const button = useRef(null);
+  var [file, setFile] = useState('');
+
+  const [values,setProfile] = useState({
+    user_id : "",
+    user_positionid: "",
+    user_groupid :"",
+    user_firstname: "",
+    user_lastname: "",
+    user_email: "",
+    user_displayname: "",
+    userRole: "",
+    imgFilename: ""
+  })
+  
+ 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     const decoded = decoder(token);
     setData(decoded?.result[0]);
-    console.log("id", id);
+
+   
+
+    setProfile({
+      ...values,
+      user_id: decoded?.result[0].userDisplayID ,
+      user_positionid: decoded?.result[0].positionID,
+      user_groupid: decoded?.result[0].groupTypeID,
+      user_firstname: decoded?.result[0].firstname,
+      user_lastname: decoded?.result[0].lastname,
+      user_email: decoded?.result[0].email,
+      user_displayname: decoded?.result[0].displayName,
+      userRole : decoded?.result[0].userRole,
+      imgFilename: decoded?.result[0].imgFilename
+    })
+
+
+   // console.log("id", id);
   }, [setData]);
-  data && console.log(data);
-  // Destructuring personal info
-  const firstname = data?.firstname;
-  const lastname = data?.lastname;
-  const displayID = data?.userDisplayID;
-  const department = data?.departmentName;
-  const email = data?.email;
-  const userRole = data?.userRole;
-  const imgFilename = data?.imgFilename;
+ 
+
+  useEffect(() => {
+    try {
+        
+      
+  
+      LoadAllUserGroups();
+      LoadAllPositions();
+    } catch (err) {
+      alert(err);
+    }
+  }, []);
+  
+  const handleLogout = () => {
+      try {
+      const storage = localStorage;
+      window.localStorage.removeItem("token");
+
+      if (!storage.getItem("token")) {
+        window.location.href = "/#/auth/signin";
+        
+      }
+    } catch (err) {
+      //window.location.reload()
+    }
+    finally {
+      window.location.reload()
+    }
+
+  };
 
   // Jinshin
   const updateHandler = async () => {
-    const buttonStatus = button.current;
-    buttonStatus.disabled = true;
-    const values = {
-      role: states.user_role || userRole,
-      department: states.department || department,
-      firstname: states.firstname || firstname,
-      lastname: states.lastname || lastname,
-      email: states.email || email,
-      password: states.password,
+
+    const updatevalues = {
+
+     
+      userID: values.user_id,
+      positionID: values.user_positionid,
+      groupID: values.user_groupid,
+      firstname: values.user_firstname,
+      lastname: values.user_lastname,
+      email: values.user_email,
+      displayname: values.user_displayname,
+      imgFilename: values.imgFilename
     };
-
-    // Tasks
-    //  fix the image . make a seperate api call for it
-    //  add password then match it, if match then update success else, use bcrypt if password has length else use the old one
-    //  fetch the password in the set data data?.password
-    //  is complete user will be redirected to dashboard
-
+   
     try {
-      const request = await axios.put(`/users/${displayID}`, values);
+      const request = await axios.post('/users/update-profile', updatevalues);
       const response = await request.data;
 
-      if (response.message.includes("Updated Successfully")) {
-        localStorage.setItem("token", response.token);
-        buttonStatus.disabled = false;
-        window.location.reload();
+      if (response.message.includes("Update Success")) {
+          // viewToastify(
+          //           "Update Profile",
+          //           "User Profile updated successfully",
+          //           "success"
+          //         )
+
+        //localStorage.setItem("token", response.token);
+        handleLogout()
+       
+        
+       // buttonStatus.disabled = false;
+       // window.location.reload();
+      // window.location.href = "/#/auth/signin"
+
       }
     } catch (err) {
       const errorStatus = err.code;
@@ -562,7 +188,7 @@ export default function UpdateProfile() {
 
         alert(useEffectLogs.getMessage());
         console.log(useEffectLogs.getLogs());
-        buttonStatus.disabled = false;
+        //buttonStatus.disabled = false;
       }
 
       if (errorStatus.includes("ERR_BAD_REQUEST")) {
@@ -577,21 +203,14 @@ export default function UpdateProfile() {
 
         alert(useEffectLogs.getMessage());
         console.log(useEffectLogs.getLogs());
-        buttonStatus.disabled = false;
+        //buttonStatus.disabled = false;
 
         useEffectLogs.insertLogs(useEffectLogs.getLogs());
       }
     }
+   window.location.reload()
   };
 
-  useEffect(() => {
-    try {
-      LoadAllUserGroups();
-      LoadAllPositions();
-    } catch (err) {
-      alert(err);
-    }
-  }, []);
 
   const LoadAllUserGroups = async () => {
     try {
@@ -647,6 +266,36 @@ export default function UpdateProfile() {
     }
   };
 
+  // useEffect(() => {
+  //   return
+  //    <>
+  //   </>
+  // }, [file])
+
+const handleUploadImage = async () => {
+  
+  const imagevalues = {
+    userid: values.user_id,
+    files: file
+  }
+
+    try {
+     
+        const requestImg = await axios.post("/users/upload-image", imagevalues, {
+          headers: {
+            "Content-Type": 'multipart/form-data'
+          }
+        })
+
+        
+
+    } catch (err) {
+      alert(err)
+    }
+
+
+}
+
   return (
     <>
       {/* TABLET AND DESKTOP RESPONSIVE */}
@@ -686,8 +335,9 @@ export default function UpdateProfile() {
                   </FormLabel>
                   <Input
                     display="none"
-                    type="file"
                     name="file"
+                    //id="file"
+                    type="file"
                     mt={4}
                     onChange={(e) => setFile(e.target.files[0])}
                     id="file-input"
@@ -699,6 +349,7 @@ export default function UpdateProfile() {
                       colorScheme="teal"
                       py={5}
                       rounded="4px"
+                      onClick={handleUploadImage}
                     >
                       Upload Image
                     </Button>
@@ -707,36 +358,28 @@ export default function UpdateProfile() {
                 <Flex alignItems="center">
                   <FormLabel w={100}>First Name</FormLabel>
                   <Input
-                    onChange={(e) =>
-                      dispatch({
-                        type: ACTION.FIRSTNAME,
-                        payload: e.target.value,
-                      })
-                    }
+                     onChange={ e => {
+                      setProfile( { ...values, user_firstname: e.target.value } )}}
+                    
                     placeholder="Firstname..."
-                    defaultValue={states.firstname || firstname}
+                    defaultValue= { values.user_firstname}
                   />
                 </Flex>
                 <Flex alignItems="center">
                   <FormLabel w={100}>Last Name</FormLabel>
                   <Input
-                    onChange={(e) =>
-                      dispatch({
-                        type: ACTION.LASTNAME,
-                        payload: e.target.value,
-                      })
-                    }
+                     onChange={ e => {
+                      setProfile( { ...values, user_lastname: e.target.value } )}}
                     placeholder="Lastname..."
-                    defaultValue={states.lastname || lastname}
+                    defaultValue={values.user_lastname}
                   />
                 </Flex>
                 <Flex alignItems="center">
                   <FormLabel w={100}>Email </FormLabel>
                   <Input
-                    onChange={(e) =>
-                      dispatch({ type: ACTION.EMAIL, payload: e.target.value })
-                    }
-                    defaultValue={email}
+                    onChange={ e => {
+                      setProfile( { ...values, user_email: e.target.value } )}}
+                    defaultValue={values.user_email}
                     placeholder="Email..."
                   />
                 </Flex>
@@ -754,21 +397,28 @@ export default function UpdateProfile() {
                 <Flex mx="auto">
                   <Image
                     src={
-                      imgFilename ||
-                      "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"
+
+                      values.imgFilename
+                            ? require(`../../../../backend/images/static/${values.imgFilename}`)
+                            // `http://localhost:5001/images/static/${values?.imgFilename}`
+                            //require(`../../../../backend/images/static/${values.imgFilename}`)
+                            :  imgDefault
+
+                      // values.imgFilename ||
+                      // "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"
                     }
                     w={{ base: 100 }}
                   />
                 </Flex>
                 <FormLabel>
-                  User Group: {states.user_role || userRole}
+                  User Group: {values.userRole }
                 </FormLabel>
                 <Select
                   placeholder="Select option"
                   size="md"
-                  //  onChange={ e => {
-                  //   setUserGroups( { ...values, departmentid: e.target.value } )}}
-                  //   value={usergroups.}
+                  onChange={ e => {
+                    setProfile( { ...values, user_groupid: e.target.value } )}}
+                    value={values.user_groupid}
                 >
                   {usergroups.map((group) => (
                     <option value={group.id} size="md">
@@ -790,9 +440,9 @@ export default function UpdateProfile() {
                   <Select
                     placeholder="Select option"
                     size="md"
-                    //  onChange={ e => {
-                    //   setUserGroups( { ...values, departmentid: e.target.value } )}}
-                    //   value={usergroups.}
+                    onChange={ e => {
+                      setProfile( { ...values, user_positionid: e.target.value } )}}
+                      value={values.user_positionid}
                   >
                     {positions.map((position) => (
                       <option value={position.id} size="md">
@@ -816,14 +466,14 @@ export default function UpdateProfile() {
                   <FormLabel fontSize={{ base: "sm" }}>Password</FormLabel>
                   <Input
                     type="password"
-                    onChange={(e) =>
-                      dispatch({
-                        type: ACTION.PASSWORD,
-                        payload: e.target.value,
-                      })
-                    }
+                    // onChange={(e) =>
+                    //   dispatch({
+                    //     type: ACTION.PASSWORD,
+                    //     payload: e.target.value,
+                    //   })
+                    // }
                     placeholder="Password..."
-                    defaultValue={states.password || "************"}
+                   // defaultValue={states.password || "************"}
                   />
                 </Box>
                 <Box>
@@ -832,21 +482,21 @@ export default function UpdateProfile() {
                   </FormLabel>
                   <Input
                     type="password"
-                    onChange={(e) =>
-                      dispatch({
-                        type: ACTION.CONFIRM_PASSWORD,
-                        payload: e.target.value,
-                      })
-                    }
+                    // onChange={(e) =>
+                    //   dispatch({
+                    //     type: ACTION.CONFIRM_PASSWORD,
+                    //     payload: e.target.value,
+                    //   })
+                    // }
                     placeholder="Confirm Password..."
-                    defaultValue={states.confirm_password || "************"}
+                   // defaultValue={states.confirm_password || "************"}
                   />
                 </Box>
                 <Box mt={3}>
                   <Button
                     rounded={5}
                     size="md"
-                    ref={button}
+                    
                     colorScheme="green"
                     onClick={updateHandler}
                   >
@@ -877,27 +527,36 @@ export default function UpdateProfile() {
           >
             <Image
               src={
-                imgFilename ||
-                "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"
+                // values.imgFilename ||
+                // "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"
+
+                values.imgFilename
+                ? require(`../../../../backend/images/static/${values.imgFilename}`)
+                //require(`../../../../backend/images/static/${values.imgFilename}`)
+                :  imgDefault
+
+
               }
               w={{ base: 100 }}
             />
           </Box>
           <input
-            type="file"
             name="file"
+            id="file"
+            type="file"
             mt={4}
             onChange={(e) => setFile(e.target.files[0])}
+            onClick={handleUploadImage}
           />
         </Flex>
         <Stack gap={2} mt={10}>
-          <FormLabel>User Group: {states.user_role || userRole}</FormLabel>
+          <FormLabel>User Group: {values.userRole}</FormLabel>
           <Select
             placeholder="Select option"
             size="md"
-            //  onChange={ e => {
-            //   setUserGroups( { ...values, departmentid: e.target.value } )}}
-            //   value={usergroups.}
+            onChange={ e => {
+              setProfile( { ...values, user_groupid: e.target.value } )}}
+              value={values.user_groupid}
           >
             {usergroups.map((group) => (
               <option value={group.id} size="md">
@@ -919,9 +578,9 @@ export default function UpdateProfile() {
             <Select
               placeholder="Select option"
               size="md"
-              //  onChange={ e => {
-              //   setUserGroups( { ...values, departmentid: e.target.value } )}}
-              //   value={usergroups.}
+              onChange={ e => {
+                setProfile( { ...values, user_positionid: e.target.value } )}}
+                value={values.user_positionid}
             >
               {positions.map((position) => (
                 <option value={position.id} size="md">
@@ -934,31 +593,28 @@ export default function UpdateProfile() {
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>First Name</FormLabel>
               <Input
-                onChange={(e) =>
-                  dispatch({ type: ACTION.FIRSTNAME, payload: e.target.value })
-                }
+               onChange={ e => {
+                setProfile( { ...values, user_firstname: e.target.value } )}}
                 placeholder="Firstname..."
-                defaultValue={states.firstname || firstname}
+                defaultValue={values.user_firstname }
               />
             </GridItem>
             <GridItem>
               <FormLabel fontSize={{ base: "sm" }}>Last Name</FormLabel>
               <Input
-                onChange={(e) =>
-                  dispatch({ type: ACTION.LASTNAME, payload: e.target.value })
-                }
+               onChange={ e => {
+                setProfile( { ...values, user_lastname: e.target.value } )}}
                 placeholder="Lastname..."
-                defaultValue={states.lastname || lastname}
+                defaultValue={values.user_lastname }
               />
             </GridItem>
           </Grid>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Email Address</FormLabel>
             <Input
-              onChange={(e) =>
-                dispatch({ type: ACTION.EMAIL, payload: e.target.value })
-              }
-              defaultValue={email}
+             onChange={ e => {
+              setData( { ...values, user_email: e.target.value } )}}
+              defaultValue={values.user_email}
               placeholder="Email..."
             />
           </Box>
@@ -966,29 +622,29 @@ export default function UpdateProfile() {
             <FormLabel fontSize={{ base: "sm" }}>Password</FormLabel>
             <Input
               type="password"
-              onChange={(e) =>
-                dispatch({ type: ACTION.PASSWORD, payload: e.target.value })
-              }
+              // onChange={(e) =>
+              //   dispatch({ type: ACTION.PASSWORD, payload: e.target.value })
+              // }
               placeholder="Password..."
-              defaultValue={states.password || "************"}
+              defaultValue={"************"}
             />
           </Box>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Confirm Password</FormLabel>
             <Input
               type="password"
-              onChange={(e) =>
-                dispatch({
-                  type: ACTION.CONFIRM_PASSWORD,
-                  payload: e.target.value,
-                })
-              }
+              // onChange={(e) =>
+              //   dispatch({
+              //     type: ACTION.CONFIRM_PASSWORD,
+              //     payload: e.target.value,
+              //   })
+              // }
               placeholder="Confirm Password..."
-              defaultValue={states.confirm_password || "************"}
+              defaultValue={"************"}
             />
           </Box>
           <Box>
-            <Button ref={button} colorScheme="green" onClick={updateHandler}>
+            <Button  colorScheme="green" onClick={updateHandler}>
               Update Profile
             </Button>
           </Box>

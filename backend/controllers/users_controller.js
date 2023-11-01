@@ -27,6 +27,13 @@
       Added:
           - verifyUserToken
 
+      Date : 11 / 1 / 23
+    Author : Jinshin
+    Activities
+    Purpose : 
+        Add new image functionality
+            const fileUpload = require('express-fileupload')
+
 */
 
 
@@ -34,8 +41,11 @@
 const mysql = require('../database')
 const jwt = require('jsonwebtoken')
 const { randomUUID } = require('crypto')
+
 const { compare_password, hash_password } = require('../utils/password_helper')
 
+const fileUpload = require('express-fileupload')
+const extentions = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
 
 // Date helper
 const { utils_getDate } = require('../utils/date_helper')
@@ -108,7 +118,7 @@ const loginUser = ( request, response ) => {
 
         const stmt = "SELECT users.userDisplayID,users.displayName, users.firstname, users.lastname,"
         + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
-        + "department.departmentName,users.positionID, users.isRegister FROM tblUsers users"
+        + "department.departmentName,users.positionID,users.groupTypeID, users.isRegister FROM tblUsers users"
         + " inner join tblUserCategory userCategory on users.groupTypeID = userCategory.categoryID"
         + " inner join tblPositions positions on positions.positionDisplayID = users.positionID"
         + " inner join tblDepartments department on department.departmentDisplayID = positions.departmentDisplayID"
@@ -357,7 +367,7 @@ const getUserProfile = ( request, response ) => {
 // An Intance to update a user
 const updateUserProfile = ( request, response ) => {
 
-    console.log(request.body)
+   // console.log(request.body)
 
     const { id } = request.params
 
@@ -474,6 +484,109 @@ const updateUserProfile = ( request, response ) => {
     
 }
 
+
+
+
+
+const updateProfile = ( request, response ) => {
+    
+    const { userID, positionID,groupID,firstname,lastname, email,displayname,imgFilename} = request.body
+
+   // console.log(request.body)
+
+    const stmt = "UPDATE tblUsers SET positionID = ?,"
+                + "groupTypeID = ?,displayName = ?,"
+                + "firstname = ?,lastname = ?,email =?, "
+                + "updatedBy = ?,dateUpdated = ?,"
+                + "isRegister = ?,imgFilename = ?"
+                + " where userDisplayID = ?"
+
+    const active = parseInt('0')
+
+    mysql.query(stmt, [positionID,groupID,displayname,firstname,lastname,email,userID,
+                        utils_getDate(),active,imgFilename,userID], ( err, result ) => {
+        
+       // console.log(response.status)
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+
+         response.status(200).send(
+             {
+                 message: "Update Success",
+                 result
+             }
+         )
+
+    })
+
+}
+
+const uploadImage = ( request, response ) => {
+    
+    //fileUpload()
+    const { userid , } = request.body
+
+    const files = request.files
+   // const userid = request.files
+
+
+    console.log(userid)
+
+   const file = files.file
+   const type = file.mimetype
+   const name = file.name
+   const newName = utils_getDate() + name
+
+    
+    const stmt = "UPDATE tblUsers SET imgFilename = ?"
+                + " where userDisplayID = ?"
+
+    mysql.query(stmt, [newName,userid], ( err, result ) => {
+        
+      //console.log(response.status)
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+
+        if ( !extentions.filter( ex => ex === type ).length ) return response.status(400).send(
+            {
+               message: `Only 'png', 'jpg', 'jpeg', 'webp' are allowed. This ${type} is not allowed`,
+               data: {
+                  allowed: "png, jpg, jpeg, webp",
+                  notAllowed: type
+               }
+            }
+         )
+
+         file.mv(`../backend/static/images/${newName}`, err => {
+
+            if ( err ) return response.status(400).send(
+               {
+                  message: "Failed to updated user's image",
+                  message2: err
+               }
+            )
+         })
+
+         response.status(200).send(
+             {
+                 message: "Updated Profile Image",
+                 result
+             }
+         )
+
+    })
+
+}
+
+
 // An Instance to delete an old user data by ID
 const deleteOldUserById = ( request, response ) => {
 
@@ -545,5 +658,7 @@ module.exports = {
     getUserProfile,
     updateUserProfile,
     deleteOldUserById,
-    deleteAllOldUsers
+    deleteAllOldUsers,
+    updateProfile,
+    uploadImage
 }

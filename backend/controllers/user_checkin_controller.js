@@ -34,41 +34,33 @@ const {
 
   }  = require('../_sqlstatement/UserAssetCheckIn')
 
-
   
   const viewAssetByUserID = ( request, response ) => {
     const { id } = request.params
     
     mysql.query(viewAllAssetsfor_Deploy_ByUserID(), [id], ( err, result ) => {
 
+       
         if( err ) return response.status(400).send(
             {
                 message: "Error in loading asset by user",
                 message2: err.message
             }
         )
+       
+        if(!result.length ) return  response.status(200).send(
+            {
+                message: "No Record Found"
+            }
+        )
 
-        if(result.count > 0) {
-            return {
-                message: "Records Found",
-                result}
-        } else {
-            return {
-                message: "No Records Found"
-                }
-        }
-
-        //  response.status(200).send(
-        //      {
-               
-                    
-        //             message: "Records Found",
-        //             result
-               
-                
-        //      }
-        //  )
-
+        response.status(200).send(
+            {
+                message: "Record Found",
+                result
+            }
+        )
+        
     })
 
 }

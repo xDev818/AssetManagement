@@ -70,6 +70,8 @@ import {
   import DatePicker from "react-datepicker";
   export default function ITCheckOut () {
 
+    const toast = useToast()
+
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef()
 
@@ -251,7 +253,23 @@ import {
 
     }
 
-
+    function viewToastify(title,desc,status) {
+      // const toast = useToast()
+       return (
+         
+             toast({
+               title: title,
+               description: desc,
+               status: status,
+               duration: 2000,
+               isClosable: true,
+               position: "top"
+             })
+         
+        
+       )
+     }
+  
 
     const handleCheck = async (event) => {
       
@@ -328,6 +346,12 @@ import {
                     response =  request.data
 
                   //  window.location.href = "/#/admin/checkout-viewer";
+
+                  viewToastify(
+                    "Checkout",
+                    "Asset assigned successfully",
+                    "success"
+                  )
                   LoadAllAssets()
 
                   })
@@ -345,7 +369,11 @@ import {
           checkoutData.dataArray = []
         }
         else {
-            alert("Select Asset to Checkout")
+          viewToastify(
+            "Checkout",
+            "Select Asset to Checkou",
+            "warning"
+          )
           }
 
        
