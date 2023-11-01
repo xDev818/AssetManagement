@@ -48,6 +48,8 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  useToast
+
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, ButtonGroup } from "@chakra-ui/react";
@@ -56,6 +58,9 @@ import { Link } from "react-router-dom";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 export default function AssetViewer() {
+
+  const toast = useToast()
+  
   const [assets, setAssets] = useState([]);
   const [userdata, setUser] = useState({
     userID: "",

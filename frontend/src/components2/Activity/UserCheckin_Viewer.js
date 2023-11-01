@@ -36,12 +36,15 @@ import {
   Td,
   TableContainer,
   Stack,
-  Box,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  StatLabel,
+
+  useToast
+  // Box,
+  // Menu,
+  // MenuButton,
+  // MenuList,
+  // MenuItem,
+  // StatLabel,
+
 
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -52,13 +55,23 @@ import { Link } from "react-router-dom";
 export default function UserCheckin_Viewer() {
   
 
+  const toast = useToast()
+
   const [assets, setAssets] = useState([]);
+  const [statusvalues,setStatusID] = useState({
+    statusid: ''
+  })
+
+  var userid = ''
+  var deptid = ''
+  var positionid = ''
  
-  const [userdata,setUser] = useState({
-    userid : '',
-    deptid:'',
-    positionid:''
-  });
+  // const [userdata,setUser] = useState({
+  //   userid : '',
+  //   deptid:'',
+  //   positionid:''
+  // });
+
 
   const [search, setSearch] = useState("");
 
@@ -71,7 +84,9 @@ export default function UserCheckin_Viewer() {
  // const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
 
   const nextPage = () => {
-    console.log("cureentpage", currentPage);
+
+    //console.log("cureentpage", currentPage);
+
     if (currentPage !== tablePages) {
       setCurrentPage(currentPage + 1);
     }
@@ -87,44 +102,154 @@ export default function UserCheckin_Viewer() {
     setCurrentPage(number);
   };
 
-  const SetUsers = async () => {
-    const tokenStorage = localStorage.getItem("token");
-    const tokenDecoded = decoder(tokenStorage);
+
+  // const SetUsers = async () => {
+  //   const tokenStorage = localStorage.getItem("token");
+  //   const tokenDecoded = decoder(tokenStorage);
+
+ 
+
+  //   setUser({
+  //     ...userdata,
+  //     userid: tokenDecoded.result[0].userDisplayID,
+  //     deptid: tokenDecoded.result[0].departmentDisplayID,
+  //     positionid : tokenDecoded.result[0].positionID
+  //   });
+
+
+  // };
+
+
+
+  useEffect( () => {
+
+
+
+    /* 
+    Get StatusbyName (Deployed)
+    */
+    try {
+
+
+    const name = 'Deployed'
+    const success =  axios.get('/getStatusbyname/' + name)
+
+      .then((res) => {
+       
+        setStatusID({...statusvalues , 
+          statusid : res.data.result[0].assetStatusID });
+         
+          LoadAllAssetsForDeploy()
+
+      })
+      .catch((err) => {
+        //alert(err)
+        const InsertLogs = new Logs(
+          "Error",
+          "PositionViewer",
+          "Function /LoadAllPositions",
+          "LoadAllPositions",
+          userid
+        );
+      });
+
+
+      /* 
+        LoadAllAssetsForDeploy
+      */
+
+    }
+    catch (err) {
+      alert(err);
+    }
+
+    
+
+      try {
+
 
   
-    setUser({
-      ...userdata,
-
-      userid: tokenDecoded.result[0].userDisplayID,
-      deptid: tokenDecoded.result[0].departmentDisplayID,
-      positionid : tokenDecoded.result[0].positionID
+      } catch (err) {
+        alert(err);
+      }
 
 
-    });
-  };
-  useEffect(() => {
-    SetUsers();
-    LoadAllAssetsCheckout();
   }, []);
 
-  const LoadAllAssetsCheckout = async () => {
+ // userdata && console.log(userdata)
+
+  // const getStatusByName = async () => {
+  //   try {
+     
+  //     const name = 'Deployed'
+  //     const success = await axios.get('/getStatusbyname/' + name)
+
+  //       .then((res) => {
+          
+  //         setStatusID({...statusvalues , 
+  //           statusid : res.data.result[0].assetStatusID });
+          
+        
+  //       })
+  //       .catch((err) => {
+  //         //alert(err)
+  //         const InsertLogs = new Logs(
+  //           "Error",
+  //           "PositionViewer",
+  //           "Function /LoadAllPositions",
+  //           "LoadAllPositions",
+  //           userdata.userid
+  //         );
+  //       });
+  //   } catch (err) {
+  //     alert(err);
+  //   }
+  // };
+
+  const LoadAllAssetsForDeploy = async () => {
+
     try {
-      const success = await axios
-        .get("/assetcheckout/get-assetcheckout-byIT")
+
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage); 
+  
+      userid = tokenDecoded.result[0].userDisplayID
+      deptid = tokenDecoded.result[0].departmentDisplayID
+      positionid = tokenDecoded.result[0].positionID
+
+      if(userid ) {
+
+      const dep =  axios.get('/user-checkin/view-fordeploy/' + userid )
 
         .then((res) => {
-          setAssets(res.data.result);
-          console.log(assets)
+      
+          if(res.data.message === 'Record Found') {
+
+            setAssets(res.data.result);
+          }
+        
         })
         .catch((err) => {
+          alert("dito ba")
+          alert(err)
+          //setAssets([])
+
           const InsertLogs = new Logs(
             "Error",
             "PositionViewer",
             "Function /LoadAllPositions",
             "LoadAllPositions",
-            userdata.userid
+
+            userid
           );
         });
+
+      }
+      else  {
+        alert("No user ID, redirect to dashboard")
+      }
+
+
     } catch (err) {
       alert(err);
     }
@@ -146,46 +271,128 @@ export default function UserCheckin_Viewer() {
     }
   };
 
-  // // No need to routes to server
-  // const handleGenerateReceiving = (docref) => {
-  //     try {
-  //           generate_PDF(assets, "Receiving",docref)
-  //     } catch(err) {
 
-  //     }
-  // }
-  const handleReceiving = async (e,detailID,active) => {
-      return <Button>
-                Test
-            </Button>
-    // try {
-    //     e.preventDefault()
-       
-    //     if( active == 0) {
-    //         const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
 
-    //         .then((res) => {
-    //           alert("activate successful")
-    //           LoadAllAssetsCheckout()
-    //         })
-    //         .catch((err) => {
-    //           const InsertLogs = new Logs(
-    //             "Error",
-    //             "PositionViewer",
-    //             "Function /LoadAllPositions",
-    //             "LoadAllPositions",
-    //             userdata.userid
-    //           );
-    //         });
-    //     } else {
-    //       alert("already activated")
-    //     }
+  const UpdateAsseteDetailStatus = async (detailID,statID) => {
+   
+    try {
+     
+        const updateDetail = await axios.post("/user-checkin/update-checkin-status",{detailID,statID})
 
-    // } catch (err) {
-    //   alert(err);
-    // }
+          .then((res) => {
+        //    alert("Asset Details updated")
+
+          })
+          .catch((err) => {
+            const InsertLogs = new Logs(
+              "Error",
+              "PositionViewer",
+              "Function /LoadAllPositions",
+              "LoadAllPositions",
+              userid
+            );
+          });
+     
+
+  } catch (err) {
+    alert(err);
+  }
   };
 
+
+  const UpdateAssetStatus = (assetID,statID,userid) => {
+   
+    try {
+    
+         const success = axios.post("/user-checkin/update-checkin-status-asset",{assetID,statID,userid})
+
+          .then((res) => {
+      //      alert("Asset Status updated")
+
+     
+          })
+          .catch((err) => {
+            const InsertLogs = new Logs(
+              "Error",
+              "PositionViewer",
+              "Function /LoadAllPositions",
+              "LoadAllPositions",
+              userid
+            );
+          });
+     
+
+  } catch (err) {
+    alert(err);
+  }
+  };
+
+  
+  function viewToastify(title,desc,status) {
+    // const toast = useToast()
+     return (
+       
+           toast({
+             title: title,
+             description: desc,
+             status: status,
+             duration: 3000,
+             isClosable: true,
+             position: "top"
+           })
+       
+      
+     )
+   }
+
+
+  const handleCheckin = async (e,detailID,userid,assetID) => {
+     
+    try {
+     
+
+        e.preventDefault()
+
+          //alert(statusvalues.statusid)
+          const statID = statusvalues.statusid
+    
+            const success = await axios.post("/user-checkin/update-checkin",{detailID,statID})
+
+            .then((res) => {
+              //alert("Asset checkin by user")
+
+              UpdateAsseteDetailStatus(detailID,statID)
+              UpdateAssetStatus(assetID,statID,userid)
+
+              LoadAllAssetsForDeploy()
+
+              viewToastify(
+                "Check-in",
+                "Asset is now received",
+                "success"
+              )
+
+              window.location.href = "/#/admin/dashboard"
+             
+              
+            })
+            .catch((err) => {
+              const InsertLogs = new Logs(
+                "Error",
+                "PositionViewer",
+                "Function /LoadAllPositions",
+                "LoadAllPositions",
+                userid
+              );
+            });
+       
+
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+ 
 
   return (
     <>
@@ -230,12 +437,10 @@ export default function UserCheckin_Viewer() {
                 <Tr>
                   <Th>Status</Th>
                   <Th>Ref No</Th>
-                  <Th>Type</Th>
-                  <Th>Serial No</Th>
                   <Th>Code</Th>
                   <Th>Name</Th>
-                  <Th>Department</Th>
-                  <Th>Checkout Date</Th>
+                  <Th>Release By</Th>
+
                 </Tr>
               </Thead>
               <Tbody>
@@ -248,19 +453,19 @@ export default function UserCheckin_Viewer() {
                           colorScheme="green"
 
                           onClick={(e) =>
-                            handleReceiving( e,asset.detailID,asset.active_checkin)}
+
+                            handleCheckin( e,asset.detailID,asset.userDisplayID,asset.assetID
+                            )}
                         >
-                        {asset.statusName}
+                        Receive
+
                         </Button>
                       </ButtonGroup>
                     </Td>
                     <Td>{asset.docRef_Checkin}</Td>
-                    <Td>{asset.typeName}</Td>
-                    <Td>{asset.serialNo}</Td>
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>
-                    <Td>{asset.departmentName}</Td>
-                    <Td>{asset.date_checkout}</Td>
+                    <Td>{asset.ReleasedBy}</Td>
 
                   </Tr>
                 ))}

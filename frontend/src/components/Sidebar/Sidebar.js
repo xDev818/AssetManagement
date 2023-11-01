@@ -73,7 +73,7 @@ function Sidebar(props) {
     return location.pathname === routeName ? "active" : "";
   };
 
-  console.log("active route: ", activeRoute);
+  //console.log("active route: ", activeRoute);
   const { colorMode } = useColorMode;
   // this function creates the Anchors and collapses that appear in the sidebar (left menu)
 
@@ -390,7 +390,7 @@ export function SidebarResponsive(props) {
 
   var Anchors = <>{createAnchors(routes)}</>;
   {
-    console.log("Anchors", Anchors);
+   // console.log("Anchors", Anchors);
   }
 
   //  BRAND

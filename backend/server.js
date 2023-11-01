@@ -83,8 +83,18 @@ Date : 10 / 26 / 23
         Purpose : 
                 from const asset_checkout = require('./routes/asset_checkout_routes')
                 to   const it_checkout = require('./routes/it_checkout_routes')
+
+
+                const user_checkin_controller  = require('./routes/four_graphs_routes')
+
+                const user_checkin_routes  = require('./routes/user_checkin_routes')
+                app.use('/api', user_checkin_routes)
+
                    
  */
+
+
+const user_checkin_controller  = require('./routes/four_graphs_routes')
 
 // Packages
 require('dotenv').config()
@@ -109,6 +119,9 @@ const it_checkout = require('./routes/it_checkout_routes')
 const usergroup_routes = require('./routes/usergroup_routes')
 
 const four_graph_routes = require('./routes/four_graphs_routes')
+
+const user_checkin_routes  = require('./routes/user_checkin_routes')
+
 
 // Server Initialization
 var app = express();
@@ -153,3 +166,4 @@ app.use('/api', usergroup_routes)
 app.use('/api', asset_routes)
 app.use('/api', it_checkout)
 app.use('/api', four_graph_routes)
+app.use('/api', user_checkin_routes)

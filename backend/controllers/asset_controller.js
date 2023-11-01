@@ -32,7 +32,8 @@ const {
     getAll,
     getByID , 
     updateByID , 
-    deleteByID 
+    deleteByID ,
+    updateStatusByID
   }  = require('../_sqlstatement/Assets')
 
 const createAsset = ( request, response ) => {
@@ -185,13 +186,42 @@ const updateAsset = ( request, response ) => {
 }
 
 
+const updateStatus = ( request, response ) => {
+
+    const { asset_id, statusid, 
+        userID  } = request.body
+
+       
+
+
+    mysql.query( updateStatusByID(), [statusid,userID,utils_getDate(),asset_id], ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+        
+        response.status(200).send(
+            {
+                message: "Update Success"
+            }
+        )
+        
+     
+
+    })
+
+}
+
 
 module.exports = {
     viewAllAssets,
     deleteAsset,
     getAssetByID,
     createAsset,
-    updateAsset
-
+    updateAsset,
+    updateStatus
 
 }

@@ -43,14 +43,22 @@ import {
   MenuItem,
   StatLabel,
 
+  useToast
+
+
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
+//import viewToastify from "components/Utils/viewToast";
+
 export default function ITCheckoutViewer() {
   
+
+  const toast = useToast()
+
 
   const [assets, setAssets] = useState([]);
  
@@ -114,7 +122,7 @@ export default function ITCheckoutViewer() {
 
         .then((res) => {
           setAssets(res.data.result);
-          console.log(assets)
+
         })
         .catch((err) => {
           const InsertLogs = new Logs(
@@ -155,7 +163,28 @@ export default function ITCheckoutViewer() {
 
       }
   }
-  const handleActivateReceiving = async (e,detailID,active) => {
+
+
+  function viewToastify(title,desc,status) {
+    // const toast = useToast()
+     return (
+       
+           toast({
+             title: title,
+             description: desc,
+             status: status,
+             duration: 3000,
+             isClosable: true,
+             position: "top"
+           })
+       
+      
+     )
+   }
+
+   
+  const handleActivateReceiving = async (e,detailID,active,docref) => {
+
 
     try {
         e.preventDefault()
@@ -164,8 +193,18 @@ export default function ITCheckoutViewer() {
             const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
 
             .then((res) => {
-              alert("activate successful")
+
+            
+              handleGenerateReceiving(docref)
               LoadAllAssetsCheckout()
+              
+              viewToastify(
+                "Checkout",
+                "Generate PDF and Check-in Asset for user successful",
+                "success"
+              )
+              
+
             })
             .catch((err) => {
               const InsertLogs = new Logs(
@@ -177,7 +216,14 @@ export default function ITCheckoutViewer() {
               );
             });
         } else {
-          alert("already activated")
+
+        
+          viewToastify(
+            "Asset Checkout",
+            "Asset already activated",
+            "info"
+          )
+
         }
 
     } catch (err) {
@@ -227,7 +273,7 @@ export default function ITCheckoutViewer() {
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Receiving</Th>
+                  <Th>Reference</Th>
                   <Th>Type</Th>
                   <Th>Status</Th>
                   <Th>Serial No</Th>
@@ -245,19 +291,22 @@ export default function ITCheckoutViewer() {
                         <Button
                           colorScheme="red"
                           onClick={(e) =>
-                            handleGenerateReceiving( asset.docRef_Checkin)
+                            // handleGenerateReceiving( asset.docRef_Checkin)
+                            handleActivateReceiving( e,asset.detailID,asset.active_checkin,asset.docRef_Checkin)
+                            
                           }
                         >
                         { asset.docRef_Checkin}
+
                         </Button>
-                        <Button
+                        {/* <Button
                           colorScheme="green"
 
-                          onClick={(e) =>
-                            handleActivateReceiving( e,asset.detailID,asset.active_checkin)}
+                         
                         >
                         Activate
-                        </Button>
+                        </Button> */}
+
                       </ButtonGroup>
                     </Td>
                     <Td>{asset.typeName}</Td>

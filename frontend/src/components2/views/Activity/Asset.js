@@ -36,6 +36,8 @@ import {
   FormControl,
   Grid,
   GridItem,
+  Checkbox,
+  useToast
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 
@@ -50,6 +52,8 @@ import "react-datepicker/dist/react-datepicker.css";
 
 export default function Asset() {
   //Nole
+
+  const toast = useToast()
 
   var imgFilename = "";
   const [userdata, setUser] = useState({
@@ -220,6 +224,24 @@ export default function Asset() {
     }
   };
 
+  function viewToastify(title,desc,status) {
+    // const toast = useToast()
+     return (
+       
+           toast({
+             title: title,
+             description: desc,
+             status: status,
+             duration: 2000,
+             isClosable: true,
+             position: "top"
+           })
+       
+      
+     )
+   }
+
+
   async function handleUpdate(event) {
     try {
       event.preventDefault();
@@ -246,8 +268,12 @@ export default function Asset() {
         const success = await axios
           .post("/asset/create-AssetByID", assetvalues)
           .then((res) => {
-            alert("Insert Successful");
-
+           
+            viewToastify (
+              "Asset",
+              " New Asset created succesfully",
+              "success"
+              )
             const InsertLogs = new Logs(
               "Info",
               "Asset Status",
@@ -269,7 +295,11 @@ export default function Asset() {
         const success = await axios
           .post("/asset/update-AssetByID", assetvalues)
           .then((res) => {
-            alert("Update Successful");
+            viewToastify (
+              "Asset",
+              " Asset updated succesfully",
+              "success"
+              )
 
             const InsertLogs = new Logs(
               "Info",
@@ -566,6 +596,12 @@ export default function Asset() {
                 />
               </GridItem>
             </Grid>
+            
+            <Box>
+              <Checkbox colorScheme='green' defaultChecked>
+                  Active
+              </Checkbox>
+            </Box>
 
             <Box>
               <Button colorScheme="green" onClick={handleUpdate}>

@@ -108,7 +108,7 @@ const ITCheckout_getAssetsCheckout = ( request, response ) => {
 const ITCheckout_getUserDepartmentPosition_ByID = ( request, response ) => {
     
     const { id } = request.params
-    console.log(id)
+
     mysql.query(getUserPosition_Department_ByID(), [id], ( err, result ) => {
 
         if( err ) return response.status(400).send(
@@ -180,6 +180,7 @@ const updateAssetForDeploy = ( request, response ) => {
     const { userid, assetid, statusid,positionid,departmentid,
         notes,plancheckout,userid_checkout} = request.body
  
+
   
     mysql.query( updateByID(), [statusid,userid_checkout,utils_getDate(),assetid], ( err, result ) => {
 

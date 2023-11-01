@@ -15,6 +15,12 @@ Info : The routes was made and controlled by Jinshin
     Activities
     Purpose : 
       Import sqlStatement(/_sqlstatement/Four Grpahs) controller
+
+   Date : 10 / 26 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Add getTotal_AssetsAvailable
 */
 
 // Packages
@@ -26,17 +32,20 @@ const { randomUUID } = require('crypto')
 const { utils_getDate } = require('../utils/date_helper')
 
 const {
-    getTotal_Assets,
+    getTotalAmount_Assets,
+   // getTotal_AssetsAvailable,
     getCount_Assets_Deployed,
     getCount_Assets_Available,
     getCount_Assets_ForDeploy,
-    getCount_Assets_PullOut
+    getCount_Assets_PullOut,
+
+
 
   }  = require('../_sqlstatement/FourGraphs')
 
-  const fourgraphs_TotalAssetsAvailable = ( request, response ) => {
+  const fourgraphs_TotalAmountAssetsAvailable = ( request, response ) => {
     
-    mysql.query(getTotal_Assets(),  ( err, result ) => {
+    mysql.query(getTotalAmount_Assets(),  ( err, result ) => {
 
         if( err ) return response.status(400).send(
             {
@@ -54,6 +63,27 @@ const {
     })
 
 }
+
+// const fourgraphs_TotalAssetsAvailable = ( request, response ) => {
+    
+//     mysql.query(getTotal_AssetsAvailable(),  ( err, result ) => {
+
+//         if( err ) return response.status(400).send(
+//             {
+//                 message: "No Records Found",
+//                 message2: err.message
+//             }
+//         )
+//          response.status(200).send(
+//              {
+//                  message: "Records Found",
+//                  result
+//              }
+//          )
+
+//     })
+
+// }
 
 const fourgraphs_NoAssetsDeployed = ( request, response ) => {
     
@@ -145,7 +175,8 @@ const fourgraphs_AssetsPullout = ( request, response ) => {
 
 
 module.exports = {
-    fourgraphs_TotalAssetsAvailable,
+    fourgraphs_TotalAmountAssetsAvailable,
+   // fourgraphs_TotalAssetsAvailable,
     fourgraphs_NoAssetsDeployed,
     fourgraphs_AssetsAvailable,
     fourgraphs_AssetsForDeploy,

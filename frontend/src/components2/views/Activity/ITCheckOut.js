@@ -12,15 +12,29 @@
     Activities
     Purpose : 
       // Generate UUID for DocReference
+
+
+    Date : 10 / 26 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Add Dialog Box for Checkout
+
 */
 
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
-import  { useEffect, useState } from 'react'
+
+import  { useEffect, useMemo, useState } from 'react'
+import React from "react";
+
 import axios from 'axios'
 import decoder from 'jwt-decode'
 import Datehelper from 'components/Utils/datehelper'
 import { v4 as uuidv4 } from 'uuid';
+
+import AssetDialog from 'components2/Configuration/AssetDialog/AssetDialog';
+
 
 import {
   FormLabel,
@@ -39,15 +53,37 @@ import {
     Grid,
     GridItem,
     Text,
-    Textarea
+
+    Textarea,
+    Button,
+    ButtonGroup,
+    
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    AlertDialogCloseButton,
+     useDisclosure,
+
+     useToast
+
   } from "@chakra-ui/react";
-  import { Button, ButtonGroup } from "@chakra-ui/react";
+
+
   
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
   import DatePicker from "react-datepicker";
-  
+
   export default function ITCheckOut () {
+
+    const toast = useToast()
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = React.useRef()
+
 
     var userID = ''
     var department_id = ''
@@ -80,15 +116,19 @@ import {
 
     var array = [];
     
+
+    
     var checkoutData = {
       dataArray: [] // Replace [...arrayValues] with your initial array values
-    };
+    }
+
 
     const [userdata,setUser] = useState({
       userid : '',
       deptid:'',
       positionid:''
     });
+
 
     const LoadallUsers = async () => {
       try {
@@ -219,17 +259,35 @@ import {
           }
 
         }
-       // alert(checkoutData.dataArray)
+
+      
 
     }
 
+    function viewToastify(title,desc,status) {
+      // const toast = useToast()
+       return (
+         
+             toast({
+               title: title,
+               description: desc,
+               status: status,
+               duration: 2000,
+               isClosable: true,
+               position: "top"
+             })
+         
+        
+       )
+     }
+  
 
-
-    const handlleCheck = async (event,key) => {
-
-      event.preventDefault();
+    const handleCheck = async (event) => {
+      
      
       try {
+        event.preventDefault()
+
         // Generate UUID for DocReference
         const datehelper = new Datehelper()
         const docid = uuidv4();
@@ -264,10 +322,12 @@ import {
             }
 
 
+          
               var success = await axios.post('/assetcheckout/create-checkoutasset',checkoutvalues)
               .then((res) => {
-            
-                alert("Insert Successful")
+                
+              //  alert("Insert Successful")
+
 
                 const InsertLogs = new Logs(
                   'Info',
@@ -299,7 +359,15 @@ import {
                     request = axios.post('/log',InsertLogs.getLogs())
                     response =  request.data
 
-                    // window.location.reload()
+                  //  window.location.href = "/#/admin/checkout-viewer";
+
+                  viewToastify(
+                    "Checkout",
+                    "Asset assigned successfully",
+                    "success"
+                  )
+                  LoadAllAssets()
+
                   })
                   .catch((err) => {
                     alert(err);
@@ -312,9 +380,15 @@ import {
               });
 
           }
+          checkoutData.dataArray = []
         }
         else {
-            alert("Select Asset to Checkout")
+          viewToastify(
+            "Checkout",
+            "Select Asset to Checkou",
+            "warning"
+          )
+
           }
 
        
@@ -460,21 +534,70 @@ import {
 
           
 
-            <Button colorScheme="green" onClick={handlleCheck}>
-              {/* <Link
+            <Button colorScheme="green" 
+            onClick={(e) => handleCheck(e)}  >
+              {/*
+              onClick={onOpen}
+              <Link
+
                   to={{
                   pathname: "/admin/assetstatusviewer"
                   }}>
               </Link> */}
               {btnstate}
 
+             
             </Button>
+            {/* <AssetDialog
+                 handlleCheck={handleCheck}
+                 alertheader = {"Checkout Asset"}
+                 alertbody = { " Are you sure you want to Checkout Selected Assets?"}
+                // onOpen={onOpen}
+                 isOpen={isOpen}
+                 onClose={onClose}
+             //    cancelRef = {cancelRef}
+                // leastDestructiveRef={cancelRef}
+              /> */}
+
+
           </Box>
           </Card>
           </FormControl>
         </Stack>
 
         </Card>
+
+        {/* <AlertDialog
+            onOpen={onOpen}
+              motionPreset='slideInBottom'
+              leastDestructiveRef={cancelRef}
+              onClose={onClose}
+              isOpen={isOpen}
+              isCentered
+            >
+              <AlertDialogOverlay />
+      
+              <AlertDialogContent>
+                <AlertDialogHeader></AlertDialogHeader>
+                 Check-out
+              
+                <AlertDialogCloseButton />
+                <AlertDialogBody>
+                Are you sure you want to assign assets?
+                
+                 
+                </AlertDialogBody>
+                <AlertDialogFooter>
+                  <Button  ref={cancelRef} onClick={onClose}>
+                    No
+                  </Button>
+                  <Button colorScheme='green' ml={3} onClick = {(e) => handleCheck(e) }>
+              
+                    Yes
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+          </AlertDialog> */}
 
       </>
 

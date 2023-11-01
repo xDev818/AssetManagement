@@ -75,7 +75,7 @@ const viewAllAssetsAvailable = () => {
             + " inner join tblUsers user on user.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.userSelectedID"
             + " inner join tblUsers userCheckout on userCheckout.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.useridcheckout"
             + " inner join  tblAssetType type on type.typeID COLLATE utf8mb4_unicode_ci = asset.typeID"
-            + " where checkinby is null"
+            + " where assetsdetail.checkinby is null"
             + " ORDER BY assetsdetail.plancheckout ASC"
 
 }

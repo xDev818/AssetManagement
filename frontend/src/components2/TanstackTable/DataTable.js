@@ -97,7 +97,6 @@ export default function DataTable({
 
       <Box>
 
-
         <Flex
           justifyContent="space-between"
           gap="5"
@@ -162,6 +161,7 @@ export default function DataTable({
                 table.setPageSize(e.target.value);
               }}
             >
+
 
               {[5, 10, 20, 30, 40, 50].map((pageSize) => (
 
