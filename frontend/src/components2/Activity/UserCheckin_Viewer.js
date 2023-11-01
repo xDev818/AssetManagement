@@ -6,6 +6,7 @@
 
 /* 
 
+
     Date : 10 / 26 / 23
     Author : Nole
     Activities
@@ -35,6 +36,7 @@ import {
   Td,
   TableContainer,
   Stack,
+
   useToast
   // Box,
   // Menu,
@@ -42,6 +44,7 @@ import {
   // MenuList,
   // MenuItem,
   // StatLabel,
+
 
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -51,6 +54,7 @@ import { Link } from "react-router-dom";
 
 export default function UserCheckin_Viewer() {
   
+
   const toast = useToast()
 
   const [assets, setAssets] = useState([]);
@@ -68,6 +72,7 @@ export default function UserCheckin_Viewer() {
   //   positionid:''
   // });
 
+
   const [search, setSearch] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -79,7 +84,9 @@ export default function UserCheckin_Viewer() {
  // const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
 
   const nextPage = () => {
+
     //console.log("cureentpage", currentPage);
+
     if (currentPage !== tablePages) {
       setCurrentPage(currentPage + 1);
     }
@@ -94,6 +101,7 @@ export default function UserCheckin_Viewer() {
   const currentNumber = (number) => {
     setCurrentPage(number);
   };
+
 
   // const SetUsers = async () => {
   //   const tokenStorage = localStorage.getItem("token");
@@ -225,11 +233,13 @@ export default function UserCheckin_Viewer() {
           alert("dito ba")
           alert(err)
           //setAssets([])
+
           const InsertLogs = new Logs(
             "Error",
             "PositionViewer",
             "Function /LoadAllPositions",
             "LoadAllPositions",
+
             userid
           );
         });
@@ -238,6 +248,7 @@ export default function UserCheckin_Viewer() {
       else  {
         alert("No user ID, redirect to dashboard")
       }
+
 
     } catch (err) {
       alert(err);
@@ -259,6 +270,7 @@ export default function UserCheckin_Viewer() {
       alert(err);
     }
   };
+
 
 
   const UpdateAsseteDetailStatus = async (detailID,statID) => {
@@ -381,6 +393,7 @@ export default function UserCheckin_Viewer() {
   };
 
  
+
   return (
     <>
       <Stack>
@@ -427,6 +440,7 @@ export default function UserCheckin_Viewer() {
                   <Th>Code</Th>
                   <Th>Name</Th>
                   <Th>Release By</Th>
+
                 </Tr>
               </Thead>
               <Tbody>
@@ -439,10 +453,12 @@ export default function UserCheckin_Viewer() {
                           colorScheme="green"
 
                           onClick={(e) =>
+
                             handleCheckin( e,asset.detailID,asset.userDisplayID,asset.assetID
                             )}
                         >
                         Receive
+
                         </Button>
                       </ButtonGroup>
                     </Td>
@@ -450,6 +466,7 @@ export default function UserCheckin_Viewer() {
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>
                     <Td>{asset.ReleasedBy}</Td>
+
                   </Tr>
                 ))}
               </Tbody>

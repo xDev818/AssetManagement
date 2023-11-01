@@ -42,7 +42,9 @@ import {
   MenuList,
   MenuItem,
   StatLabel,
+
   useToast
+
 
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -54,7 +56,9 @@ import { Link } from "react-router-dom";
 
 export default function ITCheckoutViewer() {
   
+
   const toast = useToast()
+
 
   const [assets, setAssets] = useState([]);
  
@@ -118,7 +122,7 @@ export default function ITCheckoutViewer() {
 
         .then((res) => {
           setAssets(res.data.result);
-       
+
         })
         .catch((err) => {
           const InsertLogs = new Logs(
@@ -160,6 +164,7 @@ export default function ITCheckoutViewer() {
       }
   }
 
+
   function viewToastify(title,desc,status) {
     // const toast = useToast()
      return (
@@ -180,6 +185,7 @@ export default function ITCheckoutViewer() {
    
   const handleActivateReceiving = async (e,detailID,active,docref) => {
 
+
     try {
         e.preventDefault()
        
@@ -187,6 +193,7 @@ export default function ITCheckoutViewer() {
             const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
 
             .then((res) => {
+
             
               handleGenerateReceiving(docref)
               LoadAllAssetsCheckout()
@@ -197,6 +204,7 @@ export default function ITCheckoutViewer() {
                 "success"
               )
               
+
             })
             .catch((err) => {
               const InsertLogs = new Logs(
@@ -208,12 +216,14 @@ export default function ITCheckoutViewer() {
               );
             });
         } else {
+
         
           viewToastify(
             "Asset Checkout",
             "Asset already activated",
             "info"
           )
+
         }
 
     } catch (err) {
@@ -287,6 +297,7 @@ export default function ITCheckoutViewer() {
                           }
                         >
                         { asset.docRef_Checkin}
+
                         </Button>
                         {/* <Button
                           colorScheme="green"
@@ -295,6 +306,7 @@ export default function ITCheckoutViewer() {
                         >
                         Activate
                         </Button> */}
+
                       </ButtonGroup>
                     </Td>
                     <Td>{asset.typeName}</Td>

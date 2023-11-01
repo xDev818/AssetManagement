@@ -13,22 +13,28 @@
     Purpose : 
       // Generate UUID for DocReference
 
+
     Date : 10 / 26 / 23
     Author : Nole
     Activities
     Purpose : 
       Add Dialog Box for Checkout
+
 */
 
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
+
 import  { useEffect, useMemo, useState } from 'react'
 import React from "react";
+
 import axios from 'axios'
 import decoder from 'jwt-decode'
 import Datehelper from 'components/Utils/datehelper'
 import { v4 as uuidv4 } from 'uuid';
+
 import AssetDialog from 'components2/Configuration/AssetDialog/AssetDialog';
+
 
 import {
   FormLabel,
@@ -47,6 +53,7 @@ import {
     Grid,
     GridItem,
     Text,
+
     Textarea,
     Button,
     ButtonGroup,
@@ -64,16 +71,19 @@ import {
 
   } from "@chakra-ui/react";
 
+
   
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
   import DatePicker from "react-datepicker";
+
   export default function ITCheckOut () {
 
     const toast = useToast()
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef()
+
 
     var userID = ''
     var department_id = ''
@@ -112,13 +122,13 @@ import {
       dataArray: [] // Replace [...arrayValues] with your initial array values
     }
 
+
     const [userdata,setUser] = useState({
       userid : '',
       deptid:'',
       positionid:''
     });
 
-    
 
     const LoadallUsers = async () => {
       try {
@@ -249,6 +259,7 @@ import {
           }
 
         }
+
       
 
     }
@@ -276,6 +287,7 @@ import {
      
       try {
         event.preventDefault()
+
         // Generate UUID for DocReference
         const datehelper = new Datehelper()
         const docid = uuidv4();
@@ -309,11 +321,13 @@ import {
               docref: docRef_Checkin
             }
 
+
           
               var success = await axios.post('/assetcheckout/create-checkoutasset',checkoutvalues)
               .then((res) => {
                 
               //  alert("Insert Successful")
+
 
                 const InsertLogs = new Logs(
                   'Info',
@@ -374,6 +388,7 @@ import {
             "Select Asset to Checkou",
             "warning"
           )
+
           }
 
        
@@ -524,11 +539,13 @@ import {
               {/*
               onClick={onOpen}
               <Link
+
                   to={{
                   pathname: "/admin/assetstatusviewer"
                   }}>
               </Link> */}
               {btnstate}
+
              
             </Button>
             {/* <AssetDialog
@@ -542,13 +559,14 @@ import {
                 // leastDestructiveRef={cancelRef}
               /> */}
 
-          
+
           </Box>
           </Card>
           </FormControl>
         </Stack>
 
         </Card>
+
         {/* <AlertDialog
             onOpen={onOpen}
               motionPreset='slideInBottom'
@@ -580,6 +598,7 @@ import {
                 </AlertDialogFooter>
               </AlertDialogContent>
           </AlertDialog> */}
+
       </>
 
       
