@@ -165,6 +165,12 @@
               component: UserCheckin_Viewer,
               layout: "/admin",
             },
+
+    Date : 01 / 01 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+          import UserAssetsViewer from "components2/Activity/UserAssetsViewer";
 */
 
 // import
@@ -190,6 +196,8 @@ import ITCheckOut from "components2/views/Activity/ITCheckOut";
 import UpdateProfile from "components2/Profile/UpdateProfile";
 import UserCheckin_Viewer from "components2/Activity/UserCheckin_Viewer";
 import UsersViewer from "components2/Activity/UsersViewer";
+import UserAssetsViewer from "components2/Activity/UserAssetsViewer";
+import Pullout from "components2/views/Activity/Pullout";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 import AssetStatus from "components2/views/AssetStatus";
@@ -242,6 +250,20 @@ var dashRoutes = [
     path: "/update-profile",
     name: "Update Profile",
     component: UpdateProfile,
+    layout: "/admin",
+  },
+  {
+    submenu: "activity",
+    path: "/userasset-viewer",
+    name: "My Assets",
+    component: UserAssetsViewer,
+    layout: "/admin",
+  },
+  {
+    
+    path: "/pullout",
+    name: "Pullout",
+    component: Pullout,
     layout: "/admin",
   },
   {

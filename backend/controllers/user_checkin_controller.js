@@ -121,7 +121,7 @@ const usercheckin_updateAssetStatusDetail = ( request, response ) => {
 const usercheckin_updateAssetStatus = ( request, response ) => {
     
     const { assetID, statID,userid } = request.body
-    console.log(request.body)
+  //  console.log(request.body)
     mysql.query(updateAsset_Status(), [statID,userid,utils_getDate(),assetID], ( err, result ) => {
 
         if( err ) return response.status(400).send(

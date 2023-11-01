@@ -1,24 +1,12 @@
 
 /* 
 
-    Date : 10 / 23 / 23
+
+    Date : 01 / 01 / 23
     Author : Nole
     Activities
     Purpose : 
-      created Checkout Asset
-
-    Date : 10 / 25 / 23
-    Author : Nole
-    Activities
-    Purpose : 
-      // Generate UUID for DocReference
-
-
-    Date : 10 / 26 / 23
-    Author : Nole
-    Activities
-    Purpose : 
-      Add Dialog Box for Checkout
+      Pullout
 
 */
 
@@ -32,9 +20,6 @@ import axios from 'axios'
 import decoder from 'jwt-decode'
 import Datehelper from 'components/Utils/datehelper'
 import { v4 as uuidv4 } from 'uuid';
-
-import AssetDialog from 'components2/Configuration/AssetDialog/AssetDialog';
-
 
 import {
   FormLabel,
@@ -77,7 +62,7 @@ import {
   import Card from "components/Card/Card";
   import DatePicker from "react-datepicker";
 
-  export default function ITCheckOut () {
+  export default function Pullout () {
 
     const toast = useToast()
 
@@ -85,40 +70,27 @@ import {
     const cancelRef = React.useRef()
 
 
-    var userID = ''
-    var department_id = ''
-    var position_id = ''
-    var status_id = ''
+    // var userID = ''
+    // var department_id = ''
+    // var position_id = ''
     
-    // const [checkout , setCheckout] = useState({
-    //   userid:'',
-    //   assetid:'',
-    //   statusid:'',
-    //   positionid:'',
-    //   departmentid:'',
-    //   notes:'',
-    //   plancheckout: '',
-    //   userid_checkout:'',
-    // })
-   
-    const [users , setUsers] = useState([])
     const [assets,setAssets] = useState([])
-    const [plan_date,setPlanDate] = useState( new Date()) 
-    const [userSelected,setUserSelected] = useState('')
+    const [status,setStatus] = useState([])
+
+    const [pullout_date,setPulloutDate] = useState( new Date()) 
+    const [statusSelected,setStatusSelected] = useState('')
     const [notes,setNotes] = useState('')
     const [statID,setStatusID] = useState('')
 
-     const [receiver_posid,setRecevierPosID] = useState('')
-     const [receiver_deptid,setRecevierDepID] = useState('')
+    //  const [receiver_posid,setRecevierPosID] = useState('')
+    //  const [receiver_deptid,setRecevierDepID] = useState('')
 
-
-    const [btnstate,setbtnState] = useState()
 
     //var array = [];
     
 
     
-    var checkoutData = {
+    var pulloutData = {
       dataArray: [] // Replace [...arrayValues] with your initial array values
     }
 
@@ -130,28 +102,12 @@ import {
     });
 
 
-    const LoadallUsers = async () => {
+    const LoadAllAssets = async (id) => {
       try {
 
-        const res = await axios.get("/users");
+        const res = await axios.get("/user-asset/viewallByID/" + id)
         const data = await res.data;
 
-        
-        setUsers(res.data.result)
-      
-  
-      } catch (err) {
-        alert(err)
-      }
-    };
-
-    const LoadAllAssets = async () => {
-      try {
-
-        const res = await axios.get("/assetcheckout/viewavailable-assets");
-        const data = await res.data;
-
-        
         setAssets(res.data.result)
       
   
@@ -160,14 +116,13 @@ import {
       }
     };
 
-    const getAssetStatus_ForDeploy = async () => {
+    const LoadAStatus = async (id) => {
       try {
 
-        const res = await axios.get("/assetcheckout/get-assetstatus-byname");
+        const res = await axios.get("/user-asset/viewstatus")
         const data = await res.data;
 
-        //console.log(res.data.result)
-        setStatusID(res.data.result[0].assetStatusID)
+        setStatus(res.data.result)
       
   
       } catch (err) {
@@ -175,12 +130,10 @@ import {
       }
     };
 
-
-  
+ 
 
     useEffect(() => {
       
-      setbtnState('Checkout Asset')
       try {
        
         const tokenStorage = localStorage.getItem("token");
@@ -192,46 +145,8 @@ import {
           deptid: tokenDecoded.result[0].departmentDisplayID,
           positionid : tokenDecoded.result[0].positionID
       })
-
-        // userID = tokenDecoded.result[0].userDisplayID;
-
-
-
-         LoadallUsers()
-         LoadAllAssets()
-         getAssetStatus_ForDeploy()
-
-        // if(positionID) {
-        
-        //     axios.get('/positions/getPositionID/' + positionID)
-        //     .then((res) => {
-        //       setbtnState("Update")
-        //         setPosition({
-        //           ...values,
-        //           positionid: res.data.result[0].positionDisplayID,
-        //           positionname: res.data.result[0].positionName,
-        //           description: res.data.result[0].description,
-        //           departmentid: res.data.result[0].departmentDisplayID,
-        //           departmentname: res.data.result[0].departmentName
-        //         })
-               
-        //     })
-        //     .catch((err) => {
-        //       alert(err);
-        //     });
-          
-        // } else {
-        //   setbtnState("Save")
-           
-        //   setPosition({
-        //     ...values,
-        //     positionid: '',
-        //     positionname: '',
-        //     description: '',
-        //     departmentid: '',
-        //     departmentname: ''
-        //   })
-        // }
+        LoadAStatus()
+        LoadAllAssets(tokenDecoded.result[0].userDisplayID)
 
       }
       catch(err) {
@@ -240,28 +155,27 @@ import {
     }, [])
 
 
-    const handleSelectedAsset = (event,key) => { 
+    const handleSelectedAsset = (event,detailID) => { 
 
       const checkboxValue = event.target.value;
         const isChecked = event.target.checked;
 
         if(isChecked) {
-          checkoutData.dataArray.push(key)
+          pulloutData.dataArray.push(detailID)
 
         } else {
 
-          const newArray = [...checkoutData.dataArray];
-          const index = newArray.indexOf(key);
+          const newArray = [...pulloutData.dataArray];
+          const index = newArray.indexOf(detailID);
           if (index > -1) {
             newArray.splice(index, 1);
             // { dataArray: newArray });
-            checkoutData.dataArray = newArray
+            pulloutData.dataArray = newArray
           }
 
         }
 
-      
-
+       // alert(pulloutoutData.dataArray)
     }
 
     function viewToastify(title,desc,status) {
@@ -281,59 +195,43 @@ import {
        )
      }
   
-
-    const handleCheck = async (event) => {
+    const handlePullout = async (event) => {
       
-     
       try {
         event.preventDefault()
 
         // Generate UUID for DocReference
         const datehelper = new Datehelper()
         const docid = uuidv4();
-        var docRef_Checkin =  docid.slice(0,5).toUpperCase()
-        docRef_Checkin = docRef_Checkin + datehelper.dateformat_MMDDHR()
+        var docRef_Pullout =  docid.slice(0,5).toUpperCase()
+        docRef_Pullout = docRef_Pullout + datehelper.dateformat_MMDDHR()
         
-        if(checkoutData.dataArray.length > 0)
+        if(pulloutData.dataArray.length > 0)
          {
-          
-          var id = userSelected
-          const res = await axios.get("/assetcheckout/get-userdeptpos_byID/" + id);
-          const data = await res.data;
 
-          var receiver_posid = res.data.result[0].positionDisplayID
-          var receiver_deptid = res.data.result[0].departmentDisplayID
-
-
-            for (let i = 0; i < checkoutData.dataArray.length; i++) {
+            for (let i = 0; i < pulloutData.dataArray.length; i++) {
               // Access each element of the array
-              const value = checkoutData.dataArray[i];
+              const value = pulloutData.dataArray[i];
 
-            const checkoutvalues = {
-              userid:userSelected ,
-              assetid: value,
-              statusid: statID,
-              positionid: receiver_posid,
-              departmentid: receiver_deptid,
-              notes: notes,
-              plancheckout: plan_date,
-              userid_checkout: userdata.userid,
-              docref: docRef_Checkin
-            }
-
-
-          
-              var success = await axios.post('/assetcheckout/create-checkoutasset',checkoutvalues)
+              const pulloutvalues = {
+                userid:userdata.userid ,
+                detailid: value,
+                statusid: statusSelected,
+                notes: notes,
+                planpullout: pullout_date,
+                docref: docRef_Pullout
+              }
+                /* 
+                  Update the Assets to as Pullout
+                */
+              const pulloutsuccess = await axios.post('/user-asset/pullout-asset',pulloutvalues)
               .then((res) => {
                 
-              //  alert("Insert Successful")
-
-
                 const InsertLogs = new Logs(
                   'Info',
                   "Asset Status",
                   "Function /handleUpdate",
-                  ' Create   Position name :  ' + checkoutvalues.assetid,
+                  ' Create   Position name :  ' + pulloutvalues.detailid,
                   userdata.userid
                 )
       
@@ -341,9 +239,9 @@ import {
                 var response =  request.data
 
                 /* 
-                  Update the Assets to mark as deploy
+                  Update the Assets Mark Status based on StatusID
                 */
-                  success = axios.post('/assetcheckout/update-checkoutasset_ForDeploy',checkoutvalues)
+                  success = axios.post('/user-asset/update-asset',{})
                   .then((res) => {
                 
                   // alert("update Successful")
@@ -362,18 +260,18 @@ import {
                   //  window.location.href = "/#/admin/checkout-viewer";
 
                   viewToastify(
-                    "Checkout",
-                    "Asset assigned successfully",
+                    "Pullout",
+                    "Asset pullout successfully",
                     "success"
                   )
-                  LoadAllAssets()
+
+                  LoadAllAssets(userdata.userid)
 
                   })
                   .catch((err) => {
                     alert(err);
                   });
                   
-
               })
               .catch((err) => {
                 alert(err);
@@ -384,8 +282,8 @@ import {
         }
         else {
           viewToastify(
-            "Checkout",
-            "Select Asset to Checkou",
+            "Pullout",
+            "Select Asset to Pullout",
             "warning"
           )
 
@@ -405,7 +303,7 @@ import {
         mx={{ base: 0, md: 0, lg: 3 }}
         >
         <Text fontWeight="bold" mb={5}>
-          Checkout Asset
+          Pullout Asset
         </Text>
 
           <Stack>
@@ -416,16 +314,16 @@ import {
             >
 
           <GridItem>
-              <Box>
-              <FormLabel fontSize={{ base: "sm" }}>User </FormLabel>
+          <Box>
+              <FormLabel fontSize={{ base: "sm" }}>Status </FormLabel>
                 <Select placeholder='Select option' size='md'
                  onChange={ e => {
-                  setUserSelected(e.target.value )}}
+                  setStatusSelected(e.target.value )}}
                   //value={values.departmentid}
                 >
-                  {users.map((user) => (
-                    <option value={user.id} size='md'> 
-                      {user.fullname}
+                  {status.map((stat) => (
+                    <option value={stat.assetStatusID} size='md'> 
+                      {stat.statusName}
                     </option>
                     ))
                     
@@ -435,25 +333,25 @@ import {
 
               </Box>
               <Box>
-                <FormLabel fontSize={{ base: "sm" }}>Description </FormLabel>
+                <FormLabel fontSize={{ base: "sm" }}>Notes </FormLabel>
               <Textarea
               mb={4}
               id="notes"
               label="Notes"
               placeholder="Notes"
-              // value={values.description}
+             
                onChange={(e) => {
                  setNotes(e.target.value );
                }}
             />
           </Box>
           <Box>
-          <FormLabel fontSize={{ base: "sm" }}> Date Checkout</FormLabel>
+          <FormLabel fontSize={{ base: "sm" }}> Date Pullout </FormLabel>
           <DatePicker
-                  selected={plan_date}
+                  selected={pullout_date}
                   showIcon
-                  onChange={(plan_date) => setPlanDate(plan_date)}
-                  value={plan_date}
+                  onChange={(pullout_date) => setPulloutDate(pullout_date)}
+                  value={pullout_date}
           />
           </Box>
           </GridItem>
@@ -471,23 +369,24 @@ import {
           <Table size="lg" id='assettable'>
               <Thead>
                 <Tr>
-                  <Th> </Th>
+                  <Th></Th>
                   {/* <Th>Actions</Th> */}
-                  <Th>Status</Th>
+                  <Th>Ref No</Th>
                   <Th>Type</Th>
+                  <Th>Status</Th>
                   <Th>Serial No</Th>
-                  <Th>Asset Code</Th>
-                  <Th>Asset Name</Th>
+                  <Th>Code</Th>
+                  <Th>Name</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {assets.map((asset) => (
-                    <Tr key={asset.id} >
+                    <Tr key={asset.detailID} >
 
                       <Td>
-                        <input type="checkbox" value={asset.id}
+                        <input type="checkbox" value={asset.detailID}
                         
-                        onClick={(e) => handleSelectedAsset(e,asset.id)}
+                        onClick={(e) => handleSelectedAsset(e,asset.detailID)}
                         >
                         </input>
                       </Td>
@@ -519,11 +418,13 @@ import {
                         </ButtonGroup>
                       </Td> */}
 
-                      <Td>{asset.statusName}</Td>
-                      <Td>{asset.typeName}</Td>
-                      <Td>{asset.serialNo}</Td>
-                      <Td>{asset.assetCode}</Td>
-                      <Td>{asset.assetName}</Td>
+                    <Td>{asset.docRef_Checkin}</Td> 
+                    <Td>{asset.typeName}</Td>
+                    <Td>{asset.statusName}</Td>
+                    <Td>{asset.serialNo}</Td>
+                    <Td>{asset.assetCode}</Td>
+                    <Td>{asset.assetName}</Td>
+
                     </Tr>
                   ))}
               </Tbody>
@@ -535,7 +436,7 @@ import {
           
 
             <Button colorScheme="green" 
-            onClick={(e) => handleCheck(e)}  >
+            onClick={(e) => handlePullout(e)}  >
               {/*
               onClick={onOpen}
               <Link
@@ -544,7 +445,7 @@ import {
                   pathname: "/admin/assetstatusviewer"
                   }}>
               </Link> */}
-              {btnstate}
+              Pullout
 
              
             </Button>

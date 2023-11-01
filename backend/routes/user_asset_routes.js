@@ -1,0 +1,37 @@
+
+/* -------------------------------------------------------------------------- */
+/*                                See Info Below                              */
+/*               Write Updates , Activities and Comments Below                */
+/*                              Before Coding                                 */
+/* -------------------------------------------------------------------------- */
+
+
+/* 
+    Date : 01 / 01 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      user Asset routes
+
+
+    */
+
+const { Router } = require('express')
+
+const {
+    viewAllAssetsbyID,
+    viewAllStatus,
+    Pullout,
+    UpdateAsset
+
+} = require('../controllers/user_asset_controller')
+
+const router = Router()
+
+ router.get('/user-asset/viewstatus',viewAllStatus) 
+ router.post('/user-asset/pullout-asset',Pullout) 
+router.get('/user-asset/viewallByID/:id',viewAllAssetsbyID) 
+router.post('/user-asset/update-asset',UpdateAsset) 
+// router.post('/assetcategory/updateAssetCategory',updateAssetCategory) 
+
+module.exports = router
