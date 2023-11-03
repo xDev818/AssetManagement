@@ -13,6 +13,12 @@
     Purpose : 
       user Asset controller
 
+    Date : 01 / 01 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      viewPulloutAssetsbyID
+
 
     */
 
@@ -28,7 +34,8 @@ const { utils_getDate } = require('../utils/date_helper')
 const {
     viewAssets,
     viewStatus,
-    pullout
+    pullout,
+    viewPulloutAssets
   }  = require('../_sqlstatement/user_asset')
 
 
@@ -37,6 +44,28 @@ const {
     const {id} = request.params
   //  console.log(id)
     mysql.query( viewAssets(),[id] ,( err, result ) => {
+       
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
+    })
+}
+
+const viewPulloutAssetsbyID = ( request, response ) => {
+
+    const {id} = request.params
+  //  console.log(id)
+    mysql.query( viewPulloutAssets(),[id] ,( err, result ) => {
        
         if( err ) return response.status(400).send(
             {
@@ -80,8 +109,9 @@ const Pullout = ( request, response ) => {
     const {userid,detailid,statusid,notes,planpullout,docref} = request.body
 
     const date_pullout = new Date(planpullout)
+    const pulloutnotify = parseInt('1')
 
-    mysql.query( pullout(),[notes,statusid,date_pullout,userid,docref,detailid],( err, result ) => {
+    mysql.query( pullout(),[notes,statusid,pulloutnotify,date_pullout,userid,docref,detailid],( err, result ) => {
        
         if( err ) return response.status(400).send(
             {
@@ -101,8 +131,6 @@ const Pullout = ( request, response ) => {
 const UpdateAsset = ( request, response ) => {
 
     const {assetid,userid} = request.body
-
-    
 
     mysql.query( pullout(),[notes,statusid,date_pullout,userid,docref,detailid],( err, result ) => {
        
@@ -125,5 +153,6 @@ module.exports = {
     viewAllAssetsbyID,
     viewAllStatus,
     Pullout,
-    UpdateAsset
+    UpdateAsset,
+    viewPulloutAssetsbyID
 }

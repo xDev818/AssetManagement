@@ -289,7 +289,7 @@ export default function ITCheckoutViewer() {
                     <Td>
                       <ButtonGroup>
                         <Button
-                          colorScheme="red"
+                          colorScheme="facebook"
                           onClick={(e) =>
                             // handleGenerateReceiving( asset.docRef_Checkin)
                             handleActivateReceiving( e,asset.detailID,asset.active_checkin,asset.docRef_Checkin)

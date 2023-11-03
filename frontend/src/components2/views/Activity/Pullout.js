@@ -175,7 +175,7 @@ import {
 
         }
 
-       // alert(pulloutoutData.dataArray)
+      //  alert(pulloutData.dataArray)
     }
 
     function viewToastify(title,desc,status) {
@@ -199,6 +199,8 @@ import {
       
       try {
         event.preventDefault()
+        //alert(statusSelected)
+        if(statusSelected !== "" ) {
 
         // Generate UUID for DocReference
         const datehelper = new Datehelper()
@@ -241,7 +243,7 @@ import {
                 /* 
                   Update the Assets Mark Status based on StatusID
                 */
-                  success = axios.post('/user-asset/update-asset',{})
+                  const success = axios.post('/user-asset/update-asset',{})
                   .then((res) => {
                 
                   // alert("update Successful")
@@ -278,7 +280,8 @@ import {
               });
 
           }
-          checkoutData.dataArray = []
+          
+          pulloutData.dataArray = []
         }
         else {
           viewToastify(
@@ -289,11 +292,19 @@ import {
 
           }
 
-       
+        } else {
+          viewToastify(
+            "Pullout",
+            "Select Asset Status to Pullout",
+            "warning"
+          )
+
+        }
       }
       catch (err) {
         alert(err)
       }
+      
     }
     
     return (

@@ -7,11 +7,11 @@
 /* 
 
 
-    Date : 01 / 01 / 23
+    Date : 01 / 03 / 23
     Author : Nole
     Activities
     Purpose : 
-      User Assets
+      Pullout Viewer
 
 */
 
@@ -54,13 +54,14 @@ import { Link } from "react-router-dom";
 
 //import viewToastify from "components/Utils/viewToast";
 
-export default function UserAssetsViewer() {
+export default function PulloutViewer() {
   
 
   const toast = useToast()
 
 
   const [assets, setAssets] = useState([]);
+  const [pullout,setPullout] = useState([])
  
   const [userdata,setUser] = useState({
     userid : '',
@@ -74,9 +75,10 @@ export default function UserAssetsViewer() {
   const tablePerPage = 6;
   const lastIndex = currentPage * tablePerPage;
   const firstIndex = lastIndex - tablePerPage;
-  //const tables = assets.slice(firstIndex, lastIndex);
- // const tablePages = Math.ceil(assets.length / tablePerPage);
- // const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+  const tables = assets.slice(firstIndex, lastIndex);
+ const tablePages = Math.ceil(assets.length / tablePerPage);
+ const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
 
   const nextPage = () => {
     console.log("cureentpage", currentPage);
@@ -110,7 +112,7 @@ export default function UserAssetsViewer() {
 
       });
 
-      LoadAllAssets(tokenDecoded.result[0].userDisplayID);
+      LoadPulloutAssets(tokenDecoded.result[0].userDisplayID);
 
     }catch(err) {
       alert(err)
@@ -118,9 +120,9 @@ export default function UserAssetsViewer() {
 
   }, []);
 
-  const LoadAllAssets = async (id) => {
+  const LoadPulloutAssets = async (id) => {
     try {
-      const success = await axios.get("/user-asset/viewallByID/" + id)
+      const success = await axios.get("/user-asset/viewPulloutByID/" + id)
 
         .then((res) => {
           setAssets(res.data.result);
@@ -141,9 +143,27 @@ export default function UserAssetsViewer() {
   };
 
 
-  const handleReport = () => {
+  const handleReport = async (e,docref_pullout) => {
     try {
-      generate_PDF(assets, "Checkout");
+
+      // const pullout = await axios.get("/user-asset/viewPulloutByID/" + id)
+      // .then((res) => {
+      //   setAssets(res.data.result);
+
+      // })
+      // .catch((err) => {
+      //   const InsertLogs = new Logs(
+      //     "Error",
+      //     "PositionViewer",
+      //     "Function /LoadAllPositions",
+      //     "LoadAllPositions",
+      //     id
+      //   );
+      // });
+
+
+      generate_PDF(assets, "Pullout");
+
     } catch (err) {
       alert(err);
     }
@@ -197,23 +217,13 @@ export default function UserAssetsViewer() {
             >
               <Anchor
                   to={{
-                  pathname: "/admin/pullout-viewer"
+                  pathname: "/admin/pullout"
                   }}>
                 View Pullout
               </Anchor>
 
             </Button>
-            {/* <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
-                Report
-              </MenuButton>
-              <MenuList>
-                <MenuItem   onClick={handleReport}  colorScheme='green'>PDF </MenuItem>
-                <MenuItem   colorScheme='green' >Excel</MenuItem>
-                
-              </MenuList>
-          </Menu> */}
- 
+
             </ButtonGroup>
 
             {/* <Search
@@ -226,7 +236,7 @@ export default function UserAssetsViewer() {
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Check-in Ref</Th>
+                  <Th>Check-out Ref</Th>
                   <Th>Type</Th>
                   <Th>Status</Th>
                   <Th>Serial No</Th>
@@ -237,7 +247,18 @@ export default function UserAssetsViewer() {
               <Tbody>
                 {assets.map((asset) => (
                   <Tr key={asset.detailID}>
-                    <Td>{asset.docRef_Checkin}</Td>
+                    <ButtonGroup>
+                        
+                        <Button
+                          colorScheme="facebook"
+
+                          onClick={(e) =>
+
+                            handleReport( e,asset.docRef_Pullout)}
+                        >
+                        {asset.docRef_Pullout} 
+                        </Button>
+                      </ButtonGroup>
                     <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
                     <Td>{asset.serialNo}</Td>

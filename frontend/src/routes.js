@@ -171,6 +171,18 @@
     Activities
     Purpose : 
           import UserAssetsViewer from "components2/Activity/UserAssetsViewer";
+
+    Date : 01 / 03 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+    {
+      
+      path: "/pullout-viewer",
+      name: "Pullout Viewer",
+      component: PulloutViewer,
+      layout: "/admin",
+    },
 */
 
 // import
@@ -198,6 +210,7 @@ import UserCheckin_Viewer from "components2/Activity/UserCheckin_Viewer";
 import UsersViewer from "components2/Activity/UsersViewer";
 import UserAssetsViewer from "components2/Activity/UserAssetsViewer";
 import Pullout from "components2/views/Activity/Pullout";
+import PulloutViewer from "components2/Activity/PulloutViewer";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 import AssetStatus from "components2/views/AssetStatus";
@@ -259,6 +272,15 @@ var dashRoutes = [
     component: UserAssetsViewer,
     layout: "/admin",
   },
+  
+  {
+    
+    path: "/pullout-viewer",
+    name: "Pullout Viewer",
+    component: PulloutViewer,
+    layout: "/admin",
+  },
+
   {
     
     path: "/pullout",
@@ -266,6 +288,7 @@ var dashRoutes = [
     component: Pullout,
     layout: "/admin",
   },
+
   {
     submenu: "activity",
     path: "/asset-viewer",
