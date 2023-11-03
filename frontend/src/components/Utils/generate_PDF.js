@@ -33,10 +33,16 @@ Info : The code was made and controlled by Nole
     Purpose : 
         Add Asset Receiving DOcument
 
+    Date : 01 / 03 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+        Add Asset Receiving DOcument
 */ 
 
 import PDFReports from 'components2/views/pdfreports/PDFReports'
 import PDFReportReceiving from 'components2/views/pdfreports/PDFReportReceiving'
+import PDFReportPullout from 'components2/views/pdfreports/PDFReportPullout'
 
 //import React, { useState } from 'react'
 
@@ -53,6 +59,7 @@ const generate_PDF =  (propdata,paramReportType,docref) => {
     const assetsColumn  = ["#","Type","Status", "Code", "Name", "Date Purchase"];
     const receivingColumn = ["#","Code", "Serial","Name", "Type"];
     const CheckoutColumn = ["#","Type", "Serial","Name"];
+    const PulloutColumn = ["#","Type", "Status", "Code","Name"];
     
   
         if(paramReportType === 'Asset Status') {
@@ -182,25 +189,11 @@ const generate_PDF =  (propdata,paramReportType,docref) => {
 
          } else if (paramReportType === 'Receiving') {
  
-            // propdata.forEach(item => {
-            //     icount = icount + 1
-                
-            //     const assetsData = [
-            //         icount.toString(),
-            //         item.typeName,
-            //         item.statusName,
-            //         item.assetCode,
-            //         item.assetName,
-            //         item.date_purchase,
-            //     ];
-            //     rowdata.push(assetsData)
-
-            // });
-            
+   
             PDFReportReceiving(propdata,receivingColumn,paramReportType,docref)
 
          } else if (paramReportType === 'Checkout') {
-
+          
             propdata.forEach(item => {
                 icount = icount + 1
                 
@@ -214,7 +207,26 @@ const generate_PDF =  (propdata,paramReportType,docref) => {
             });
             PDFReports(rowdata,CheckoutColumn,paramReportType)
 
+         } else if (paramReportType === 'Pullout') {
+                //console.log(propdata)
+            // propdata.forEach(item => {
+            //     icount = icount + 1
+                
+            //     const pulloutData = [
+            //         icount.toString(),
+            //         item.typeName,
+            //         item.statusName,
+            //         item.assetCode,
+            //         item.assetName,
+            //         item.docRef_Pullout
+            //     ];
+            //    // console.log(pulloutData)
+            //     rowdata.push(pulloutData)
+            // });
+            PDFReportPullout(propdata,PulloutColumn,paramReportType,docref)
+
          }
+
 
 
    

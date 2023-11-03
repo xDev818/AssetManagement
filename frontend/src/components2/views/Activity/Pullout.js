@@ -295,7 +295,7 @@ import {
         } else {
           viewToastify(
             "Pullout",
-            "Select Asset Status to Pullout",
+            "Select Asset Status for Pullout",
             "warning"
           )
 

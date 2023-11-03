@@ -36,12 +36,26 @@ import {
   Td,
   TableContainer,
   Stack,
-  Box,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  StatLabel,
+  FormLabel,
+  FormControl,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+useDisclosure,
+
+Menu,
+MenuButton,
+MenuList,
+MenuItem,
+MenuItemOption,
+MenuGroup,
+MenuOptionGroup,
+MenuDivider,
 
   useToast
 
@@ -52,16 +66,21 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
+import React from 'react'
+
 //import viewToastify from "components/Utils/viewToast";
 
 export default function PulloutViewer() {
   
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
 
   const toast = useToast()
 
 
   const [assets, setAssets] = useState([]);
-  const [pullout,setPullout] = useState([])
+  const [pullout,setPullout] = useState([]);
+  
  
   const [userdata,setUser] = useState({
     userid : '',
@@ -69,7 +88,9 @@ export default function PulloutViewer() {
     positionid:''
   });
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState({
+    name: ""
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const tablePerPage = 6;
@@ -142,27 +163,12 @@ export default function PulloutViewer() {
     }
   };
 
-
-  const handleReport = async (e,docref_pullout) => {
+  const handleReport = async () => {
+   //alert(search.name)
     try {
-
-      // const pullout = await axios.get("/user-asset/viewPulloutByID/" + id)
-      // .then((res) => {
-      //   setAssets(res.data.result);
-
-      // })
-      // .catch((err) => {
-      //   const InsertLogs = new Logs(
-      //     "Error",
-      //     "PositionViewer",
-      //     "Function /LoadAllPositions",
-      //     "LoadAllPositions",
-      //     id
-      //   );
-      // });
-
-
-      generate_PDF(assets, "Pullout");
+      //console.log(assets)
+        generate_PDF(assets, "Pullout",search.name);
+        
 
     } catch (err) {
       alert(err);
@@ -170,11 +176,11 @@ export default function PulloutViewer() {
   };
 
   const handleExcelReport = () => {
-    try {
-      generate_EXCEL(assets, "Checkout");
-    } catch (err) {
-      alert(err);
-    }
+    // try {
+    //   generate_EXCEL(assets, "Checkout");
+    // } catch (err) {
+    //   alert(err);
+    // }
   };
 
 
@@ -190,8 +196,7 @@ export default function PulloutViewer() {
              isClosable: true,
              position: "top"
            })
-       
-      
+
      )
    }
 
@@ -200,30 +205,50 @@ export default function PulloutViewer() {
       <Stack>
         <Card>
           <TableContainer>
-            <ButtonGroup spacing={6}>
-            <Button
-              colorScheme='red'
-            >
-              <Anchor
-                  to={{
-                  pathname: "/admin/pullout"
-                  }}>
-                Pullout
-              </Anchor>
+          <ButtonGroup spacing={6}>
 
-            </Button>
-            <Button
-              colorScheme='green'
-            >
-              <Anchor
-                  to={{
-                  pathname: "/admin/pullout"
-                  }}>
-                View Pullout
-              </Anchor>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
+                Report
+              </MenuButton>
+              <MenuList>
+                <MenuItem  onClick={onOpen}  colorScheme='green'>PDF </MenuItem>
+                <MenuItem  onClick={onOpen}  colorScheme='green' >Excel</MenuItem>
+                
+              </MenuList>
+          </Menu>
+              <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+              
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Pull-out Asset</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody pb={6}>
+                    <FormControl>
+                      <FormLabel>Search</FormLabel>
+                      <Input 
+                      onChange={(e) => {
+                        setSearch({ ...search, name: e.target.value })}}
+                        value = {search.name}
+                       placeholder='Document Reference No' />
+                    </FormControl>
 
-            </Button>
+                  </ModalBody>
 
+                  <ModalFooter>
+                    <Button colorScheme='green' mr={3} onClick={handleReport}>
+                      PDF
+                    </Button>
+                    <Button colorScheme='green' mr={3} onClick={handleExcelReport}>
+                      Excel
+                    </Button>
+                    <Button onClick={onClose}>Cancel</Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </ButtonGroup>
 
             {/* <Search
@@ -247,18 +272,7 @@ export default function PulloutViewer() {
               <Tbody>
                 {assets.map((asset) => (
                   <Tr key={asset.detailID}>
-                    <ButtonGroup>
-                        
-                        <Button
-                          colorScheme="facebook"
-
-                          onClick={(e) =>
-
-                            handleReport( e,asset.docRef_Pullout)}
-                        >
-                        {asset.docRef_Pullout} 
-                        </Button>
-                      </ButtonGroup>
+                     <Td> {asset.docRef_Pullout} </Td>
                     <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
                     <Td>{asset.serialNo}</Td>

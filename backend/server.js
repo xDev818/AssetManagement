@@ -130,12 +130,14 @@ var app = express();
 
 // Middlewares
 app.use(express.json());
-app.use(express.static('./assets'));
+//app.use(express.static('./images'));
 app.use(cors(
         {
                 origin: "*"
         }
 ));
+
+app.use('/image',express.static('./images'))
 
 app.get("/",(req,res) => 
 {

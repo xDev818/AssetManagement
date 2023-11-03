@@ -23,7 +23,7 @@ const {
     viewAllStatus,
     Pullout,
     viewPulloutAssetsbyID,
-    UpdateAsset
+    UpdateAsset,
 
 } = require('../controllers/user_asset_controller')
 
@@ -33,6 +33,7 @@ router.get('/user-asset/viewstatus',viewAllStatus)
 router.post('/user-asset/pullout-asset',Pullout) 
 router.get('/user-asset/viewallByID/:id',viewAllAssetsbyID) 
 router.get('/user-asset/viewPulloutByID/:id',viewPulloutAssetsbyID) 
+//router.get('/user-asset/view-Pullout-ByDocRef/:id',viewPulloutAssetsbyDocRefNo) 
 router.post('/user-asset/update-asset',UpdateAsset) 
 // router.post('/assetcategory/updateAssetCategory',updateAssetCategory) 
 

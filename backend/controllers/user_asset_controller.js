@@ -36,6 +36,7 @@ const {
     viewStatus,
     pullout,
     viewPulloutAssets
+   
   }  = require('../_sqlstatement/user_asset')
 
 
@@ -82,6 +83,28 @@ const viewPulloutAssetsbyID = ( request, response ) => {
          )
     })
 }
+
+// const viewPulloutAssetsbyDocRefNo = ( request, response ) => {
+
+//     const {id } = request.params
+
+//     mysql.query( viewPulloutAssetsbyDocRef(),[id] ,( err, result ) => {
+       
+//         if( err ) return response.status(400).send(
+//             {
+//                 message: "No Records Found",
+//                 message2: err.message
+//             }
+//         )
+
+//          response.status(200).send(
+//              {
+//                  message: "Records Found",
+//                  result
+//              }
+//          )
+//     })
+// }
 
 const viewAllStatus = ( request, response ) => {
 
@@ -154,5 +177,6 @@ module.exports = {
     viewAllStatus,
     Pullout,
     UpdateAsset,
-    viewPulloutAssetsbyID
+    viewPulloutAssetsbyID,
+   // viewPulloutAssetsbyDocRefNo
 }
