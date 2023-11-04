@@ -83,6 +83,8 @@ const PDFReportPullout = (propdata,propColumn,paramReportType,docref) => {
 
         // console.log(docref)
         // console.log(asset.docRef_Pullout)
+//         alert(docref)
+// alert (asset.docRef_Pullout)
 
         if(asset.docRef_Pullout === docref ) { 
           icount = icount + 1
@@ -103,7 +105,7 @@ const PDFReportPullout = (propdata,propColumn,paramReportType,docref) => {
                 
         }
       })
-      
+      alert(rowdata.length )
       if(rowdata.length > 0) {
 
         doc.addImage(img, 'webp',10 ,5, 40,15)  // margin-left,margin-top,width , height

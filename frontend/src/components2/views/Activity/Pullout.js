@@ -240,39 +240,41 @@ import {
                 var request =  axios.post('/log',InsertLogs.getLogs())
                 var response =  request.data
 
-                /* 
-                  Update the Assets Mark Status based on StatusID
-                */
-                  const success = axios.post('/user-asset/update-asset',{})
-                  .then((res) => {
+                LoadAllAssets(userdata.userid)
+
+                // /* 
+                //   Update the Assets Mark Status based on StatusID
+                // */
+                //   const success = axios.post('/user-asset/update-asset',{})
+                //   .then((res) => {
                 
-                  // alert("update Successful")
+                //   // alert("update Successful")
         
-                    const InsertLogs = new Logs(
-                      'Info',
-                      "Asset Status",
-                      "Function /handleUpdate",
-                      ' Create   Position name :  ' + checkoutvalues.assetid,
-                      userdata.userid
-                    )
+                //     const InsertLogs = new Logs(
+                //       'Info',
+                //       "Asset Status",
+                //       "Function /handleUpdate",
+                //       ' Create   Position name :  ' + checkoutvalues.assetid,
+                //       userdata.userid
+                //     )
           
-                    request = axios.post('/log',InsertLogs.getLogs())
-                    response =  request.data
+                //     request = axios.post('/log',InsertLogs.getLogs())
+                //     response =  request.data
 
-                  //  window.location.href = "/#/admin/checkout-viewer";
+                //   //  window.location.href = "/#/admin/checkout-viewer";
 
-                  viewToastify(
-                    "Pullout",
-                    "Asset pullout successfully",
-                    "success"
-                  )
+                //   viewToastify(
+                //     "Pullout",
+                //     "Asset pullout successfully",
+                //     "success"
+                //   )
 
-                  LoadAllAssets(userdata.userid)
+                //   LoadAllAssets(userdata.userid)
 
-                  })
-                  .catch((err) => {
-                    alert(err);
-                  });
+                //   })
+                //   .catch((err) => {
+                //     alert(err);
+                //   });
                   
               })
               .catch((err) => {

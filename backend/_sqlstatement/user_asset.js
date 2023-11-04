@@ -48,7 +48,7 @@
             + " inner join tblDepartments department on department.departmentDisplayID COLLATE utf8mb4_unicode_ci  = assetsdetail.departmentID"
             + " inner join tblUsers user on user.userDisplayID COLLATE utf8mb4_unicode_ci = assetsdetail.pulloutBy"
             + " inner join tblAssetType type on type.typeID COLLATE utf8mb4_unicode_ci = asset.typeID"
-            + " where assetsdetail.pulloutBy = ?"
+            + " where assetsdetail.pulloutBy = ? AND assetsdetail.pullout_receivedby IS NULL "
             + " ORDER BY asset.assetName ASC"
     }
 
@@ -92,9 +92,9 @@
 
     const updatepulloutAssetStatus = () => {
 
-      return "UPDATE tblUserAssetDetails SET pullout_receivedby = ?,"
-              + "pullout_datereceived = ?"
-              + " where detailID = ?"
+      return "UPDATE tblAssets SET assetStatusID = ?,"
+              + "pullout_updatedBy = ?,pullout_updatedate =?"
+              + " where assetID = ?"
     }
      module.exports = {
 
@@ -103,5 +103,6 @@
         pullout,
         viewPulloutAssets,
         viewITPulloutAssets,
-        pulloutReceive
+        pulloutReceive,
+        updatepulloutAssetStatus
      }

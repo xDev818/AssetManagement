@@ -37,7 +37,8 @@ const {
     pullout,
     viewPulloutAssets,
     viewITPulloutAssets,
-    pulloutReceive
+    pulloutReceive,
+    updatepulloutAssetStatus
    
   }  = require('../_sqlstatement/user_asset')
 
@@ -215,6 +216,29 @@ const UpdateAsset = ( request, response ) => {
     })
 }
 
+const UpdateAssetStatus = ( request, response ) => {
+
+    const {assetid,userid,statusid} = request.body
+
+   // console.log(request.body)
+
+    mysql.query( updatepulloutAssetStatus(),[statusid,userid,utils_getDate(),assetid],( err, result ) => {
+       
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+
+         response.status(200).send(
+             {
+                 message: "Update Success"
+             }
+         )
+    })
+}
+
 module.exports = {
     viewAllAssetsbyID,
     viewAllStatus,
@@ -222,5 +246,6 @@ module.exports = {
     UpdateAsset,
     viewPulloutAssetsbyID,
     viewITPullout_Assets,
-    PulloutReceive
+    PulloutReceive,
+    UpdateAssetStatus
 }

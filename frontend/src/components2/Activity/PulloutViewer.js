@@ -170,10 +170,10 @@ export default function PulloutViewer() {
   const handleReport = async () => {
    //alert(search.name)
     try {
+      alert()
       //console.log(assets)
-        generate_PDF(assets, "Pullout",search.name);
+        generate_PDF(assets, "Pullout",search.docref);
         
-
     } catch (err) {
       alert(err);
     }

@@ -185,30 +185,72 @@ export default function ITPulloutViewer() {
       assets.map(asset => { 
 
         if(asset.docRef_Pullout === search.docref) {
-          alert(asset.docRef_Pullout)
+         
 
           const assetvalues = {
             userid: userdata.userid,
-            detailid: asset.detailID
+            detailid: asset.detailID,
+            statusid: asset.statuspulloutID,
+            assetid: asset.assetID
           }
 
           const request =  axios.post("/user-asset/update-pullout-receive",assetvalues)
-
-          const response = request.data;
-
-          if(response.message.includes("Record Found")) {
-            // update status here
-
-            const request =  axios.post("/user-asset/update-pullout-receive",assetvalues)
-
-            const response = request.data;
-
-          } else {
           
+
+          .then((res) => {
+            if(res.data.message === "Update Success") {
+
+              const requestStatus =  axios.post("/user-asset/update-pullout-assetStatus",assetvalues)
+
+              .then((res) => {
+                if(res.data.message === "Update Success") { 
+
+                  viewToastify('Pullout Receive',
+                  res.data.message,
+                  'success')
+
+                  LoadAPulloutAssets()
+                  
+                } else {
+                  viewToastify('Pullout Receive',
+                  "Asset Status Meesage : \n" + res.data.message,
+                  'warning')
+                }
+
+      
+              })
+              .catch((err) => {
+                const InsertLogs = new Logs(
+                  "Error",
+                  "PositionViewer",
+                  "Function /LoadAllPositions",
+                  "LoadAllPositions",
+                  id
+                );
+              });
+
+            } else {
               viewToastify('Pullout Receive',
-              response.message,
+              "Pullout Receive Status : \n" + res.data.message,
               'warning')
             }
+  
+          })
+          .catch((err) => {
+            const InsertLogs = new Logs(
+              "Error",
+              "PositionViewer",
+              "Function /LoadAllPositions",
+              "LoadAllPositions",
+              id
+            );
+          });
+          
+
+
+         
+
+       
 
 
         }
