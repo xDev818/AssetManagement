@@ -38,12 +38,15 @@
 
      const update_Receive = () => {
 
+
       return "UPDATE tblUserAssetDetails SET checkinby = ?,assetStatusID = ?,"
+
             + "datecheckin = ?,active_checkin = ? "
             + " where detailID = ?"
 
       
    }
+
 
 
 //    const updateAssetDetail_Status = () => {
@@ -54,6 +57,7 @@
     
 //  }
 
+
  const updateAsset_Status = () => {
 
   return "UPDATE tblAssets SET assetStatusID = ?,"
@@ -61,12 +65,16 @@
         + " where assetID = ?"
 
   
+
  }
+
     
      module.exports = {
 
         viewAllAssetsfor_Deploy_ByUserID,
         update_Receive,
+
        // updateAssetDetail_Status,
+
         updateAsset_Status
      }

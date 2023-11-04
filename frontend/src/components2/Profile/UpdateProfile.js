@@ -272,6 +272,7 @@ export default function UpdateProfile() {
   //   </>
   // }, [file])
 
+
 const handleUploadImage = async (e) => {
   console.log(e.target.files[0])
 
@@ -286,10 +287,12 @@ const handleUploadImage = async (e) => {
     try {
      
         const requestImg = await axios.post("/users/upload-image/" + values.user_id, image, {
+
           headers: {
             "Content-Type": 'multipart/form-data'
           }
         })
+
 
     } catch (err) {
       alert(err)
@@ -352,7 +355,9 @@ const handleUploadImage = async (e) => {
                       colorScheme="teal"
                       py={5}
                       rounded="4px"
+
                      // onClick={handleUploadImage}
+
                     >
                       Upload Image
                     </Button>
@@ -402,12 +407,14 @@ const handleUploadImage = async (e) => {
                     src={
 
 
+
                        values?.imgFilename
                              ? 
 
                               `http://localhost:5001/image/static/${values?.imgFilename}`
                   
                              :  imgDefault
+
 
                       // values.imgFilename ||
                       // "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"

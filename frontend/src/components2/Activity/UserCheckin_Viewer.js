@@ -226,8 +226,10 @@ export default function UserCheckin_Viewer() {
           if(res.data.message === 'Record Found') {
 
             setAssets(res.data.result);
+
           } else {
             setAssets([])
+
           }
         
         })
@@ -275,6 +277,7 @@ export default function UserCheckin_Viewer() {
 
 
 
+
   // const UpdateAsseteDetailStatus = async (detailID,statID) => {
    
   //   try {
@@ -300,6 +303,7 @@ export default function UserCheckin_Viewer() {
   //   alert(err);
   // }
   // };
+
 
 
   const UpdateAssetStatus = (assetID,statID,userid) => {
@@ -358,12 +362,15 @@ export default function UserCheckin_Viewer() {
           //alert(statusvalues.statusid)
           const statID = statusvalues.statusid
     
+
             const success = await axios.post("/user-checkin/update-checkin",{detailID,statID,userid})
+
 
             .then((res) => {
               //alert("Asset checkin by user")
 
             //  UpdateAsseteDetailStatus(detailID,statID)
+
               UpdateAssetStatus(assetID,statID,userid)
 
               LoadAllAssetsForDeploy()
@@ -375,6 +382,7 @@ export default function UserCheckin_Viewer() {
               )
 
               //window.location.href = "/#/admin/dashboard"
+
              
               
             })

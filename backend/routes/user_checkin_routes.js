@@ -23,7 +23,9 @@ const { Router } = require('express')
 const {
     viewAssetByUserID,
     usercheckin_update,
+
     //usercheckin_updateAssetStatusDetail,
+
     usercheckin_updateAssetStatus
 
 } = require('../controllers/user_checkin_controller')

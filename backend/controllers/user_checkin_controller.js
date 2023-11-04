@@ -28,7 +28,9 @@ const { utils_getDate } = require('../utils/date_helper')
 const {
     viewAllAssetsfor_Deploy_ByUserID,
     update_Receive,
+
     //updateAssetDetail_Status,
+
     updateAsset_Status
 
 
@@ -67,11 +69,13 @@ const {
 
 const usercheckin_update = ( request, response ) => {
     
+
     const { statID, detailID,userid } = request.body
 
     const active = parseInt('1')
 
     mysql.query(update_Receive(), [userid,statID,utils_getDate(),active,detailID], ( err, result ) => {
+
 
         if( err ) return response.status(400).send(
             {
@@ -118,10 +122,13 @@ const usercheckin_update = ( request, response ) => {
 
 // }
 
+
 const usercheckin_updateAssetStatus = ( request, response ) => {
     
     const { assetID, statID,userid } = request.body
+
   //  console.log(request.body)
+
     mysql.query(updateAsset_Status(), [statID,userid,utils_getDate(),assetID], ( err, result ) => {
 
         if( err ) return response.status(400).send(
@@ -145,7 +152,9 @@ const usercheckin_updateAssetStatus = ( request, response ) => {
 module.exports = {
     viewAssetByUserID,
     usercheckin_update,
+
    // usercheckin_updateAssetStatusDetail,
+
     usercheckin_updateAssetStatus
 
 }
