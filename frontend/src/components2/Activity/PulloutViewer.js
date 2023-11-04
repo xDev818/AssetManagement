@@ -27,6 +27,10 @@ import generate_EXCEL from "components/Utils/generate_EXCEL";
 import Search from "components2/Search/Search";
 import Pagination from "components2/Pagination/Pagination";
 
+import pdficon from "../../assets/img/pdf.ico"
+import excelicon from "../../assets/img/excel.ico"
+
+
 import {
   Table,
   Thead,
@@ -56,7 +60,7 @@ MenuItemOption,
 MenuGroup,
 MenuOptionGroup,
 MenuDivider,
-
+Image,
   useToast
 
 
@@ -89,7 +93,7 @@ export default function PulloutViewer() {
   });
 
   const [search, setSearch] = useState({
-    name: ""
+    docref: ""
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -176,11 +180,11 @@ export default function PulloutViewer() {
   };
 
   const handleExcelReport = () => {
-    // try {
-    //   generate_EXCEL(assets, "Checkout");
-    // } catch (err) {
-    //   alert(err);
-    // }
+    try {
+      generate_EXCEL(assets, "Pullout");
+    } catch (err) {
+      alert(err);
+    }
   };
 
 
@@ -212,8 +216,24 @@ export default function PulloutViewer() {
                 Report
               </MenuButton>
               <MenuList>
-                <MenuItem  onClick={onOpen}  colorScheme='green'>PDF </MenuItem>
-                <MenuItem  onClick={onOpen}  colorScheme='green' >Excel</MenuItem>
+                <MenuItem  onClick={onOpen}  colorScheme='green'>
+                <Image 
+                  boxSize='2rem'
+                  borderRadius='full'
+                  src= {pdficon}
+                  alt='pfico'
+                  mr='12px'
+                />
+                  PDF </MenuItem>
+                <MenuItem  onClick={onOpen}  colorScheme='green' >
+                   <Image 
+                    boxSize='2rem'
+                    borderRadius='full'
+                    src= {excelicon}
+                    alt='pfico'
+                    mr='12px'
+                  />
+                  Excel</MenuItem>
                 
               </MenuList>
           </Menu>
@@ -231,13 +251,12 @@ export default function PulloutViewer() {
                       <FormLabel>Search</FormLabel>
                       <Input 
                       onChange={(e) => {
-                        setSearch({ ...search, name: e.target.value })}}
-                        value = {search.name}
+                        setSearch({ ...search, docref: e.target.value })}}
+                        value = {search.docref}
                        placeholder='Document Reference No' />
                     </FormControl>
 
                   </ModalBody>
-
                   <ModalFooter>
                     <Button colorScheme='green' mr={3} onClick={handleReport}>
                       PDF
@@ -245,7 +264,9 @@ export default function PulloutViewer() {
                     <Button colorScheme='green' mr={3} onClick={handleExcelReport}>
                       Excel
                     </Button>
-                    <Button onClick={onClose}>Cancel</Button>
+                    <Button colorScheme='twitter' onClick={onClose}>
+                      Close
+                    </Button>
                   </ModalFooter>
                 </ModalContent>
               </Modal>

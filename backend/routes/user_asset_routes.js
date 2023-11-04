@@ -24,7 +24,8 @@ const {
     Pullout,
     viewPulloutAssetsbyID,
     UpdateAsset,
-
+    viewITPullout_Assets,
+    PulloutReceive
 } = require('../controllers/user_asset_controller')
 
 const router = Router()
@@ -33,8 +34,8 @@ router.get('/user-asset/viewstatus',viewAllStatus)
 router.post('/user-asset/pullout-asset',Pullout) 
 router.get('/user-asset/viewallByID/:id',viewAllAssetsbyID) 
 router.get('/user-asset/viewPulloutByID/:id',viewPulloutAssetsbyID) 
-//router.get('/user-asset/view-Pullout-ByDocRef/:id',viewPulloutAssetsbyDocRefNo) 
+router.get('/user-asset/view-ITPullout',viewITPullout_Assets) 
 router.post('/user-asset/update-asset',UpdateAsset) 
-// router.post('/assetcategory/updateAssetCategory',updateAssetCategory) 
+router.post('/user-asset/update-pullout-receive',PulloutReceive) 
 
 module.exports = router

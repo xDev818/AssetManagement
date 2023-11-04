@@ -11,7 +11,8 @@
     Author : Nole
     Activities
     Purpose : 
-      User Assets
+     IT Pullout 
+        - view all asset pullout genrated by user
 
 */
 
@@ -67,8 +68,9 @@ import { Link } from "react-router-dom";
 
 //import viewToastify from "components/Utils/viewToast";
 
-export default function UserAssetsViewer() {
+export default function ITPulloutViewer() {
   
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
 
   const toast = useToast()
@@ -82,7 +84,9 @@ export default function UserAssetsViewer() {
     positionid:''
   });
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState({
+    docref: ""
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const tablePerPage = 6;
@@ -124,7 +128,7 @@ export default function UserAssetsViewer() {
 
       });
 
-      LoadAllAssets(tokenDecoded.result[0].userDisplayID);
+      LoadAPulloutAssets();
 
     }catch(err) {
       alert(err)
@@ -132,13 +136,16 @@ export default function UserAssetsViewer() {
 
   }, []);
 
-  const LoadAllAssets = async (id) => {
+  const LoadAPulloutAssets = async (id) => {
     try {
-      const success = await axios.get("/user-asset/viewallByID/" + id)
+      const success = await axios.get("/user-asset/view-ITPullout")
 
         .then((res) => {
-          setAssets(res.data.result);
-
+          if(res.data.message === "Records Found") {
+              setAssets(res.data.result);
+          } else {
+            setAssets([])
+          }
         })
         .catch((err) => {
           const InsertLogs = new Logs(
@@ -155,21 +162,66 @@ export default function UserAssetsViewer() {
   };
 
 
-  const handleReport = () => {
-    try {
-      generate_PDF(assets, "Checkout");
-    } catch (err) {
-      alert(err);
-    }
-  };
+  // const handleReport = () => {
+  //   try {
+  //     generate_PDF(assets, "Checkout");
+  //   } catch (err) {
+  //     alert(err);
+  //   }
+  // };
 
-  const handleExcelReport = () => {
+  // const handleExcelReport = () => {
+  //   try {
+  //     generate_EXCEL(assets, "Checkout");
+  //   } catch (err) {
+  //     alert(err);
+  //   }
+  // };
+
+  const handleReceive =  () => {
+
     try {
-      generate_EXCEL(assets, "Checkout");
-    } catch (err) {
-      alert(err);
+      
+      assets.map(asset => { 
+
+        if(asset.docRef_Pullout === search.docref) {
+          alert(asset.docRef_Pullout)
+
+          const assetvalues = {
+            userid: userdata.userid,
+            detailid: asset.detailID
+          }
+
+          const request =  axios.post("/user-asset/update-pullout-receive",assetvalues)
+
+          const response = request.data;
+
+          if(response.message.includes("Record Found")) {
+            // update status here
+
+            const request =  axios.post("/user-asset/update-pullout-receive",assetvalues)
+
+            const response = request.data;
+
+          } else {
+          
+              viewToastify('Pullout Receive',
+              response.message,
+              'warning')
+            }
+
+
+        }
+
+
+      })
+
+      LoadAPulloutAssets()
+
+    } catch(err) {
+      alert(err)
     }
-  };
+  }
 
 
   function viewToastify(title,desc,status) {
@@ -180,7 +232,7 @@ export default function UserAssetsViewer() {
              title: title,
              description: desc,
              status: status,
-             duration: 3000,
+             duration: 4000,
              isClosable: true,
              position: "top"
            })
@@ -195,68 +247,43 @@ export default function UserAssetsViewer() {
         <Card>
           <TableContainer>
             <ButtonGroup spacing={6}>
-            {/* <Button
-              colorScheme='red'
-            >
-              <Anchor
-                  to={{
-                  pathname: "/admin/pullout"
-                  }}>
-                Pullout
-              </Anchor>
-
-            </Button>
             <Button
               colorScheme='green'
+              onClick={onOpen}
             >
-              <Anchor
-                  to={{
-                  pathname: "/admin/pullout-viewer"
-                  }}>
-                View Pullout
-              </Anchor>
+              Process Pullout
+            </Button>
 
-            </Button> */}
+            <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+              
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Receive Pull-out Asset</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody pb={6}>
+                    <FormControl>
+                      <FormLabel>Search</FormLabel>
+                      <Input 
+                      onChange={(e) => {
+                        setSearch({ ...search, docref: e.target.value })}}
+                        value = {search.docref}
+                       placeholder='Document Reference No' />
+                    </FormControl>
 
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
-                Process
-              </MenuButton>
-              <MenuList>
-                <MenuItem   colorScheme='green'>
-                    <Image 
-                      boxSize='2rem'
-                      borderRadius='full'
-                      src= {newicon}
-                      alt='pfico'
-                      mr='12px'
-                    />
-                      <Anchor
-                        to={{
-                          pathname: "/admin/pullout"
-                        }}>
-                      Pullout
-                      </Anchor>
-                </MenuItem>
-                <MenuItem    colorScheme='green'>
-                    <Image 
-                      boxSize='2rem'
-                      borderRadius='full'
-                      src= {viewicon}
-                      alt='pfico'
-                      mr='12px'
-                    />
-                      <Anchor
-                          to={{
-                            pathname: "/admin/pullout-viewer"
-                          }}>
-                            
-                          View Pullout
-                      </Anchor>
-                  </MenuItem>
-                
-              </MenuList>
-          </Menu>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button colorScheme='green' mr={3} onClick={handleReceive}>
+                     Receive
+                    </Button>
+                    <Button colorScheme='twitter' onClick={onClose}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
  
             </ButtonGroup>
 
@@ -270,7 +297,7 @@ export default function UserAssetsViewer() {
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Check-in Ref</Th>
+                  <Th>Pull-out Ref</Th>
                   <Th>Type</Th>
                   <Th>Status</Th>
                   <Th>Serial No</Th>
@@ -281,7 +308,7 @@ export default function UserAssetsViewer() {
               <Tbody>
                 {assets.map((asset) => (
                   <Tr key={asset.detailID}>
-                    <Td>{asset.docRef_Checkin}</Td>
+                    <Td>{asset.docRef_Pullout}</Td>
                     <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
                     <Td>{asset.serialNo}</Td>

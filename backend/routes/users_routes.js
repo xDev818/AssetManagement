@@ -47,20 +47,20 @@ router.post('/users/upload-image/:userid',
     (request,response) => {
 
         const {userid} = request.params
-        console.log(request.files)
+       // console.log(request.files)
 
         
             const files = request.files
             let image = ""
 
-            if(files.file) {
+            // if(files.file) {
 
-                console.log("meron file")
-                console.log(userid)
+            //     console.log("meron file")
+            //     console.log(userid)
 
-            } else {
-                console.log("no file")
-            }
+            // } else {
+            //     console.log("no file")
+            // }
 
             const file = files.file
             const type = file.mimetype

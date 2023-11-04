@@ -26,13 +26,42 @@ import React from 'react'
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
+// import {
+
+//   FormLabel,
+//   FormControl,
+//   Input,
+
+//   useToast
+
+
+// } from "@chakra-ui/react";
 
 
 const PDFReportPullout = (propdata,propColumn,paramReportType,docref) => {
   
+ // const toast = useToast()
+
   const doc = new jsPDF();
   //const total = propdata.length.toString();
   const datehelper = new Datehelper()
+
+  // function viewToastify(title,desc,status) {
+  //   // const toast = useToast()
+  //    return (
+       
+  //          toast({
+  //            title: title,
+  //            description: desc,
+  //            status: status,
+  //            duration: 3000,
+  //            isClosable: true,
+  //            position: "top"
+  //          })
+       
+      
+  //    )
+  //  }
 
     try {
    
@@ -47,11 +76,13 @@ const PDFReportPullout = (propdata,propColumn,paramReportType,docref) => {
       const rowdata = []
       const rowdata2 = []
       var icount  =0
-      console.log(propdata)
+
+   
+
       propdata.map(asset => { 
 
         // console.log(docref)
-         console.log(asset.docRef_Pullout)
+        // console.log(asset.docRef_Pullout)
 
         if(asset.docRef_Pullout === docref ) { 
           icount = icount + 1
@@ -73,6 +104,8 @@ const PDFReportPullout = (propdata,propColumn,paramReportType,docref) => {
         }
       })
       
+      if(rowdata.length > 0) {
+
         doc.addImage(img, 'webp',10 ,5, 40,15)  // margin-left,margin-top,width , height
         doc.text("Asset Pullout Form",150, 12 ); // margin-left,margin-top
         doc.setFontSize(10)
@@ -138,7 +171,17 @@ const PDFReportPullout = (propdata,propColumn,paramReportType,docref) => {
       
          // we define the name of our PDF file to save.
         doc.save(paramReportType + `${dateStr}.pdf`);
-      
+
+        } else {
+
+          alert("No Data to Generate")
+          // viewToastify(
+          //   "PDF Report",
+          //   "No Data to Generate",
+          //   "info"
+          // )
+
+        }
       }
       catch(err)  {
         alert(err)

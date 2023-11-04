@@ -183,6 +183,19 @@
       component: PulloutViewer,
       layout: "/admin",
     },
+
+    Date : 01 / 04 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      import ITPulloutViewer from "components2/Activity/ITPulloutViewer";
+      {
+        submenu: "activity",
+        path: "/assetpullout-viewer",
+        name: "Pullout",
+        component: ITPulloutViewer,
+        layout: "/admin",
+      },
 */
 
 // import
@@ -211,6 +224,7 @@ import UsersViewer from "components2/Activity/UsersViewer";
 import UserAssetsViewer from "components2/Activity/UserAssetsViewer";
 import Pullout from "components2/views/Activity/Pullout";
 import PulloutViewer from "components2/Activity/PulloutViewer";
+import ITPulloutViewer from "components2/Activity/ITPulloutViewer";
 
 import AssetStatusViewer from "components2/Configuration/AssetStatusViewer";
 import AssetStatus from "components2/views/AssetStatus";
@@ -316,6 +330,13 @@ var dashRoutes = [
     path: "/checkin-viewer",
     name: "Check In",
     component: UserCheckin_Viewer,
+    layout: "/admin",
+  },
+  {
+    submenu: "activity",
+    path: "/assetpullout-viewer",
+    name: "Pullout",
+    component: ITPulloutViewer,
     layout: "/admin",
   },
   {

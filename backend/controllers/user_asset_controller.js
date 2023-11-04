@@ -35,7 +35,9 @@ const {
     viewAssets,
     viewStatus,
     pullout,
-    viewPulloutAssets
+    viewPulloutAssets,
+    viewITPulloutAssets,
+    pulloutReceive
    
   }  = require('../_sqlstatement/user_asset')
 
@@ -126,6 +128,25 @@ const viewAllStatus = ( request, response ) => {
     })
 }
 
+const viewITPullout_Assets = ( request, response ) => {
+
+    mysql.query( viewITPulloutAssets(),( err, result ) => {
+       
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
+    })
+}
 
 const Pullout = ( request, response ) => {
 
@@ -146,6 +167,28 @@ const Pullout = ( request, response ) => {
          response.status(200).send(
              {
                  message: "Pullout success"
+             }
+         )
+    })
+}
+
+const PulloutReceive = ( request, response ) => {
+
+    const {userid,detailid} = request.body
+
+
+    mysql.query( pulloutReceive(),[userid,utils_getDate(),detailid],( err, result ) => {
+       
+        if( err ) return response.status(400).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+
+         response.status(200).send(
+             {
+                 message: "Update Success"
              }
          )
     })
@@ -178,5 +221,6 @@ module.exports = {
     Pullout,
     UpdateAsset,
     viewPulloutAssetsbyID,
-   // viewPulloutAssetsbyDocRefNo
+    viewITPullout_Assets,
+    PulloutReceive
 }

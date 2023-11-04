@@ -70,8 +70,24 @@ const generate_EXCEL =  (propdata,paramReportType) => {
 
         ws = XLSX.utils.json_to_sheet(rowdata);
 
-     } 
-      else {
+     }  if(paramReportType === 'Pullout') {
+       
+          propdata.forEach(item => {
+            icount = icount + 1
+            
+            const itempData = [
+                icount.toString(),
+                item.typeName,
+                item.statusName,
+                item.assetCode,
+                item.assetName,
+                item.docRef_Pullout,
+            ];
+            rowdata.push(itempData)
+        });
+        ws = XLSX.utils.json_to_sheet(rowdata);
+
+      } else {
         ws = XLSX.utils.json_to_sheet(propdata);
       }
 
