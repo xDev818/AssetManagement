@@ -226,6 +226,10 @@ export default function UserCheckin_Viewer() {
           if(res.data.message === 'Record Found') {
 
             setAssets(res.data.result);
+
+          } else {
+            setAssets([])
+
           }
         
         })
@@ -273,31 +277,33 @@ export default function UserCheckin_Viewer() {
 
 
 
-  const UpdateAsseteDetailStatus = async (detailID,statID) => {
+
+  // const UpdateAsseteDetailStatus = async (detailID,statID) => {
    
-    try {
+  //   try {
      
-        const updateDetail = await axios.post("/user-checkin/update-checkin-status",{detailID,statID})
+  //       const updateDetail = await axios.post("/user-checkin/update-checkin-status",{detailID,statID})
 
-          .then((res) => {
-        //    alert("Asset Details updated")
+  //         .then((res) => {
+  //       //    alert("Asset Details updated")
 
-          })
-          .catch((err) => {
-            const InsertLogs = new Logs(
-              "Error",
-              "PositionViewer",
-              "Function /LoadAllPositions",
-              "LoadAllPositions",
-              userid
-            );
-          });
+  //         })
+  //         .catch((err) => {
+  //           const InsertLogs = new Logs(
+  //             "Error",
+  //             "PositionViewer",
+  //             "Function /LoadAllPositions",
+  //             "LoadAllPositions",
+  //             userid
+  //           );
+  //         });
      
 
-  } catch (err) {
-    alert(err);
-  }
-  };
+  // } catch (err) {
+  //   alert(err);
+  // }
+  // };
+
 
 
   const UpdateAssetStatus = (assetID,statID,userid) => {
@@ -356,12 +362,15 @@ export default function UserCheckin_Viewer() {
           //alert(statusvalues.statusid)
           const statID = statusvalues.statusid
     
-            const success = await axios.post("/user-checkin/update-checkin",{detailID,statID})
+
+            const success = await axios.post("/user-checkin/update-checkin",{detailID,statID,userid})
+
 
             .then((res) => {
               //alert("Asset checkin by user")
 
-              UpdateAsseteDetailStatus(detailID,statID)
+            //  UpdateAsseteDetailStatus(detailID,statID)
+
               UpdateAssetStatus(assetID,statID,userid)
 
               LoadAllAssetsForDeploy()
@@ -372,7 +381,8 @@ export default function UserCheckin_Viewer() {
                 "success"
               )
 
-              window.location.href = "/#/admin/dashboard"
+              //window.location.href = "/#/admin/dashboard"
+
              
               
             })

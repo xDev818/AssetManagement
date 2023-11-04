@@ -272,22 +272,27 @@ export default function UpdateProfile() {
   //   </>
   // }, [file])
 
-const handleUploadImage = async () => {
-  
+
+const handleUploadImage = async (e) => {
+  console.log(e.target.files[0])
+
   const imagevalues = {
     userid: values.user_id,
-    files: file
+    image: e.target.files[0]
   }
+
+  const image = new FormData()
+  image.append("file",e.target.files[0])
 
     try {
      
-        const requestImg = await axios.post("/users/upload-image", imagevalues, {
+        const requestImg = await axios.post("/users/upload-image/" + values.user_id, image, {
+
           headers: {
             "Content-Type": 'multipart/form-data'
           }
         })
 
-        
 
     } catch (err) {
       alert(err)
@@ -339,7 +344,8 @@ const handleUploadImage = async () => {
                     //id="file"
                     type="file"
                     mt={4}
-                    onChange={(e) => setFile(e.target.files[0])}
+                    // onChange={(e) => setFile(e.target.files[0])}
+                    onChange={(e) => handleUploadImage(e)}
                     id="file-input"
                   />
                   <FormLabel htmlFor="file-input">
@@ -349,7 +355,9 @@ const handleUploadImage = async () => {
                       colorScheme="teal"
                       py={5}
                       rounded="4px"
-                      onClick={handleUploadImage}
+
+                     // onClick={handleUploadImage}
+
                     >
                       Upload Image
                     </Button>
@@ -398,11 +406,15 @@ const handleUploadImage = async () => {
                   <Image
                     src={
 
-                      values.imgFilename
-                            ? require(`../../../../backend/images/static/${values.imgFilename}`)
-                            // `http://localhost:5001/images/static/${values?.imgFilename}`
-                            //require(`../../../../backend/images/static/${values.imgFilename}`)
-                            :  imgDefault
+
+
+                       values?.imgFilename
+                             ? 
+
+                              `http://localhost:5001/image/static/${values?.imgFilename}`
+                  
+                             :  imgDefault
+
 
                       // values.imgFilename ||
                       // "https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg"

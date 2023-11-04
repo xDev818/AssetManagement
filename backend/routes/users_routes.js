@@ -43,11 +43,26 @@ router.post('/users/update-profile', updateProfile) // Api call to update a sing
 router.delete('/users/:id', deleteOldUserById) // Api call to delete an old data by ID
 router.delete('/users', deleteAllOldUsers) // Api call to delete all datas base on row ID's
 
-router.post('/users/upload-image', 
+
+router.post('/users/upload-image/:userid', 
     (request,response) => {
 
-            const {userid} = request.body
+        const {userid} = request.params
+       // console.log(request.files)
+
+        
             const files = request.files
+            let image = ""
+
+            // if(files.file) {
+
+            //     console.log("meron file")
+            //     console.log(userid)
+
+            // } else {
+            //     console.log("no file")
+            // }
+
 
             const file = files.file
             const type = file.mimetype
@@ -64,7 +79,9 @@ router.post('/users/upload-image',
                 }
             )
 
-            file.mv(`../server/static/images/${newName}`, err => {
+
+            file.mv(`../backend/images/static/${newName}`, err => {
+
 
                 if ( err ) return response.status(400).send(
                    {
@@ -76,9 +93,11 @@ router.post('/users/upload-image',
                 const stmt = "UPDATE tblUsers SET imgFilename = ?"
                 + " where userDisplayID = ?"
 
-                mysql.query( stmt, [ userid,newName ], ( err, result ) => {
 
-                    if( err || !result.length ) return response.status(404).send(
+                mysql.query( stmt, [ newName,userid ], ( err, result ) => {
+
+                    if( err ) return response.status(404).send(
+
                           {
                              message: "Update Error",
                              message2: err

@@ -28,7 +28,9 @@ const { utils_getDate } = require('../utils/date_helper')
 const {
     viewAllAssetsfor_Deploy_ByUserID,
     update_Receive,
-    updateAssetDetail_Status,
+
+    //updateAssetDetail_Status,
+
     updateAsset_Status
 
 
@@ -67,11 +69,13 @@ const {
 
 const usercheckin_update = ( request, response ) => {
     
-    const { statID, detailID } = request.body
+
+    const { statID, detailID,userid } = request.body
 
     const active = parseInt('1')
 
-    mysql.query(update_Receive(), [statID,utils_getDate(),active,detailID], ( err, result ) => {
+    mysql.query(update_Receive(), [userid,statID,utils_getDate(),active,detailID], ( err, result ) => {
+
 
         if( err ) return response.status(400).send(
             {
@@ -91,37 +95,40 @@ const usercheckin_update = ( request, response ) => {
 
 }
 
-const usercheckin_updateAssetStatusDetail = ( request, response ) => {
+// const usercheckin_updateAssetStatusDetail = ( request, response ) => {
     
-    const { statID,detailID } = request.body
-    // console.log(detailID)  
-    // console.log(statID)
+//     const { statID,detailID } = request.body
+//     // console.log(detailID)  
+//     // console.log(statID)
     
     
-    mysql.query(updateAssetDetail_Status(), [statID,detailID], ( err, result ) => {
+//     mysql.query(updateAssetDetail_Status(), [statID,detailID], ( err, result ) => {
 
-        if( err ) return response.status(400).send(
-            {
-                message: "Update Error",
-                message2: err.message
-            }
-        )
+//         if( err ) return response.status(400).send(
+//             {
+//                 message: "Update Error",
+//                 message2: err.message
+//             }
+//         )
 
-         response.status(200).send(
-             {
-                 message: "Update Success",
-                 result
-             }
-         )
+//          response.status(200).send(
+//              {
+//                  message: "Update Success",
+//                  result
+//              }
+//          )
 
-    })
+//     })
 
-}
+// }
+
 
 const usercheckin_updateAssetStatus = ( request, response ) => {
     
     const { assetID, statID,userid } = request.body
-    console.log(request.body)
+
+  //  console.log(request.body)
+
     mysql.query(updateAsset_Status(), [statID,userid,utils_getDate(),assetID], ( err, result ) => {
 
         if( err ) return response.status(400).send(
@@ -145,7 +152,9 @@ const usercheckin_updateAssetStatus = ( request, response ) => {
 module.exports = {
     viewAssetByUserID,
     usercheckin_update,
-    usercheckin_updateAssetStatusDetail,
+
+   // usercheckin_updateAssetStatusDetail,
+
     usercheckin_updateAssetStatus
 
 }

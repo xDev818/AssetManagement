@@ -7,11 +7,11 @@
 /* 
 
 
-    Date : 10 / 20 / 23
+    Date : 01 / 01 / 23
     Author : Nole
     Activities
     Purpose : 
-      create Asset Checkout viewer
+      User Assets
 
 */
 
@@ -26,6 +26,9 @@ import generate_EXCEL from "components/Utils/generate_EXCEL";
 
 import Search from "components2/Search/Search";
 import Pagination from "components2/Pagination/Pagination";
+
+import viewicon from "../../assets/img/view.ico"
+import newicon from "../../assets/img/new.ico"
 
 import {
   Table,
@@ -42,9 +45,19 @@ import {
   MenuList,
   MenuItem,
   StatLabel,
-
-  useToast
-
+  FormLabel,
+  FormControl,
+  Input,
+  Image,
+  useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+useDisclosure,
 
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -54,8 +67,9 @@ import { Link } from "react-router-dom";
 
 //import viewToastify from "components/Utils/viewToast";
 
-export default function ITCheckoutViewer() {
+export default function UserAssetsViewer() {
   
+
 
   const toast = useToast()
 
@@ -95,30 +109,32 @@ export default function ITCheckoutViewer() {
     setCurrentPage(number);
   };
 
-  const SetUsers = async () => {
-    const tokenStorage = localStorage.getItem("token");
-    const tokenDecoded = decoder(tokenStorage);
-
-  
-    setUser({
-      ...userdata,
-
-      userid: tokenDecoded.result[0].userDisplayID,
-      deptid: tokenDecoded.result[0].departmentDisplayID,
-      positionid : tokenDecoded.result[0].positionID
-
-
-    });
-  };
   useEffect(() => {
-    SetUsers();
-    LoadAllAssetsCheckout();
+
+    try {
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
+
+      setUser({
+        ...userdata,
+
+        userid: tokenDecoded.result[0].userDisplayID,
+        deptid: tokenDecoded.result[0].departmentDisplayID,
+        positionid : tokenDecoded.result[0].positionID
+
+      });
+
+      LoadAllAssets(tokenDecoded.result[0].userDisplayID);
+
+    }catch(err) {
+      alert(err)
+    }
+
   }, []);
 
-  const LoadAllAssetsCheckout = async () => {
+  const LoadAllAssets = async (id) => {
     try {
-      const success = await axios
-        .get("/assetcheckout/get-assetcheckout-byIT")
+      const success = await axios.get("/user-asset/viewallByID/" + id)
 
         .then((res) => {
           setAssets(res.data.result);
@@ -130,7 +146,7 @@ export default function ITCheckoutViewer() {
             "PositionViewer",
             "Function /LoadAllPositions",
             "LoadAllPositions",
-            userdata.userid
+            id
           );
         });
     } catch (err) {
@@ -155,15 +171,6 @@ export default function ITCheckoutViewer() {
     }
   };
 
-  // No need to routes to server
-  const handleGenerateReceiving = (docref) => {
-      try {
-            generate_PDF(assets, "Receiving",docref)
-      } catch(err) {
-
-      }
-  }
-
 
   function viewToastify(title,desc,status) {
     // const toast = useToast()
@@ -182,140 +189,105 @@ export default function ITCheckoutViewer() {
      )
    }
 
-   
-  const handleActivateReceiving = async (e,detailID,active,docref) => {
-
-
-    try {
-        e.preventDefault()
-       
-        if( active == 0) {
-            const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
-
-            .then((res) => {
-
-            
-              handleGenerateReceiving(docref)
-              LoadAllAssetsCheckout()
-              
-              viewToastify(
-                "Checkout",
-                "Generate PDF and Check-in Asset for user successful",
-                "success"
-              )
-              
-
-            })
-            .catch((err) => {
-              const InsertLogs = new Logs(
-                "Error",
-                "PositionViewer",
-                "Function /LoadAllPositions",
-                "LoadAllPositions",
-                userdata.userid
-              );
-            });
-        } else {
-
-        
-          viewToastify(
-            "Asset Checkout",
-            "Asset already activated",
-            "info"
-          )
-
-        }
-
-    } catch (err) {
-      alert(err);
-    }
-  };
-
-
   return (
     <>
       <Stack>
         <Card>
           <TableContainer>
-            {/* <ButtonGroup spacing={6}>
-            <Button
-              colorScheme='messenger'
+            <ButtonGroup spacing={6}>
+            {/* <Button
+              colorScheme='red'
             >
               <Anchor
                   to={{
-                  pathname: "/admin/asset",
-                  state: { assetID: '' },
+                  pathname: "/admin/pullout"
                   }}>
-                New
+                Pullout
               </Anchor>
 
             </Button>
+            <Button
+              colorScheme='green'
+            >
+              <Anchor
+                  to={{
+                  pathname: "/admin/pullout-viewer"
+                  }}>
+                View Pullout
+              </Anchor>
+
+            </Button> */}
+
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
-                Report
+                Process
               </MenuButton>
               <MenuList>
-                <MenuItem   onClick={handleReport}  colorScheme='green'>PDF </MenuItem>
-                <MenuItem   colorScheme='green' >Excel</MenuItem>
+                <MenuItem   colorScheme='green'>
+                    <Image 
+                      boxSize='2rem'
+                      borderRadius='full'
+                      src= {newicon}
+                      alt='pfico'
+                      mr='12px'
+                    />
+                      <Anchor
+                        to={{
+                          pathname: "/admin/pullout"
+                        }}>
+                      Pullout
+                      </Anchor>
+                </MenuItem>
+                <MenuItem    colorScheme='green'>
+                    <Image 
+                      boxSize='2rem'
+                      borderRadius='full'
+                      src= {viewicon}
+                      alt='pfico'
+                      mr='12px'
+                    />
+                      <Anchor
+                          to={{
+                            pathname: "/admin/pullout-viewer"
+                          }}>
+                            
+                          View Pullout
+                      </Anchor>
+                  </MenuItem>
                 
               </MenuList>
           </Menu>
  
-            </ButtonGroup> */}
+            </ButtonGroup>
 
-            <Search
+            {/* <Search
               setSearch={setSearch}
               handleReport={handleReport}
               handleExcelReport = {handleExcelReport}
               pathname="/admin/checkout"
             />
-        
+         */}
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Reference</Th>
+                  <Th>Check-in Ref</Th>
                   <Th>Type</Th>
                   <Th>Status</Th>
                   <Th>Serial No</Th>
                   <Th>Code</Th>
                   <Th>Name</Th>
-                  <Th>Department</Th>
-                  <Th>Checkout Date</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {assets.map((asset) => (
                   <Tr key={asset.detailID}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="facebook"
-                          onClick={(e) =>
-                            // handleGenerateReceiving( asset.docRef_Checkin)
-                            handleActivateReceiving( e,asset.detailID,asset.active_checkin,asset.docRef_Checkin)
-                            
-                          }
-                        >
-                        { asset.docRef_Checkin}
-
-                        </Button>
-                        {/* <Button
-                          colorScheme="green"
-
-                         
-                        >
-                        Activate
-                        </Button> */}
-
-                      </ButtonGroup>
-                    </Td>
+                    <Td>{asset.docRef_Checkin}</Td>
                     <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
                     <Td>{asset.serialNo}</Td>
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>
-                    <Td>{asset.departmentName}</Td>
-                    <Td>{asset.date_checkout}</Td>
+
 
                   </Tr>
                 ))}

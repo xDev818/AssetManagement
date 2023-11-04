@@ -7,11 +7,11 @@
 /* 
 
 
-    Date : 10 / 20 / 23
+    Date : 01 / 03 / 23
     Author : Nole
     Activities
     Purpose : 
-      create Asset Checkout viewer
+      Pullout Viewer
 
 */
 
@@ -27,6 +27,10 @@ import generate_EXCEL from "components/Utils/generate_EXCEL";
 import Search from "components2/Search/Search";
 import Pagination from "components2/Pagination/Pagination";
 
+import pdficon from "../../assets/img/pdf.ico"
+import excelicon from "../../assets/img/excel.ico"
+
+
 import {
   Table,
   Thead,
@@ -36,13 +40,27 @@ import {
   Td,
   TableContainer,
   Stack,
-  Box,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  StatLabel,
+  FormLabel,
+  FormControl,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+useDisclosure,
 
+Menu,
+MenuButton,
+MenuList,
+MenuItem,
+MenuItemOption,
+MenuGroup,
+MenuOptionGroup,
+MenuDivider,
+Image,
   useToast
 
 
@@ -52,15 +70,21 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 
+import React from 'react'
+
 //import viewToastify from "components/Utils/viewToast";
 
-export default function ITCheckoutViewer() {
+export default function PulloutViewer() {
   
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
 
   const toast = useToast()
 
 
   const [assets, setAssets] = useState([]);
+  const [pullout,setPullout] = useState([]);
+  
  
   const [userdata,setUser] = useState({
     userid : '',
@@ -68,15 +92,18 @@ export default function ITCheckoutViewer() {
     positionid:''
   });
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState({
+    docref: ""
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const tablePerPage = 6;
   const lastIndex = currentPage * tablePerPage;
   const firstIndex = lastIndex - tablePerPage;
-  //const tables = assets.slice(firstIndex, lastIndex);
- // const tablePages = Math.ceil(assets.length / tablePerPage);
- // const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+  const tables = assets.slice(firstIndex, lastIndex);
+ const tablePages = Math.ceil(assets.length / tablePerPage);
+ const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
 
   const nextPage = () => {
     console.log("cureentpage", currentPage);
@@ -95,30 +122,32 @@ export default function ITCheckoutViewer() {
     setCurrentPage(number);
   };
 
-  const SetUsers = async () => {
-    const tokenStorage = localStorage.getItem("token");
-    const tokenDecoded = decoder(tokenStorage);
-
-  
-    setUser({
-      ...userdata,
-
-      userid: tokenDecoded.result[0].userDisplayID,
-      deptid: tokenDecoded.result[0].departmentDisplayID,
-      positionid : tokenDecoded.result[0].positionID
-
-
-    });
-  };
   useEffect(() => {
-    SetUsers();
-    LoadAllAssetsCheckout();
+
+    try {
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
+
+      setUser({
+        ...userdata,
+
+        userid: tokenDecoded.result[0].userDisplayID,
+        deptid: tokenDecoded.result[0].departmentDisplayID,
+        positionid : tokenDecoded.result[0].positionID
+
+      });
+
+      LoadPulloutAssets(tokenDecoded.result[0].userDisplayID);
+
+    }catch(err) {
+      alert(err)
+    }
+
   }, []);
 
-  const LoadAllAssetsCheckout = async () => {
+  const LoadPulloutAssets = async (id) => {
     try {
-      const success = await axios
-        .get("/assetcheckout/get-assetcheckout-byIT")
+      const success = await axios.get("/user-asset/viewPulloutByID/" + id)
 
         .then((res) => {
           setAssets(res.data.result);
@@ -130,7 +159,7 @@ export default function ITCheckoutViewer() {
             "PositionViewer",
             "Function /LoadAllPositions",
             "LoadAllPositions",
-            userdata.userid
+            id
           );
         });
     } catch (err) {
@@ -138,10 +167,13 @@ export default function ITCheckoutViewer() {
     }
   };
 
-
-  const handleReport = () => {
+  const handleReport = async () => {
+   //alert(search.name)
     try {
-      generate_PDF(assets, "Checkout");
+      alert()
+      //console.log(assets)
+        generate_PDF(assets, "Pullout",search.docref);
+        
     } catch (err) {
       alert(err);
     }
@@ -149,20 +181,11 @@ export default function ITCheckoutViewer() {
 
   const handleExcelReport = () => {
     try {
-      generate_EXCEL(assets, "Checkout");
+      generate_EXCEL(assets, "Pullout");
     } catch (err) {
       alert(err);
     }
   };
-
-  // No need to routes to server
-  const handleGenerateReceiving = (docref) => {
-      try {
-            generate_PDF(assets, "Receiving",docref)
-      } catch(err) {
-
-      }
-  }
 
 
   function viewToastify(title,desc,status) {
@@ -177,145 +200,106 @@ export default function ITCheckoutViewer() {
              isClosable: true,
              position: "top"
            })
-       
-      
+
      )
    }
-
-   
-  const handleActivateReceiving = async (e,detailID,active,docref) => {
-
-
-    try {
-        e.preventDefault()
-       
-        if( active == 0) {
-            const success = await axios.post("/assetcheckout/activate-receiving",{detailID})
-
-            .then((res) => {
-
-            
-              handleGenerateReceiving(docref)
-              LoadAllAssetsCheckout()
-              
-              viewToastify(
-                "Checkout",
-                "Generate PDF and Check-in Asset for user successful",
-                "success"
-              )
-              
-
-            })
-            .catch((err) => {
-              const InsertLogs = new Logs(
-                "Error",
-                "PositionViewer",
-                "Function /LoadAllPositions",
-                "LoadAllPositions",
-                userdata.userid
-              );
-            });
-        } else {
-
-        
-          viewToastify(
-            "Asset Checkout",
-            "Asset already activated",
-            "info"
-          )
-
-        }
-
-    } catch (err) {
-      alert(err);
-    }
-  };
-
 
   return (
     <>
       <Stack>
         <Card>
           <TableContainer>
-            {/* <ButtonGroup spacing={6}>
-            <Button
-              colorScheme='messenger'
-            >
-              <Anchor
-                  to={{
-                  pathname: "/admin/asset",
-                  state: { assetID: '' },
-                  }}>
-                New
-              </Anchor>
+          <ButtonGroup spacing={6}>
 
-            </Button>
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme='green'>
                 Report
               </MenuButton>
               <MenuList>
-                <MenuItem   onClick={handleReport}  colorScheme='green'>PDF </MenuItem>
-                <MenuItem   colorScheme='green' >Excel</MenuItem>
+                <MenuItem  onClick={onOpen}  colorScheme='green'>
+                <Image 
+                  boxSize='2rem'
+                  borderRadius='full'
+                  src= {pdficon}
+                  alt='pfico'
+                  mr='12px'
+                />
+                  PDF </MenuItem>
+                <MenuItem  onClick={onOpen}  colorScheme='green' >
+                   <Image 
+                    boxSize='2rem'
+                    borderRadius='full'
+                    src= {excelicon}
+                    alt='pfico'
+                    mr='12px'
+                  />
+                  Excel</MenuItem>
                 
               </MenuList>
           </Menu>
- 
-            </ButtonGroup> */}
+              <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+              
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Pull-out Asset</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody pb={6}>
+                    <FormControl>
+                      <FormLabel>Search</FormLabel>
+                      <Input 
+                      onChange={(e) => {
+                        setSearch({ ...search, docref: e.target.value })}}
+                        value = {search.docref}
+                       placeholder='Document Reference No' />
+                    </FormControl>
 
-            <Search
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button colorScheme='green' mr={3} onClick={handleReport}>
+                      PDF
+                    </Button>
+                    <Button colorScheme='green' mr={3} onClick={handleExcelReport}>
+                      Excel
+                    </Button>
+                    <Button colorScheme='twitter' onClick={onClose}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            </ButtonGroup>
+
+            {/* <Search
               setSearch={setSearch}
               handleReport={handleReport}
               handleExcelReport = {handleExcelReport}
               pathname="/admin/checkout"
             />
-        
+         */}
             <Table size="lg">
               <Thead>
                 <Tr>
-                  <Th>Reference</Th>
+                  <Th>Check-out Ref</Th>
                   <Th>Type</Th>
                   <Th>Status</Th>
                   <Th>Serial No</Th>
                   <Th>Code</Th>
                   <Th>Name</Th>
-                  <Th>Department</Th>
-                  <Th>Checkout Date</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {assets.map((asset) => (
                   <Tr key={asset.detailID}>
-                    <Td>
-                      <ButtonGroup>
-                        <Button
-                          colorScheme="facebook"
-                          onClick={(e) =>
-                            // handleGenerateReceiving( asset.docRef_Checkin)
-                            handleActivateReceiving( e,asset.detailID,asset.active_checkin,asset.docRef_Checkin)
-                            
-                          }
-                        >
-                        { asset.docRef_Checkin}
-
-                        </Button>
-                        {/* <Button
-                          colorScheme="green"
-
-                         
-                        >
-                        Activate
-                        </Button> */}
-
-                      </ButtonGroup>
-                    </Td>
+                     <Td> {asset.docRef_Pullout} </Td>
                     <Td>{asset.typeName}</Td>
                     <Td>{asset.statusName}</Td>
                     <Td>{asset.serialNo}</Td>
                     <Td>{asset.assetCode}</Td>
                     <Td>{asset.assetName}</Td>
-                    <Td>{asset.departmentName}</Td>
-                    <Td>{asset.date_checkout}</Td>
+
 
                   </Tr>
                 ))}
