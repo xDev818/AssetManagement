@@ -105,7 +105,6 @@ const PDFReportPullout = (propdata,propColumn,paramReportType,docref) => {
                 
         }
       })
-      alert(rowdata.length )
       if(rowdata.length > 0) {
 
         doc.addImage(img, 'webp',10 ,5, 40,15)  // margin-left,margin-top,width , height

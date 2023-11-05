@@ -21,6 +21,13 @@ Info : The routes was made and controlled by Jinshin
     Activities
     Purpose : 
       Add getTotal_AssetsAvailable
+
+   Date : 01 / 05 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      getCount_AssetsNotAvailable,
+      viewSchedulePulloutAssets
 */
 
 // Packages
@@ -33,12 +40,12 @@ const { utils_getDate } = require('../utils/date_helper')
 
 const {
     getTotalAmount_Assets,
-   // getTotal_AssetsAvailable,
+   getCount_AssetsNotAvailable,
     getCount_Assets_Deployed,
     getCount_Assets_Available,
     getCount_Assets_ForDeploy,
-    getCount_Assets_PullOut,
-
+    //getCount_Assets_PullOut,
+    viewSchedulePulloutAssets
 
 
   }  = require('../_sqlstatement/FourGraphs')
@@ -64,26 +71,47 @@ const {
 
 }
 
-// const fourgraphs_TotalAssetsAvailable = ( request, response ) => {
+const fourgraphs_CountAssetsForPullout = ( request, response ) => {
     
-//     mysql.query(getTotal_AssetsAvailable(),  ( err, result ) => {
+    mysql.query(viewSchedulePulloutAssets(),  ( err, result ) => {
 
-//         if( err ) return response.status(400).send(
-//             {
-//                 message: "No Records Found",
-//                 message2: err.message
-//             }
-//         )
-//          response.status(200).send(
-//              {
-//                  message: "Records Found",
-//                  result
-//              }
-//          )
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
 
-//     })
+    })
 
-// }
+}
+
+const fourgraphs_CountAssetsNotAvailable = ( request, response ) => {
+    
+    mysql.query(getCount_AssetsNotAvailable(),  ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
+
+    })
+
+}
 
 const fourgraphs_NoAssetsDeployed = ( request, response ) => {
     
@@ -151,34 +179,35 @@ const fourgraphs_AssetsForDeploy = ( request, response ) => {
 
 }
 
-const fourgraphs_AssetsPullout = ( request, response ) => {
+// const fourgraphs_AssetsPullout = ( request, response ) => {
     
-    mysql.query(getCount_Assets_PullOut(),  ( err, result ) => {
+//     mysql.query(getCount_Assets_PullOut(),  ( err, result ) => {
 
-        if( err ) return response.status(400).send(
-            {
-                message: "No Records Found",
-                message2: err.message
-            }
-        )
+//         if( err ) return response.status(400).send(
+//             {
+//                 message: "No Records Found",
+//                 message2: err.message
+//             }
+//         )
 
-         response.status(200).send(
-             {
-                 message: "Records Found",
-                 result
-             }
-         )
+//          response.status(200).send(
+//              {
+//                  message: "Records Found",
+//                  result
+//              }
+//          )
 
-    })
+//     })
 
-}
+// }
 
 
 module.exports = {
     fourgraphs_TotalAmountAssetsAvailable,
-   // fourgraphs_TotalAssetsAvailable,
+   fourgraphs_CountAssetsNotAvailable,
     fourgraphs_NoAssetsDeployed,
     fourgraphs_AssetsAvailable,
     fourgraphs_AssetsForDeploy,
-    fourgraphs_AssetsPullout
+    //fourgraphs_AssetsPullout,
+    fourgraphs_CountAssetsForPullout
 }

@@ -15,6 +15,12 @@
 
     import { useEffect, useState } from "react";
 
+    Date : 10 / 24 / 23
+    Author : Nole
+    Activities
+    Purpose : 
+      Add not avaialable assets but active
+
 */
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
@@ -43,6 +49,7 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Image,
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import IconBox from "components/Icons/IconBox";
@@ -58,6 +65,7 @@ import {
 
 
 import useFourGraphsStore from "store/useFourGraphsStore";
+import assetico from "../../assets/img/asset.ico"
 
 
 //import Performance from "components2/Graphs/Dashboard/Performance";
@@ -87,11 +95,12 @@ export default function FourGraphs() {
 
   const [fourgraphs, setAssetsTotal] = useState({
     amount: "",
-  //  total: "",
     totalNo: "",
     available: "",
     fordeploy: "",
-    pullout: "",
+    //pullout: "",
+    notavailable :"",
+    forpullout:""
   });
 
   const SetUsers = async () => {
@@ -107,16 +116,18 @@ export default function FourGraphs() {
 
   useEffect(async () => {
     try {
+
       SetUsers();
       var amount = "";
       //var total = ""
       var totalNo = "";
       var available = "";
       var fordeploy = "";
-      var pullout = "";
-     const successAmount = await axios
+      //var pullout = "";
+      var notAvailable = ""
+      var ForPullout = ""
 
-     //   .get("fourgraphs/total-asset-available")
+     const successAmount = await axios
 
         .get("/fourgraphs/totalAmount-asset-available")
 
@@ -133,24 +144,6 @@ export default function FourGraphs() {
             userdata.userid
           );
         });
-
-        // const successTotalAvailable = await axios
-        // .get("/fourgraphs/total-asset-available")
-        // .then((res) => {
-          
-        //   total = res.data.result[0].Count;
-        //   setAssetsTotal({ ...fourgraphs, amount: amount, total: total });
-        // })
-        // .catch((err) => {
-        //   alert(err)
-        //   const InsertLogs = new Logs(
-        //     "Error",
-        //     "PositionViewer",
-        //     "Function /LoadAllPositions",
-        //     "LoadAllPositions",
-        //     userdata.userid
-        //   );
-        // });
 
       const successTotal = await axios
         .get("/fourgraphs/totalno-asset-deployed")
@@ -201,10 +194,26 @@ export default function FourGraphs() {
           );
         });
 
-      const successPullout = await axios
-        .get("/fourgraphs/totalno-asset-pullout")
+      // const successPullout = await axios
+      //   .get("/fourgraphs/totalno-asset-pullout")
+      //   .then((res) => {
+      //     pullout = res.data.result[0].Pullout;
+         
+      //   })
+      //   .catch((err) => {
+      //     const InsertLogs = new Logs(
+      //       "Error",
+      //       "PositionViewer",
+      //       "Function /LoadAllPositions",
+      //       "LoadAllPositions",
+      //       userdata.userid
+      //     );
+      //   });
+
+        const successNotAvailable = await axios
+        .get("/fourgraphs/totalno-asset-Not-available")
         .then((res) => {
-          pullout = res.data.result[0].Pullout;
+          notAvailable = res.data.result[0].NotAvailable;
          
         })
         .catch((err) => {
@@ -217,6 +226,23 @@ export default function FourGraphs() {
           );
         });
 
+        const successForPullout = await axios
+        .get("/fourgraphs/totalno-asset-For-Pullout")
+        .then((res) => {
+          ForPullout = res.data.result[0].ForPullout;
+         
+        })
+        .catch((err) => {
+          const InsertLogs = new Logs(
+            "Error",
+            "PositionViewer",
+            "Function /LoadAllPositions",
+            "LoadAllPositions",
+            userdata.userid
+          );
+        });
+
+
       setAssetsTotal({
               ...fourgraphs,
               amount: amount,
@@ -224,7 +250,9 @@ export default function FourGraphs() {
               totalNo: totalNo,
               available: available,
               fordeploy: fordeploy,
-              pullout: pullout
+             // pullout: pullout,
+              notavailable: notAvailable,
+              forpullout: ForPullout
             });
 
     } catch (err) {
@@ -276,7 +304,13 @@ export default function FourGraphs() {
                   w={"45px"}
                   bg={iconBlue}
                   cursor="pointer"
-                ></IconBox>
+                >
+                  <Image src={assetico}  h={"24px"} w={"24px"} color={iconBoxInside} />
+
+
+                   {/* <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} /> */}
+                </IconBox>
+                
               </MenuButton>
               <MenuList>
                 <MenuItem colorScheme="twitter">PDF </MenuItem>
@@ -286,7 +320,7 @@ export default function FourGraphs() {
                 </MenuItem>
               </MenuList>
             </Menu>
-            <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />
+           
           </Flex>
         </Flex>
         {/* performance */}
@@ -347,7 +381,7 @@ export default function FourGraphs() {
           </Flex>
           <Text color="gray.400" fontSize="sm">
             <Text as="span" color="red.400" fontWeight="bold" fontSize="xl">
-              {fourgraphs.fordeploy}{" "}
+              {fourgraphs.fordeploy} { "  " }
             </Text>
             Schedule For Deployment
           </Text>
@@ -388,10 +422,10 @@ export default function FourGraphs() {
             </IconBox>
           </Flex>
           <Text color="gray.400" fontSize="sm">
-            <Text as="span" color="red.500" fontWeight="bold">
-              -2.82%{" "}
+            <Text as="span" color="red.400" fontWeight="bold" fontSize="xl">
+            {fourgraphs.notavailable} { "  " }
             </Text>
-            Since last month
+            Not Available
           </Text>
         </Flex>
       </Card>
@@ -411,11 +445,11 @@ export default function FourGraphs() {
                 fontWeight="bold"
                 textTransform="uppercase"
               >
-                Total Pullout
+                Schedule Disposal
               </StatLabel>
               <Flex>
                 <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                  {fourgraphs.pullout}
+                  {/* {fourgraphs.pullout} */}
                 </StatNumber>
               </Flex>
             </Stat>
@@ -430,10 +464,10 @@ export default function FourGraphs() {
             </IconBox>
           </Flex>
           <Text color="gray.400" fontSize="sm">
-            <Text as="span" color="green.400" fontWeight="bold">
-              +8.12%{" "}
+            <Text as="span" color="red.400" fontWeight="bold" fontSize="xl">
+            {fourgraphs.totalNo} {"  "}
             </Text>
-            Since last month
+            Schedule for Pullout
           </Text>
         </Flex>
       </Card>

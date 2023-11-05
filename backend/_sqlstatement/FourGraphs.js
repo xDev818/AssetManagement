@@ -25,14 +25,13 @@ const getTotalAmount_Assets = () => {
     
  }
 
-//  const getTotal_AssetsAvailable = () => {
+ const getCount_AssetsNotAvailable = () => {
 
-//         return  "SELECT count(assets.assetID) as 'Count' "
-//                 + "  FROM tblAssets assets"
-//                 + " inner join tblAssetStatus stat on stat.assetStatusID = assets.assetStatusID"
-//                 + " WHERE assets.active = 1  and stat.statusName = 'Available' "
+        return  "SELECT count(assetID) as 'NotAvailable' FROM tblAssets asset"
+                + " INNER JOIN tblAssetStatus status on asset.assetStatusID COLLATE utf8mb4_unicode_ci = status.assetStatusID"
+                + " where status.statusName not in('Available','Deployed','For Deploy')  and asset.active = '1'"
         
-//      }
+     }
 
  const getCount_Assets_Deployed = () => {
 
@@ -62,15 +61,22 @@ const getTotalAmount_Assets = () => {
     
  }
 
- const getCount_Assets_PullOut = () => {
+//  const getCount_Assets_PullOut = () => {
 
-    return  "SELECT count(assetID) as Pullout FROM tblAssets assets"
-            + " inner join tblAssetStatus stat on stat.assetStatusID = assets.assetStatusID"
-            + " where active = '1' and stat.statusName IN ('Lost/Stolen','Depreciated',"
-            + " 'Broken  Not Fixable','Out of Warranty','Out of Repair / Not Serviceable',"
-            + " 'Defective')"
+//     return  "SELECT count(assetID) as Pullout FROM tblAssets assets"
+//             + " inner join tblAssetStatus stat on stat.assetStatusID = assets.assetStatusID"
+//             + " where active = '1' and stat.statusName IN ('Lost/Stolen','Depreciated',"
+//             + " 'Broken  Not Fixable','Out of Warranty','Out of Repair / Not Serviceable',"
+//             + " 'Defective')"
     
- }
+//  }
+
+ const viewSchedulePulloutAssets = () => {
+
+        return "SELECT count(assetsdetail.assetID) as 'ForPullout'"
+                + "  FROM tblUserAssetDetails assetsdetail"
+                + " WHERE assetsdetail.pulloutBy IS NOT NULL AND assetsdetail.pullout_receivedby IS NULL"
+        }
 
 module.exports = {
 
@@ -79,5 +85,7 @@ module.exports = {
     getCount_Assets_Deployed,
     getCount_Assets_Available,
     getCount_Assets_ForDeploy,
-    getCount_Assets_PullOut
+    //getCount_Assets_PullOut,
+    getCount_AssetsNotAvailable,
+    viewSchedulePulloutAssets
  }

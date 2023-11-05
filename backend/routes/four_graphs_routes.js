@@ -7,18 +7,24 @@ Info : The routes was made and controlled by Jinshin
     Author : Nole
     Purpose : 
         create four_graph_routes.js
-     
+
+    Date : 01 / 05 / 23
+    Author : Nole
+    Purpose : 
+        fourgraphs_CountAssetsNotAvailable
 */
 
 const { Router } = require('express')
 
 const {
     fourgraphs_TotalAmountAssetsAvailable,
-    //fourgraphs_TotalAssetsAvailable,
+
     fourgraphs_NoAssetsDeployed,
     fourgraphs_AssetsAvailable,
     fourgraphs_AssetsForDeploy,
-    fourgraphs_AssetsPullout,
+    //fourgraphs_AssetsPullout,
+    fourgraphs_CountAssetsNotAvailable,
+    fourgraphs_CountAssetsForPullout
 
 } = require('../controllers/four_graphs_controller')
 
@@ -30,7 +36,9 @@ router.get('/fourgraphs/totalAmount-asset-available',fourgraphs_TotalAmountAsset
 router.get('/fourgraphs/totalno-asset-deployed',fourgraphs_NoAssetsDeployed) 
 router.get('/fourgraphs/totalno-asset-available',fourgraphs_AssetsAvailable) 
 router.get('/fourgraphs/totalno-asset-fordeploy',fourgraphs_AssetsForDeploy) 
-router.get('/fourgraphs/totalno-asset-pullout',fourgraphs_AssetsPullout) 
+//router.get('/fourgraphs/totalno-asset-pullout',fourgraphs_AssetsPullout) 
+router.get('/fourgraphs/totalno-asset-Not-available',fourgraphs_CountAssetsNotAvailable) 
+router.get('/fourgraphs/totalno-asset-For-Pullout',fourgraphs_CountAssetsForPullout) 
 
 
 
