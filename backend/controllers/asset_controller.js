@@ -48,12 +48,14 @@ const createAsset = ( request, response ) => {
 
    const dPurchase = new Date(asset_purchase_date)
    const ddepreceiated = new Date(asset_depreciated_date)
+   const amount_purchase = parseFloat(asset_purchase_amout.replace(",","")) 
+   const amount_depreciated = parseFloat(assset_depreciated_amount.replace(",",""))
     
     const values = [
         id,asset_typeid,asset_statusid,asset_supplierid,
         asset_serialno,asset_code,asset_name,asset_description,
-        asset_purchase_amout,dPurchase,
-        assset_depreciated_amount,ddepreceiated,
+        amount_purchase,dPurchase,
+        amount_depreciated,ddepreceiated,
         userID, utils_getDate()
     ];
 
@@ -155,8 +157,12 @@ const updateAsset = ( request, response ) => {
         asset_purchase_amout, asset_purchase_date, 
         assset_depreciated_amount, asset_depreciated_date, userID  } = request.body
 
-        const damount = parseFloat(asset_purchase_amout)
-        const damountdep = parseFloat(assset_depreciated_amount)
+        const damount = parseFloat(asset_purchase_amout.replace(",",""))
+        const damountdep = parseFloat(assset_depreciated_amount.replace(",",""))
+
+        console.log(damount)
+        console.log(damountdep)
+
         const dPurchase = new Date(asset_purchase_date)
         const ddepreceiated = new Date(asset_depreciated_date)
 

@@ -329,7 +329,7 @@ export default function Asset() {
                 userdata.userID
               );
 
-              alert(submitLogs.getMessage());
+              //alert(submitLogs.getMessage());
             } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
               const submitLogs = new Logs(
                 "Error",

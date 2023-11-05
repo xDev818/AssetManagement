@@ -90,7 +90,12 @@ Date : 10 / 26 / 23
                 const user_checkin_routes  = require('./routes/user_checkin_routes')
                 app.use('/api', user_checkin_routes)
 
-                   
+        Date : 01 / 05 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+                app.use('/api', dashboard_routes)
+                const dashboard_routes = require('../routes/dashboard_routes')
  */
 
 
@@ -124,6 +129,8 @@ const user_checkin_routes  = require('./routes/user_checkin_routes')
 
 
 const user_asset_routes = require('./routes/user_asset_routes')
+
+const dashboard_routes = require('./routes/dashboard_routes')
 
 
 // Server Initialization
@@ -174,4 +181,5 @@ app.use('/api', four_graph_routes)
 app.use('/api', user_checkin_routes)
 
 app.use('/api', user_asset_routes)
+app.use('/api', dashboard_routes)
 

@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export const barChartData = [
   {
     name: "Sales",
@@ -71,11 +73,11 @@ export const barChartOptions = {
 export const lineChartData = [
   {
     name: "Mobile apps",
-    data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+    data: [50, 40.44, 300, 220, 500, 250, 400, 230, 500,300,400,450],
   },
   {
     name: "Websites",
-    data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+    data: [30, 90, 40, 140, 290, 290, 340, 230, 400,300,400,450],
   },
 ];
 

@@ -14,6 +14,11 @@
           - useEffect
           - useLayoutEffect
 
+  Date : 01 / 05 / 23
+      Author : Nole
+      Activities
+      Purpose : 
+        Load asset acquired by previous year
 */
 
 // Chakra imports
@@ -39,11 +44,14 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import bgAdmin from "assets/img/admin-background.png";
+
 // Custom components
 import Card from "components/Card/Card.js";
 import BarChart from "components/Charts/BarChart";
-import LineChart from "components/Charts/LineChart";
+//import LineChart from "components/Charts/LineChart";
 import IconBox from "components/Icons/IconBox";
+
+
 // Custom icons
 import {
   CartIcon,
@@ -56,7 +64,7 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   barChartData,
   barChartOptions,
-  lineChartData,
+  //lineChartData,
   lineChartOptions,
 } from "variables/charts";
 import { pageVisits, socialTraffic } from "variables/general";
@@ -69,6 +77,16 @@ import FourGraphs from "components/FourGraphs/FourGraphs";
 import AssetViewer from "components2/Activity/AssetViewer";
 // End Jinshin
 
+
+import {
+  CChartBar,
+  CChartLine,
+  CChartPie,
+  CChartDoughnut,
+} from "@coreui/react-chartjs";
+import { getStyle, hexToRgba } from "@coreui/utils";
+import randomColor from "randomcolor";
+
 export default function Dashboard() {
   // Chakra Color Mode
   const iconBlue = useColorModeValue("blue.500", "blue.500");
@@ -77,6 +95,29 @@ export default function Dashboard() {
   const tableRowColor = useColorModeValue("#F7FAFC", "navy.900");
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const textTableColor = useColorModeValue("gray.500", "white");
+
+  const [purchases,setPurchases] = useState([])
+
+    const [AcquiredlineChartData,setAcquireLineChart] = useState([
+    {
+      name: "",
+      //"Mobile apps",
+      data: []
+      //[50, 40.44, 300, 220, 500, 250, 400, 230, 500,300,400,450],
+    },
+    {
+      name: "",
+      //"Websites",
+      data: []
+      //[30, 90, 40, 140, 290, 290, 340, 230, 400,300,400,450],
+    }
+   ]);
+
+
+  const [values,setPrevYear] = useState({
+    prevyear: ""
+  })
+
 
   const { colorMode } = useColorMode();
 
@@ -115,7 +156,7 @@ export default function Dashboard() {
         }
 
         if (errorStatus.includes("ERR_BAD_REQUEST")) {
-          console.log(err);
+        //  console.log(err);
           const verifyLogs = new Logs(
             "Error",
             "dashboard",
@@ -127,7 +168,7 @@ export default function Dashboard() {
           axios
             .post("/log", verifyLogs.getLogs())
             .then((res) => {
-              console.log("Log is: ", res.data);
+            //  console.log("Log is: ", res.data);
               localStorage.removeItem("token");
               window.location.href = "/#/auth/signin";
             })
@@ -160,9 +201,90 @@ export default function Dashboard() {
       });
   }, [setDecode]);
 
-  useLayoutEffect(() => {
-    decoded && console.log("user", decoded);
-  });
+
+useEffect( async() => {
+
+
+  var amount_prevYear = "";
+  var userid = ""
+
+  //const [acquire,setAcquire] = useState([])
+
+  try {
+
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
+    userid = tokenDecoded.result[0].userDisplayID;
+
+    const PrevYearAmount = await axios.get("/dashboard/asset-acquired-PrevYear")
+
+    .then((res) => {
+      amount_prevYear = res.data.result[0].Amount;
+      
+      setPrevYear({...values,
+        prevyear: amount_prevYear})
+    })
+    .catch((err) => {
+      const InsertLogs = new Logs(
+        "Error",
+        "Dashboard",
+        "Function /dashboard/asset-acquired-PrevYear",
+        "useEffect ( Asset Acquired )",
+        userid
+      );
+    });
+
+    /* 
+      Acquired Current Year Assets
+    */
+
+       const CurrentYearAcuired = await axios.get("/dashboard/asset-acquired-CurrentYear")
+
+      .then((res) => {
+        
+        setPurchases(res.data.result[0])
+      // setAcquire({...AcquiredlineChartData,
+           
+      //        name: "Acquired",
+      //        data : [
+      //          res.data.result[0].map(acquire => {
+      //            acquire.Acquired
+      //          })
+      //        ]
+      //      ,
+      
+      //       name: "Supplier",
+      //       //"Websites",
+      //       data: [
+      //         res.data.result[0].map(supplier => {
+      //           supplier.supplier
+      //         })
+      //       ]
+         
+      //   })
+
+
+      })
+      .catch((err) => {
+        const InsertLogs = new Logs(
+          "Error",
+          "Dashboard",
+          "Function /dashboard/asset-acquired-PrevYear",
+          "useEffect ( Asset Acquired )",
+          userid
+        );
+      });
+
+
+  } catch(err) {
+
+  }
+
+}, [])
+
+  // useLayoutEffect(() => {
+  //   decoded && console.log("user", decoded);
+  // });
   // End Jinshin
 
   return (
@@ -173,7 +295,7 @@ export default function Dashboard() {
         gap="20px"
       >
 
-        <GridItem colSpan={2}>
+        {/* <GridItem colSpan={2}>
           <Card mb="30px">
             <AssetViewer />
           </Card>
@@ -200,36 +322,64 @@ export default function Dashboard() {
               />
             </Box>
           </Card>
-        </GridItem>
+        </GridItem> */}
 
         <Card
           bg={
-            colorMode === "dark"
-              ? "navy.800"
-              : "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
+            // colorMode === "orange"
+            //   ? "orange"
+            //   : "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
+            "white"
           }
           p="0px"
           maxW={{ sm: "320px", md: "100%" }}
         >
           <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
-            <Text color="#fff" fontSize="lg" fontWeight="bold" mb="6px">
-              Sales Overview
+            <Text color="blue" fontSize="lg" fontWeight="bold" mb="6px">
+              Asset Acquisition 
             </Text>
-            <Text color="#fff" fontSize="sm">
+            <Text color="blue" fontSize="sm">
               <Text as="span" color="green.400" fontWeight="bold">
-                (+5) more{" "} ralph
+                { " Previous Year "}
               </Text>
-              in 2022
+              {"(  " } {values.prevyear} {"  )"}  
             </Text>
           </Flex>
           <Box minH="300px">
-            <LineChart
-              chartData={lineChartData}
+            {/* <LineChart
+             // chartData= {AcquiredlineChartData}
+              // {lineChartData}
+              //{AcquiredlineChartData}
+              
               chartOptions={lineChartOptions}
             />
+             */}
+                      <CChartBar
+                     
+                        data={{
+                          labels: purchases?.map(
+                            (purchase) => purchase.MonthName
+                          ),
+                          datasets: [
+                            {
+                              label: "Asset Value",
+                              backgroundColor: purchases?.map((color) =>
+                                randomColor()
+                              ),
+                              //'#f87979',
+                              data: purchases?.map(
+                                (acquire) => acquire.Acquired
+                              ),
+                            },
+                          ],
+                         
+                        }}
+                        labels="months"
+                      />
+
           </Box>
         </Card>
-        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
+        {/* <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
           <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
             <Text color="gray.400" fontSize="sm" fontWeight="bold" mb="6px">
               PERFORMANCE
@@ -241,7 +391,7 @@ export default function Dashboard() {
           <Box minH="300px">
             <BarChart chartData={barChartData} chartOptions={barChartOptions} />
           </Box>
-        </Card>
+        </Card>*/}
         <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
           <Flex direction="column">
             <Flex align="center" justify="space-between" p="22px">
@@ -387,7 +537,7 @@ export default function Dashboard() {
               </Tbody>
             </Table>
           </Box>
-        </Card>
+        </Card> 
       </Grid>
     </Flex>
   );

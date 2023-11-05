@@ -1,20 +1,28 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
-import { lineChartData, lineChartOptions } from "variables/charts";
+import { lineChartData, 
+  lineChartOptions } from "variables/charts";
+
+  import axios from 'axios'
+
+
 
 class LineChart extends React.Component {
   constructor(props) {
     super(props);
 
+
+
     this.state = {
-      chartData: [],
+      chartData: props,
       chartOptions: {},
     };
   }
 
+
   componentDidMount() {
     this.setState({
-      chartData: lineChartData,
+      chartData: this.props,
       chartOptions: lineChartOptions,
     });
   }
