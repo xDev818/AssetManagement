@@ -43,6 +43,7 @@ router.post('/users/update-profile', updateProfile) // Api call to update a sing
 router.delete('/users/:id', deleteOldUserById) // Api call to delete an old data by ID
 router.delete('/users', deleteAllOldUsers) // Api call to delete all datas base on row ID's
 
+
 router.post('/users/upload-image/:userid', 
     (request,response) => {
 
@@ -62,6 +63,7 @@ router.post('/users/upload-image/:userid',
             //     console.log("no file")
             // }
 
+
             const file = files.file
             const type = file.mimetype
             const name = file.name
@@ -77,7 +79,9 @@ router.post('/users/upload-image/:userid',
                 }
             )
 
+
             file.mv(`../backend/images/static/${newName}`, err => {
+
 
                 if ( err ) return response.status(400).send(
                    {
@@ -89,9 +93,11 @@ router.post('/users/upload-image/:userid',
                 const stmt = "UPDATE tblUsers SET imgFilename = ?"
                 + " where userDisplayID = ?"
 
+
                 mysql.query( stmt, [ newName,userid ], ( err, result ) => {
 
                     if( err ) return response.status(404).send(
+
                           {
                              message: "Update Error",
                              message2: err

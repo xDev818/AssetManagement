@@ -118,6 +118,8 @@ import {
     
 
     
+
+    
     var checkoutData = {
       dataArray: [] // Replace [...arrayValues] with your initial array values
     }

@@ -122,6 +122,7 @@ const four_graph_routes = require('./routes/four_graphs_routes')
 
 const user_checkin_routes  = require('./routes/user_checkin_routes')
 
+
 const user_asset_routes = require('./routes/user_asset_routes')
 
 
@@ -171,4 +172,6 @@ app.use('/api', asset_routes)
 app.use('/api', it_checkout)
 app.use('/api', four_graph_routes)
 app.use('/api', user_checkin_routes)
+
 app.use('/api', user_asset_routes)
+
