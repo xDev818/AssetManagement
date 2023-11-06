@@ -193,7 +193,7 @@ export default function DataTable({
         <Tbody>
           {table.getRowModel().rows.map((row) => (
             <Tr key={row.id}>
-              {console.log("id123", row.original)}
+              {/* {console.log("id123", row.original)} */}
               <Td>
                 <ButtonGroup>
                   <Button

@@ -422,12 +422,12 @@ export default function Dashboard() {
             Asset Deploy per Department
             </Text> */}
             <Text color={textColor} fontSize="lg" fontWeight="bold">
-            Deployed per Department
+            Activity
             </Text>
           </Flex>
-          {/* <Card p="0px" maxW={{ sm: "320px", md: "100%" }} > */}
+          <Card p="0px" maxW={{ sm: "320px", md: "100%" }} >
             {/* <BarChart chartData={barChartData} chartOptions={barChartOptions} /> */}
-            <CChartBar
+            {/* <CChartBar
                 data={{
                           labels: deployed?.map(
                             (dept) => dept.shortName
@@ -446,8 +446,10 @@ export default function Dashboard() {
                           ],
                         }}
                         labels="departmentName"
-            />
-          {/* </Card> */}
+            /> */}
+                
+          </Card>
+      
         </Card>
         <Card
           bg={
@@ -582,15 +584,18 @@ export default function Dashboard() {
         </Card>
         <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
           <Flex direction="column">
-            <Flex align="center" justify="space-between" p="22px">
+            {/* <Flex align="center" justify="space-between" p="22px">
               <Text fontSize="lg" color={textColor} fontWeight="bold">
                 Page visits
               </Text>
               <Button variant="primary" maxH="30px">
                 SEE ALL
               </Button>
-            </Flex>
+            </Flex> */}
             <Card maxW={{ sm: "320px", md: "1000px" }}>
+            <Text fontSize="lg" color={textColor} fontWeight="bold">
+                Assets
+              </Text>
             <AssetViewer />
           </Card>
           
