@@ -57,6 +57,8 @@ import Card from "components/Card/Card";
 import { Link } from "react-router-dom";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
 
+import DataTable from "components2/TanstackTable/DataTable";
+
 export default function AssetViewer() {
 
   const toast = useToast()
@@ -68,13 +70,15 @@ export default function AssetViewer() {
 
   const [search, setSearch] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const tablePerPage = 6;
-  const lastIndex = currentPage * tablePerPage;
-  const firstIndex = lastIndex - tablePerPage;
-  const tables = assets.slice(firstIndex, lastIndex);
-  const tablePages = Math.ceil(assets.length / tablePerPage);
-  const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
+
+
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const tablePerPage = 6;
+  // const lastIndex = currentPage * tablePerPage;
+  // const firstIndex = lastIndex - tablePerPage;
+  // const tables = assets.slice(firstIndex, lastIndex);
+  // const tablePages = Math.ceil(assets.length / tablePerPage);
+  // const pageNumber = [...Array(tablePages + 1).keys()].slice(1);
 
   // const nextPage = () => {
   //   console.log("cureentpage", currentPage);
@@ -92,6 +96,54 @@ export default function AssetViewer() {
   // const currentNumber = (number) => {
   //   setCurrentPage(number);
   // };
+
+  const columns = [
+    {
+      header: "Type",
+      accessorKey: "typeName",
+    },
+    {
+      header: "Status",
+      accessorKey: "statusName",
+    },
+    {
+      header: "Vendor",
+      accessorKey: "name",
+    },
+    {
+      header: "SerialNo",
+      accessorKey: "serialNo",
+    },
+    {
+      header: "Code",
+      accessorKey: "assetCode",
+    },
+    {
+      header: "Asset Name",
+      accessorKey: "assetName",
+    },
+    {
+      header: "Description",
+      accessorKey: "description",
+    },
+    {
+      header: "Purchase",
+      accessorKey: "date_purchase",
+    },
+    {
+      header: "Amount",
+      accessorKey: "Amount",
+    },
+    {
+      header: "Depreciated",
+      accessorKey: "date_depreciated",
+    },
+    {
+      header: "Amount YR",
+      accessorKey: "AmountYR",
+    },
+  ];
+
 
 
   const SetUsers = async () => {
@@ -188,14 +240,24 @@ export default function AssetViewer() {
           <TableContainer>
           
 
-            <Search
+            {/* <Search
               setSearch={setSearch}
               handleReport={handleReport}
               handleExcelReport = {handleExcelReport} 
               pathname="/admin/asset"
+            /> */}
+
+            <DataTable
+              dataGrid={assets}
+              columns={columns}
+              handleReport={handleReport}
+              handleExcelReport={handleExcelReport}
+              handleDelete={handleDelete}
+              pathname="/admin/asset-viewer"
+              idType={"id"}
             />
 
-            <Table size="lg">
+            {/* <Table size="lg">
               <Thead>
                 <Tr>
                   <Th>Actions</Th>
@@ -255,7 +317,7 @@ export default function AssetViewer() {
                   </Tr>
                 ))}
               </Tbody>
-            </Table>
+            </Table> */}
           </TableContainer>
         </Card>
       </Stack>

@@ -22,8 +22,6 @@
         import './style.scss'
         added style.scss ( @import "@coreui/chartjs/scss/coreui-chartjs"; )
             -- To display proper tooltip
-        const [deployed,setDeployed] = useState([])
-            -- view all asset deployed per department
 */
 
 // Chakra imports
@@ -96,14 +94,6 @@ import { getStyle, hexToRgba } from "@coreui/utils";
 import randomColor from "randomcolor";
 
 export default function Dashboard() {
-
-  const [purchases,setPurchases] = useState([])
-  const [deployed,setDeployed] = useState([])
-
-  const [values,setPrevYear] = useState({
-    prevyear: ""
-  })
-
   // Chakra Color Mode
   const iconBlue = useColorModeValue("blue.500", "blue.500");
   const iconBoxInside = useColorModeValue("white", "white");
@@ -111,6 +101,29 @@ export default function Dashboard() {
   const tableRowColor = useColorModeValue("#F7FAFC", "navy.900");
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const textTableColor = useColorModeValue("gray.500", "white");
+
+  const [purchases,setPurchases] = useState([])
+
+    const [AcquiredlineChartData,setAcquireLineChart] = useState([
+    {
+      name: "",
+      //"Mobile apps",
+      data: []
+      //[50, 40.44, 300, 220, 500, 250, 400, 230, 500,300,400,450],
+    },
+    {
+      name: "",
+      //"Websites",
+      data: []
+      //[30, 90, 40, 140, 290, 290, 340, 230, 400,300,400,450],
+    }
+   ]);
+
+
+  const [values,setPrevYear] = useState({
+    prevyear: ""
+  })
+
 
   const { colorMode } = useColorMode();
 
@@ -149,7 +162,7 @@ export default function Dashboard() {
         }
 
         if (errorStatus.includes("ERR_BAD_REQUEST")) {
-          console.log(err);
+        //  console.log(err);
           const verifyLogs = new Logs(
             "Error",
             "dashboard",
@@ -161,7 +174,7 @@ export default function Dashboard() {
           axios
             .post("/log", verifyLogs.getLogs())
             .then((res) => {
-              console.log("Log is: ", res.data);
+            //  console.log("Log is: ", res.data);
               localStorage.removeItem("token");
               window.location.href = "/#/auth/signin";
             })
@@ -194,31 +207,69 @@ export default function Dashboard() {
       });
   }, [setDecode]);
 
-  // useLayoutEffect(() => {
-  //   decoded && console.log("user", decoded);
-  // });
-  // // End Jinshin
 
-  useEffect( async() => {
+useEffect( async() => {
 
 
-    var amount_prevYear = "";
-    var userid = ""
-  
- 
-    try {
-  
-      const tokenStorage = localStorage.getItem("token");
-      const tokenDecoded = decoder(tokenStorage);
-      userid = tokenDecoded.result[0].userDisplayID;
-  
-      const PrevYearAmount = await axios.get("/dashboard/asset-acquired-PrevYear")
-  
+  var amount_prevYear = "";
+  var userid = ""
+
+  //const [acquire,setAcquire] = useState([])
+
+  try {
+
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
+    userid = tokenDecoded.result[0].userDisplayID;
+
+    const PrevYearAmount = await axios.get("/dashboard/asset-acquired-PrevYear")
+
+    .then((res) => {
+      amount_prevYear = res.data.result[0].Amount;
+      
+      setPrevYear({...values,
+        prevyear: amount_prevYear})
+    })
+    .catch((err) => {
+      const InsertLogs = new Logs(
+        "Error",
+        "Dashboard",
+        "Function /dashboard/asset-acquired-PrevYear",
+        "useEffect ( Asset Acquired )",
+        userid
+      );
+    });
+
+    /* 
+      Acquired Current Year Assets
+    */
+
+       const CurrentYearAcuired = await axios.get("/dashboard/asset-acquired-CurrentYear")
+
       .then((res) => {
-        amount_prevYear = res.data.result[0].Amount;
         
-        setPrevYear({...values,
-          prevyear: amount_prevYear})
+        setPurchases(res.data.result[0])
+      // setAcquire({...AcquiredlineChartData,
+           
+      //        name: "Acquired",
+      //        data : [
+      //          res.data.result[0].map(acquire => {
+      //            acquire.Acquired
+      //          })
+      //        ]
+      //      ,
+      
+      //       name: "Supplier",
+      //       //"Websites",
+      //       data: [
+      //         res.data.result[0].map(supplier => {
+      //           supplier.supplier
+      //         })
+      //       ]
+         
+      //   })
+
+
       })
       .catch((err) => {
         const InsertLogs = new Logs(
@@ -229,56 +280,18 @@ export default function Dashboard() {
           userid
         );
       });
-  
-      /* 
-        Acquired Current Year Assets
-      */
-  
-         const CurrentYearAcuired = await axios.get("/dashboard/asset-acquired-CurrentYear")
-  
-        .then((res) => {
-          
-          setPurchases(res.data.result[0])
-       
-  
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-acquired-PrevYear",
-            "useEffect ( Asset Acquired )",
-            userid
-          );
-        });
-  
 
-      /* 
-        Asset Deploy
-      */
-        const assetDeploy = await axios.get("/dashboard/asset-deploy")
-  
-        .then((res) => {
-          //console.log(res.data.result)
-          setDeployed(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-deploy",
-            "useEffect ( Asset Deployed )",
-            userid
-          );
-        });
-  
-  
-    } catch(err) {
-      alert(err)
-    }
-  
-  }, [])
+
+  } catch(err) {
+
+  }
+
+}, [])
+
+  // useLayoutEffect(() => {
+  //   decoded && console.log("user", decoded);
+  // });
+  // End Jinshin
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: 0 }}>
@@ -286,19 +299,17 @@ export default function Dashboard() {
         templateColumns={{ sm: "1fr", lg: "2fr 1fr" }}
         templateRows={{ lg: "repeat(2, auto)" }}
         gap="20px"
-        
       >
-
         {/* <GridItem colSpan={2}>
           <Card mb="30px">
             <AssetViewer />
           </Card>
-        </GridItem>
+        </GridItem>*/}
         <GridItem>
           <Card maxW={{ sm: "320px", md: "1000px" }}>
             <AssetViewer />
           </Card>
-        </GridItem>
+        </GridItem> 
         <GridItem>
           <Card>
             <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
@@ -316,31 +327,55 @@ export default function Dashboard() {
               />
             </Box>
           </Card>
-        </GridItem> */}
+        </GridItem> 
 
         <Card
           bg={
-            colorMode === "dark"
-              ? "blue.800"
-              : "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
+            // colorMode === "orange"
+            //   ? "orange"
+            //   : "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
+            "white"
           }
           p="0px"
           maxW={{ sm: "320px", md: "100%" }}
         >
           <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
-            <Text color="#fff" fontSize="lg" fontWeight="bold" mb="6px">
-            Asset Acquisition 
+            <Text color="blue" fontSize="lg" fontWeight="bold" mb="6px">
+              Asset Acquisition 
             </Text>
-            <Text color="#fff" fontSize="sm">
+            <Text color="blue" fontSize="sm">
               <Text as="span" color="green.400" fontWeight="bold">
-              { " Previous Year "}
+                { " Previous Year "}
               </Text>
               {"(  " } {values.prevyear} {"  )"}  
             </Text>
           </Flex>
           <Box minH="300px">
 
-          <CChartLine
+                      {/* <CChartBar
+                     
+                        data={{
+                          labels: purchases?.map(
+                            (purchase) => purchase.MonthName
+                          ),
+                          datasets: [
+                            {
+                              label: "Asset Value",
+                              backgroundColor: purchases?.map((color) =>
+                                randomColor()
+                              ),
+                              //'#f87979',
+                              data: purchases?.map(
+                                (acquire) => acquire.Acquired
+                              ),
+                            },
+                          ],
+                         
+                        }}
+                        labels="months"
+                      /> */}
+
+                        <CChartLine
                           style={{ height: "300px", marginTop: "40px" }}
                           data={{
                             labels: purchases?.map(
@@ -353,7 +388,7 @@ export default function Dashboard() {
                                 //   getStyle("success"),
                                 //   10
                                 // ),
-                                 backgroundColor:  "#8080ff",
+                                 backgroundColor:  "#f20d0d",
                                 borderColor: getStyle("success"),
                                 pointHoverBackgroundColor:
                                   getStyle("success"),
@@ -366,7 +401,7 @@ export default function Dashboard() {
                               },
                               {
                                 label: "Supplier",
-                                backgroundColor: "#0080ff",
+                                backgroundColor: "transparent",
                                 borderColor: getStyle("warning"),
                                 pointHoverBackgroundColor:
                                   getStyle("warning"),
@@ -416,169 +451,18 @@ export default function Dashboard() {
 
           </Box>
         </Card>
-        <Card p="0px" maxW={{ sm: "320px", md: "100%" }} maxH="450px">
+         <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
           <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
-            {/* <Text color="gray.400" fontSize="sm" fontWeight="bold" mb="6px">
-            Asset Deploy per Department
-            </Text> */}
+            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb="6px">
+              PERFORMANCE
+            </Text>
             <Text color={textColor} fontSize="lg" fontWeight="bold">
-            Deployed per Department
-            </Text>
-          </Flex>
-          {/* <Card p="0px" maxW={{ sm: "320px", md: "100%" }} > */}
-            {/* <BarChart chartData={barChartData} chartOptions={barChartOptions} /> */}
-            <CChartBar
-                data={{
-                          labels: deployed?.map(
-                            (dept) => dept.shortName
-                          ),
-                          datasets: [
-                            {
-                              label: "Asset Deployed",
-                              backgroundColor: deployed?.map((dept) =>
-                                randomColor()
-                              ),
-                              //'#f87979',
-                              data: deployed?.map(
-                                (asset) => asset.Count
-                              ),
-                            },
-                          ],
-                        }}
-                        labels="departmentName"
-            />
-          {/* </Card> */}
-        </Card>
-        <Card
-          bg={
-            colorMode === "dark"
-              ? "blue.800"
-              : "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
-          }
-          p="0px"
-          maxW={{ sm: "320px", md: "100%" }}
-        >
-          <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
-            <Text color="#fff" fontSize="lg" fontWeight="bold" mb="6px">
-            Asset Acquisition per Year
-            </Text>
-            <Text color="#fff" fontSize="sm">
-              <Text as="span" color="green.400" fontWeight="bold">
-              { " Previous Year "}
-              </Text>
-              {"(  " } {values.prevyear} {"  )"}  
+              Total orders
             </Text>
           </Flex>
           <Box minH="300px">
-
-          <CChartLine
-                          style={{ height: "300px", marginTop: "40px" }}
-                          data={{
-                            labels: purchases?.map(
-                              (purchase) => purchase.MonthName
-                            ),
-                            datasets: [
-                              {
-                                label: "Asset Acquisition",
-                                // backgroundColor: hexToRgba(
-                                //   getStyle("success"),
-                                //   10
-                                // ),
-                                 backgroundColor:  "#8080ff",
-                                borderColor: getStyle("success"),
-                                pointHoverBackgroundColor:
-                                  getStyle("success"),
-                                borderWidth: 2,
-                                data: purchases?.map(
-                                  (purchase) =>
-                                    purchase.Acquired
-                                ),
-                                fill: true,
-                              },
-                              {
-                                label: "Supplier",
-                                backgroundColor: "#0080ff",
-                                borderColor: getStyle("warning"),
-                                pointHoverBackgroundColor:
-                                  getStyle("warning"),
-                                borderWidth: 2,
-                                data: purchases?.map(
-                                  (purchase) =>
-                                    purchase.supplier
-                                ),
-                              },
-                            ],
-                          }}
-                          options={{
-                            maintainAspectRatio: false,
-                            plugins: {
-                              legend: {
-                                display: false,
-                              },
-                            },
-                            scales: {
-                              x: {
-                                grid: {
-                                  drawOnChartArea: false,
-                                },
-                              },
-                              y: {
-                                ticks: {
-                                  beginAtZero: true,
-                                  maxTicksLimit: 5,
-                                  stepSize: Math.ceil(250 / 5),
-                                  max: 250,
-                                },
-                              },
-                            },
-                            elements: {
-                              line: {
-                                tension: 0.4,
-                              },
-                              point: {
-                                radius: 0,
-                                hitRadius: 10,
-                                hoverRadius: 4,
-                                hoverBorderWidth: 3,
-                              },
-                            },
-                          }}
-                        />
-
+            <BarChart chartData={barChartData} chartOptions={barChartOptions} />
           </Box>
-        </Card>
-        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
-          <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
-            {/* <Text color="gray.400" fontSize="sm" fontWeight="bold" mb="6px">
-            Asset Deploy per Department
-            </Text> */}
-            <Text color={textColor} fontSize="lg" fontWeight="bold">
-            Pullout per Department
-            </Text>
-          </Flex>
-          <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
-            {/* <BarChart chartData={barChartData} chartOptions={barChartOptions} /> */}
-            <CChartBar
-                data={{
-                          labels: deployed?.map(
-                            (dept) => dept.shortName
-                          ),
-                          datasets: [
-                            {
-                              label: "Asset Deployed",
-                              backgroundColor: deployed?.map((dept) =>
-                                randomColor()
-                              ),
-                              //'#f87979',
-                              data: deployed?.map(
-                                (asset) => asset.Count
-                              ),
-                            },
-                          ],
-                        }}
-                        labels="departmentName"
-            />
-          </Card>
         </Card>
         <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
           <Flex direction="column">
@@ -590,10 +474,67 @@ export default function Dashboard() {
                 SEE ALL
               </Button>
             </Flex>
-            <Card maxW={{ sm: "320px", md: "1000px" }}>
-            <AssetViewer />
-          </Card>
-          
+            <Box overflow={{ sm: "scroll", lg: "hidden" }}>
+              <Table>
+                <Thead>
+                  <Tr bg={tableRowColor}>
+                    <Th color="gray.400" borderColor={borderColor}>
+                      Page name
+                    </Th>
+                    <Th color="gray.400" borderColor={borderColor}>
+                      Visitors
+                    </Th>
+                    <Th color="gray.400" borderColor={borderColor}>
+                      Unique users
+                    </Th>
+                    <Th color="gray.400" borderColor={borderColor}>
+                      Bounce rate
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {pageVisits.map((el, index, arr) => {
+                    return (
+                      <Tr key={index}>
+                        <Td
+                          color={textTableColor}
+                          fontSize="sm"
+                          fontWeight="bold"
+                          borderColor={borderColor}
+                          border={index === arr.length - 1 ? "none" : null}
+                        >
+                          {el.pageName}
+                        </Td>
+                        <Td
+                          color={textTableColor}
+                          fontSize="sm"
+                          border={index === arr.length - 1 ? "none" : null}
+                          borderColor={borderColor}
+                        >
+                          {el.visitors}
+                        </Td>
+                        <Td
+                          color={textTableColor}
+                          fontSize="sm"
+                          border={index === arr.length - 1 ? "none" : null}
+                          borderColor={borderColor}
+                        >
+                          {el.uniqueUsers}
+                        </Td>
+                        <Td
+                          color={textTableColor}
+                          fontSize="sm"
+                          border={index === arr.length - 1 ? "none" : null}
+                          borderColor={borderColor}
+                        >
+                          {el.bounceRate}
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </Box>
           </Flex>
         </Card>
         <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
@@ -668,7 +609,7 @@ export default function Dashboard() {
               </Tbody>
             </Table>
           </Box>
-        </Card>
+        </Card> 
       </Grid>
     </Flex>
   );

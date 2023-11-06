@@ -465,7 +465,7 @@ export default function FourGraphs() {
           </Flex>
           <Text color="gray.400" fontSize="sm">
             <Text as="span" color="red.400" fontWeight="bold" fontSize="xl">
-            {fourgraphs.totalNo} {"  "}
+            {fourgraphs.forpullout} {"  "}
             </Text>
             Schedule for Pullout
           </Text>

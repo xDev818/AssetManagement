@@ -25,7 +25,8 @@ const { utils_getDate } = require('../utils/date_helper')
 
 const {
     PreviousYear_Amount,
-    currentYear_Acquired
+    currentYear_Acquired,
+    asset_deployed
   }  = require('../_sqlstatement/Dashboard')
 
 
@@ -79,7 +80,34 @@ const dashboard_Current_Acquired_Asset = ( request, response ) => {
 
 }
 
+const dashboard_Asset_Deploy = ( request, response ) => {
+
+    // const curDate = new Date(utils_getDate())
+    // const currentyear = curDate.getFullYear()
+    // console.log(currentyear)
+     //const stmt =  "call getAssetAcquired(?)"
+     mysql.query(asset_deployed(),  ( err, result ) => {
+ 
+         if( err ) return response.status(400).send(
+             {
+                 message: "No Records Found",
+                 message2: err.message
+             }
+         )
+          response.status(200).send(
+              {
+                  message: "Records Found",
+                  result
+              }
+          )
+ 
+     })
+ 
+ }
+
+ 
 module.exports = {
     dashboard_AssetAmountPreviousYear,
-    dashboard_Current_Acquired_Asset
+    dashboard_Current_Acquired_Asset,
+    dashboard_Asset_Deploy
 }
