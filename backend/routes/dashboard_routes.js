@@ -20,7 +20,9 @@ const {
     dashboard_AssetPerDept,
     dashboard_AssetStatus,
     dashboard_AssetType,
-    dashboard_AssetCategory
+    dashboard_AssetCategory,
+    dashboard_AssetCondition,
+    dashboard_AssetLocations
 
 } = require('../controllers/dashboard_controller')
 
@@ -36,6 +38,8 @@ router.get('/dashboard/asset-perDept',dashboard_AssetPerDept)
 router.get('/dashboard/asset-Status',dashboard_AssetStatus) 
 router.get('/dashboard/asset-Type',dashboard_AssetType) 
 router.get('/dashboard/asset-Category',dashboard_AssetCategory) 
+router.get('/dashboard/asset-Condition',dashboard_AssetCondition) 
+router.get('/dashboard/asset-Locations',dashboard_AssetLocations) 
 
 
 module.exports = router

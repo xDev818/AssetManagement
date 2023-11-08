@@ -41,7 +41,7 @@ class Logs {
          const request = await axios.post("/log", logs);
          const response = await request.data;
 
-         console.log(response);
+        // console.log(response);
 
        } catch (err) {
 
@@ -56,8 +56,8 @@ class Logs {
                ""
             );
 
-            alert(log_status.getMessage());
-            console.log(log_status.getLogs());
+           // alert(log_status.getMessage());
+           // console.log(log_status.getLogs());
             
          }
 
@@ -70,8 +70,8 @@ class Logs {
                ""
             );
 
-            alert('Bad Request /log, ' + log_status.getMessage());
-            console.log(log_status.getLogs());
+           // alert('Bad Request /log, ' + log_status.getMessage());
+           // console.log(log_status.getLogs());
          }
 
       }

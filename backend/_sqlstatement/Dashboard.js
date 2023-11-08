@@ -48,19 +48,23 @@ const PreviousYear_Amount = () => {
 
 const view_logInfo = () => {
 
-   return  "SELECT log.logID,users.displayName,users.imgFilename,log.logtype,log.module,log.logfunction,log.logvalues,"
-           + "log.createdBy,COALESCE(DATE_FORMAT(log.dateCreated, '%m/%d/%Y'),'') as dateatecreated,"
-           + " dept.shortName FROM tblLogs log"
-           + " INNER JOIN tblUsers users on users.userDisplayID COLLATE utf8mb4_unicode_ci = log.createdBy"
-           + " INNER JOIN tblPositions pos on pos.positionDisplayID COLLATE utf8mb4_unicode_ci = users.positionID"
-           + " INNER JOIN  tblDepartments dept on dept.departmentDisplayID COLLATE utf8mb4_unicode_ci = pos.departmentDisplayID"
-           + " order by dateatecreated desc LIMIT 20"
-   
+   return  "SELECT log.logID,get_DisplayName(log.createdBy) as DisplayName,get_UserImageFile(log.createdBy) as ImageFile,"
+           + "log.logtype,log.module,log.logfunction,log.logvalues,"
+           + " log.createdBy,COALESCE(DATE_FORMAT(log.dateCreated, '%m/%d/%Y'),'') as dateatecreated,"
+           + " get_UserDepartment(log.createdBy) as Department FROM tblLogs log"
+           + "  order by log.dateCreated desc LIMIT 50"
+          
 }
 
 const view_assetmovement = () => {
 
    return  "call Asset_Movement()"
+   
+}
+
+const view_assetCondition = () => {
+
+   return  "call sp_get_Condition()"
    
 }
 
@@ -102,6 +106,7 @@ const view_assetType = () => {
              + " order by Current desc"
    
 }
+
 const view_assetCategory = () => {
 
    return  "SELECT Category.assetCategID,Category.assetCategName as Category,"
@@ -115,6 +120,22 @@ const view_assetCategory = () => {
              + " order by Current  desc"
 }
 
+const view_assetLocations = () => {
+
+   return  "SELECT locations.locationid,locations.name,"
+             + "(SELECT IFNULL(count(details.detailID),'0') as count FROM tblUserAssetDetails details"
+             + " INNER JOIN tblDepartments dept on dept.departmentDisplayID COLLATE utf8mb4_unicode_ci = details.departmentID"
+             + " INNER JOIN tblLocations location on location.locationid COLLATE utf8mb4_unicode_ci = dept.locationid"
+             + " INNER JOIN tblAssetStatus stats on stats.assetStatusID COLLATE utf8mb4_unicode_ci = details.assetStatusID"
+             + " WHERE location.locationid = locations.locationid"
+             + " and stats.statusName = 'Deployed'"
+             + " and details.checkinby is not null"
+             + " and details.pulloutBy is null"
+             + " ) as count"
+             + " FROM tblLocations locations"
+             + " ORDER by locations.orderid asc"
+}
+
  module.exports = {
 
     PreviousYear_Amount,
@@ -125,6 +146,8 @@ const view_assetCategory = () => {
     view_assetPerDept,
     view_assetStatus,
     view_assetType,
-    view_assetCategory
+    view_assetCategory,
+    view_assetCondition,
+    view_assetLocations
 
  }

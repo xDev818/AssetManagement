@@ -39,7 +39,9 @@ const {
     view_assetPerDept,
     view_assetStatus,
     view_assetType,
-    view_assetCategory
+    view_assetCategory,
+    view_assetCondition,
+    view_assetLocations
   }  = require('../_sqlstatement/Dashboard')
 
 
@@ -218,6 +220,7 @@ const dashboard_AssetType = ( request, response ) => {
          )
     })
 }
+
 const dashboard_AssetCategory = ( request, response ) => {
 
     mysql.query(view_assetCategory(),  ( err, result ) => {
@@ -236,6 +239,46 @@ const dashboard_AssetCategory = ( request, response ) => {
          )
     })
 }
+
+const dashboard_AssetCondition = ( request, response ) => {
+
+    mysql.query(view_assetCondition(),  ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
+        // console.log(result)
+    })
+}
+
+const dashboard_AssetLocations = ( request, response ) => {
+
+    mysql.query(view_assetLocations(),  ( err, result ) => {
+
+        if( err ) return response.status(400).send(
+            {
+                message: "No Records Found",
+                message2: err.message
+            }
+        )
+         response.status(200).send(
+             {
+                 message: "Records Found",
+                 result
+             }
+         )
+        // console.log(result)
+    })
+}
 module.exports = {
     dashboard_AssetAmountPreviousYear,
     dashboard_Current_Acquired_Asset,
@@ -245,5 +288,7 @@ module.exports = {
     dashboard_AssetPerDept,
     dashboard_AssetStatus,
     dashboard_AssetType,
-    dashboard_AssetCategory
+    dashboard_AssetCategory,
+    dashboard_AssetCondition,
+    dashboard_AssetLocations
 }

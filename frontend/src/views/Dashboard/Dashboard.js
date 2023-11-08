@@ -104,6 +104,7 @@ import {
   CChartDoughnut,
 } from "@coreui/react-chartjs";
 import { getStyle, hexToRgba } from "@coreui/utils";
+
 import randomColor from "randomcolor";
 
 export default function Dashboard() {
@@ -116,6 +117,8 @@ export default function Dashboard() {
   const [assetstatus,setStatus] = useState([])
   const [assettype,setType] = useState([])
   const [category,setCategory] = useState([])
+  const [condition,setCondition] = useState([])
+  const [location,setLocation] = useState([])
 
   const [values,setPrevYear] = useState({
     prevyear: ""
@@ -167,7 +170,7 @@ export default function Dashboard() {
         }
 
         if (errorStatus.includes("ERR_BAD_REQUEST")) {
-          console.log(err);
+          //console.log(err);
           const verifyLogs = new Logs(
             "Error",
             "dashboard",
@@ -192,7 +195,7 @@ export default function Dashboard() {
                   "dashboard",
                   "useEffect /log",
                   err,
-                  ""
+                  decoded.result[0].userDisplayID
                 );
                 alert(_logs.getMessage());
               }
@@ -223,7 +226,6 @@ export default function Dashboard() {
     var amount_prevYear = "";
     var userid = ""
   
- 
     try {
   
       const tokenStorage = localStorage.getItem("token");
@@ -258,7 +260,6 @@ export default function Dashboard() {
           
           setPurchases(res.data.result[0])
        
-  
         })
         .catch((err) => {
           const InsertLogs = new Logs(
@@ -405,8 +406,81 @@ export default function Dashboard() {
             userid
           );
         });
+
+        /*
+        Asset Condition
+        */ 
+        const succesCondition = await axios.get("/dashboard/asset-Condition")
+  
+        .then((res) => {
+          setCondition(res.data.result[0])
+       
+        })
+        .catch((err) => {
+          const InsertLogs = new Logs(
+            "Error",
+            "Dashboard",
+            "Function /dashboard/asset-Condition",
+            "useEffect ( Get All Asset Condition)",
+            userid
+          );
+        });
+
+      /*
+        Asset Locations
+        */ 
+        const succesLocations = await axios.get("/dashboard/asset-Locations")
+       // console.log(succesLocations)
+        const response = await succesLocations.data;
+        //alert(response.message)
+       
+        if (response.message.includes("Records Found")) { 
+          setLocation(response.result)
+
+        } else {
+          setLocation([])
+          const InsertLogs = new Logs(
+            "Error",
+            "Dashboard",
+            "Function /dashboard/asset-Locations",
+            "useEffect ( Get All Asset Locations)",
+            userid
+          );
+
+          InsertLogs.getLogs();
+          InsertLogs.insertLogs( InsertLogs.getLogs() )
+        }
+
     } catch(err) {
-      alert(err)
+      const errorStatus = err.code;
+      //alert(errorStatus)
+      if (errorStatus.includes("ERR_NETWORK")) {
+        const useEffectLogs = new Logs(
+          "Error",
+          "Dashboard",
+          "Function /dashboard/asset-Locations",
+          err,
+          userid
+        );
+
+        useEffectLogs.getLogs();
+        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
+        
+      }
+
+      if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        const useEffectLogs = new Logs(
+          "Error",
+          "Dashboard",
+          "Function /dashboard/asset-Locations",
+          err.response.data.message,
+          userid
+        );
+        useEffectLogs.getLogs();
+        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
+
+      }
+
     }
   
   }, [])
@@ -433,13 +507,13 @@ export default function Dashboard() {
             </GridItem>
             <Grid
                 h='1050px'
-                templateRows='repeat(4, 1fr)'
+                templateRows='repeat(5, 1fr)'
                 templateColumns='repeat(5, 1fr)'
                 gap={2}
 
               >
-                <GridItem rowSpan={2} colSpan={1} bg='tomato' >
-                <Card p="0px" maxW={{ sm: "320px", md: "100%" }} >
+                <GridItem rowSpan={2} colSpan={1}  >
+                <Card p="0px" maxW={{ sm: "400px", md: "100%" }} >
                     <Flex direction="column">
                       <Flex align="center" justify="space-between" p="22px">
                         <Text fontSize="lg" color={textColor} fontWeight="bold">
@@ -450,11 +524,11 @@ export default function Dashboard() {
                         </Button>
                       </Flex>
                     </Flex>
-                  <Card p="0px" maxW={{ sm: "320px", md: "100%"}}   minH="450px">
-                    <Box  maxHeight="450px"  maxW={"400px"} overflowY="auto">
+                    <Card p="0px" maxW={{ sm: "400px", md: "100%"}}   >
+                        <Box  maxHeight="340px"  maxW={"400px"} overflowY={"auto"} >
                         <TableContainer >
                           <Table >
-                            <Thead position="sticky"  top={0}>
+                            <Thead >
                               <Tr >
                                 <Th>User</Th>
                                 <Th>Dept</Th>
@@ -473,17 +547,17 @@ export default function Dashboard() {
                                     size='sm'
                                     name= {log.displayName}
                                     src= {
-                                      log?.imgFilename
+                                      log?.ImageFile
                                     ? 
-                                    `http://localhost:5001/image/static/${log?.imgFilename}`
+                                    `http://localhost:5001/image/static/${log?.ImageFile}`
                                       
                                     :  imgDefault
                                     }  
                                   />
-                                  {/* {log.displayName} */}
+                                  {/* {log.DisplayName} */}
                                 </Td>
                                 <Td>
-                                {log.shortName}
+                                {log.Department}
                                 </Td>
                                 <Td>
                                 {log.logtype}
@@ -508,55 +582,57 @@ export default function Dashboard() {
       
                 </Card>
                 </GridItem>
-                <GridItem colSpan={2} bg='blue'>
-                <Card p="5px" maxW={{ sm: "20px", md: "100%" }}  minH={"20px"} bg='blue'>
+                <GridItem colSpan={2} maxH={"10px"} bg='red'>
+                <Card p="0px" maxW={{ sm: "650px", md: "100%" }}  maxH={"75px"}  bg='red' >
+                <Box  maxHeight="75px"  maxW={"650px"} bg='red'>
                     <Flex direction="column">
-                      <Flex align="center" justify="space-between" p="2px">
+                      <Flex align="center" justify="space-between" p="0px">
                         <Text fontSize="lg" color={textColorDue} fontWeight="bold">
                          Depreciated
                         </Text>
                         <Text fontSize="lg" color={textColorDue} fontWeight="bold">
-                        Due This Year
+                        Depreciated this Month
                         </Text>
                       </Flex>
-                      <Flex align="center" justify="space-between" p="2px">
-                        <Text fontSize="40px" color={'red'} fontWeight="bold">
+                      <Flex align="center" justify="space-between" p="0px">
+                        <Text fontSize="40px" color={'navy'} fontWeight="bold">
                         56
                         </Text>
-                        <Text fontSize="40px" color={'red'} fontWeight="bold">
-                         4000
+                        <Text fontSize="40px" color={'turquise'} fontWeight="bold">
+                         4
                         </Text>
                       </Flex>
                     </Flex>
+                </Box>
                 </Card>
                     
                 </GridItem>
-                <GridItem colSpan={2} bg='#006633' minH={"20px"}>
-                <Card p="5px" maxW={{ sm: "20px", md: "100%" }}  minH={"20px"} bg='#006633'>
-                <Flex direction="column">
-                      <Flex align="center" justify="space-between" p="2px">
-                        <Text fontSize="lg" color={textColorDue} fontWeight="bold">
-                         Depreciated this Month
-                        </Text>
-                        <Text fontSize="lg" color={textColorDue} fontWeight="bold">
-                        Asset Due Next Month
-                        </Text>
-                      </Flex>
-                      <Flex align="center" justify="space-between" p="2px">
-                        <Text fontSize="40px" color={'red'} fontWeight="bold">
-                         4
-                        </Text>
-                        <Text fontSize="40px" color={'red'} fontWeight="bold">
-                        2500
-                        </Text>
-                      </Flex>
+                <GridItem colSpan={2} bg='#006633' maxH={"10px"} >
+                <Card p="0px" maxW={{ sm: "650px", md: "100%" }}  maxH={"75px"}  bg='#006633' >
+                  <Box  maxHeight="75px"  maxW={"650px"} bg='#006633' >
+                    <Flex direction="column">
+                          <Flex align="center" justify="space-between" p="0px">
+                            <Text fontSize="lg" color={textColorDue} fontWeight="bold">
+                            Due This Year
+                            </Text>
+                            <Text fontSize="lg" color={textColorDue} fontWeight="bold">
+                            Asset Due Next Month
+                            </Text>
+                          </Flex>
+                          <Flex align="center" justify="space-between" p="0px">
+                            <Text fontSize="40px" color={'red'} fontWeight="bold">
+                            4000
+                            </Text>
+                            <Text fontSize="40px" color={'red'} fontWeight="bold">
+                            2500
+                            </Text>
+                          </Flex>
                     </Flex>
+                  </Box>
                 </Card>
                 </GridItem>
 
-
-
-                <GridItem colSpan={2} bg='blue' minH={"340px"} >
+                <GridItem colSpan={2} minH={"340px"} >
                   <Card p="0px" maxW={{ sm: "20px", md: "100%" }} >
                     <Flex direction="column">
                       <Flex align="center" justify="space-between" p="22px">
@@ -568,8 +644,8 @@ export default function Dashboard() {
                         </Button> */}
                       </Flex>
                     </Flex>
-                    <Card  maxW={{ sm: "20px", md: "500px"}}   >
-                      <>
+                    <Card p="0px" maxW={{ sm: "600px", md: "100%"}}  >
+                    <Box  maxHeight="270px"  maxW={"750px"} >
                       <CChartBar
                         
                           data={{
@@ -593,12 +669,12 @@ export default function Dashboard() {
                                   }}
                                  // labels="Movement"
                       />
-                      </>
+                    </Box>
                     </Card>
                   </Card>
                 </GridItem>
 
-                <GridItem colSpan={2} bg='papayawhip'  minH={"340px"} >
+                <GridItem colSpan={2}   minH={"340px"} >
                   <Card p="0px" maxW={{ sm: "150px", md: "100%" }}   >
                       <Flex direction="column">
                             <Flex align="center" justify="space-between" p="22px">
@@ -610,36 +686,105 @@ export default function Dashboard() {
                               </Button> */}
                             </Flex>
                       </Flex>
-                      <Card maxW={{ md: "500px"}}  >
-                      <>
-                        <CChartBar
-                          
-                            data={{
-                                      labels: assetDept?.map(
-                                        (dept) => dept.shortName
-                                      ),
-                                      datasets: [
-                                        {
-                                          label: "Department",
-                                          backgroundColor: assetDept?.map((dept) =>
-                                            randomColor()
-                                          ),
-                                          //'#f87979',
-                                          data: [80,23,12,56,45,45,100,200]
+                      <Card p="1px" maxW={{ sm: "750px", md: "100%"}}  >
+                        <Box  maxHeight="270px"  maxW={"750px"} >
+                    
+                        <CChartLine
+                          style={{ height: "300px", marginTop: "40px" }}
+                          data={{
+                            labels: assetDept?.map(
+                              (dept) => dept.shortName
+                            ),
+                            datasets: [
+                              {
+                                label: "Received by User",
+                                backgroundColor:
+                                hexToRgba(
+                                  "#ff0000",
+                                  10)
+                                  
+                                ,
+                                borderColor: getStyle("success"),
+                                pointHoverBackgroundColor:
+                                  getStyle("success"),
+                                borderWidth: 2,
+                                data: [80,23,12,56,45,45,100,200],
                                           // assetDept?.map(
                                           //   (asset) => asset.assetdept
                                           // ),
-                                        },
-                                      ],
-                                    }}
-                                    labels="shortName"
+                                fill: true,
+                              },
+                              {
+                                label: "PullOut by User",
+                                backgroundColor: hexToRgba(
+                                  "#0040ff",
+                                  10),
+                                borderColor: getStyle("warning"),
+                                pointHoverBackgroundColor:
+                                  getStyle("tomato"),
+                                borderWidth: 2,
+                                data: [34,16,4,56,76,89,120,215]
+                                // assetDept?.map(
+                                //   (asset) => asset.assetdept
+                                // ),
+                              },
+                              {
+                                label: "Dispose By IT",
+                                backgroundColor: hexToRgba(
+                                  "#3e6c00",
+                                  10),
+                                borderColor: getStyle("danger"),
+                                pointHoverBackgroundColor:
+                                  getStyle("danger"),
+                                borderWidth: 2,
+                                data: [10,22,44,66,78,99,120,230]
+                                          // assetDept?.map(
+                                          //   (asset) => asset.assetdept
+                                          // ),
+                              },
+                            ],
+                          }}
+                          options={{
+                            maintainAspectRatio: false,
+                            plugins: {
+                              legend: {
+                                display: false,
+                              },
+                            },
+                            scales: {
+                              x: {
+                                grid: {
+                                  drawOnChartArea: false,
+                                },
+                              },
+                              y: {
+                                ticks: {
+                                  beginAtZero: true,
+                                  maxTicksLimit: 5,
+                                  stepSize: Math.ceil(250 / 5),
+                                  max: 250,
+                                },
+                              },
+                            },
+                            elements: {
+                              line: {
+                                tension: 0.4,
+                              },
+                              point: {
+                                radius: 0,
+                                hitRadius: 10,
+                                hoverRadius: 4,
+                                hoverBorderWidth: 3,
+                              },
+                            },
+                          }}
                         />
-                        </>
+                        </Box>
                       </Card>
                   </Card>
                 </GridItem>
 
-                <GridItem rowSpan={2} colSpan={1} bg='pink' minH={"330px"} >
+                <GridItem rowSpan={2} colSpan={1}  minH={"330px"} >
                 <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
                     <Flex direction="column">
                       <Flex align="center" justify="space-between" p="22px">
@@ -651,8 +796,8 @@ export default function Dashboard() {
                         </Button> */}
                       </Flex>
                     </Flex>
-                  <Card p="0px" maxW={{ sm: "320px", md: "100%"}}  overflow="auto" minH="450px">
-                    <Box  maxHeight="270px"  maxW={"600px"} >
+                    <Card p="0px" maxW={{ sm: "600px", md: "100%"}}  >
+                    <Box  maxHeight="600px"  maxW={"600px"} overflowY={"auto"}>
                         <TableContainer >
                           <Table >
                             <Thead position="sticky"  top={0}>
@@ -688,49 +833,8 @@ export default function Dashboard() {
 
                 </GridItem>
 
-                <GridItem colSpan={2} bg='green' minH={"340px"}>
-                <Card p="0px" maxW={{ sm: "150px", md: "100%" }}   >
-                      <Flex direction="column">
-                            <Flex align="center" justify="space-between" p="22px">
-                              <Text fontSize="lg" color={textColor} fontWeight="bold">
-                                Asset Status
-                              </Text>
-                              {/* <Button variant="primary" maxH="30px">
-                                SEE ALL
-                              </Button> */}
-                            </Flex>
-                      </Flex>
-                      <Card maxW={{ md: "500px"}}  >
-                      <>
-                        <CChartBar
-                          
-                            data={{
-                                      labels: assetstatus?.map(
-                                        (stat) => 
-                                        stat.CntStatus + "  " + stat.statusName
-                                      ),
-                                      datasets: [
-                                        {
-                                          label: "Status",
-                                          backgroundColor: assetstatus?.map((stat) =>
-                                            randomColor()
-                                          ),
-                                          //'#f87979',
-                                          data: 
-                                          //[80,23,12,56,45,45,100,200]
-                                          assetstatus?.map(
-                                            (stat) => stat.CntStatus
-                                          ),
-                                        },
-                                      ],
-                                    }}
-                                    labels="shortName"
-                        />
-                        </>
-                      </Card>
-                  </Card>
-                </GridItem>
-                <GridItem colSpan={2} bg='yellow' minH={"340px"}>
+        
+                <GridItem colSpan={2}  minH={"340px"}>
                 <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
                     <Flex direction="column">
                       <Flex align="center" justify="space-between" p="22px">
@@ -742,8 +846,8 @@ export default function Dashboard() {
                         </Button>
                       </Flex>
                     </Flex>
-                  <Card p="0px" maxW={{ sm: "320px", md: "100%"}}  overflow="auto" minH="270px">
-                    <Box maxH="50px"  maxW={"350px"} >
+                  <Card p="0px" maxW={{ sm: "750px", md: "100%"}}  >
+                    <Box  maxHeight="270px"  maxW={"750px"} >
                     <CChartBar
                       data={{
                                 labels: deployed?.map(
@@ -773,17 +877,134 @@ export default function Dashboard() {
 
                 </GridItem>
 
-                <GridItem colSpan={2} bg='red'>
-                  <Text fontSize="lg" color={textColorDue} fontWeight="bold">
-                    On Development Stage
-                  </Text>
+       
+                <GridItem colSpan={2}  >
+                {/* <Card p="0px" maxW={{ sm: "320px", md: "100%" }} maxH={"200px"} > */}
+                    {/* <Flex direction="column">
+                      <Flex align="center" justify="space-between" p="22px">
+                        <Text fontSize="lg" color={textColor} fontWeight="bold">
+                          Asset Condition
+                        </Text>
+                        <Button variant="primary" maxH="30px">
+                          SEE ALL
+                        </Button>
+                      </Flex>
+                    </Flex> */}
+                  {/* <Card p="0px" maxW={{ sm: "320px", md: "100%"}}   minH="100px" > */}
+                    <Box  maxHeight="200px"  maxW={"800px"} >
+                        <TableContainer >
+                          <Table >
+                            <Thead position="sticky"  top={0}>
+                              <Tr >
+                                <Th>Status</Th>
+                                <Th>Total</Th>
+                                <Th>Percentage</Th>
+                              </Tr>
+                            </Thead>
+                            <Tbody>
+                              {condition.map((conditions) => (
+
+                              <Tr key={conditions.conditionID}>
+                                <Td>
+                                {conditions.ConditionName}
+                                </Td>
+                                <Td>
+                                  {conditions.Count_Condition}
+                                </Td>
+                                <Td>
+                                <Flex align="center">
+                                    <Text
+                                      color={conditions.colorscheme}
+                                      fontWeight="bold"
+                                      fontSize="sm"
+                                      me="12px"
+                                    > {`${conditions.Count_Percentage}%`}</Text>
+                                    <Progress
+                                      size="xs"
+                                      colorScheme={conditions.colorscheme}
+                                      value={conditions.Count_Percentage}
+                                      minW="120px"
+                                    />
+                                  </Flex>
+
+                                  
+                                </Td>
+                              </Tr>
+                              ))}
+                            </Tbody>
+                          </Table>
+                        </TableContainer>
+
+                    </Box>
+                  {/* </Card> */}
+      
+                {/* </Card> */}
                 </GridItem>
-                <GridItem colSpan={2} bg='violet'>
-                <Text fontSize="lg" color={textColorDue} fontWeight="bold">
-                    On Development Stage
-                  </Text>
+                <GridItem colSpan={2}>
+                {/* <Card p="0px" maxW={{ sm: "320px", md: "100%" }} maxH={"200px"} > */}
+                    {/* <Flex direction="column">
+                      <Flex align="center" justify="space-between" p="22px">
+                        <Text fontSize="lg" color={textColor} fontWeight="bold">
+                          Asset Condition
+                        </Text>
+                        <Button variant="primary" maxH="30px">
+                          SEE ALL
+                        </Button>
+                      </Flex>
+                    </Flex> */}
+                  {/* <Card p="0px" maxW={{ sm: "320px", md: "100%"}}   minH="100px" > */}
+                    <Box  maxHeight="200px"  maxW={"800px"} >
+                        <TableContainer >
+                          <Table >
+                            <Thead position="sticky"  top={0}>
+                              <Tr >
+                                <Th>Locations</Th>
+                                <Th>Total</Th>
+                                
+                              </Tr>
+                            </Thead>
+                            <Tbody>
+                              {location.map((loc) => (
+
+                              <Tr key={loc.locationid}>
+                               
+                                <Td>
+                                  {loc.name}
+                                </Td>
+                                <Td>
+                                {/* <Flex align="center">
+                                    <Text
+                                      color={conditions.colorscheme}
+                                      fontWeight="bold"
+                                      fontSize="sm"
+                                      me="12px"
+                                    > {`${conditions.Count_Percentage}%`}</Text>
+                                    <Progress
+                                      size="xs"
+                                      colorScheme={conditions.colorscheme}
+                                      value={conditions.Count_Percentage}
+                                      minW="120px"
+                                    />
+                                  </Flex> */}
+                                  {loc.count}
+                                </Td>
+                              </Tr>
+                              ))}
+                            </Tbody>
+                          </Table>
+                        </TableContainer>
+
+                    </Box>
+                  {/* </Card> */}
+      
+                {/* </Card> */}
                 </GridItem>
-                
+
+                {/* <GridItem colSpan={2} maxH={"100px"} bg='blue'  maxW={{ sm: "1000px", md: "100%" }}>
+                  </GridItem>
+                  <GridItem colSpan={2} maxH={"100px"} bg='yellow'  maxW={{ sm: "1000px", md: "100%" }}>
+                  </GridItem> */}
+
                 {/* <GridItem colSpan={4} bg='tomato' /> */}
             </Grid>
           </Card>
@@ -920,8 +1141,8 @@ export default function Dashboard() {
             Category
             </Text>
           </Flex>
-          <Card p="0px" maxW={{ sm: "20px", md: "100%" }} maxH={"300px"} > 
-            <Box maxH={"300px"}  overflowY="auto" >
+          <Card p="0px" maxW={{ sm: "320px", md: "100%" }} maxH={"500px"}  overflowY="auto" > 
+            <Box maxHeight={"300px"} >
               <CChartPie 
                 data={{
                   labels: 

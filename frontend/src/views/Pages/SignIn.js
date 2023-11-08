@@ -120,6 +120,9 @@ function SignIn() {
     buttonStatus.disabled = true;
 
     try {
+      // alert(values.username)
+      // alert(values.password)
+      
       const request = await axios.post("/users/login", values);
 
       const response = await request.data;
@@ -176,7 +179,7 @@ function SignIn() {
       }
     }
 
-    console.log("asd");
+   // console.log("asd");
   };
   // End Jinshin
 
