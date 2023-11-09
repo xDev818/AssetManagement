@@ -29,7 +29,7 @@ import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
 import bgAdmin from "assets/img/admin-background.png";
 import FourGraphs from "components/FourGraphs/FourGraphs";
-import AssetCategoryViewer from "components2/Configuration/AssetCategoryViewer";
+
 
 export default function Dashboard(props) {
 
@@ -113,18 +113,13 @@ export default function Dashboard(props) {
   document.documentElement.dir = "ltr";
   // Chakra Color Mode
   return (
-    <Box>
+    <Box bg='tomato'>
       <Box
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         backgroundSize="convert"
-        h="150vh"
-        // h={{
-        //   full:"115vh",
-        //   base: "115vh", // 0-48em
-        //   md: "75vh", // 48em-80em,
-        //   xl: "25vh", // 80em+
-        // }}
+        h="115vh"
+
         w="100%"
         position="absolute"
         bgImage={colorMode === "light" ? bgAdmin : "none"}
@@ -187,8 +182,7 @@ export default function Dashboard(props) {
               </Switch>
              
             </PanelContainer>
-            <AssetCategoryViewer/>
-            <AssetCategoryViewer/>
+          
           </PanelContent>
         ) : null}
 

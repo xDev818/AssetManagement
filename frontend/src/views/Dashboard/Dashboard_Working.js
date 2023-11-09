@@ -96,7 +96,6 @@ import AssetViewer from "components2/Activity/AssetViewer";
 // End Jinshin
 
 import ITCheckoutViewer from "components2/Activity/ITCheckoutViewer";
-import DashBoardContent from "./DashboardContent"
 
 import {
   CChartBar,
@@ -488,19 +487,28 @@ export default function Dashboard() {
   }, [])
 
   return (
-<>
-        <Grid
-          templateAreas={`"header header"
-                          "nav main"
-                          "nav footer"`}
-          gridTemplateRows={'50px 1fr 30px'}
-          gridTemplateColumns={'315px 1fr'}
-          h='200px'
-          gap='1'
-          color='blackAlpha.700'
-          fontWeight='bold'
-        >
-          <GridItem  area={'header'} height={"50px"} bgGradient='linear(to-r, red.500, red.300, pink.100)'>
+
+    <Flex flexDirection="column" pt={{ base: "120px", md: 0 }}>
+    <Grid
+      templateColumns={{ sm: "1fr", lg: "2fr 1fr" }}
+      templateRows={{ lg: "repeat(2, auto)" }}
+      gap="20px"
+      
+    >
+        <GridItem colSpan={2}>
+          <Card mb="30px">
+          <Grid
+            templateAreas={`"header header"
+                            "nav main"
+                            "nav footer"`}
+            gridTemplateRows={'50px 1fr 30px'}
+            gridTemplateColumns={'150px 1fr'}
+            h='200px'
+            gap='1'
+            color='blackAlpha.700'
+            fontWeight='bold'
+          >
+           <GridItem  bg='navy.800' area={'header'} height={"50px"} >
           <center alignContent={"center"} justifyContent={"space-between"}>
               
                 <Box  justifyItems={"center"}  >
@@ -584,10 +592,9 @@ export default function Dashboard() {
           
           </Card> 
           </GridItem>
-          <GridItem  area={'main'}>
+          <GridItem bg='green.300' area={'main'}>
             <SimpleGrid minChildWidth='315px' spacing='1px'>
-            <Card  maxW={{ sm: "315px", md: "100%" }} bgGradient='linear(to-r, red.500, red.300, pink.100)' >
-              <Box  maxW={{ sm: "315px", md: "100%" }}   >
+              <Box  maxW={{ sm: "315px", md: "100%" }}  bgGradient='linear(to-r, red.500, red.300, pink.100)'  >
               <Flex direction="column">
                 <Flex align="center" justify="space-between" p="10px">
                   <Text fontSize="20px" color={textColorDue} fontWeight="bold">
@@ -637,7 +644,6 @@ export default function Dashboard() {
                 </Flex>
               </Flex>
               </Box>
-            </Card>
               <Card  maxW={{ sm: "315px", md: "100%" }} >
             
             <Flex direction="column">
@@ -822,7 +828,7 @@ export default function Dashboard() {
             </SimpleGrid>
           </GridItem>
 
-          <GridItem   area={'footer'} height={"150px"}     >
+          <GridItem  bg='blue.300' area={'footer'} height={"150px"}     >
             <SimpleGrid minChildWidth='315px' spacing='1px'>
               <Card height={"150px"}   >
                     <TableContainer  overflowY="auto" >
@@ -898,9 +904,15 @@ export default function Dashboard() {
                 </Card>
             </SimpleGrid>
           </GridItem>
-        </Grid>
+          </Grid>
+          </Card>
+        </GridItem>
 
-        </>
+        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
+          asdfsdgf
+        </Card>
+      </Grid>
+      </Flex>
    
   );
 }

@@ -1,4 +1,4 @@
-
+<>
         <Grid
           templateAreas={`"header header"
                           "nav main"
@@ -407,3 +407,4 @@
             </SimpleGrid>
           </GridItem>
         </Grid>
+        </>
