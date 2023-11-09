@@ -253,7 +253,7 @@ export default function AssetViewer() {
               handleReport={handleReport}
               handleExcelReport={handleExcelReport}
               handleDelete={handleDelete}
-              pathname="/admin/asset-viewer"
+              pathname="/admin/asset"
               idType={"id"}
             />
 
