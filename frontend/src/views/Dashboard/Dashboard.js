@@ -496,7 +496,7 @@ export default function Dashboard() {
           gridTemplateRows={'50px 1fr 30px'}
           gridTemplateColumns={'315px 1fr'}
           h='200px'
-          gap='1'
+          gap='0'
           color='blackAlpha.700'
           fontWeight='bold'
         >
