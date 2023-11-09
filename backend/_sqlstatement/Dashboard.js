@@ -62,11 +62,7 @@ const view_assetmovement = () => {
    
 }
 
-const view_assetCondition = () => {
 
-   return  "call sp_get_Condition()"
-   
-}
 
 const view_assetPerDept = () => {
 
@@ -134,6 +130,11 @@ const view_assetLocations = () => {
              + " ) as count"
              + " FROM tblLocations locations"
              + " ORDER by locations.orderid asc"
+}
+const view_assetCondition = () => {
+
+   return  "call sp_get_Condition()"
+   
 }
 
  module.exports = {

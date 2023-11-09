@@ -488,32 +488,33 @@ export default function Dashboard() {
 
   return (
 
-        <Grid
-          templateAreas={`"header header"
-                          "nav main"
-                          "nav footer"`}
-          gridTemplateRows={'50px 1fr 30px'}
-          gridTemplateColumns={'315px 1fr'}
-          h='200px'
-          gap='1'
-          color='blackAlpha.700'
-          fontWeight='bold'
-        >
-          <GridItem  bg='navy.800' area={'header'} height={"50px"} >
-          <center alignContent={"center"} justifyContent={"space-between"}>
-              
-                <Box  justifyItems={"center"}  >
-                  <Text fontSize="30px" color={textColorDue} fontWeight="bold" alignContent={"center"}>
-                  OVERVIEW
-                  </Text>
-              </Box>
+    <>
+      <Grid
+        templateAreas={`"header header"
+                        "nav main"
+                        "nav footer"`}
+        gridTemplateRows={'50px 1fr 30px'}
+        gridTemplateColumns={'315px 1fr'}
+        h='200px'
+        gap='1'
+        color='blackAlpha.700'
+        fontWeight='bold'
+      >
+        <GridItem bg='navy.800' area={'header'} >
+          <center alignContent={"center"}>
+            <Card justifyItems={"center"} bg='navy.800' >
+            <Box height={"5px"} justifyContent={"space-between"} >
+              <Text fontSize="30px" color={textColorDue} fontWeight="bold" alignContent={"center"}>
+               OVERVIEW
+              </Text>
+          </Box>
 
-              
-              </center>
-          </GridItem>
-          <GridItem  area={'nav'}  width={"315px"}>
-          <Card   height="710px" bg="white"    >
-            
+            </Card>
+          </center>
+        </GridItem>
+         <GridItem  area={'nav'} height={"800px"} width={"315px"} >
+          <Card  maxW={{ sm: "315px", md: "100%" }} >
+         
             <Flex direction="column">
               <Flex align="center" justify="space-between" p="22px">
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
@@ -524,11 +525,8 @@ export default function Dashboard() {
                 </Button>
               </Flex>
             </Flex>
-          
-          <Box  overflowY={"scroll"} >
-
-          
-              <TableContainer  >
+            <Box  maxHeight="440px" overflowY={"auto"} >
+              <TableContainer >
                 <Table >
                   <Thead >
                     <Tr >
@@ -578,69 +576,72 @@ export default function Dashboard() {
                   </Tbody>
                 </Table>
               </TableContainer>
-          </Box>
-            
+
+            </Box>
           
           </Card> 
-          </GridItem>
-          <GridItem bg='green.300' area={'main'}>
-            <SimpleGrid minChildWidth='315px' spacing='1px'>
-              <Box  maxW={{ sm: "315px", md: "100%" }}  bgGradient='linear(to-r, red.500, red.300, pink.100)'  >
-              <Flex direction="column">
-                <Flex align="center" justify="space-between" p="10px">
-                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
-                    Depreciated
+        </GridItem>
+
+        <GridItem   area={'main'} width={"1250px"} >
+          <SimpleGrid minChildWidth='315px' spacing='1px'>
+          
+            <Box  maxW={{ sm: "315px", md: "100%" }}  bgGradient='linear(to-r, red.800, red.300, pink.100)'  >
+            <Flex direction="column">
+              <Flex align="center" justify="space-between" p="10px">
+                <Text fontSize="20px" color={textColorDue} fontWeight="bold">
+                  Depreciated
+                </Text>
+                <Button height={"40px"}>
+                  <Text fontSize="20px" color={'navy'} fontWeight="bold">
+                    200
                   </Text>
-                  <Button height={"40px"}>
-                    <Text  fontSize="20px" color={'red'} fontWeight="bold">
-                      200
-                    </Text>
-                  </Button>
-                </Flex>
+                </Button>
               </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="10px">
-                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
-                    Depreciated this Month
+            </Flex>
+            <Flex direction="column" >
+              <Flex align="center" justify="space-between" p="10px">
+                <Text fontSize="20px" color={textColorDue} fontWeight="bold">
+                  Depreciated this Month
+                </Text>
+                <Button height={"40px"} >
+                  <Text fontSize="20px" color={'navy'} fontWeight="bold">
+                    25
                   </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
-                      25
-                    </Text>
-                  </Button>
-                </Flex>
+                </Button>
               </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="10px">
-                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
-                    Due this Year
+            </Flex>
+            <Flex direction="column" >
+              <Flex align="center" justify="space-between" p="10px">
+                <Text fontSize="20px" color={textColorDue} fontWeight="bold">
+                  Due this Year
+                </Text>
+                <Button height={"40px"} >
+                  <Text fontSize="20px" color={'navy'} fontWeight="bold">
+                    1500
                   </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
-                      1500
-                    </Text>
-                  </Button>
-                </Flex>
+                </Button>
               </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="10px">
-                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
-                    Due Next Month
+            </Flex>
+            <Flex direction="column" >
+              <Flex align="center" justify="space-between" p="10px">
+                <Text fontSize="20px" color={textColorDue} fontWeight="bold">
+                  Due Next Month
+                </Text>
+                <Button height={"40px"} >
+                  <Text fontSize="20px" color={'navy'} fontWeight="bold">
+                    3000
                   </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
-                      3000
-                    </Text>
-                  </Button>
-                </Flex>
+                </Button>
               </Flex>
-              </Box>
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
-            
+            </Flex>
+            </Box>
+          
+          <Card  maxW={{ sm: "315px", md: "100%" }} >
+         
             <Flex direction="column">
               <Flex align="center" justify="space-between" p="10px">
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
-                  Asset Movement
+                 Asset Movement
                 </Text>
                 <Button variant="primary" maxH="30px">
                   SEE ALL
@@ -670,233 +671,237 @@ export default function Dashboard() {
                         }}
                         // labels="Movement"
             />
-        
-              </Card>
-              
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
-                <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
-                      Asset Per Department
-                      </Text>
-                      <Button variant="primary" maxH="30px">
-                        SEE ALL
-                      </Button>
-                    </Flex>
-                </Flex>
-                <CChartBar
-                    data={{
-                              labels: assetDept?.map(
-                                (dept) => dept.shortName
-                              ),
-                              datasets: [
-                                {
-                                  label: "Departmnt ",
-                                  backgroundColor: ["yellow","blue","red","tomato","orange"],
-                                  // assetmovement?.map((status) =>
-                                  //   randomColor()
-                                  //),
-                                  
-                                  data: [502,2416,2875,506,300,675,764,496],
-                                  // assetDept?.map(
-                                  //   (asset) => asset.assetdept
-                                  // ),
-                                },
-                              ],
-                            }}
-                            labels="Departmnt"
-                />
-              
-              </Card>
+       
+          </Card>
 
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
-                <Flex direction="column">
-                      <Flex align="center" justify="space-between" p="10px">
-                        <Text fontSize="lg" color={textColor} fontWeight="bold">
-                        Asset Status
-                        </Text>
-                        <Button variant="primary" maxH="30px">
-                          SEE ALL
-                        </Button>
-                      </Flex>
+          <Card  maxW={{ sm: "315px", md: "100%" }} >
+            <Flex direction="column">
+                <Flex align="center" justify="space-between" p="10px">
+                  <Text fontSize="lg" color={textColor} fontWeight="bold">
+                  Asset Per Department
+                  </Text>
+                  <Button variant="primary" maxH="30px">
+                    SEE ALL
+                  </Button>
                 </Flex>
-                  <CChartBar
-                      data={{
-                                labels: assetstatus?.map(
-                                  (stat) => stat.statusName
-                                ),
-                                datasets: [
-                                  {
-                                    label: "Status ",
-                                    backgroundColor: 
-                                    ["yellow","blue","red","tomato","orange"],
-                                    // assetmovement?.map((status) =>
-                                    //   randomColor()
-                                    // ),
-                                    
-                                    data:
-                                    // [502,2416,2875,506,300,675,764,496],
-                                    assetstatus?.map(
-                                      (stat) => stat.CntStatus
-                                    ),
-                                  },
-                                ],
-                              }}
-                              labels="Departmnt"
-                  />
-              </Card>
+            </Flex>
+            <CChartBar
+                data={{
+                          labels: assetDept?.map(
+                            (dept) => dept.shortName
+                          ),
+                          datasets: [
+                            {
+                              label: "Departmnt ",
+                              backgroundColor: ["yellow","blue","red","tomato","orange"],
+                              // assetmovement?.map((status) =>
+                              //   randomColor()
+                              //),
+                              
+                              data: [502,2416,2875,506,300,675,764,496],
+                               // assetDept?.map(
+                              //   (asset) => asset.assetdept
+                              // ),
+                            },
+                          ],
+                        }}
+                         labels="Departmnt"
+            />
+          
+          </Card>
 
-              <Card   maxW={{ sm: "315px", md: "100%" }} >
-              <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
-                      Asset Category
-                      </Text>
-                      <Button variant="primary" maxH="30px">
-                        SEE ALL
-                      </Button>
-                    </Flex>
-              </Flex>
+          <Card  maxW={{ sm: "315px", md: "100%" }} >
+            <Flex direction="column">
+                  <Flex align="center" justify="space-between" p="10px">
+                    <Text fontSize="lg" color={textColor} fontWeight="bold">
+                    Asset Status
+                    </Text>
+                    <Button variant="primary" maxH="30px">
+                      SEE ALL
+                    </Button>
+                  </Flex>
+            </Flex>
               <CChartBar
-                    data={{
-                              labels: category?.map(
-                                (stat) => stat.Category
-                              ),
-                              datasets: [
-                                {
-                                  label: "Status ",
-                                  backgroundColor: 
-                                  ["yellow","blue","red","tomato","orange"],
-                                  // category?.map((categ) =>
-                                  //   randomColor()
-                                  // ),
-                                  
-                                  data:
-                                  // [502,2416,2875,506,300,675,764,496],
-                                  category?.map(
-                                    (categ) => categ.Current
-                                  ),
-                                },
-                              ],
-                            }}
-                            labels="Departmnt"
-                />
-              </Card>
-
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
-              <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
-                      Asset Deployed
-                      </Text>
-                      <Button variant="primary" maxH="30px">
-                        SEE ALL
-                      </Button>
-                    </Flex>
-                </Flex>
-                <CChartBar
                   data={{
-                            labels: deployed?.map(
-                              (dept) => dept.shortName
+                            labels: assetstatus?.map(
+                              (stat) => stat.statusName
                             ),
                             datasets: [
                               {
-                                label: "Asset Deployed",
-                                backgroundColor: ["blue","tomato","turquoise","green","violet","pink"],
+                                label: "Status ",
+                                backgroundColor: 
+                                ["yellow","blue","red","tomato","orange"],
+                                // assetmovement?.map((status) =>
+                                //   randomColor()
+                                // ),
                                 
-                                //'#f87979',
-                                data: deployed?.map(
-                                  (asset) => asset.Count
+                                data:
+                                // [502,2416,2875,506,300,675,764,496],
+                                assetstatus?.map(
+                                  (stat) => stat.CntStatus
                                 ),
                               },
                             ],
                           }}
-                          labels="departmentName"
-                />
+                          labels="Departmnt"
+              />
+          </Card>
 
-              </Card>
-
-            </SimpleGrid>
-          </GridItem>
-
-          <GridItem  bg='blue.300' area={'footer'} height={"150px"}     >
-            <SimpleGrid minChildWidth='315px' spacing='1px'>
-              <Card height={"150px"}   >
-                    <TableContainer  overflowY="auto" >
-                      <Table >
-                        <Thead position="sticky" >
-                          <Tr >
-                            <Th>Status</Th>
-                            <Th>Total</Th>
-                            <Th>Percentage</Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {condition.map((conditions) => (
-
-                          <Tr key={conditions.conditionID}>
-                            <Td>
-                            {conditions.ConditionName}
-                            </Td>
-                            <Td>
-                              {conditions.Count_Condition}
-                            </Td>
-                            <Td>
-                            <Flex align="center">
-                                <Text
-                                  color={conditions.colorscheme}
-                                  fontWeight="bold"
-                                  fontSize="sm"
-                                  me="12px"
-                                > {`${conditions.Count_Percentage}%`}</Text>
-                                <Progress
-                                  size="xs"
-                                  colorScheme={conditions.colorscheme}
-                                  value={conditions.Count_Percentage}
-                                  minW="120px"
-                                />
-                              </Flex>
-
+          <Card   maxW={{ sm: "315px", md: "100%" }} >
+          <Flex direction="column">
+                <Flex align="center" justify="space-between" p="10px">
+                  <Text fontSize="lg" color={textColor} fontWeight="bold">
+                  Asset Category
+                  </Text>
+                  <Button variant="primary" maxH="30px">
+                    SEE ALL
+                  </Button>
+                </Flex>
+          </Flex>
+          <CChartBar
+                data={{
+                          labels: category?.map(
+                            (stat) => stat.Category
+                          ),
+                          datasets: [
+                            {
+                              label: "Status ",
+                              backgroundColor: 
+                              ["yellow","blue","red","tomato","orange"],
+                              // category?.map((categ) =>
+                              //   randomColor()
+                              // ),
                               
-                            </Td>
-                          </Tr>
-                          ))}
-                        </Tbody>
-                      </Table>
-                    </TableContainer>
-              </Card>
-              <Card  height={"150px"} >
-                  <TableContainer overflowY="auto" >
-                    <Table >
-                      <Thead >
-                        <Tr >
-                          <Th>Locations</Th>
-                          <Th>Total</Th>
-                          
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {location.map((loc) => (
+                              data:
+                              // [502,2416,2875,506,300,675,764,496],
+                              category?.map(
+                                (categ) => categ.Current
+                              ),
+                            },
+                          ],
+                        }}
+                         labels="Departmnt"
+            />
+          </Card>
 
-                        <Tr key={loc.locationid}>
-                          
-                          <Td>
-                            {loc.name}
-                          </Td>
-                          <Td>
+          <Card  maxW={{ sm: "315px", md: "100%" }} >
+          <Flex direction="column">
+                <Flex align="center" justify="space-between" p="10px">
+                  <Text fontSize="lg" color={textColor} fontWeight="bold">
+                  Asset Deployed
+                  </Text>
+                  <Button variant="primary" maxH="30px">
+                    SEE ALL
+                  </Button>
+                </Flex>
+            </Flex>
+            <CChartBar
+              data={{
+                        labels: deployed?.map(
+                          (dept) => dept.shortName
+                        ),
+                        datasets: [
+                          {
+                            label: "Asset Deployed",
+                            backgroundColor: ["blue","tomato","turquoise","green","violet","pink"],
+                            
+                            //'#f87979',
+                            data: deployed?.map(
+                              (asset) => asset.Count
+                            ),
+                          },
+                        ],
+                      }}
+                      labels="departmentName"
+            />
 
-                            {loc.count}
-                          </Td>
-                        </Tr>
-                        ))}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
-                </Card>
-            </SimpleGrid>
-          </GridItem>
-        </Grid>
+          </Card>
+            
+          </SimpleGrid>
 
-   
+        </GridItem>
+       
+        <GridItem pl='2' bg='blue.300' area={'footer'} >
+        </GridItem> 
+       
+{/* 
+        <GridItem bg='blue.300' area={'footer'} height={"330px"}>
+          <SimpleGrid minChildWidth='315px' spacing='1px'>
+            <Card  maxW={{ sm: "250px", md: "100%" }} >
+              <TableContainer >
+                <Table >
+                  <Thead position="sticky"  top={0}>
+                    <Tr >
+                      <Th>Status</Th>
+                      <Th>Total</Th>
+                      <Th>Percentage</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {condition.map((conditions) => (
+
+                    <Tr key={conditions.conditionID}>
+                      <Td>
+                      {conditions.ConditionName}
+                      </Td>
+                      <Td>
+                        {conditions.Count_Condition}
+                      </Td>
+                      <Td>
+                      <Flex align="center">
+                          <Text
+                            color={conditions.colorscheme}
+                            fontWeight="bold"
+                            fontSize="sm"
+                            me="12px"
+                          > {`${conditions.Count_Percentage}%`}</Text>
+                          <Progress
+                            size="xs"
+                            colorScheme={conditions.colorscheme}
+                            value={conditions.Count_Percentage}
+                            minW="120px"
+                          />
+                        </Flex>
+
+                        
+                      </Td>
+                    </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Card>
+            <Card  maxW={{ sm: "250px", md: "100%" }} bg="yellow">
+              {/* <TableContainer >
+                <Table >
+                  <Thead position="sticky"  top={0}>
+                    <Tr >
+                      <Th>Locations</Th>
+                      <Th>Total</Th>
+                      
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {location.map((loc) => (
+
+                    <Tr key={loc.locationid}>
+                      
+                      <Td>
+                        {loc.name}
+                      </Td>
+                      <Td>
+
+                        {loc.count}
+                      </Td>
+                    </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer> */}
+            {/* </Card> */}
+          {/* </SimpleGrid> */}
+        {/* </GridItem>  */}
+      </Grid>
+    </>
   );
 }
