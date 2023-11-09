@@ -500,7 +500,7 @@ export default function Dashboard() {
           color='blackAlpha.700'
           fontWeight='bold'
         >
-          <GridItem  area={'header'} height={"50px"} bgGradient='linear(to-r, red.500, red.300, pink.100)'>
+          <GridItem  area={'header'} height={"50px"} bgGradient='linear(to-r, red.500, pink.300, pink.100)'>
           <center alignContent={"center"} justifyContent={"space-between"}>
               
                 <Box  justifyItems={"center"}  >
