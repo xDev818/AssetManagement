@@ -111,7 +111,7 @@ import { getStyle, hexToRgba } from "@coreui/utils";
 
 import randomColor from "randomcolor";
 
-export default function Dashboard() {
+export default function DashboardUsers() {
 
   const [purchases,setPurchases] = useState([])
   const [deployed,setDeployed] = useState([])

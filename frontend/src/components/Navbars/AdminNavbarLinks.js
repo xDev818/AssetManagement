@@ -1,11 +1,13 @@
 // Chakra Icons
 import { BellIcon } from "@chakra-ui/icons";
+import { Icon, Image } from '@chakra-ui/react'
 // Chakra Imports
 import {
   Avatar,
   Box,
   Button,
   Flex,
+  HStack,
   Menu,
   MenuButton,
   MenuItem,
@@ -38,6 +40,10 @@ import routes from "routes.js";
 import jwtDecode from "jwt-decode";
 import { useEffect } from "react";
 import { useState } from "react";
+import logout from "../../assets/img/Logout.ico"
+
+import { RiLogoutCircleRLine } from "react-icons/ri";
+import IconBox from "components/Icons/IconBox";
 
 export default function HeaderLinks(props) {
   const [user, setUser] = useState();
@@ -46,7 +52,7 @@ export default function HeaderLinks(props) {
     const token = window.localStorage.getItem("token");
     const data = jwtDecode(token);
     setUser(data);
-    console.log(data)
+    //console.log(data)
   }, []);
   const handleLogout = () => {
     const storage = localStorage;
@@ -103,9 +109,21 @@ export default function HeaderLinks(props) {
                         />
             <Text color="red">{user.result[0].Name}</Text>
           </Flex>
-          <Button size="sm" onClick={handleLogout}>
+          <IconBox
+                  borderRadius="50%"
+                  as="box"
+                  h={"45px"}
+                  w={"45px"}
+                  //bg={"white"}
+                  cursor="pointer"
+                  onClick={handleLogout} 
+                >
+                  <Image src={logout} size="lg" />
+                </IconBox>
+          
+          {/* <Button size="sm" >
             Log Out
-          </Button>
+          </Button> */}
         </Flex>
       ) : (
         <NavLink to="/auth/signin">

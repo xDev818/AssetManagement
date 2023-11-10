@@ -5,6 +5,8 @@ import {
   Stack,
   Box,
   useColorMode,
+  StatLabel,
+  Text,
 } from "@chakra-ui/react";
 import Configurator from "components/Configurator/Configurator";
 import Footer from "components/Footer/Footer.js";
@@ -17,8 +19,12 @@ import {
 // Layout components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
+
+import jwtDecode from "jwt-decode";
+
+
 
 import routes from "routes.js";
 // Custom Chakra theme
@@ -29,9 +35,17 @@ import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
 import bgAdmin from "assets/img/AssetBackground.webp";
 import FourGraphs from "components/FourGraphs/FourGraphs";
+import FourGraphsUsers from "components/FourGraphs/FourGraphsUsers";
 
 
 export default function Dashboard(props) {
+
+  const [user, setUser] = useState({
+    userID: "",
+    userRole: "",
+  });
+
+  const [userGroup,setUserGroup ]= useState(null)
 
   const location = useLocation();
  // console.log("location", location.pathname);
@@ -40,6 +54,32 @@ export default function Dashboard(props) {
   // states and functions
   const [fixed, setFixed] = useState(false);
   const { colorMode } = useColorMode();
+
+  useEffect(() => {
+    try {
+    const token = window.localStorage.getItem("token");
+    const data = jwtDecode(token);
+
+     setUser({...user,
+      userID: data.result[0].userDisplayID,
+      userRole: data.result[0].userRole})
+     
+      const val = data.result[0].userRole
+
+      if(data.result[0].userRole === val) {
+        alert(data.result[0].userRole)
+        setUserGroup( "Asset Team")
+      } else {
+        setUserGroup( null)
+      }
+   // setUser(data.result);
+    console.log(data.result)
+
+    } catch(err) {
+      alert(err)
+    }
+  }, []);
+
   // functions for changing the states from components
   const getRoute = () => {
     return window.location.pathname !== "/admin/full-screen-maps";
@@ -162,7 +202,14 @@ export default function Dashboard(props) {
       >
         {/* Four Graphs */}
         <Stack mt={{ base: 140, md: 100 }} px={{ base: 4, md: 7, lg: 10 }}>
-          <FourGraphs />
+        <Text>
+            {user?.userRole}
+          </Text>
+          {/* user?.userRole === "IT Admin" || user?.userRole === "IT" */}
+          { userGroup.length > 0
+            ? <FourGraphs />
+            : <FourGraphsUsers/>
+          }
         </Stack>
         <Portal>
           <AdminNavbar
@@ -182,7 +229,7 @@ export default function Dashboard(props) {
               </Switch>
              
             </PanelContainer>
-          
+            
           </PanelContent>
         ) : null}
 

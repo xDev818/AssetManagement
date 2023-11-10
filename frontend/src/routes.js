@@ -201,6 +201,7 @@
 // import
 import React, { Component } from "react";
 import Dashboard from "views/Dashboard/Dashboard.js";
+import DashboardUsers from "views/Dashboard/DashboardUsers.js";
 import Tables from "views/Dashboard/Tables.js";
 import Billing from "views/Dashboard/Billing.js";
 //import RTLPage from "views/RTL/RTLPage.js";
