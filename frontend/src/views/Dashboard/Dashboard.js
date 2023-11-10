@@ -38,6 +38,8 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
+  CircularProgressLabel,
   Flex,
   Grid,
   GridItem,
@@ -437,7 +439,7 @@ export default function Dashboard() {
         //alert(response.message)
        
         if (response.message.includes("Records Found")) { 
-          setLocation(response.result)
+          setLocation(response.result[0])
 
         } else {
           setLocation([])
@@ -490,17 +492,18 @@ export default function Dashboard() {
   return (
 <>
         <Grid
+        
           templateAreas={`"header header"
                           "nav main"
                           "nav footer"`}
           gridTemplateRows={'50px 1fr 30px'}
           gridTemplateColumns={'315px 1fr'}
           h='200px'
-          gap='0'
+          gap='5'
           color='blackAlpha.700'
           fontWeight='bold'
         >
-          <GridItem  area={'header'} height={"50px"} bgGradient='linear(to-r, red.500, pink.300, pink.100)'>
+          <GridItem pl={"2"} area={'header'} height={"50px"} bgGradient='linear(to-r, red.500, pink.300, pink.100)'>
           <center alignContent={"center"} justifyContent={"space-between"}>
               
                 <Box  justifyItems={"center"}  >
@@ -512,11 +515,11 @@ export default function Dashboard() {
               
               </center>
           </GridItem>
-          <GridItem  area={'nav'}  width={"315px"}>
-          <Card   height="710px" bg="white"    >
+          <GridItem pl={"2"} area={'nav'}  width={"315px"}>
+          <Card   height="890px" bg="white"    >
             
             <Flex direction="column">
-              <Flex align="center" justify="space-between" p="22px">
+              <Flex align="center" justify="space-between" p="5px">
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Recent Activity
                 </Text>
@@ -584,12 +587,12 @@ export default function Dashboard() {
           
           </Card> 
           </GridItem>
-          <GridItem  area={'main'}>
-            <SimpleGrid minChildWidth='315px' spacing='1px'>
-            <Card  maxW={{ sm: "315px", md: "100%" }} bgGradient='linear(to-r, red.500, red.300, pink.100)' >
+          <GridItem pl={"2"}  area={'main'} >
+            <SimpleGrid minChildWidth='315px' spacing='20px'>
+            <Card  maxW={{ sm: "315px", md: "100%" }} bgGradient='linear(to-tr, red.500, red.300, pink.100)' >
               <Box  maxW={{ sm: "315px", md: "100%" }}   >
               <Flex direction="column">
-                <Flex align="center" justify="space-between" p="10px">
+                <Flex align="center" justify="space-between" p="5px">
                   <Text fontSize="20px" color={textColorDue} fontWeight="bold">
                     Depreciated
                   </Text>
@@ -601,7 +604,7 @@ export default function Dashboard() {
                 </Flex>
               </Flex>
               <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="10px">
+                <Flex align="center" justify="space-between" p="5px">
                   <Text fontSize="20px" color={textColorDue} fontWeight="bold">
                     Depreciated this Month
                   </Text>
@@ -613,7 +616,7 @@ export default function Dashboard() {
                 </Flex>
               </Flex>
               <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="10px">
+                <Flex align="center" justify="space-between" p="5px">
                   <Text fontSize="20px" color={textColorDue} fontWeight="bold">
                     Due this Year
                   </Text>
@@ -625,7 +628,7 @@ export default function Dashboard() {
                 </Flex>
               </Flex>
               <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="10px">
+                <Flex align="center" justify="space-between" p="5px">
                   <Text fontSize="20px" color={textColorDue} fontWeight="bold">
                     Due Next Month
                   </Text>
@@ -725,7 +728,8 @@ export default function Dashboard() {
                 </Flex>
                   <CChartBar
                       data={{
-                                labels: assetstatus?.map(
+                                labels:
+                                 assetstatus?.map(
                                   (stat) => stat.statusName
                                 ),
                                 datasets: [
@@ -822,9 +826,9 @@ export default function Dashboard() {
             </SimpleGrid>
           </GridItem>
 
-          <GridItem   area={'footer'} height={"150px"}     >
-            <SimpleGrid minChildWidth='315px' spacing='1px'>
-              <Card height={"150px"}   >
+          <GridItem  pl={"2"} area={'footer'} height={"250px"}     >
+            <SimpleGrid minChildWidth='315px' spacing='20px'>
+              <Card height={"300px"}   >
                     <TableContainer  overflowY="auto" >
                       <Table >
                         <Thead position="sticky" >
@@ -868,27 +872,39 @@ export default function Dashboard() {
                       </Table>
                     </TableContainer>
               </Card>
-              <Card  height={"150px"} >
+              <Card  height={"300px"} >
                   <TableContainer overflowY="auto" >
                     <Table >
                       <Thead >
                         <Tr >
                           <Th>Locations</Th>
-                          <Th>Total</Th>
+                          <Th>Count</Th>
+                          <Th>Percentage</Th>
+                          <Th>Quota</Th>
                           
                         </Tr>
                       </Thead>
                       <Tbody>
                         {location.map((loc) => (
 
-                        <Tr key={loc.locationid}>
+                        <Tr key={loc.LocationID}>
                           
                           <Td>
-                            {loc.name}
+                            {loc.LocationName}
                           </Td>
                           <Td>
-
-                            {loc.count}
+                            {loc.Count_Location}
+                          </Td>
+                          <Td>
+                          <CircularProgress value={loc.Count_Percentage} color={loc.colorscheme}>
+                            <CircularProgressLabel> 
+                            {`${loc.Count_Percentage}%`}
+                            </CircularProgressLabel>
+                          </CircularProgress>
+                            {}
+                          </Td>
+                          <Td>
+                          {loc.Quota}
                           </Td>
                         </Tr>
                         ))}

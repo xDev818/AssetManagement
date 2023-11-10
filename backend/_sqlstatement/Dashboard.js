@@ -118,18 +118,20 @@ const view_assetCategory = () => {
 
 const view_assetLocations = () => {
 
-   return  "SELECT locations.locationid,locations.name,"
-             + "(SELECT IFNULL(count(details.detailID),'0') as count FROM tblUserAssetDetails details"
-             + " INNER JOIN tblDepartments dept on dept.departmentDisplayID COLLATE utf8mb4_unicode_ci = details.departmentID"
-             + " INNER JOIN tblLocations location on location.locationid COLLATE utf8mb4_unicode_ci = dept.locationid"
-             + " INNER JOIN tblAssetStatus stats on stats.assetStatusID COLLATE utf8mb4_unicode_ci = details.assetStatusID"
-             + " WHERE location.locationid = locations.locationid"
-             + " and stats.statusName = 'Deployed'"
-             + " and details.checkinby is not null"
-             + " and details.pulloutBy is null"
-             + " ) as count"
-             + " FROM tblLocations locations"
-             + " ORDER by locations.orderid asc"
+   // return  "SELECT locations.locationid,locations.name,locations.quota,"
+   //           + "(SELECT IFNULL(count(details.detailID),'0') as count FROM tblUserAssetDetails details"
+   //           + " INNER JOIN tblDepartments dept on dept.departmentDisplayID COLLATE utf8mb4_unicode_ci = details.departmentID"
+   //           + " INNER JOIN tblLocations location on location.locationid COLLATE utf8mb4_unicode_ci = dept.locationid"
+   //           + " INNER JOIN tblAssetStatus stats on stats.assetStatusID COLLATE utf8mb4_unicode_ci = details.assetStatusID"
+   //           + " WHERE location.locationid = locations.locationid"
+   //           + " and stats.statusName = 'Deployed'"
+   //           + " and details.checkinby is not null"
+   //           + " and details.pulloutBy is null"
+   //           + " ) as count"
+   //           + " FROM tblLocations locations"
+   //           + " ORDER by locations.orderid asc"
+
+   return 'call sp_Get_AssetByLocations()'
 }
 const view_assetCondition = () => {
 

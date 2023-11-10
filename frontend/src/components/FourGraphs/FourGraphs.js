@@ -269,7 +269,7 @@ export default function FourGraphs() {
       mb="0"
       display={{ base: "none", md: "grid" }}
     >
-      <Card minH="125px">
+      <Card minH="125px"  bgGradient='linear(to-bl, red.500, red.300, red.100)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"
@@ -280,19 +280,23 @@ export default function FourGraphs() {
           >
             <Stat me="auto">
               <StatLabel
-                fontSize="xs"
-                color="gray.400"
+                fontSize="md"
+                color="white"
                 fontWeight="bold"
                 textTransform="uppercase"
               >
                 Assets Amount 
               
               </StatLabel>
+              
+              <Box justifyItems={"center"} >
               <Flex>
-                <StatNumber fontSize="xl" color="blue.400" fontWeight="bold">
+                <StatNumber fontSize="30px" color={textColor} fontWeight="bold" alignContent={"center"}>
                   {fourgraphs.amount}
                 </StatNumber>
               </Flex>
+              </Box>
+            
             </Stat>
 
             <Menu>
@@ -302,10 +306,10 @@ export default function FourGraphs() {
                   as="box"
                   h={"45px"}
                   w={"45px"}
-                  bg={iconBlue}
+                  bg={"white"}
                   cursor="pointer"
                 >
-                  <Image src={assetico}  h={"24px"} w={"24px"} color={iconBoxInside} />
+                  <Image src={assetico}  h={"24px"} w={"24px"} color={iconBlue} />
 
 
                    {/* <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} /> */}
@@ -345,7 +349,7 @@ export default function FourGraphs() {
 
         {/* performance */}
       </Card>
-      <Card minH="125px">
+      <Card minH="125px" bgGradient='linear(to-bl, blue, blue.500, blue.100)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"
@@ -356,15 +360,15 @@ export default function FourGraphs() {
           >
             <Stat me="auto">
               <StatLabel
-                fontSize="xs"
-                color="gray.400"
+                fontSize="md"
+                color="white"
                 fontWeight="bold"
                 textTransform="uppercase"
               >
                 No. of Assets Deployed
               </StatLabel>
               <Flex>
-                <StatNumber fontSize="xl" color="green.400" fontWeight="bold">
+                <StatNumber fontSize="30px" color={textColor} fontWeight="bold">
                   {fourgraphs.totalNo}
                 </StatNumber>
               </Flex>
@@ -374,20 +378,20 @@ export default function FourGraphs() {
               as="box"
               h={"45px"}
               w={"45px"}
-              bg={iconBlue}
+              bg={"white"}
             >
-              <GlobeIcon h={"24px"} w={"24px"} color={iconBoxInside} />
+              <GlobeIcon h={"24px"} w={"24px"} color={iconBlue} />
             </IconBox>
           </Flex>
-          <Text color="gray.400" fontSize="sm">
-            <Text as="span" color="red.400" fontWeight="bold" fontSize="xl">
+          <Text color="white" fontSize="sm">
+            <Text as="span" color="red.400" fontWeight="bold" fontSize="30px">
               {fourgraphs.fordeploy} { "  " }
             </Text>
             Schedule For Deployment
           </Text>
         </Flex>
       </Card>
-      <Card minH="125px">
+      <Card minH="125px" bgGradient='linear(to-bl, #ffcc00, #ffe066, #fff0b3)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"
@@ -398,15 +402,15 @@ export default function FourGraphs() {
           >
             <Stat me="auto">
               <StatLabel
-                fontSize="xs"
-                color="gray.400"
+                fontSize="md"
+                color="white"
                 fontWeight="bold"
                 textTransform="uppercase"
               >
                 Available
               </StatLabel>
               <Flex>
-                <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
+                <StatNumber fontSize="30px" color={textColor} fontWeight="bold">
                   {fourgraphs.available}
                 </StatNumber>
               </Flex>
@@ -416,20 +420,20 @@ export default function FourGraphs() {
               as="box"
               h={"45px"}
               w={"45px"}
-              bg={iconBlue}
+              bg={"white"}
             >
-              <DocumentIcon h={"24px"} w={"24px"} color={iconBoxInside} />
+              <DocumentIcon h={"24px"} w={"24px"} color={iconBlue} />
             </IconBox>
           </Flex>
-          <Text color="gray.400" fontSize="sm">
-            <Text as="span" color="red.400" fontWeight="bold" fontSize="xl">
+          <Text color="gray.400" fontSize="md">
+            <Text as="span" color="red.400" fontWeight="bold" fontSize="30px">
             {fourgraphs.notavailable} { "  " }
             </Text>
             Not Available
           </Text>
         </Flex>
       </Card>
-      <Card minH="125px">
+      <Card minH="125px" bgGradient='linear(to-bl, #1ab2ff, #80d4ff, #b3e6ff)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"
@@ -440,15 +444,16 @@ export default function FourGraphs() {
           >
             <Stat me="auto">
               <StatLabel
-                fontSize="xs"
-                color="gray.400"
+                fontSize="md"
+                color="white"
                 fontWeight="bold"
                 textTransform="uppercase"
               >
                 Schedule Disposal
               </StatLabel>
               <Flex>
-                <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
+                <StatNumber fontSize="30px" color={textColor} fontWeight="bold">
+                  20
                   {/* {fourgraphs.pullout} */}
                 </StatNumber>
               </Flex>
@@ -458,13 +463,13 @@ export default function FourGraphs() {
               as="box"
               h={"45px"}
               w={"45px"}
-              bg={iconBlue}
+              bg={"white"}
             >
-              <CartIcon h={"24px"} w={"24px"} color={iconBoxInside} />
+              <CartIcon h={"24px"} w={"24px"} color={iconBlue} />
             </IconBox>
           </Flex>
-          <Text color="gray.400" fontSize="sm">
-            <Text as="span" color="red.400" fontWeight="bold" fontSize="xl">
+          <Text color="gray.400" fontSize="md">
+            <Text as="span" color="red.400" fontWeight="bold" fontSize="30px">
             {fourgraphs.forpullout} {"  "}
             </Text>
             Schedule for Pullout

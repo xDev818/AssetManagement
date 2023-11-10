@@ -27,7 +27,7 @@ import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
 import MainPanel from "../components/Layout/MainPanel";
 import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
-import bgAdmin from "assets/img/admin-background.png";
+import bgAdmin from "assets/img/AssetBackground.webp";
 import FourGraphs from "components/FourGraphs/FourGraphs";
 
 
@@ -113,8 +113,8 @@ export default function Dashboard(props) {
   document.documentElement.dir = "ltr";
   // Chakra Color Mode
   return (
-    <Box bg='tomato'>
-      <Box
+    <Box  h='100vh' bgGradient='linear(to-tl, #4db8ff, #80ccff, #ccebff)'>
+      {/* <Box
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         backgroundSize="convert"
@@ -127,7 +127,7 @@ export default function Dashboard(props) {
         bgSize="cover"
         top="0"
         // bg={"#96BFE6"}
-      />
+      /> */}
 
       <Sidebar
         routes={routes}

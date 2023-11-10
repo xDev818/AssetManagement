@@ -2,6 +2,7 @@
 import { BellIcon } from "@chakra-ui/icons";
 // Chakra Imports
 import {
+  Avatar,
   Box,
   Button,
   Flex,
@@ -45,6 +46,7 @@ export default function HeaderLinks(props) {
     const token = window.localStorage.getItem("token");
     const data = jwtDecode(token);
     setUser(data);
+    console.log(data)
   }, []);
   const handleLogout = () => {
     const storage = localStorage;
@@ -56,7 +58,6 @@ export default function HeaderLinks(props) {
   };
 
   useEffect(() => {}, []);
-
   const {
     variant,
     children,
@@ -88,8 +89,19 @@ export default function HeaderLinks(props) {
       {user ? (
         <Flex mr={5} gap={3} alignItems="center">
           <Flex>
-            <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
-            <Text color="white">{user.result[0].Name}</Text>
+             {/* <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />  */}
+            <Avatar
+                          size='md'
+                          name= {user.result[0]?.displayName}
+                          src= {
+                            user.result[0]?.imgFilename
+                          ? 
+                          `http://localhost:5001/image/static/${user.result[0]?.imgFilename}`
+                            
+                          :   <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
+                          }  
+                        />
+            <Text color="red">{user.result[0].Name}</Text>
           </Flex>
           <Button size="sm" onClick={handleLogout}>
             Log Out
@@ -149,7 +161,7 @@ export default function HeaderLinks(props) {
         routes={routes}
         {...rest}
       />
-      <SettingsIcon
+      {/* <SettingsIcon
         cursor="pointer"
         ms={{ base: "16px", xl: "0px" }}
         me="16px"
@@ -157,7 +169,7 @@ export default function HeaderLinks(props) {
         color={navbarIcon}
         w="18px"
         h="18px"
-      />
+      /> */}
       <Menu>
         <MenuButton>
           <BellIcon color={navbarIcon} w="18px" h="18px" />
