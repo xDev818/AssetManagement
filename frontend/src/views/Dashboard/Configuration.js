@@ -17,7 +17,7 @@ export default function Configuration() {
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
-      <FourGraphs />
+      {/* <FourGraphs /> */}
       <Card>
         <Tabs>
           <TabList>

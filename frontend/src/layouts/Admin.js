@@ -152,8 +152,11 @@ export default function Dashboard(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   document.documentElement.dir = "ltr";
   // Chakra Color Mode
+
+  const dashboardBg = 'linear(to-tl, #1a75ff, #80b3ff, #cce0ff)'
+
   return (
-    <Box  h='100vh' bgGradient='linear(to-tl, #ccebff, #ccebff, #ccebff)'>
+    <Box  h='100vh' bgGradient={dashboardBg}>
       {/*
       bgGradient='linear(to-tl, #4db8ff, #80ccff, #ccebff)'
       <Box
@@ -203,11 +206,14 @@ export default function Dashboard(props) {
         }}
       >
         {/* Four Graphs */}
-        <Stack mt={{ base: 140, md: 100 }} px={{ base: 4, md: 7, lg: 10 }}>
+        
+        <Stack mt={{ base: 140, md: 100 }} px={{ base: 4, md: 7, lg: 10 }} >
+       
           { user?.userRole.trim() === "IT Admin" && <FourGraphs /> }
           { user?.userRole.trim() === "IT" && <FourGraphs /> }
           { user?.userRole.trim() === "User" && <FourGraphsUsers /> }
           { user?.userRole.trim() === "Supplier" && <FourGraphsUsers /> }
+
         </Stack>
         <Portal>
           <AdminNavbar

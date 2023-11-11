@@ -96,7 +96,9 @@ function Sidebar(props) {
 
   //  BRAND
   //  Chakra Color Mode
-  let sidebarBg = useColorModeValue("white", "navy.800");
+  let sidebarBg =  '#e6f2ff'
+  const textColor = "#00334d"
+  //'linear(to-bl, #cce0ff,#cce0ff, #cce0ff)'
   let sidebarRadius = "20px";
   let sidebarMargins = "0px";
   var brand = (
@@ -125,9 +127,9 @@ function Sidebar(props) {
     <Box ref={mainPanel}>
       <Box display={{ sm: "none", xl: "block" }} position="fixed">
         <Box
-          // bg={"#5A57FF"}
+           bg={sidebarBg}
           // color="white"
-          bg={sidebarBg}
+          //bgGradient={sidebarBg}
           transition={variantChange}
           w="260px"
           maxW="260px"
@@ -162,16 +164,16 @@ function Sidebar(props) {
             }
           >
             <Box>
-              <Heading fontSize="md" my={"4"} textAlign="center" width="100">
+              <Heading fontSize={'lg'} my={"4"} textAlign="center" width="100" color={textColor} textTransform={"uppercase"}>
                 Asset Management
               </Heading>
             </Box>
             <Divider />
 
             <Stack direction="column" mb="40px" mt={7} px="4">
-              <Text fontWeight="bold" uppercase mb={5}>
+              {/* <Text fontWeight="bold" uppercase mb={5} color={textColor}>
                 ASSETS
-              </Text>
+              </Text> */}
               <Box
                 display="flex"
                 flexDirection="column"
@@ -180,7 +182,14 @@ function Sidebar(props) {
               >
                 <Box display="flex" alignItems="center" gap="5">
                   <HomeIcon />
-                  <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                  <Text
+                  color={textColor}
+                  textTransform={"uppercase"}
+                  >
+                  <NavLink to="/admin/dashboard" >
+                    Dashboard
+                  </NavLink>
+                  </Text>
                 </Box>
                 {/* <Box display="flex" alignItems="center" gap="5">
                   <StatsIcon color="inherit" />
@@ -192,6 +201,8 @@ function Sidebar(props) {
                     cursor="pointer"
                     to="/admin/user"
                     onClick={() => setUserDropdown(!userDropdown)}
+                    color={textColor}
+                    textTransform={"uppercase"}
                   >
                     Activity
                   </Text>
@@ -202,8 +213,16 @@ function Sidebar(props) {
                   <Stack pl={4} gap={4}>
                     {activitySubmenu.map((route, index) => (
                      
+                     
                       <Anchor key={index} to={`/admin${route.path}`}>
+                        <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
                         {route.name}
+                        </Text>
+                        
                        
                       </Anchor>
                      ))}
@@ -216,8 +235,13 @@ function Sidebar(props) {
                     {activitySubmenu.map((route, index) => (
                     
                       <Anchor key={index} to={`/admin${route.path}`}>
+                        <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
                         {route.name}
-                      
+                        </Text>
                       </Anchor>
                     ))}
                   </Stack>
@@ -229,30 +253,59 @@ function Sidebar(props) {
                     {viewUseractivitySubmenu.map((route, index) => (
                     
                       <Anchor key={index} to={`/admin${route.path}`}>
+                        <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
                         {route.name}
-                      
+                        </Text>
                       </Anchor>
                     ))}
                   </Stack>
                 )}
 
-
+              {user?.userRole.trim() === "IT Admin" && (
                 <Box display="flex" alignItems="center" gap="5">
                   <CreditIcon />
                   <Text
                     cursor="pointer"
                     to="/admin/configuration"
                     onClick={() => setConfigDropdown(!configDropdown)}
+                    color={textColor}
+                    textTransform={'uppercase'}
                   >
                     Configuration
                   </Text>
                 </Box>
+              )}
+
+              {user?.userRole.trim() === "IT" && (
+                <Box display="flex" alignItems="center" gap="5">
+                  <CreditIcon />
+                  <Text
+                    cursor="pointer"
+                    to="/admin/configuration"
+                    onClick={() => setConfigDropdown(!configDropdown)}
+                    color={textColor}
+                    textTransform={'uppercase'}
+                  >
+                    Configuration
+                  </Text>
+                </Box>
+              )}
 
                 {user?.userRole.trim() === "IT Admin" && configDropdown && (
                   <Stack pl={4} gap={4}>
                     {configurationSubmenu.map((route, index) => (
                       <Anchor key={index} to={`/admin${route.path}`}>
+                        <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
                         {route.name}
+                        </Text>
                       </Anchor>
                     ))}
                   </Stack>
@@ -262,7 +315,13 @@ function Sidebar(props) {
                   <Stack pl={4} gap={4}>
                     {configurationSubmenu.map((route, index) => (
                       <Anchor key={index} to={`/admin${route.path}`}>
+                        <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
                         {route.name}
+                        </Text>
                       </Anchor>
                     ))}
                   </Stack>
@@ -271,21 +330,49 @@ function Sidebar(props) {
                   <Stack pl={4} gap={4}>
                     {configurationUserSubmenu.map((route, index) => (
                       <Anchor key={index} to={`/admin${route.path}`}>
+                         <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
                         {route?.name ? route?.name : null }
+                        </Text>
                       </Anchor>
                     ))}
                   </Stack>
                 )}
-                <Box display="flex" alignItems="center" gap="5">
-                  <DocumentIcon />
-                  <Text
-                    cursor="pointer"
-                    to="/admin/configuration"
-                    onClick={() => setConfigDropdown(!configDropdown)}
-                  >
-                    Logs
-                  </Text>
-                </Box>
+
+                
+                {user?.userRole.trim() === "IT Admin" && (
+                  <Box display="flex" alignItems="center" gap="5">
+                    <DocumentIcon />
+                    <Text
+                      cursor="pointer"
+                      to="/admin/configuration"
+                      //onClick={() => setConfigDropdown(!configDropdown)}
+                      color={textColor}
+                      textTransform={"uppercase"}
+                    >
+                      Logs
+                    </Text>
+                  </Box>
+                )}
+
+                {user?.userRole.trim() === "IT" && (
+                  <Box display="flex" alignItems="center" gap="5">
+                    <DocumentIcon />
+                    <Text
+                      cursor="pointer"
+                      to="/admin/configuration"
+                      //onClick={() => setConfigDropdown(!configDropdown)}
+                      color={textColor}
+                      textTransform={"uppercase"}
+                    >
+                      Logs
+                    </Text>
+                  </Box>
+                )}
+
               </Box>
             </Stack>
             {/* <SidebarHelp sidebarVariant={sidebarVariant} /> */}
@@ -299,6 +386,9 @@ function Sidebar(props) {
 // FUNCTIONS
 
 export function SidebarResponsive(props) {
+
+
+
   //Dynamic Activity Submenus
   const activitySubmenu = dashRoutes.filter(
     (route) => route.submenu === "activity"
@@ -329,6 +419,30 @@ export function SidebarResponsive(props) {
     "none"
   );
   let sidebarBackgroundColor = useColorModeValue("white", "navy.800");
+
+  const textColor = "#00334d"
+
+  const [user, setUser] = useState({
+    userID: "",
+    userRole: "",
+  });
+
+  //Dynamic Activity Submenus
+  const activitySubmenuAnchors = dashRoutes.filter(
+    (route) => route.submenu === "activity"
+  );
+  const viewUseractivitySubmenu = dashRoutes.filter(
+    (route) => route.view === "User"
+  );
+
+  //Dynamic Configuration Submenus
+  const configurationSubmenuAnchors = dashRoutes.filter(
+    (route) => route.submenu === "configuration"
+  );
+  const configurationUserSubmenu = dashRoutes.filter(
+    (route) => route.submenu === "User"
+  );
+
 
   // this function creates the Anchors and collapses that appear in the sidebar (left menu)
   const createAnchors = (routes) => {
@@ -492,6 +606,22 @@ export function SidebarResponsive(props) {
   const [configDropdown, setConfigDropdown] = useState(false);
   const btnRef = React.useRef();
   // Color variables
+
+  useEffect(() => {
+    try {
+    const token = window.localStorage.getItem("token");
+    const data = jwtDecode(token);
+
+     setUser({...user,
+      userID: data.result[0].userDisplayID,
+      userRole: data.result[0].userRole })
+     
+
+    } catch(err) {
+      alert(err)
+    }
+  }, []);
+
   return (
     <Flex
       display={{ sm: "flex", xl: "none" }}
@@ -530,7 +660,7 @@ export function SidebarResponsive(props) {
           />
           <DrawerBody maxW="250px" px="1rem">
             <Box>
-              <Heading fontSize="md" my={"4"} textAlign="center" width="100">
+              <Heading fontSize="lg" my={"4"} textAlign="center" width="100" color={textColor} textTransform={"uppercase"}>
                 Asset Management
               </Heading>
             </Box>
@@ -547,10 +677,15 @@ export function SidebarResponsive(props) {
                 gap="5"
               >
                 <Box display="flex" alignItems="center" gap="5">
+                <Text
+                  color={textColor}
+                  textTransform={"uppercase"}
+                  >
                   <Link to="/admin/dashboard">
                     <HomeIcon />
                     Dashboard
                   </Link>
+                  </Text>
                 </Box>
                 {/* <Box display="flex" alignItems="center" gap="5">
                   <StatsIcon color="inherit" />
@@ -562,48 +697,214 @@ export function SidebarResponsive(props) {
                     cursor="pointer"
                     to="/admin/user"
                     onClick={() => setUserDropdown(!userDropdown)}
+                    color={textColor}
+                  textTransform={"uppercase"}
                   >
                     Activity
                   </Text>
                 </Box>
-                {userDropdown && (
+
+                {user?.userRole.trim() === "IT Admin" && userDropdown && (
+              
+                    <Stack pl={4} gap={4}>
+                      {activitySubmenuAnchors.map((route, index) => (
+                      
+                      
+                        <Anchor key={index} to={`/admin${route.path}`}>
+                          <Text 
+                          color={textColor}
+                          textTransform={"uppercase"}
+                          fontSize={'sm'}
+                          >
+                          {route.name}
+                          </Text>
+                          
+                        
+                        </Anchor>
+                      ))}
+                    </Stack>
+                  )}
+
+                {user?.userRole.trim() === "IT" && userDropdown && (
+                  
+                  <Stack pl={4} gap={4}>
+                    {activitySubmenuAnchors.map((route, index) => (
+                    
+                    
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
+                        {route.name}
+                        </Text>
+                        
+                      
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+
+                {user?.userRole.trim() === "User" && userDropdown && (
+                  
+                  <Stack pl={4} gap={4}>
+                    {viewUseractivitySubmenu.map((route, index) => (
+                    
+                    
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
+                        {route.name}
+                        </Text>
+                        
+                      
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+
+                {/* {userDropdown && (
                   <Stack pl={4} gap={4}>
                     {activitySubmenu.map((route, index) => (
+                      <Text 
+                      color={textColor}
+                      textTransform={"uppercase"}
+                      >
                       <Anchor key={index} to={`/admin${route.path}`}>
                         {route.name}
                       </Anchor>
+                      </Text>
                     ))}
                   </Stack>
+                )} */}
+
+                {user?.userRole.trim() === "IT Admin" && (
+                  <Box display="flex" alignItems="center" gap="5">
+                    <CreditIcon />
+                    <Text
+                      cursor="pointer"
+                      to="/admin/configuration"
+                      onClick={() => setConfigDropdown(!configDropdown)}
+                      color={textColor}
+                      textTransform={"uppercase"}
+                    >
+                      Configuration
+                    </Text>
+                  </Box>
                 )}
-                <Box display="flex" alignItems="center" gap="5">
-                  <CreditIcon />
-                  <Text
-                    cursor="pointer"
-                    to="/admin/configuration"
-                    onClick={() => setConfigDropdown(!configDropdown)}
-                  >
-                    Configuration
-                  </Text>
-                </Box>
-                {configDropdown && (
+
+                {user?.userRole.trim() === "IT" && (
+                  <Box display="flex" alignItems="center" gap="5">
+                    <CreditIcon />
+                    <Text
+                      cursor="pointer"
+                      to="/admin/configuration"
+                      onClick={() => setConfigDropdown(!configDropdown)}
+                      color={textColor}
+                      textTransform={"uppercase"}
+                    >
+                      Configuration
+                    </Text>
+                  </Box>
+                )}
+
+                {/* {configDropdown && (
                   <Stack pl={4} gap={4}>
                     {configurationSubmenu.map((route, index) => (
+                      <Text 
+                      color={textColor}
+                      textTransform={"uppercase"}
+                      >
                       <Anchor key={index} to={`/admin${route.path}`}>
                         {route.name}
+                      </Anchor>
+                      </Text>
+                    ))}
+                  </Stack>
+                )} */}
+
+                {user?.userRole.trim() === "IT Admin" && configDropdown && (
+                  <Stack pl={4} gap={4}>
+                    {configurationSubmenuAnchors.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                         <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
+                        {route?.name ? route?.name : null }
+                        </Text>
                       </Anchor>
                     ))}
                   </Stack>
                 )}
+
+                {user?.userRole.trim() === "IT" && configDropdown && (
+                  <Stack pl={4} gap={4}>
+                    {configurationSubmenuAnchors.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                         <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
+                        {route?.name ? route?.name : null }
+                        </Text>
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+
+                {user?.userRole.trim() === "User" && configDropdown && (
+                  <Stack pl={4} gap={4}>
+                    {configurationUserSubmenu.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                         <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
+                        {route?.name ? route?.name : null }
+                        </Text>
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+
+              {user?.userRole.trim() === "IT Admin" && (
                 <Box display="flex" alignItems="center" gap="5">
                   <DocumentIcon />
                   <Text
                     cursor="pointer"
                     to="/admin/configuration"
-                    onClick={() => setConfigDropdown(!configDropdown)}
+                    //onClick={() => setConfigDropdown(!configDropdown)}
+                    color={textColor}
+                      textTransform={"uppercase"}
                   >
                     Logs
                   </Text>
                 </Box>
+               )}
+
+                {user?.userRole.trim() === "IT" && (
+                <Box display="flex" alignItems="center" gap="5">
+                  <DocumentIcon />
+                  <Text
+                    cursor="pointer"
+                    to="/admin/configuration"
+                    //onClick={() => setConfigDropdown(!configDropdown)}
+                    color={textColor}
+                      textTransform={"uppercase"}
+                  >
+                    Logs
+                  </Text>
+                </Box>
+               )}
+
               </Box>
             </Stack>
           </DrawerBody>
