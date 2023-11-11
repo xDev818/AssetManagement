@@ -111,7 +111,7 @@ import { getStyle, hexToRgba } from "@coreui/utils";
 
 import randomColor from "randomcolor";
 
-export default function DashboardUsers() {
+export default function DashboardIT() {
 
   const [purchases,setPurchases] = useState([])
   const [deployed,setDeployed] = useState([])
@@ -143,9 +143,7 @@ export default function DashboardUsers() {
   const [decoded, setDecode] = useState();
 
   useEffect(() => {
-    try {
     const storage = localStorage;
-
 
     if (!storage.getItem("token") || !storage.getItem("token").length) {
       window.location.href = "/#/auth/signin";
@@ -159,9 +157,7 @@ export default function DashboardUsers() {
         if (res.data.includes("Token is valid")) {
           const decoding = decoder(token);
           setDecode(decoding);
-          // setUser({...user,
-          //   userID: decoding.result[0].userDisplayID,
-          //   userRole: decoding.result[0].userRole })
+
 
         }
       })
@@ -171,8 +167,8 @@ export default function DashboardUsers() {
         if (errorStatus.includes("ERR_NETWORK")) {
           const verifyLogs = new Logs(
             "DB",
-            "dashboard users",
-            "useEffect /users/verify " + errorStatus,
+            "dashboard IT",
+            "useEffect /users/verify" + errorStatus,
             err,
             ""
           );
@@ -183,7 +179,7 @@ export default function DashboardUsers() {
           //console.log(err);
           const verifyLogs = new Logs(
             "Error",
-            "dashboard user",
+            "dashboard IT",
             "useEffect /users/verify" + errorStatus,
             err.response.data.message,
             ""
@@ -223,11 +219,6 @@ export default function DashboardUsers() {
             });
         }
       });
-    } catch(err) {
-     
-      alert(err)
-      window.location.href = "/#/auth/signin";
-    }
   }, [setDecode]);
 
   // useLayoutEffect(() => {
@@ -519,7 +510,7 @@ export default function DashboardUsers() {
               
                 <Box  justifyItems={"center"}  >
                   <Text fontSize="30px" color={textColorDue} fontWeight="bold" alignContent={"center"}>
-                  OVERVIEW Users
+                  OVERVIEW IT
                   </Text>
               </Box>
 
@@ -600,11 +591,11 @@ export default function DashboardUsers() {
           </GridItem>
           <GridItem pl={"2"}  area={'main'} >
             <SimpleGrid minChildWidth='315px' spacing='20px'>
-            <Card  maxW={{ sm: "315px", md: "100%" }}  >
+            <Card  maxW={{ sm: "315px", md: "100%" }} bgGradient='linear(to-tr, red.500, red.300, pink.100)' >
               <Box  maxW={{ sm: "315px", md: "100%" }}   >
               <Flex direction="column">
                 <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={"blackAlpha.800"} fontWeight="bold">
+                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
                     Depreciated
                   </Text>
                   <Button height={"40px"}>
@@ -616,7 +607,7 @@ export default function DashboardUsers() {
               </Flex>
               <Flex direction="column" >
                 <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={"blackAlpha.800"} fontWeight="bold">
+                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
                     Depreciated this Month
                   </Text>
                   <Button height={"40px"} >
@@ -628,7 +619,7 @@ export default function DashboardUsers() {
               </Flex>
               <Flex direction="column" >
                 <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={"blackAlpha.800"} fontWeight="bold">
+                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
                     Due this Year
                   </Text>
                   <Button height={"40px"} >
@@ -640,7 +631,7 @@ export default function DashboardUsers() {
               </Flex>
               <Flex direction="column" >
                 <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={"blackAlpha.800"} fontWeight="bold">
+                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
                     Due Next Month
                   </Text>
                   <Button height={"40px"} >

@@ -106,6 +106,7 @@ function SignIn() {
   const ButtonRef = useRef();
 
   useEffect(() => {
+    try {
     const storage = localStorage;
 
     if (storage.getItem("token")) {
@@ -113,6 +114,10 @@ function SignIn() {
     } else {
       localStorage.removeItem("token");
     }
+  } catch(err) {
+    alert("no token in user login")
+    alert(err)
+  }
   }, []);
 
   const loginHandler = async () => {

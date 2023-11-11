@@ -49,21 +49,35 @@ export default function HeaderLinks(props) {
   const [user, setUser] = useState();
 
   useEffect(() => {
+    try {
     const token = window.localStorage.getItem("token");
     const data = jwtDecode(token);
     setUser(data);
-    //console.log(data)
-  }, []);
-  const handleLogout = () => {
-    const storage = localStorage;
-    window.localStorage.removeItem("token");
-
-    if (!storage.getItem("token")) {
+    } catch(err) {
+      
+      alert(err)
       window.location.href = "/#/auth/signin";
     }
+  }, []);
+ 
+
+  const handleLogout = () => {
+    try {
+    const storage = localStorage;
+    window.localStorage.removeItem("token");
+    window.location.reload()
+   // window.location.reload()
+    // if (!storage.getItem("token")) {
+    //  //window.location.href = "/#/auth/signin";
+    //  window.location.reload()
+    // }
+  } catch(err) {
+    alert(err)
+  }
+    
   };
 
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
   const {
     variant,
     children,

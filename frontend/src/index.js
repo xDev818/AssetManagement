@@ -40,8 +40,11 @@ import Dummy from "views/Dashboard/Dummy";
 
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:5001/api";
+import jwtDecode from "jwt-decode";
 
 ReactDOM.render(
+
+
   <ChakraProvider theme={theme} resetCss={false} position="relative">
     <HashRouter>
       <Switch>
@@ -54,6 +57,7 @@ ReactDOM.render(
         <Route path={`/admin/assetstatus/:id`} component={AdminLayout} /> */}
         {/* <Route path={`/admin/configuration`} component={Configuration} /> */}
         <Redirect from={`/`} to="/admin/dashboard" />
+        {/* <Redirect from={`/`} to="/admin/dashboardusers" /> */}
       </Switch>
     </HashRouter>
   </ChakraProvider>,

@@ -257,12 +257,27 @@ import {
   RocketIcon,
   SupportIcon,
 } from "components/Icons/Icons";
+import DashboardIT from "views/Dashboard/DashboardIT";
 
 var dashRoutes = [
   {
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+    layout: "/admin",
+  },
+  {
+    
+    path: "/dashboardit",
+    name: "Dashboard IT",
+    component: DashboardIT,
+    layout: "/admin",
+  },
+  {
+    
+    path: "/dashboardusers",
+    name: "Dashboard Users",
+    component: DashboardUsers,
     layout: "/admin",
   },
   // Activity Menu
@@ -279,6 +294,7 @@ var dashRoutes = [
     name: "Update Profile",
     component: UpdateProfile,
     layout: "/admin",
+    view: "User"
   },
   {
     submenu: "activity",
@@ -286,6 +302,7 @@ var dashRoutes = [
     name: "My Assets",
     component: UserAssetsViewer,
     layout: "/admin",
+    view: "User"
   },
   
   {
@@ -294,6 +311,7 @@ var dashRoutes = [
     name: "Pullout Viewer",
     component: PulloutViewer,
     layout: "/admin",
+    
   },
 
   {
@@ -310,6 +328,7 @@ var dashRoutes = [
     name: "Asset",
     component: AssetViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/asset",
@@ -325,6 +344,7 @@ var dashRoutes = [
     name: "Check Out",
     component: ITCheckoutViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     submenu: "activity",
@@ -332,6 +352,7 @@ var dashRoutes = [
     name: "Check In",
     component: UserCheckin_Viewer,
     layout: "/admin",
+    view: "User"
   },
   {
     submenu: "activity",
@@ -339,6 +360,7 @@ var dashRoutes = [
     name: "Pullout",
     component: ITPulloutViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/checkout",
@@ -352,6 +374,7 @@ var dashRoutes = [
     name: "Users",
     component:   UsersViewer,
     layout: "/admin",
+    view: "IT"
   },
 
   // End Activity Menu
@@ -363,6 +386,7 @@ var dashRoutes = [
     name: "Position",
     component: PositionViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/position",
@@ -376,6 +400,7 @@ var dashRoutes = [
     name: "Department",
     component: DepartmentViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/department",
@@ -389,6 +414,7 @@ var dashRoutes = [
     name: "Suppliers",
     component: SuppliersViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/suppliers",
@@ -403,6 +429,7 @@ var dashRoutes = [
     icon: <HomeIcon color="inherit" />,
     component: AssetStatusViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/assetstatus",
@@ -417,6 +444,7 @@ var dashRoutes = [
     icon: <HomeIcon color="inherit" />,
     component: AssetCategoryViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/assetcategory",
@@ -432,6 +460,7 @@ var dashRoutes = [
     icon: <HomeIcon color="inherit" />,
     component: AssetTypeViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/assettype",
@@ -446,6 +475,7 @@ var dashRoutes = [
     icon: <HomeIcon color="inherit" />,
     component: UserGroupViewer,
     layout: "/admin",
+    view: "IT"
   },
   {
     path: "/usergroup",

@@ -74,7 +74,7 @@ import BarChart from "components/Charts/BarChart";
 import { barChartData } from "variables/charts";
 import { barChartOptions } from "variables/charts";
 
-export default function FourGraphs() {
+export default function FourGraphsIT() {
   const iconBlue = useColorModeValue("blue.500", "blue.500");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
@@ -269,7 +269,7 @@ export default function FourGraphs() {
       mb="0"
       display={{ base: "none", md: "grid" }}
     >
-      <Card minH="125px"  bgGradient='linear(to-tr, red.500, red.300, red.100)'>
+      <Card minH="125px"  bgGradient='linear(to-bl, red.500, red.300, red.100)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"
@@ -285,7 +285,7 @@ export default function FourGraphs() {
                 fontWeight="bold"
                 textTransform="uppercase"
               >
-                Assets Amount 
+                Assets Amount for IT 
               
               </StatLabel>
               
@@ -349,7 +349,7 @@ export default function FourGraphs() {
 
         {/* performance */}
       </Card>
-      <Card minH="125px" bgGradient='linear(to-tr, blue, blue.500, blue.100)'>
+      <Card minH="125px" bgGradient='linear(to-bl, blue, blue.500, blue.100)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"
@@ -391,7 +391,7 @@ export default function FourGraphs() {
           </Text>
         </Flex>
       </Card>
-      <Card minH="125px" bgGradient='linear(to-tr, #ffcc00, #ffe066, #fff0b3)'>
+      <Card minH="125px" bgGradient='linear(to-bl, #ffcc00, #ffe066, #fff0b3)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"
@@ -433,7 +433,7 @@ export default function FourGraphs() {
           </Text>
         </Flex>
       </Card>
-      <Card minH="125px" bgGradient='linear(to-tr, #1ab2ff, #80d4ff, #b3e6ff)'>
+      <Card minH="125px" bgGradient='linear(to-bl, #1ab2ff, #80d4ff, #b3e6ff)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"

@@ -117,7 +117,7 @@ const loginUser = ( request, response ) => {
         )
 
         const stmt = "SELECT users.userDisplayID,users.displayName, users.firstname, users.lastname,"
-        + "users.email,users.imgFilename,userCategory.categoryName as userRole,department.departmentDisplayID,"
+        + "users.email,users.imgFilename,TRIM(userCategory.categoryName) as userRole, department.departmentDisplayID,"
         + "department.departmentName,users.positionID,users.groupTypeID, users.isRegister FROM tblUsers users"
         + " inner join tblUserCategory userCategory on users.groupTypeID COLLATE utf8mb4_unicode_ci = userCategory.categoryID"
         + " inner join tblPositions positions on positions.positionDisplayID COLLATE utf8mb4_unicode_ci = users.positionID"

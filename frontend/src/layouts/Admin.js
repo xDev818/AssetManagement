@@ -45,7 +45,7 @@ export default function Dashboard(props) {
     userRole: "",
   });
 
-  const [userGroup,setUserGroup ]= useState(null)
+  const [userGroup,setUserGroup ]= useState(false)
 
   const location = useLocation();
  // console.log("location", location.pathname);
@@ -62,21 +62,21 @@ export default function Dashboard(props) {
 
      setUser({...user,
       userID: data.result[0].userDisplayID,
-      userRole: data.result[0].userRole})
+      userRole: data.result[0].userRole })
      
-      const val = data.result[0].userRole
+      // const val = data.result[0].userRole
 
-      if(data.result[0].userRole === val) {
-        alert(data.result[0].userRole)
-        setUserGroup( "Asset Team")
-      } else {
-        setUserGroup( null)
-      }
+      // if(data.result[0].userRole === val) {
+      //   // alert(data.result[0].userRole)
+      //   setUserGroup( true)
+      // } else {
+      //   setUserGroup( false)
+      // }
    // setUser(data.result);
-    console.log(data.result)
+   // console.log(data.result)
 
     } catch(err) {
-      alert(err)
+      window.location.href = "/#/auth/signin";
     }
   }, []);
 
@@ -153,8 +153,10 @@ export default function Dashboard(props) {
   document.documentElement.dir = "ltr";
   // Chakra Color Mode
   return (
-    <Box  h='100vh' bgGradient='linear(to-tl, #4db8ff, #80ccff, #ccebff)'>
-      {/* <Box
+    <Box  h='100vh' bgGradient='linear(to-tl, #ccebff, #ccebff, #ccebff)'>
+      {/*
+      bgGradient='linear(to-tl, #4db8ff, #80ccff, #ccebff)'
+      <Box
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         backgroundSize="convert"
@@ -173,21 +175,21 @@ export default function Dashboard(props) {
         routes={routes}
         logo={
           <Stack direction="row" spacing="12px" align="center" justify="center">
-            {colorMode === "dark" ? (
+            {/* {colorMode === "dark" ? (
               <ArgonLogoLight w="74px" h="27px" />
             ) : (
               <ArgonLogoDark w="74px" h="27px" />
-            )}
+            )} */}
             <Box
               w="1px"
               h="20px"
-              bg={colorMode === "dark" ? "white" : "gray.700"}
+              bg={ "gray.700"}
             />
-            {colorMode === "dark" ? (
+            {/* {colorMode === "dark" ? (
               <ChakraLogoLight w="82px" h="21px" />
             ) : (
               <ChakraLogoDark w="82px" h="21px" />
-            )}
+            )} */}
           </Stack>
         }
         display="none"
@@ -202,14 +204,10 @@ export default function Dashboard(props) {
       >
         {/* Four Graphs */}
         <Stack mt={{ base: 140, md: 100 }} px={{ base: 4, md: 7, lg: 10 }}>
-        <Text>
-            {user?.userRole}
-          </Text>
-          {/* user?.userRole === "IT Admin" || user?.userRole === "IT" */}
-          { userGroup.length > 0
-            ? <FourGraphs />
-            : <FourGraphsUsers/>
-          }
+          { user?.userRole.trim() === "IT Admin" && <FourGraphs /> }
+          { user?.userRole.trim() === "IT" && <FourGraphs /> }
+          { user?.userRole.trim() === "User" && <FourGraphsUsers /> }
+          { user?.userRole.trim() === "Supplier" && <FourGraphsUsers /> }
         </Stack>
         <Portal>
           <AdminNavbar
@@ -225,7 +223,12 @@ export default function Dashboard(props) {
             <PanelContainer>
               <Switch>
                 {getRoutes(routes)}
-                <Redirect from="/admin" to="/admin/dashboard" />
+                  {/* <Redirect from="/admin" to="/admin/dashboard" />  */}
+                {/* { user?.userRole.trim() === "IT Admin" && <Redirect from="/admin" to="/admin/dashboardit" /> }
+                { user?.userRole.trim() === "IT" && <Redirect from="/admin" to="/admin/dashboardit" /> }
+                { user?.userRole.trim() === "User" && <Redirect from="/admin" to="/admin/dashboardusers" /> } */}
+                 <Redirect from="/admin" to="/admin/dashboardusers" />
+                
               </Switch>
              
             </PanelContainer>

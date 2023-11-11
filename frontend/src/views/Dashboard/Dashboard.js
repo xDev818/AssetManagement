@@ -110,39 +110,22 @@ import {
 import { getStyle, hexToRgba } from "@coreui/utils";
 
 import randomColor from "randomcolor";
+import DashboardIT from "./DashboardIT";
+import DashboardUsers from "./DashboardUsers";
 
 export default function Dashboard() {
 
-  const [purchases,setPurchases] = useState([])
-  const [deployed,setDeployed] = useState([])
-  const [loginfo,setLogInfo] = useState([])
-  const [assetmovement,setMovement] = useState([])
-  const [assetDept,setAssetDept] = useState([])
-  const [assetstatus,setStatus] = useState([])
-  const [assettype,setType] = useState([])
-  const [category,setCategory] = useState([])
-  const [condition,setCondition] = useState([])
-  const [location,setLocation] = useState([])
-
-  const [values,setPrevYear] = useState({
-    prevyear: ""
-  })
-
-  // Chakra Color Mode
-  const iconBlue = useColorModeValue("blue.500", "blue.500");
-  const iconBoxInside = useColorModeValue("white", "white");
-  const textColorDue = useColorModeValue("white", "white");
-  const textColor = useColorModeValue("gray.700", "white");
-  const tableRowColor = useColorModeValue("#F7FAFC", "navy.900");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-  const textTableColor = useColorModeValue("gray.500", "white");
-
-  const { colorMode } = useColorMode();
-
   // Jinshin
   const [decoded, setDecode] = useState();
+  const [user, setUser] = useState({
+    userID: "",
+    userRole: "",
+  });
+
 
   useEffect(() => {
+
+    try {
     const storage = localStorage;
 
     if (!storage.getItem("token") || !storage.getItem("token").length) {
@@ -157,6 +140,11 @@ export default function Dashboard() {
         if (res.data.includes("Token is valid")) {
           const decoding = decoder(token);
           setDecode(decoding);
+          setUser({...user,
+            userID: decoding.result[0].userDisplayID,
+            userRole: decoding.result[0].userRole })
+
+         
         }
       })
       .catch((err) => {
@@ -166,7 +154,7 @@ export default function Dashboard() {
           const verifyLogs = new Logs(
             "DB",
             "dashboard",
-            "useEffect /users/verify",
+            "useEffect /users/verify" + errorStatus,
             err,
             ""
           );
@@ -177,8 +165,8 @@ export default function Dashboard() {
           //console.log(err);
           const verifyLogs = new Logs(
             "Error",
-            "dashboard",
-            "useEffect /users/verify",
+            "dashboard--",
+            "useEffect /users/verify" + errorStatus,
             err.response.data.message,
             ""
           );
@@ -217,6 +205,9 @@ export default function Dashboard() {
             });
         }
       });
+    } catch(err) {
+      alert(err)
+    }
   }, [setDecode]);
 
   // useLayoutEffect(() => {
@@ -224,697 +215,38 @@ export default function Dashboard() {
   // });
   // // End Jinshin
 
-  useEffect( async() => {
+  // useEffect( async() => {
 
+  
+  //   try {
+  
+  //     const tokenStorage = localStorage.getItem("token");
+      
+ 
+  //     if (!storage.getItem("token") || !storage.getItem("token").length) {
+  //           window.location.href = "/#/auth/signin";
+  //     } else {
+  //       const tokenDecoded = decoder(tokenStorage);
+  //       setUser({...user,
+  //         userID: tokenDecoded.result[0].userDisplayID,
+  //         userRole: tokenDecoded.result[0].userRole })
+  
+  //     }
 
-    var amount_prevYear = "";
-    var userid = ""
+      
+  //   } catch(err) {
+  //     alert("dashboard")
+  //   }
   
-    try {
-  
-      const tokenStorage = localStorage.getItem("token");
-      const tokenDecoded = decoder(tokenStorage);
-      userid = tokenDecoded.result[0].userDisplayID;
-  
-      const PrevYearAmount = await axios.get("/dashboard/asset-acquired-PrevYear")
-  
-      .then((res) => {
-        amount_prevYear = res.data.result[0].Amount;
-        
-        setPrevYear({...values,
-          prevyear: amount_prevYear})
-      })
-      .catch((err) => {
-        const InsertLogs = new Logs(
-          "Error",
-          "Dashboard",
-          "Function /dashboard/asset-acquired-PrevYear",
-          "useEffect ( Asset Acquired )",
-          userid
-        );
-      });
-  
-      /* 
-        Acquired Current Year Assets
-      */
-  
-         const CurrentYearAcuired = await axios.get("/dashboard/asset-acquired-CurrentYear")
-  
-        .then((res) => {
-          
-          setPurchases(res.data.result[0])
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-acquired-PrevYear",
-            "useEffect ( Asset Acquired )",
-            userid
-          );
-        });
-  
-
-      /* 
-        Asset Deploy
-      */
-        const assetDeploy = await axios.get("/dashboard/asset-deploy")
-  
-        .then((res) => {
-          //console.log(res.data.result)
-          setDeployed(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-deploy",
-            "useEffect ( Asset Deployed )",
-            userid
-          );
-        });
-
-        /*
-        Log Info 
-        */
-        const successLogInfo = await axios.get("/dashboard/loginfo")
-  
-        .then((res) => {
-          setLogInfo(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/loginfo",
-            "useEffect ( Get All LogInfo)",
-            userid
-          );
-        });
-
-        /*
-        Asset Movement
-        */
-        const successAssetMovement = await axios.get("/dashboard/asset-movement")
-  
-        .then((res) => {
-          setMovement(res.data.result[0])
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-movement",
-            "useEffect ( Get All Asset Movement)",
-            userid
-          );
-        });
-
-        /*
-        Asset Per Department
-        */ 
-        const successAssetPerDept = await axios.get("/dashboard/asset-perDept")
-  
-        .then((res) => {
-          setAssetDept(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-perDept",
-            "useEffect ( Get All Asset Per Dept)",
-            userid
-          );
-        });
-        
-        
-        /*
-        Asset Status
-        */ 
-        const successStatus = await axios.get("/dashboard/asset-Status")
-  
-        .then((res) => {
-          setStatus(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Status",
-            "useEffect ( Get All Asset Status)",
-            userid
-          );
-        });
-
-        /*
-        Asset Type
-        */ 
-        const succesType = await axios.get("/dashboard/asset-Type")
-  
-        .then((res) => {
-          setType(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Type",
-            "useEffect ( Get All Asset Type)",
-            userid
-          );
-        });
-
- /*
-        Asset CATEGORY
-        */ 
-        const succesCategory = await axios.get("/dashboard/asset-Category")
-  
-        .then((res) => {
-          setCategory(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Category",
-            "useEffect ( Get All Asset Category)",
-            userid
-          );
-        });
-
-        /*
-        Asset Condition
-        */ 
-        const succesCondition = await axios.get("/dashboard/asset-Condition")
-  
-        .then((res) => {
-          setCondition(res.data.result[0])
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Condition",
-            "useEffect ( Get All Asset Condition)",
-            userid
-          );
-        });
-
-      /*
-        Asset Locations
-        */ 
-        const succesLocations = await axios.get("/dashboard/asset-Locations")
-       // console.log(succesLocations)
-        const response = await succesLocations.data;
-        //alert(response.message)
-       
-        if (response.message.includes("Records Found")) { 
-          setLocation(response.result[0])
-
-        } else {
-          setLocation([])
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Locations",
-            "useEffect ( Get All Asset Locations)",
-            userid
-          );
-
-          InsertLogs.getLogs();
-          InsertLogs.insertLogs( InsertLogs.getLogs() )
-        }
-
-    } catch(err) {
-      const errorStatus = err.code;
-      //alert(errorStatus)
-      if (errorStatus.includes("ERR_NETWORK")) {
-        const useEffectLogs = new Logs(
-          "Error",
-          "Dashboard",
-          "Function /dashboard/asset-Locations",
-          err,
-          userid
-        );
-
-        useEffectLogs.getLogs();
-        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
-        
-      }
-
-      if (errorStatus.includes("ERR_BAD_REQUEST")) {
-        const useEffectLogs = new Logs(
-          "Error",
-          "Dashboard",
-          "Function /dashboard/asset-Locations",
-          err.response.data.message,
-          userid
-        );
-        useEffectLogs.getLogs();
-        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
-
-      }
-
-    }
-  
-  }, [])
+  // }, [])
 
   return (
 <>
-        <Grid
-        
-          templateAreas={`"header header"
-                          "nav main"
-                          "nav footer"`}
-          gridTemplateRows={'50px 1fr 30px'}
-          gridTemplateColumns={'315px 1fr'}
-          h='200px'
-          gap='5'
-          color='blackAlpha.700'
-          fontWeight='bold'
-        >
-          <GridItem pl={"2"} area={'header'} height={"50px"} bgGradient='linear(to-r, red.500, pink.300, pink.100)'>
-          <center alignContent={"center"} justifyContent={"space-between"}>
-              
-                <Box  justifyItems={"center"}  >
-                  <Text fontSize="30px" color={textColorDue} fontWeight="bold" alignContent={"center"}>
-                  OVERVIEW
-                  </Text>
-              </Box>
 
-              
-              </center>
-          </GridItem>
-          <GridItem pl={"2"} area={'nav'}  width={"315px"}>
-          <Card   height="890px" bg="white"    >
-            
-            <Flex direction="column">
-              <Flex align="center" justify="space-between" p="5px">
-                <Text fontSize="lg" color={textColor} fontWeight="bold">
-                  Recent Activity
-                </Text>
-                <Button variant="primary" maxH="30px">
-                  SEE ALL
-                </Button>
-              </Flex>
-            </Flex>
-          
-          <Box  overflowY={"scroll"} >
-
-          
-              <TableContainer  >
-                <Table >
-                  <Thead >
-                    <Tr >
-                      <Th>User</Th>
-                      <Th>Dept</Th>
-                      <Th>Info</Th>
-                      {/* <Th>Date</Th> */}
-                      <Th>Module</Th>
-                      <Th>Desc</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {loginfo.map((log) => (
-
-                    <Tr key={log.logID}>
-                      <Td > 
-                        <Avatar
-                          size='sm'
-                          name= {log.displayName}
-                          src= {
-                            log?.ImageFile
-                          ? 
-                          `http://localhost:5001/image/static/${log?.ImageFile}`
-                            
-                          :  imgDefault
-                          }  
-                        />
-                        {/* {log.DisplayName} */}
-                      </Td>
-                      <Td>
-                      {log.Department}
-                      </Td>
-                      <Td>
-                      {log.logtype}
-                      </Td>
-                      {/* <Td >
-                        {log.dateatecreated}
-                      </Td> */}
-                      <Td>
-                        {log.module}
-                      </Td>
-                      <Td>
-                        {log.logfunction}
-                      </Td>
-                    </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-          </Box>
-            
-          
-          </Card> 
-          </GridItem>
-          <GridItem pl={"2"}  area={'main'} >
-            <SimpleGrid minChildWidth='315px' spacing='20px'>
-            <Card  maxW={{ sm: "315px", md: "100%" }} bgGradient='linear(to-tr, red.500, red.300, pink.100)' >
-              <Box  maxW={{ sm: "315px", md: "100%" }}   >
-              <Flex direction="column">
-                <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
-                    Depreciated
-                  </Text>
-                  <Button height={"40px"}>
-                    <Text  fontSize="20px" color={'red'} fontWeight="bold">
-                      200
-                    </Text>
-                  </Button>
-                </Flex>
-              </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
-                    Depreciated this Month
-                  </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
-                      25
-                    </Text>
-                  </Button>
-                </Flex>
-              </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
-                    Due this Year
-                  </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
-                      1500
-                    </Text>
-                  </Button>
-                </Flex>
-              </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={textColorDue} fontWeight="bold">
-                    Due Next Month
-                  </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
-                      3000
-                    </Text>
-                  </Button>
-                </Flex>
-              </Flex>
-              </Box>
-            </Card>
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
-            
-            <Flex direction="column">
-              <Flex align="center" justify="space-between" p="10px">
-                <Text fontSize="lg" color={textColor} fontWeight="bold">
-                  Asset Movement
-                </Text>
-                <Button variant="primary" maxH="30px">
-                  SEE ALL
-                </Button>
-              </Flex>
-            </Flex>
-            <CChartBar
-                data={{
-                          labels: assetmovement?.map(
-                            (status) => 
-                            status.Movement
-                          ),
-                          datasets: [
-                            {
-                              label: "Movement ",
-                              backgroundColor: ["yellow","blue","red","tomato"],
-                              // assetmovement?.map((status) =>
-                              //   randomColor()
-                              //),
-                              
-                              data: [354,2416,2875,506],
-                              // assetmovement?.map(
-                              //   (asset) => asset.total
-                              // ),
-                            },
-                          ],
-                        }}
-                        // labels="Movement"
-            />
-        
-              </Card>
-              
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
-                <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
-                      Asset Per Department
-                      </Text>
-                      <Button variant="primary" maxH="30px">
-                        SEE ALL
-                      </Button>
-                    </Flex>
-                </Flex>
-                <CChartBar
-                    data={{
-                              labels: assetDept?.map(
-                                (dept) => dept.shortName
-                              ),
-                              datasets: [
-                                {
-                                  label: "Departmnt ",
-                                  backgroundColor: ["yellow","blue","red","tomato","orange"],
-                                  // assetmovement?.map((status) =>
-                                  //   randomColor()
-                                  //),
-                                  
-                                  data: [502,2416,2875,506,300,675,764,496],
-                                  // assetDept?.map(
-                                  //   (asset) => asset.assetdept
-                                  // ),
-                                },
-                              ],
-                            }}
-                            labels="Departmnt"
-                />
-              
-              </Card>
-
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
-                <Flex direction="column">
-                      <Flex align="center" justify="space-between" p="10px">
-                        <Text fontSize="lg" color={textColor} fontWeight="bold">
-                        Asset Status
-                        </Text>
-                        <Button variant="primary" maxH="30px">
-                          SEE ALL
-                        </Button>
-                      </Flex>
-                </Flex>
-                  <CChartBar
-                      data={{
-                                labels:
-                                 assetstatus?.map(
-                                  (stat) => stat.statusName
-                                ),
-                                datasets: [
-                                  {
-                                    label: "Status ",
-                                    backgroundColor: 
-                                    ["yellow","blue","red","tomato","orange"],
-                                    // assetmovement?.map((status) =>
-                                    //   randomColor()
-                                    // ),
-                                    
-                                    data:
-                                    // [502,2416,2875,506,300,675,764,496],
-                                    assetstatus?.map(
-                                      (stat) => stat.CntStatus
-                                    ),
-                                  },
-                                ],
-                              }}
-                              labels="Departmnt"
-                  />
-              </Card>
-
-              <Card   maxW={{ sm: "315px", md: "100%" }} >
-              <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
-                      Asset Category
-                      </Text>
-                      <Button variant="primary" maxH="30px">
-                        SEE ALL
-                      </Button>
-                    </Flex>
-              </Flex>
-              <CChartBar
-                    data={{
-                              labels: category?.map(
-                                (stat) => stat.Category
-                              ),
-                              datasets: [
-                                {
-                                  label: "Status ",
-                                  backgroundColor: 
-                                  ["yellow","blue","red","tomato","orange"],
-                                  // category?.map((categ) =>
-                                  //   randomColor()
-                                  // ),
-                                  
-                                  data:
-                                  // [502,2416,2875,506,300,675,764,496],
-                                  category?.map(
-                                    (categ) => categ.Current
-                                  ),
-                                },
-                              ],
-                            }}
-                            labels="Departmnt"
-                />
-              </Card>
-
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
-              <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
-                      Asset Deployed
-                      </Text>
-                      <Button variant="primary" maxH="30px">
-                        SEE ALL
-                      </Button>
-                    </Flex>
-                </Flex>
-                <CChartBar
-                  data={{
-                            labels: deployed?.map(
-                              (dept) => dept.shortName
-                            ),
-                            datasets: [
-                              {
-                                label: "Asset Deployed",
-                                backgroundColor: ["blue","tomato","turquoise","green","violet","pink"],
-                                
-                                //'#f87979',
-                                data: deployed?.map(
-                                  (asset) => asset.Count
-                                ),
-                              },
-                            ],
-                          }}
-                          labels="departmentName"
-                />
-
-              </Card>
-
-            </SimpleGrid>
-          </GridItem>
-
-          <GridItem  pl={"2"} area={'footer'} height={"250px"}     >
-            <SimpleGrid minChildWidth='315px' spacing='20px'>
-              <Card height={"300px"}   >
-                    <TableContainer  overflowY="auto" >
-                      <Table >
-                        <Thead position="sticky" >
-                          <Tr >
-                            <Th>Status</Th>
-                            <Th>Total</Th>
-                            <Th>Percentage</Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {condition.map((conditions) => (
-
-                          <Tr key={conditions.conditionID}>
-                            <Td>
-                            {conditions.ConditionName}
-                            </Td>
-                            <Td>
-                              {conditions.Count_Condition}
-                            </Td>
-                            <Td>
-                            <Flex align="center">
-                                <Text
-                                  color={conditions.colorscheme}
-                                  fontWeight="bold"
-                                  fontSize="sm"
-                                  me="12px"
-                                > {`${conditions.Count_Percentage}%`}</Text>
-                                <Progress
-                                  size="xs"
-                                  colorScheme={conditions.colorscheme}
-                                  value={conditions.Count_Percentage}
-                                  minW="120px"
-                                />
-                              </Flex>
-
-                              
-                            </Td>
-                          </Tr>
-                          ))}
-                        </Tbody>
-                      </Table>
-                    </TableContainer>
-              </Card>
-              <Card  height={"300px"} >
-                  <TableContainer overflowY="auto" >
-                    <Table >
-                      <Thead >
-                        <Tr >
-                          <Th>Locations</Th>
-                          <Th>Count</Th>
-                          <Th>Percentage</Th>
-                          <Th>Quota</Th>
-                          
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {location.map((loc) => (
-
-                        <Tr key={loc.LocationID}>
-                          
-                          <Td>
-                            {loc.LocationName}
-                          </Td>
-                          <Td>
-                            {loc.Count_Location}
-                          </Td>
-                          <Td>
-                          <CircularProgress value={loc.Count_Percentage} color={loc.colorscheme}>
-                            <CircularProgressLabel> 
-                            {`${loc.Count_Percentage}%`}
-                            </CircularProgressLabel>
-                          </CircularProgress>
-                            {}
-                          </Td>
-                          <Td>
-                          {loc.Quota}
-                          </Td>
-                        </Tr>
-                        ))}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
-                </Card>
-            </SimpleGrid>
-          </GridItem>
-        </Grid>
+      { user?.userRole.trim() === "IT Admin" && <DashboardIT /> }
+      { user?.userRole.trim() === "IT" && <DashboardIT /> }
+      { user?.userRole.trim() === "User" && <DashboardUsers /> }
+      { user?.userRole.trim() === "Supplier" && <DashboardUsers /> }
 
         </>
    

@@ -31,8 +31,8 @@ import {
 } from "components/Scrollbar/Scrollbar";
 import { HSeparator } from "components/Separator/Separator";
 import { SidebarHelp } from "components/Sidebar/SidebarHelp";
-import React from "react";
-import { useState } from "react";
+
+
 import { Scrollbars } from "react-custom-scrollbars";
 import { NavLink, useLocation, Link as Anchor } from "react-router-dom";
 import {
@@ -47,8 +47,18 @@ import {
 
 import dashRoutes from "routes";
 
+import jwtDecode from "jwt-decode";
+import React from "react";
+import { useState,useEffect } from "react";
+
 // FUNCTIONS
 function Sidebar(props) {
+
+  const [user, setUser] = useState({
+    userID: "",
+    userRole: "",
+  });
+
   const [userDropdown, setUserDropdown] = useState(false);
   const [configDropdown, setConfigDropdown] = useState(false);
 
@@ -56,11 +66,18 @@ function Sidebar(props) {
   const activitySubmenu = dashRoutes.filter(
     (route) => route.submenu === "activity"
   );
+  const viewUseractivitySubmenu = dashRoutes.filter(
+    (route) => route.view === "User"
+  );
 
   //Dynamic Configuration Submenus
   const configurationSubmenu = dashRoutes.filter(
     (route) => route.submenu === "configuration"
   );
+  const configurationUserSubmenu = dashRoutes.filter(
+    (route) => route.submenu === "User"
+  );
+
 
   // to check for active Anchors and opened collapses
   let location = useLocation();
@@ -87,6 +104,21 @@ function Sidebar(props) {
       <HSeparator my="26px" />
     </Box>
   );
+
+  useEffect(() => {
+    try {
+    const token = window.localStorage.getItem("token");
+    const data = jwtDecode(token);
+
+     setUser({...user,
+      userID: data.result[0].userDisplayID,
+      userRole: data.result[0].userRole })
+     
+
+    } catch(err) {
+      alert(err)
+    }
+  }, []);
 
   // SIDEBAR
   return (
@@ -164,15 +196,47 @@ function Sidebar(props) {
                     Activity
                   </Text>
                 </Box>
-                {userDropdown && (
+
+                {user?.userRole.trim() === "IT Admin" && userDropdown && (
+              
                   <Stack pl={4} gap={4}>
                     {activitySubmenu.map((route, index) => (
+                     
                       <Anchor key={index} to={`/admin${route.path}`}>
                         {route.name}
+                       
+                      </Anchor>
+                     ))}
+                  </Stack>
+                )}
+
+                {user?.userRole.trim() === "IT" && userDropdown && (
+              
+                  <Stack pl={4} gap={4}>
+                    {activitySubmenu.map((route, index) => (
+                    
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        {route.name}
+                      
                       </Anchor>
                     ))}
                   </Stack>
                 )}
+
+                {user?.userRole.trim() === "User" && userDropdown && (
+              
+                  <Stack pl={4} gap={4}>
+                    {viewUseractivitySubmenu.map((route, index) => (
+                    
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        {route.name}
+                      
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+
+
                 <Box display="flex" alignItems="center" gap="5">
                   <CreditIcon />
                   <Text
@@ -183,11 +247,31 @@ function Sidebar(props) {
                     Configuration
                   </Text>
                 </Box>
-                {configDropdown && (
+
+                {user?.userRole.trim() === "IT Admin" && configDropdown && (
                   <Stack pl={4} gap={4}>
                     {configurationSubmenu.map((route, index) => (
                       <Anchor key={index} to={`/admin${route.path}`}>
                         {route.name}
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+
+                {user?.userRole.trim() === "IT" && configDropdown && (
+                  <Stack pl={4} gap={4}>
+                    {configurationSubmenu.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        {route.name}
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+                {user?.userRole.trim() === "User" && configDropdown && (
+                  <Stack pl={4} gap={4}>
+                    {configurationUserSubmenu.map((route, index) => (
+                      <Anchor key={index} to={`/admin${route.path}`}>
+                        {route?.name ? route?.name : null }
                       </Anchor>
                     ))}
                   </Stack>
