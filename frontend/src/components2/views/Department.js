@@ -43,6 +43,9 @@ const Department = () => {
   // const location = useLocation();
   // const departmentID = location.state?.departmentID;
 
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   const [btnstate, setbtnState] = useState("Save");
 
   const [values, setDepartments] = useState({
@@ -228,7 +231,8 @@ const Department = () => {
   return (
     <Stack>
       <FormControl>
-        <Card>
+        <Card bg={graphCardBg}>
+          <Card bg={'white'}>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Department Name </FormLabel>
             <Input
@@ -265,6 +269,7 @@ const Department = () => {
               {btnstate}
             </Button>
           </Box>
+          </Card>
         </Card>
       </FormControl>
     </Stack>

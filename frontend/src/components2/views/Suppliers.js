@@ -44,6 +44,9 @@ import {
   
   export default function Suppliers () {
 
+    const graphCardBg = '#e6f2ff'
+    const textColor = "#00334d"
+
     var userID =''
     const [values,setSupplier] = useState({
       supplierid:'',
@@ -276,17 +279,18 @@ import {
 
         <Stack>
           <FormControl>
-          <Card>
-            <Grid templateColumns="repeat(6, 1fr)" gap={0}>
+          <Card bg={graphCardBg}>
+            <Card bg={'white'}>
+            <Grid templateColumns="repeat(6, 1fr)" gap={1}>
               <GridItem>
                 <FormLabel fontSize={{ base: "sm" }}>Vendor Name:  </FormLabel>
               </GridItem>
               <GridItem>
-              <Input id='suppliername' label="Supplier name" placeholder="Supplier Name" 
-              value={values.suppliername}
-              onChange={ e => {
-                setSupplier( { ...values, suppliername: e.target.value } )}}
-              />    
+                <Input id='suppliername' label="Supplier name" placeholder="Supplier Name" 
+                value={values.suppliername}
+                onChange={ e => {
+                  setSupplier( { ...values, suppliername: e.target.value } )}}
+                />    
               </GridItem>
             </Grid>
             
@@ -325,6 +329,7 @@ import {
 
             </Button>
           </Box>
+          </Card>
           </Card>
           </FormControl>
         </Stack>

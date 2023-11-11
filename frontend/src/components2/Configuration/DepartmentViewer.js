@@ -53,6 +53,10 @@ import Card from "components/Card/Card";
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function DepartmentViewer() {
+
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   var userID = "";
 
   const [departments, setDepartments] = useState([]);
@@ -144,7 +148,7 @@ export default function DepartmentViewer() {
 
   return (
     <Box px={3}>
-      <Card position="relative">
+      <Card position="relative" bg={graphCardBg}>
         <TableContainer>
           <DataTable
             dataGrid={departments}

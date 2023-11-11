@@ -49,6 +49,10 @@ import Card from "components/Card/Card";
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function AssetTypeViewer() {
+
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   const [userdata, setUser] = useState({
     userID: "",
   });
@@ -158,7 +162,8 @@ export default function AssetTypeViewer() {
   return (
     <>
       <Stack>
-        <Card>
+        <Card bg={graphCardBg}>
+          <Card bg={'white'}>
           <TableContainer>
             <DataTable
               dataGrid={assettype}
@@ -170,6 +175,7 @@ export default function AssetTypeViewer() {
               idType={"id"}
             />
           </TableContainer>
+        </Card>
         </Card>
       </Stack>
     </>

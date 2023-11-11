@@ -53,6 +53,9 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function Asset() {
   //Nole
 
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   const toast = useToast()
 
   var imgFilename = "";
@@ -386,7 +389,9 @@ export default function Asset() {
       <Card
         w={{ base: "auto", md: "auto", lg: "auto" }}
         mx={{ base: 0, md: 0, lg: 3 }}
+        bg={graphCardBg}
       >
+        <Card bg={'white'}>
         <Text fontWeight="bold" mb={5}>
           Asset
         </Text>
@@ -611,6 +616,7 @@ export default function Asset() {
             </Box>
           </Stack>
         </FormControl>
+        </Card>
       </Card>
     </>
   );

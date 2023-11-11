@@ -66,6 +66,10 @@ import Card from "components/Card/Card";
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function AssetCategoryViewer() {
+
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   var userID = "";
 
   const [categories, setCategories] = useState([]);
@@ -163,7 +167,8 @@ export default function AssetCategoryViewer() {
   return (
     <>
       <Stack>
-        <Card position="relative">
+        <Card position="relative" bg={graphCardBg}>
+          <Card bg={'white'}>
           <TableContainer>
             {/*   to={{
                   pathname: "/admin/assetcategory",
@@ -180,6 +185,7 @@ export default function AssetCategoryViewer() {
               idType={"id"}
             />
           </TableContainer>
+        </Card>
         </Card>
       </Stack>
     </>

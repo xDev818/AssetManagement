@@ -43,6 +43,9 @@ import {
   
   export default function AssetCategory () {
 
+    const graphCardBg = '#e6f2ff'
+    const textColor = "#00334d"
+
     const [values,setCaegory] = useState({
       asset_categoryid:'',
       asset_categoryname:'',
@@ -255,8 +258,9 @@ import {
     return (
 
         <Stack>
+          <Card bg={graphCardBg}>
           <FormControl>
-          <Card>
+          <Card bg={'white'}>
             <Box>
               <FormLabel fontSize={{ base: "sm" }}>Status Name:  </FormLabel>
               <Input id='asset_categoryname' label="Asset Category name" placeholder="Asset Category Name" 
@@ -286,6 +290,7 @@ import {
           </Box>
           </Card>
           </FormControl>
+          </Card>
         </Stack>
       
     );

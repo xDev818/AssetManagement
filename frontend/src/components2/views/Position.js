@@ -50,6 +50,10 @@ import { useParams } from "react-router-dom";
 
 export default function Position() {
   
+
+  const textColor = "#00334d"
+  const graphCardBg = '#e6f2ff'
+
   // const { id } = useParams();
   // console.log("poid", id);
   var userID = "";
@@ -276,8 +280,9 @@ export default function Position() {
     <Stack>
       <FormControl>
         
-        <Card>
-          <Box>
+        <Card bg={graphCardBg}>
+          <Card bg={'white'}>
+          <Box >
             <Select
               placeholder="Select option"
               size="md"
@@ -327,6 +332,7 @@ export default function Position() {
               {btnstate}
             </Button>
           </Box>
+          </Card>
         </Card>
       </FormControl>
     </Stack>

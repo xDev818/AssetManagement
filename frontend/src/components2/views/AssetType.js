@@ -44,6 +44,9 @@ import {
   
   export default function AssetType () {
 
+    const graphCardBg = '#e6f2ff'
+    const textColor = "#00334d"
+
     const [userdata,setUser] = useState({
         userID : ''
       });
@@ -302,8 +305,10 @@ import {
     return (
 
         <Stack>
+          <Card bg={graphCardBg}>
+          <Card bg={'white'}>
           <FormControl>
-          <Card>
+          
           <Box>
             <Select id= 'asset_categoryid' placeholder='Select option' size='md'
              onChange={ e => {
@@ -348,8 +353,10 @@ import {
 
             </Button>
           </Box>
-          </Card>
+          
           </FormControl>
+          </Card>
+          </Card>
         </Stack>
       
     );

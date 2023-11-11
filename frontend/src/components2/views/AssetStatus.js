@@ -51,6 +51,9 @@ import {
   
   export default function AssetStatus () {
 
+    const graphCardBg = '#e6f2ff'
+    const textColor = "#00334d"
+
     const [values,setStatus] = useState({
       statusid:'',
       statusname:'',
@@ -261,8 +264,10 @@ import {
     return (
 
         <Stack>
+          <Card bg={graphCardBg}>
           <FormControl>
-          <Card>
+          <Card bg={'white'}>
+            
             <Box>
               <FormLabel fontSize={{ base: "sm" }}>Status Name:  </FormLabel>
               <Input id='statusname' label="Status name" placeholder="Status Name" 
@@ -292,6 +297,7 @@ import {
           </Box>
           </Card>
           </FormControl>
+          </Card>
         </Stack>
       
     );

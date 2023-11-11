@@ -35,9 +35,11 @@
 
 // Chakra imports
 import {
+  AbsoluteCenter,
   Avatar,
   Box,
   Button,
+  Center,
   CircularProgress,
   CircularProgressLabel,
   Flex,
@@ -110,6 +112,7 @@ import {
 import { getStyle, hexToRgba } from "@coreui/utils";
 
 import randomColor from "randomcolor";
+import { useStepContext } from "@mui/material";
 
 export default function DashboardUsers() {
 
@@ -123,6 +126,7 @@ export default function DashboardUsers() {
   const [category,setCategory] = useState([])
   const [condition,setCondition] = useState([])
   const [location,setLocation] = useState([])
+  const [month,setMonth] = useState("")
 
   const [values,setPrevYear] = useState({
     prevyear: ""
@@ -132,7 +136,6 @@ export default function DashboardUsers() {
   const iconBlue = useColorModeValue("blue.500", "blue.500");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColorDue = useColorModeValue("white", "white");
-  const textColor = useColorModeValue("gray.700", "white");
   const tableRowColor = useColorModeValue("#F7FAFC", "navy.900");
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const textTableColor = useColorModeValue("gray.500", "white");
@@ -143,9 +146,7 @@ export default function DashboardUsers() {
   const [decoded, setDecode] = useState();
 
   useEffect(() => {
-    try {
     const storage = localStorage;
-
 
     if (!storage.getItem("token") || !storage.getItem("token").length) {
       window.location.href = "/#/auth/signin";
@@ -159,9 +160,7 @@ export default function DashboardUsers() {
         if (res.data.includes("Token is valid")) {
           const decoding = decoder(token);
           setDecode(decoding);
-          // setUser({...user,
-          //   userID: decoding.result[0].userDisplayID,
-          //   userRole: decoding.result[0].userRole })
+
 
         }
       })
@@ -171,8 +170,8 @@ export default function DashboardUsers() {
         if (errorStatus.includes("ERR_NETWORK")) {
           const verifyLogs = new Logs(
             "DB",
-            "dashboard users",
-            "useEffect /users/verify " + errorStatus,
+            "dashboard IT",
+            "useEffect /users/verify" + errorStatus,
             err,
             ""
           );
@@ -183,7 +182,7 @@ export default function DashboardUsers() {
           //console.log(err);
           const verifyLogs = new Logs(
             "Error",
-            "dashboard user",
+            "dashboard IT",
             "useEffect /users/verify" + errorStatus,
             err.response.data.message,
             ""
@@ -223,11 +222,6 @@ export default function DashboardUsers() {
             });
         }
       });
-    } catch(err) {
-     
-      alert(err)
-      window.location.href = "/#/auth/signin";
-    }
   }, [setDecode]);
 
   // useLayoutEffect(() => {
@@ -240,6 +234,11 @@ export default function DashboardUsers() {
 
     var amount_prevYear = "";
     var userid = ""
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    let monthIndex = (new Date().getMonth());
+    setMonth(monthNames[monthIndex]);
+  
   
     try {
   
@@ -500,6 +499,11 @@ export default function DashboardUsers() {
   
   }, [])
 
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+  const textAmount = "white"
+
+
   return (
 <>
         <Grid
@@ -507,31 +511,48 @@ export default function DashboardUsers() {
           templateAreas={`"header header"
                           "nav main"
                           "nav footer"`}
-          gridTemplateRows={'50px 1fr 30px'}
+          gridTemplateRows={'50px 1fr 10px'}
           gridTemplateColumns={'315px 1fr'}
           h='200px'
           gap='5'
           color='blackAlpha.700'
           fontWeight='bold'
         >
-          <GridItem pl={"2"} area={'header'} height={"50px"} bgGradient='linear(to-r, red.500, pink.300, pink.100)'>
-          <center alignContent={"center"} justifyContent={"space-between"}>
-              
-                <Box  justifyItems={"center"}  >
-                  <Text fontSize="30px" color={textColorDue} fontWeight="bold" alignContent={"center"}>
+          <GridItem pl={"2"} area={'header'} height={"50px"}>
+
+                <Card  bg={graphCardBg} height={"50px"} position='relative'>
+                  <AbsoluteCenter>
+
+                  <Text fontSize="20px" color={textColor} fontWeight="bold" >
                   OVERVIEW Users
                   </Text>
-              </Box>
+
+                  </AbsoluteCenter>
+              </Card>
 
               
-              </center>
+              
           </GridItem>
-          <GridItem pl={"2"} area={'nav'}  width={"315px"}>
-          <Card   height="890px" bg="white"    >
+          <GridItem pl={"2"} area={'nav'}  width={"315px"} 
+          height={{
+            base: "100%", // 0-48em
+            md: "50%", // 48em-80em,
+            xl: "25%", // 80em+
+          }}
+          >
+          <Card  
+          // height={{
+          //   base: "25em", // 0-48em
+          //   md: "48em", // 48em-80em,
+          //   xl: "88em", // 80em+
+            
+          // }} 
+          height="980px"
+           bg="white" bg={graphCardBg}  >
             
             <Flex direction="column">
               <Flex align="center" justify="space-between" p="5px">
-                <Text fontSize="lg" color={textColor} fontWeight="bold">
+              <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                   Recent Activity
                 </Text>
                 <Button variant="primary" maxH="30px">
@@ -540,22 +561,30 @@ export default function DashboardUsers() {
               </Flex>
             </Flex>
           
-          <Box  overflowY={"scroll"} >
+          <Card  
+          // height={{
+          //   base: "25em", // 0-48em
+          //   md: "48em", // 48em-80em,
+          //   xl: "88em", // 80em+
+           
+          // }}
+           height="900px"
+           bg={'white'} >
 
           
-              <TableContainer  >
+              <TableContainer overflowY={"scroll"} >
                 <Table >
-                  <Thead >
+                  <Thead position={"sticky"}  >
                     <Tr >
                       <Th>User</Th>
-                      <Th>Dept</Th>
                       <Th>Info</Th>
+                      <Th>Dept</Th>
                       {/* <Th>Date</Th> */}
                       <Th>Module</Th>
                       <Th>Desc</Th>
                     </Tr>
                   </Thead>
-                  <Tbody>
+                  <Tbody height="880px"  >
                     {loginfo.map((log) => (
 
                     <Tr key={log.logID}>
@@ -573,12 +602,13 @@ export default function DashboardUsers() {
                         />
                         {/* {log.DisplayName} */}
                       </Td>
+                       <Td>
+                      {log.logtype}
+                      </Td>
                       <Td>
                       {log.Department}
                       </Td>
-                      <Td>
-                      {log.logtype}
-                      </Td>
+                     
                       {/* <Td >
                         {log.dateatecreated}
                       </Td> */}
@@ -593,70 +623,80 @@ export default function DashboardUsers() {
                   </Tbody>
                 </Table>
               </TableContainer>
-          </Box>
+          </Card>
             
           
           </Card> 
           </GridItem>
           <GridItem pl={"2"}  area={'main'} >
-            <SimpleGrid minChildWidth='315px' spacing='20px'>
-            <Card  maxW={{ sm: "315px", md: "100%" }}  >
-              <Box  maxW={{ sm: "315px", md: "100%" }}   >
+            <SimpleGrid columns={3} spacingX='20px' spacingY='20px' minChildWidth={'315px'}>
+            <Card  maxW={{ sm: "400px", md: "100%" }} bg={graphCardBg} >
               <Flex direction="column">
-                <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={"blackAlpha.800"} fontWeight="bold">
+                <Flex align="center" justify="space-between" p="10px">
+                <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                     Depreciated
                   </Text>
-                  <Button height={"40px"}>
-                    <Text  fontSize="20px" color={'red'} fontWeight="bold">
+                  <Button variant="primary" maxH="30px">
+                    SEE ALL
+                  </Button>
+                </Flex>
+              </Flex>
+              <Card  height={'215px'} bg={'white'} >
+              <Flex direction="column">
+                <Flex align="center" justify="space-between" p="5px">
+                  <Text color={textColor}  fontSize="md" fontWeight="bold" textTransform={"uppercase"}>
+                    Jan - {month}
+                  </Text>
+                  <Button variant="secondary" color={textColor} maxH="30px" >
+                    
+                      2700
+                   
+                  </Button>
+                </Flex>
+              </Flex>
+              <Flex direction="column" >
+                <Flex align="center" justify="space-between" p="5px">
+                <Text color={textColor}  fontSize="md" fontWeight="bold" textTransform={"uppercase"}>
+                    This Month
+                  </Text>
+                  <Button variant="secondary" color={textColor} maxH="30px" >
+                   
+                      100
+                  
+                  </Button>
+                </Flex>
+              </Flex>
+              <Flex direction="column" >
+                <Flex align="center" justify="space-between" p="5px">
+                <Text color={textColor}  fontSize="md" fontWeight="bold" textTransform={"uppercase"}>
+                   Next Month
+                  </Text>
+                  <Button variant="secondary" color={textColor} maxH="30px" >
+                   
                       200
-                    </Text>
+                   
                   </Button>
                 </Flex>
               </Flex>
               <Flex direction="column" >
                 <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={"blackAlpha.800"} fontWeight="bold">
-                    Depreciated this Month
+                <Text color={textColor}  fontSize="md" fontWeight="bold" textTransform={"uppercase"}>
+                    This Year
                   </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
-                      25
-                    </Text>
-                  </Button>
-                </Flex>
-              </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={"blackAlpha.800"} fontWeight="bold">
-                    Due this Year
-                  </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
-                      1500
-                    </Text>
-                  </Button>
-                </Flex>
-              </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="5px">
-                  <Text fontSize="20px" color={"blackAlpha.800"} fontWeight="bold">
-                    Due Next Month
-                  </Text>
-                  <Button height={"40px"} >
-                    <Text fontSize="20px" color={'red'} fontWeight="bold">
+                  <Button variant="secondary" color={textColor} maxH="30px" >
+                   
                       3000
-                    </Text>
+                    
                   </Button>
                 </Flex>
               </Flex>
-              </Box>
+              </Card>
             </Card>
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
+            <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg} >
             
             <Flex direction="column">
               <Flex align="center" justify="space-between" p="10px">
-                <Text fontSize="lg" color={textColor} fontWeight="bold">
+              <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                   Asset Movement
                 </Text>
                 <Button variant="primary" maxH="30px">
@@ -664,36 +704,37 @@ export default function DashboardUsers() {
                 </Button>
               </Flex>
             </Flex>
-            <CChartBar
-                data={{
-                          labels: assetmovement?.map(
-                            (status) => 
-                            status.Movement
-                          ),
-                          datasets: [
-                            {
-                              label: "Movement ",
-                              backgroundColor: ["yellow","blue","red","tomato"],
-                              // assetmovement?.map((status) =>
-                              //   randomColor()
-                              //),
-                              
-                              data: [354,2416,2875,506],
-                              // assetmovement?.map(
-                              //   (asset) => asset.total
-                              // ),
-                            },
-                          ],
-                        }}
-                        // labels="Movement"
-            />
-        
+            <Card bg={'white'} height={'215px'} overflowY={"auto"}> 
+              <CChartBar
+                  data={{
+                            labels: assetmovement?.map(
+                              (status) => 
+                              status.Movement
+                            ),
+                            datasets: [
+                              {
+                                label: "Movement ",
+                                backgroundColor: ["yellow","blue","red","tomato"],
+                                // assetmovement?.map((status) =>
+                                //   randomColor()
+                                //),
+                                
+                                data: [354,2416,2875,506],
+                                // assetmovement?.map(
+                                //   (asset) => asset.total
+                                // ),
+                              },
+                            ],
+                          }}
+                          // labels="Movement"
+              />
               </Card>
+            </Card>
               
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
+              <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg} >
                 <Flex direction="column">
                     <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
+                    <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                       Asset Per Department
                       </Text>
                       <Button variant="primary" maxH="30px">
@@ -701,6 +742,7 @@ export default function DashboardUsers() {
                       </Button>
                     </Flex>
                 </Flex>
+                <Card bg={'white'} height={'215px'} overflowY={"auto"}> 
                 <CChartBar
                     data={{
                               labels: assetDept?.map(
@@ -723,13 +765,13 @@ export default function DashboardUsers() {
                             }}
                             labels="Departmnt"
                 />
-              
+              </Card>
               </Card>
 
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
+              <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg}>
                 <Flex direction="column">
                       <Flex align="center" justify="space-between" p="10px">
-                        <Text fontSize="lg" color={textColor} fontWeight="bold">
+                      <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                         Asset Status
                         </Text>
                         <Button variant="primary" maxH="30px">
@@ -737,6 +779,7 @@ export default function DashboardUsers() {
                         </Button>
                       </Flex>
                 </Flex>
+                <Card bg={'white'} height={'215px'} overflowY={"auto"}> 
                   <CChartBar
                       data={{
                                 labels:
@@ -762,12 +805,13 @@ export default function DashboardUsers() {
                               }}
                               labels="Departmnt"
                   />
+                </Card>
               </Card>
 
-              <Card   maxW={{ sm: "315px", md: "100%" }} >
+              <Card   maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg} >
               <Flex direction="column">
                     <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
+                    <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                       Asset Category
                       </Text>
                       <Button variant="primary" maxH="30px">
@@ -775,43 +819,46 @@ export default function DashboardUsers() {
                       </Button>
                     </Flex>
               </Flex>
-              <CChartBar
-                    data={{
-                              labels: category?.map(
-                                (stat) => stat.Category
-                              ),
-                              datasets: [
-                                {
-                                  label: "Status ",
-                                  backgroundColor: 
-                                  ["yellow","blue","red","tomato","orange"],
-                                  // category?.map((categ) =>
-                                  //   randomColor()
-                                  // ),
-                                  
-                                  data:
-                                  // [502,2416,2875,506,300,675,764,496],
-                                  category?.map(
-                                    (categ) => categ.Current
+                <Card bg={'white'} height={'215px'} overflowY={"auto"}> 
+                  <CChartBar
+                        data={{
+                                  labels: category?.map(
+                                    (stat) => stat.Category
                                   ),
-                                },
-                              ],
-                            }}
-                            labels="Departmnt"
-                />
+                                  datasets: [
+                                    {
+                                      label: "Status ",
+                                      backgroundColor: 
+                                      ["yellow","blue","red","tomato","orange"],
+                                      // category?.map((categ) =>
+                                      //   randomColor()
+                                      // ),
+                                      
+                                      data:
+                                      // [502,2416,2875,506,300,675,764,496],
+                                      category?.map(
+                                        (categ) => categ.Current
+                                      ),
+                                    },
+                                  ],
+                                }}
+                                labels="Departmnt"
+                    />
+                </Card>
               </Card>
 
-              <Card  maxW={{ sm: "315px", md: "100%" }} >
+              <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg}>
               <Flex direction="column">
                     <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold">
+                      <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                       Asset Deployed
                       </Text>
-                      <Button variant="primary" maxH="30px">
+                      <Button variant="primary" color={'white'} maxH="30px" >
                         SEE ALL
                       </Button>
                     </Flex>
                 </Flex>
+                <Card bg={'white'} height={'215px'}> 
                 <CChartBar
                   data={{
                             labels: deployed?.map(
@@ -831,16 +878,20 @@ export default function DashboardUsers() {
                           }}
                           labels="departmentName"
                 />
-
+                </Card>
               </Card>
+
 
             </SimpleGrid>
           </GridItem>
 
-          <GridItem  pl={"2"} area={'footer'} height={"250px"}     >
-            <SimpleGrid minChildWidth='315px' spacing='20px'>
-              <Card height={"300px"}   >
-                    <TableContainer  overflowY="auto" >
+          <GridItem   area={'footer'} height={"250px"}     >
+            <SimpleGrid minChildWidth='315px' spacing='20px'  >
+              <Card height={"300px"} bg={graphCardBg}  >
+             
+
+                    <Card height={"290px"} bg={'white'} overflowY="auto" > 
+                    <TableContainer   >
                       <Table >
                         <Thead position="sticky" >
                           <Tr >
@@ -882,9 +933,11 @@ export default function DashboardUsers() {
                         </Tbody>
                       </Table>
                     </TableContainer>
+                    </Card>     
               </Card>
-              <Card  height={"300px"} >
-                  <TableContainer overflowY="auto" >
+              <Card  height={"300px"} bg={graphCardBg} >
+                <Card height={"260px"} bg={'white'} > 
+                  <TableContainer  bg={'white'} overflowY="auto"  >
                     <Table >
                       <Thead >
                         <Tr >
@@ -922,6 +975,7 @@ export default function DashboardUsers() {
                       </Tbody>
                     </Table>
                   </TableContainer>
+                </Card>
                 </Card>
             </SimpleGrid>
           </GridItem>

@@ -69,6 +69,9 @@ import { Link } from "react-router-dom";
 //import viewToastify from "components/Utils/viewToast";
 
 export default function ITPulloutViewer() {
+
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
   
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -286,7 +289,8 @@ export default function ITPulloutViewer() {
   return (
     <>
       <Stack>
-        <Card>
+        <Card bg={graphCardBg}>
+          <Card bg={'white'}>
           <TableContainer>
             <ButtonGroup spacing={6}>
             <Button
@@ -363,6 +367,7 @@ export default function ITPulloutViewer() {
               </Tbody>
             </Table>
           </TableContainer>
+        </Card>
         </Card>
       </Stack>
     </>

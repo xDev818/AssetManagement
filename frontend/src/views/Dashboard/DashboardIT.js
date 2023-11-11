@@ -35,6 +35,7 @@
 
 // Chakra imports
 import {
+  AbsoluteCenter,
   Avatar,
   Box,
   Button,
@@ -498,8 +499,6 @@ export default function DashboardIT() {
   }, [])
 
   const graphCardBg = '#e6f2ff'
-  const graphBoxBg = '#e6f2ff'
-  const OverviewTitle = "#00334d"
   const textColor = "#00334d"
   const textAmount = "white"
 
@@ -519,16 +518,18 @@ export default function DashboardIT() {
           fontWeight='bold'
         >
           <GridItem pl={"4"} area={'header'} height={"50px"}>
-          <center alignContent={"center"} justifyContent={"space-between"}>
-              
-                <Card  justifyItems={"center"}  bg={graphCardBg} height={"50px"} >
-                  <Text fontSize="30px" color={OverviewTitle} fontWeight="bold" alignContent={"center"}>
-                  OVERVIEW IT
+               
+              <Card  bg={graphCardBg} height={"50px"} position='relative'>
+                  <AbsoluteCenter>
+
+                  <Text fontSize="20px" color={textColor} fontWeight="bold" >
+                  OVERVIEW Users
                   </Text>
+
+                  </AbsoluteCenter>
               </Card>
 
-              
-              </center>
+   
           </GridItem>
           <GridItem pl={"2"} area={'nav'}  width={"315px"} 
           height={{
@@ -549,7 +550,7 @@ export default function DashboardIT() {
             
             <Flex direction="column">
               <Flex align="center" justify="space-between" p="5px">
-              <Text fontSize="lg" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
+              <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                   Recent Activity
                 </Text>
                 <Button variant="primary" maxH="30px">
@@ -630,7 +631,7 @@ export default function DashboardIT() {
             <Card  maxW={{ sm: "400px", md: "100%" }} bg={graphCardBg} >
               <Flex direction="column">
                 <Flex align="center" justify="space-between" p="10px">
-                <Text fontSize="lg" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
+                <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                     Depreciated
                   </Text>
                   <Button variant="primary" maxH="30px">
@@ -693,7 +694,7 @@ export default function DashboardIT() {
             
             <Flex direction="column">
               <Flex align="center" justify="space-between" p="10px">
-              <Text fontSize="lg" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
+              <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                   Asset Movement
                 </Text>
                 <Button variant="primary" maxH="30px">
@@ -731,7 +732,7 @@ export default function DashboardIT() {
               <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg} >
                 <Flex direction="column">
                     <Flex align="center" justify="space-between" p="10px">
-                    <Text fontSize="lg" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
+                    <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                       Asset Per Department
                       </Text>
                       <Button variant="primary" maxH="30px">
@@ -768,7 +769,7 @@ export default function DashboardIT() {
               <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg}>
                 <Flex direction="column">
                       <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
+                      <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                         Asset Status
                         </Text>
                         <Button variant="primary" maxH="30px">
@@ -808,7 +809,7 @@ export default function DashboardIT() {
               <Card   maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg} >
               <Flex direction="column">
                     <Flex align="center" justify="space-between" p="10px">
-                    <Text fontSize="lg" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
+                    <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                       Asset Category
                       </Text>
                       <Button variant="primary" maxH="30px">
@@ -847,7 +848,7 @@ export default function DashboardIT() {
               <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg}>
               <Flex direction="column">
                     <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="lg" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
+                      <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
                       Asset Deployed
                       </Text>
                       <Button variant="primary" color={'white'} maxH="30px" >

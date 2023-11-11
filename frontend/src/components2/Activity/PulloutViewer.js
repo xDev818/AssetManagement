@@ -76,6 +76,9 @@ import React from 'react'
 
 export default function PulloutViewer() {
   
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   const { isOpen, onOpen, onClose } = useDisclosure()
 
 
@@ -206,7 +209,8 @@ export default function PulloutViewer() {
   return (
     <>
       <Stack>
-        <Card>
+        <Card bg={graphCardBg}>
+          <Card bg={'white'}>
           <TableContainer>
           <ButtonGroup spacing={6}>
 
@@ -305,6 +309,7 @@ export default function PulloutViewer() {
               </Tbody>
             </Table>
           </TableContainer>
+        </Card>
         </Card>
       </Stack>
     </>

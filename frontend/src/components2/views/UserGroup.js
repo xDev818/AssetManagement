@@ -43,6 +43,9 @@ import {
   
   export default function UserGroup () {
 
+    const graphCardBg = '#e6f2ff'
+    const textColor = "#00334d"
+
     const [values,setUserGroup] = useState({
       usergroup_id:'',
       usergroup_name:'',
@@ -254,8 +257,10 @@ import {
     return (
 
         <Stack>
+           <Card bg={graphCardBg}>
+            <Card bg={'white'}>
           <FormControl>
-          <Card>
+
             <Box>
               <FormLabel fontSize={{ base: "sm" }}>User Group Name:  </FormLabel>
               <Input id='usergroup_name' label="User Group name" placeholder="User Group Name" 
@@ -283,8 +288,10 @@ import {
 
             </Button>
           </Box>
-          </Card>
+          
           </FormControl>
+          </Card>
+          </Card>
         </Stack>
       
     );

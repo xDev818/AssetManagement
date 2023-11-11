@@ -43,6 +43,7 @@ import {
   Select,
   Option,
   Box,
+  Text,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import {
@@ -92,8 +93,11 @@ export default function DataTable({
     onGlobalFilterChange: setFiltering,
   });
 
+  const textColor = "#00334d"
+  const graphCardBg = '#e6f2ff'
+
   return (
-    <Card>
+    <Card bg={'white'}>
 
       <Box>
 
@@ -103,30 +107,40 @@ export default function DataTable({
           flexDirection={{ sm: "column", md: "row" }}
         >
           <ButtonGroup spacing={6}>
-            <Button colorScheme="messenger">
+
+            <Button  colorScheme={'twitter'} w={'100px'}>
               <Link
                 to={{
                   pathname: pathname,
                   state: { positionID: "" },
                 }}
-              >
+              >  <Text color={textColor} fontsize={'sm'} textTransform={"uppercase"}>
                 New
+                </Text>
               </Link>
+              
             </Button>
-            <Menu>
-              <MenuButton
+            <Menu >
+              <MenuButton 
                 as={Button}
                 rightIcon={<ChevronDownIcon />}
-                colorScheme="green"
+                fontsize={'md'}
+                colorScheme={'twitter'}
               >
+                <Text color={textColor} fontsize={'md'} textTransform={"uppercase"}>
                 Report
+                </Text>
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={handleReport} colorScheme="twitter">
+                <Text color={textColor} fontsize={'sm'} textTransform={"uppercase"}>
                   PDF{" "}
+                </Text>
                 </MenuItem>
                 <MenuItem onClick={handleExcelReport} colorScheme="twitter">
+                <Text color={textColor} fontsize={'sm'} textTransform={"uppercase"}>
                   Excel
+                </Text>
                 </MenuItem>
               </MenuList>
             </Menu>

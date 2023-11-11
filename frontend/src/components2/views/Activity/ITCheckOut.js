@@ -79,6 +79,9 @@ import {
 
   export default function ITCheckOut () {
 
+    const graphCardBg = '#e6f2ff'
+    const textColor = "#00334d"
+
     const toast = useToast()
 
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -405,7 +408,9 @@ import {
         <Card
         w={{ base: "auto", md: "auto", lg: "auto" }}
         mx={{ base: 0, md: 0, lg: 3 }}
+        bg={graphCardBg}
         >
+          <Card bg={'white'}>
         <Text fontWeight="bold" mb={5}>
           Checkout Asset
         </Text>
@@ -566,7 +571,7 @@ import {
           </Card>
           </FormControl>
         </Stack>
-
+        </Card>
         </Card>
 
         {/* <AlertDialog

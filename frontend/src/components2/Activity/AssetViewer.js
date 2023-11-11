@@ -61,6 +61,9 @@ import DataTable from "components2/TanstackTable/DataTable";
 
 export default function AssetViewer() {
 
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   const toast = useToast()
   
   const [assets, setAssets] = useState([]);
@@ -236,7 +239,8 @@ export default function AssetViewer() {
   return (
     <>
       <Stack>
-        <Card>
+        <Card bg={graphCardBg}>
+          <Card bg={'white'}>
           <TableContainer>
           
 
@@ -319,6 +323,7 @@ export default function AssetViewer() {
               </Tbody>
             </Table> */}
           </TableContainer>
+        </Card>
         </Card>
       </Stack>
     </>

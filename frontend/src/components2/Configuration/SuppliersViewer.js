@@ -47,6 +47,10 @@ import Card from "components/Card/Card";
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function SuppliersViewer() {
+
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   var userID = "";
 
   const [suppliers, setSuppliers] = useState([]);
@@ -150,8 +154,9 @@ export default function SuppliersViewer() {
   return (
     <>
       <Stack>
-        <Card position="relative">
-          <TableContainer>
+        <Card position="relative" bg={graphCardBg} >
+          <Card bg={'white'}>
+          <TableContainer w={'100%'}>
             {/* state: {supplierID:} */}
             <DataTable
               dataGrid={suppliers}
@@ -163,6 +168,7 @@ export default function SuppliersViewer() {
               idType={"id"}
             />
           </TableContainer>
+          </Card>
         </Card>
       </Stack>
     </>

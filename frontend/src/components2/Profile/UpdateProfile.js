@@ -60,7 +60,8 @@ export default function UpdateProfile() {
 
   // const toast = useToast()
 
- 
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
 
   //Nole
   var userID = "";
@@ -308,7 +309,9 @@ const handleUploadImage = async (e) => {
         w={{ base: "auto", md: "auto", lg: "auto" }}
         mx={{ base: 0, md: 0, lg: 3 }}
         display={{ base: "none", md: "block" }}
+        bg={graphCardBg}
       >
+        <Card bg={'white'}>
         <Text fontWeight="bold" mb={5}>
           Profile
         </Text>
@@ -519,6 +522,7 @@ const handleUploadImage = async (e) => {
             </GridItem>
           </Grid>
         </FormControl>
+        </Card>
       </Card>
       {/* MOBILE RESPONSIVE */}
       <Card display={{ base: "flex", md: "none" }}>
@@ -662,6 +666,7 @@ const handleUploadImage = async (e) => {
           </Box>
         </Stack>
       </Card>
+      
     </>
   );
 }

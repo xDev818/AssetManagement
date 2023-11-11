@@ -45,6 +45,10 @@ import Card from "components/Card/Card";
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function UserGroupViewer() {
+
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   var userID = "";
 
   const [usergroups, setUserGroups] = useState([]);
@@ -140,7 +144,8 @@ export default function UserGroupViewer() {
   return (
     <>
       <Stack>
-        <Card height={694} position="relative">
+        <Card position="relative" bg={graphCardBg}>
+          <Card bg={'white'}>
           <TableContainer>
             <DataTable
               dataGrid={usergroups}
@@ -152,6 +157,7 @@ export default function UserGroupViewer() {
               idType={"id"}
             />
           </TableContainer>
+        </Card>
         </Card>
       </Stack>
     </>

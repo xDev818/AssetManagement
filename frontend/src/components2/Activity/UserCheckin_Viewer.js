@@ -54,6 +54,8 @@ import { Link } from "react-router-dom";
 
 export default function UserCheckin_Viewer() {
   
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
 
   const toast = useToast()
 
@@ -407,7 +409,8 @@ export default function UserCheckin_Viewer() {
   return (
     <>
       <Stack>
-        <Card>
+        <Card bg={graphCardBg}>
+          <Card bg={'white'}>
           <TableContainer>
             {/* <ButtonGroup spacing={6}>
             <Button
@@ -482,6 +485,7 @@ export default function UserCheckin_Viewer() {
               </Tbody>
             </Table>
           </TableContainer>
+        </Card>
         </Card>
       </Stack>
     </>

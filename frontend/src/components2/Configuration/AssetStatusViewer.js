@@ -60,6 +60,10 @@ import Card from "components/Card/Card";
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function AssetStatusViewer() {
+
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+
   var userID = "";
 
   const [assetStatus, setStatus] = useState([]);
@@ -154,8 +158,9 @@ export default function AssetStatusViewer() {
 
   return (
     <>
-      <Stack>
-        <Card position="relative">
+      <Stack >
+        <Card position="relative" bg={graphCardBg}>
+          <Card bg={'white'}>
           <TableContainer>
             {/*  pathname: "/admin/assetstatus",
                       state: { assetstatID: "" }, */}
@@ -169,6 +174,7 @@ export default function AssetStatusViewer() {
               idType={"assetStatusID"}
             />
           </TableContainer>
+        </Card>
         </Card>
       </Stack>
     </>

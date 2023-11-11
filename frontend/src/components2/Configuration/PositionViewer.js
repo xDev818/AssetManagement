@@ -62,6 +62,10 @@ import Card from "components/Card/Card";
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function PositionViewer() {
+
+  const textColor = "#00334d"
+  const graphCardBg = '#e6f2ff'
+
   var userID = "";
 
   const [positions, setPositions] = useState([]);
@@ -165,7 +169,7 @@ export default function PositionViewer() {
   return (
     <>
       <Stack>
-        <Card height="auto" position="relative">
+        <Card height="auto" position="relative" bg={graphCardBg}>
           <TableContainer>
             {/*   state: { positionID: '' }, */}
             {/* <Search

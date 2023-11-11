@@ -42,6 +42,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Image,
+  Circle,
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import IconBox from "components/Icons/IconBox";
@@ -69,7 +70,7 @@ import { barChartOptions } from "variables/charts";
 export default function FourGraphsUsers() {
   const iconBlue = useColorModeValue("blue.500", "blue.500");
   const iconBoxInside = useColorModeValue("white", "white");
-  const textColor = useColorModeValue("gray.700", "white");
+  //const textColor = useColorModeValue("gray.700", "white");
   const { isOpen, onOpen, onClose } = useDisclosure();
 
 
@@ -253,6 +254,9 @@ export default function FourGraphsUsers() {
   }, []);
 
   //console.log("four", fourgraphs);
+  const graphCardBg = '#e6f2ff'
+  const textColor = "#00334d"
+  const iconBg = '#cce0ff'
 
   return (
     <SimpleGrid
@@ -261,7 +265,11 @@ export default function FourGraphsUsers() {
       mb="0"
       display={{ base: "none", md: "grid" }}
     >
-      <Card minH="125px"  bgGradient='linear(to-bl, red.500, red.300, red.100)'>
+      <Card minH="125px"  
+      bgGradient='linear(to-bl, #ff1a1a, #ff8080, #ffcccc)'
+      //bgGradient='linear(to-bl, red.500, red.300, red.100)'
+      //bg={graphCardBg}
+      >
         <Flex direction="column">
           <Flex
             flexDirection="row"
@@ -273,7 +281,7 @@ export default function FourGraphsUsers() {
             <Stat me="auto">
               <StatLabel
                 fontSize="md"
-                color="white"
+                color={'white'}
                 fontWeight="bold"
                 textTransform="uppercase"
               >
@@ -299,11 +307,12 @@ export default function FourGraphsUsers() {
                   as="box"
                   h={"45px"}
                   w={"45px"}
-                  bg={"white"}
+                  bg={'white'}
                   cursor="pointer"
                 >
-                  <Image src={assetico}  h={"24px"} w={"24px"} color={iconBlue} />
-
+                  <Circle h={"40px"} w={"40px"}>
+                    <Image src={assetico}  h={"35px"} w={"35px"} color={'white'} />
+                  </Circle>
 
                    {/* <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} /> */}
                 </IconBox>
@@ -384,7 +393,7 @@ export default function FourGraphsUsers() {
           </Text>
         </Flex>
       </Card>
-      <Card minH="125px" bgGradient='linear(to-bl, #ffcc00, #ffe066, #fff0b3)'>
+      <Card minH="125px" bgGradient='linear(to-bl, #ff9900, #ff9900, #fff0b3)'>
         <Flex direction="column">
           <Flex
             flexDirection="row"
