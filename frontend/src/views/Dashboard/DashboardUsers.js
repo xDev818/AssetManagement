@@ -1,987 +1,637 @@
-/* 
-
- Date : 10 / 16 / 23
-    Author : Jinshin
-    Activities
-    Purpose : 
-      Imports:
-          - import React, { useEffect, useLayoutEffect, useState } from "react";
-          - import decoder from 'jwt-decode'
-          - import axios from "axios";
-          - import Logs from '../../components/Utils/logs_helper'
-      Added:
-          - const [ decoded, setDecode ] = useState()
-          - useEffect
-          - useLayoutEffect
-
-  Date : 01 / 05 / 23
-      Author : Nole
-      Activities
-      Purpose : 
-        Load asset acquired by previous year
-        import './style.scss'
-        added style.scss ( @import "@coreui/chartjs/scss/coreui-chartjs"; )
-            -- To display proper tooltip
-        const [deployed,setDeployed] = useState([])
-            -- view all asset deployed per department
-
-  Date : 01 / 07 / 23
-      Author : Nole
-      Activities
-      Purpose : 
-        - Load logInfo Activity
-        - import imgDefault from "../../assets/img/defaultImage.webp";
-*/
-
 // Chakra imports
 import {
-  AbsoluteCenter,
   Avatar,
   Box,
   Button,
-  Center,
-  CircularProgress,
-  CircularProgressLabel,
   Flex,
   Grid,
-  GridItem,
-  Progress,
-  SimpleGrid,
-  Stack,
-  Stat,
-  StatLabel,
-  StatNumber,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
+  Icon,
+  Spacer,
   Text,
-  Th,
-  Thead,
-  Tr,
   useColorMode,
   useColorModeValue,
+  useToast
 } from "@chakra-ui/react";
-import bgAdmin from "assets/img/admin-background.png";
-
+// Assets
+import BackgroundCard1 from "assets/img/BackgroundCard1.png";
 // Custom components
 import Card from "components/Card/Card.js";
-import BarChart from "components/Charts/BarChart";
-//import LineChart from "components/Charts/LineChart";
+import CardBody from "components/Card/CardBody.js";
+import CardHeader from "components/Card/CardHeader.js";
 import IconBox from "components/Icons/IconBox";
-
-import './style.scss'
-
-import imgDefault from "../../assets/img/defaultImage.webp";
-
-// Custom icons
+import { MastercardIcon, VisaIcon } from "components/Icons/Icons";
+import { HSeparator } from "components/Separator/Separator";
+import BillingRow from "components/Tables/BillingRow";
+import InvoicesRow from "components/Tables/InvoicesRow";
+import TransactionRow from "components/Tables/TransactionRow";
+import React,{useState,useEffect} from "react";
 import {
-  CartIcon,
-  DocumentIcon,
-  GlobeIcon,
-  WalletIcon,
-} from "components/Icons/Icons.js";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-// Variables
+  FaPaypal,
+  FaPencilAlt,
+  FaRegCalendarAlt,
+  FaWallet,
+} from "react-icons/fa";
+import { RiMastercardFill } from "react-icons/ri";
 import {
-  barChartData,
-  barChartOptions,
-  //lineChartData,
-  lineChartOptions,
-} from "variables/charts";
-import { pageVisits, socialTraffic } from "variables/general";
+  billingData,
+  invoicesData,
+  newestTransactions,
+  olderTransactions,
+} from "variables/general";
 
-// Jinshin
-import decoder from "jwt-decode";
 import axios from "axios";
-import Logs from "../../components/Utils/logs_helper";
-import FourGraphs from "components/FourGraphs/FourGraphs";
-import AssetViewer from "components2/Activity/AssetViewer";
-// End Jinshin
+import decoder from "jwt-decode";
 
-import ITCheckoutViewer from "components2/Activity/ITCheckoutViewer";
-//import DashBoardContent from "./DashboardContent"
+import Logs from "components/Utils/logs_helper";
 
-import {
-  CChartBar,
-  CChartLine,
-  CChartPie,
-  CChartDoughnut,
-  CChart,
-} from "@coreui/react-chartjs";
-import { getStyle, hexToRgba } from "@coreui/utils";
+import sampleImage from "../../assets/img/avatars/avatar1.png"
+import { Link as Anchor } from "react-router-dom";
 
-import randomColor from "randomcolor";
-import { useStepContext } from "@mui/material";
-
-export default function DashboardUsers() {
-
-  const [purchases,setPurchases] = useState([])
-  const [deployed,setDeployed] = useState([])
-  const [loginfo,setLogInfo] = useState([])
-  const [assetmovement,setMovement] = useState([])
-  const [assetDept,setAssetDept] = useState([])
-  const [assetstatus,setStatus] = useState([])
-  const [assettype,setType] = useState([])
-  const [category,setCategory] = useState([])
-  const [condition,setCondition] = useState([])
-  const [location,setLocation] = useState([])
-  const [month,setMonth] = useState("")
-
-  const [values,setPrevYear] = useState({
-    prevyear: ""
-  })
-
-  // Chakra Color Mode
+function DashboardUsers() {
+  // Chakra color mode
   const iconBlue = useColorModeValue("blue.500", "blue.500");
-  const iconBoxInside = useColorModeValue("white", "white");
-  const textColorDue = useColorModeValue("white", "white");
-  const tableRowColor = useColorModeValue("#F7FAFC", "navy.900");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-  const textTableColor = useColorModeValue("gray.500", "white");
-
+  
+  const borderColor = useColorModeValue("#dee2e6", "transparent");
   const { colorMode } = useColorMode();
 
-  // Jinshin
-  const [decoded, setDecode] = useState();
 
-  useEffect(() => {
-    const storage = localStorage;
+  const toast = useToast()
+  
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    location: "",
+    department: "",
+    group: "",
+    image: ""
 
-    if (!storage.getItem("token") || !storage.getItem("token").length) {
-      window.location.href = "/#/auth/signin";
-    }
-
-    const token = storage.getItem("token");
-
-    axios
-      .post("/users/verify", { token })
-      .then((res) => {
-        if (res.data.includes("Token is valid")) {
-          const decoding = decoder(token);
-          setDecode(decoding);
-
-
-        }
-      })
-      .catch((err) => {
-        const errorStatus = err.code;
-
-        if (errorStatus.includes("ERR_NETWORK")) {
-          const verifyLogs = new Logs(
-            "DB",
-            "dashboard IT",
-            "useEffect /users/verify" + errorStatus,
-            err,
-            ""
-          );
-          alert(verifyLogs.getMessage());
-        }
-
-        if (errorStatus.includes("ERR_BAD_REQUEST")) {
-          //console.log(err);
-          const verifyLogs = new Logs(
-            "Error",
-            "dashboard IT",
-            "useEffect /users/verify" + errorStatus,
-            err.response.data.message,
-            ""
-          );
-
-          axios
-            .post("/log", verifyLogs.getLogs())
-            .then((res) => {
-              console.log("Log is: ", res.data);
-              localStorage.removeItem("token");
-              window.location.href = "/#/auth/signin";
-            })
-            .catch((err) => {
-              const logStatus = err.code;
-
-              if (logStatus.includes("ERR_NETWORK")) {
-                const _logs = new Logs(
-                  "DB",
-                  "dashboard",
-                  "useEffect /log",
-                  err,
-                  decoded.result[0].userDisplayID
-                );
-                alert(_logs.getMessage());
-              }
-
-              if (logStatus.includes("ERR_BAD_REQUEST")) {
-                const _logs = new Logs(
-                  "Error",
-                  "dashboard",
-                  "useEffect /log",
-                  err.response.data.message,
-                  ""
-                );
-                alert(_logs.getLogs());
-              }
-            });
-        }
-      });
-  }, [setDecode]);
-
-  // useLayoutEffect(() => {
-  //   decoded && console.log("user", decoded);
+  });
+  // const [userdata, setUser] = useState({
+  //   userID: "",
   // });
-  // // End Jinshin
 
-  useEffect( async() => {
+ 
+  useEffect( async () => {
 
-
-    var amount_prevYear = "";
     var userid = ""
-
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
-    let monthIndex = (new Date().getMonth());
-    setMonth(monthNames[monthIndex]);
-  
-  
     try {
-  
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
-      userid = tokenDecoded.result[0].userDisplayID;
-  
-      const PrevYearAmount = await axios.get("/dashboard/asset-acquired-PrevYear")
-  
-      .then((res) => {
-        amount_prevYear = res.data.result[0].Amount;
-        
-        setPrevYear({...values,
-          prevyear: amount_prevYear})
-      })
-      .catch((err) => {
-        const InsertLogs = new Logs(
-          "Error",
-          "Dashboard",
-          "Function /dashboard/asset-acquired-PrevYear",
-          "useEffect ( Asset Acquired )",
-          userid
-        );
-      });
-  
-      /* 
-        Acquired Current Year Assets
-      */
-  
-         const CurrentYearAcuired = await axios.get("/dashboard/asset-acquired-CurrentYear")
-  
+       userid = tokenDecoded.result[0].userDisplayID
+
+      const success = await axios.get("/dashboard/users-viewProfile/" + userid)
+
         .then((res) => {
           
-          setPurchases(res.data.result[0])
-       
+          setProfile( {...profile,
+            name: res.data.result[0].FullName,
+            email: res.data.result[0].email,
+            location: res.data.result[0].Location,
+            department: res.data.result[0].departmentName,
+            group: res.data.result[0].categoryName,
+            image: res.data.result[0].imgFilename, 
+          });
+
+         
         })
         .catch((err) => {
-          const InsertLogs = new Logs(
+         
+          const useEffectLogs = new Logs(
             "Error",
-            "Dashboard",
-            "Function /dashboard/asset-acquired-PrevYear",
-            "useEffect ( Asset Acquired )",
-            userid
+            "DashBoardUsers",
+            "Function /LoadAProfile",
+            "DashBoardUsers  " +  err.response.data.message,
+           userid
           );
+
+          useEffectLogs.insertLogs(useEffectLogs)
+
         });
-  
+    } catch (err) {
+      const useEffectLogs = new Logs(
+        "Error",
+        "DashBoardUsers",
+        "Function /LoadAProfile",
+        "DashBoardUsers  " +  err.response.data.message,
+       userid
+      );
 
-      /* 
-        Asset Deploy
-      */
-        const assetDeploy = await axios.get("/dashboard/asset-deploy")
-  
-        .then((res) => {
-          //console.log(res.data.result)
-          setDeployed(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-deploy",
-            "useEffect ( Asset Deployed )",
-            userid
-          );
-        });
-
-        /*
-        Log Info 
-        */
-        const successLogInfo = await axios.get("/dashboard/loginfo")
-  
-        .then((res) => {
-          setLogInfo(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/loginfo",
-            "useEffect ( Get All LogInfo)",
-            userid
-          );
-        });
-
-        /*
-        Asset Movement
-        */
-        const successAssetMovement = await axios.get("/dashboard/asset-movement")
-  
-        .then((res) => {
-          setMovement(res.data.result[0])
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-movement",
-            "useEffect ( Get All Asset Movement)",
-            userid
-          );
-        });
-
-        /*
-        Asset Per Department
-        */ 
-        const successAssetPerDept = await axios.get("/dashboard/asset-perDept")
-  
-        .then((res) => {
-          setAssetDept(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-perDept",
-            "useEffect ( Get All Asset Per Dept)",
-            userid
-          );
-        });
-        
-        
-        /*
-        Asset Status
-        */ 
-        const successStatus = await axios.get("/dashboard/asset-Status")
-  
-        .then((res) => {
-          setStatus(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Status",
-            "useEffect ( Get All Asset Status)",
-            userid
-          );
-        });
-
-        /*
-        Asset Type
-        */ 
-        const succesType = await axios.get("/dashboard/asset-Type")
-  
-        .then((res) => {
-          setType(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Type",
-            "useEffect ( Get All Asset Type)",
-            userid
-          );
-        });
-
- /*
-        Asset CATEGORY
-        */ 
-        const succesCategory = await axios.get("/dashboard/asset-Category")
-  
-        .then((res) => {
-          setCategory(res.data.result)
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Category",
-            "useEffect ( Get All Asset Category)",
-            userid
-          );
-        });
-
-        /*
-        Asset Condition
-        */ 
-        const succesCondition = await axios.get("/dashboard/asset-Condition")
-  
-        .then((res) => {
-          setCondition(res.data.result[0])
-       
-        })
-        .catch((err) => {
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Condition",
-            "useEffect ( Get All Asset Condition)",
-            userid
-          );
-        });
-
-      /*
-        Asset Locations
-        */ 
-        const succesLocations = await axios.get("/dashboard/asset-Locations")
-       // console.log(succesLocations)
-        const response = await succesLocations.data;
-        //alert(response.message)
-       
-        if (response.message.includes("Records Found")) { 
-          setLocation(response.result[0])
-
-        } else {
-          setLocation([])
-          const InsertLogs = new Logs(
-            "Error",
-            "Dashboard",
-            "Function /dashboard/asset-Locations",
-            "useEffect ( Get All Asset Locations)",
-            userid
-          );
-
-          InsertLogs.getLogs();
-          InsertLogs.insertLogs( InsertLogs.getLogs() )
-        }
-
-    } catch(err) {
-      const errorStatus = err.code;
-      //alert(errorStatus)
-      if (errorStatus.includes("ERR_NETWORK")) {
-        const useEffectLogs = new Logs(
-          "Error",
-          "Dashboard",
-          "Function /dashboard/asset-Locations",
-          err,
-          userid
-        );
-
-        useEffectLogs.getLogs();
-        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
-        
-      }
-
-      if (errorStatus.includes("ERR_BAD_REQUEST")) {
-        const useEffectLogs = new Logs(
-          "Error",
-          "Dashboard",
-          "Function /dashboard/asset-Locations",
-          err.response.data.message,
-          userid
-        );
-        useEffectLogs.getLogs();
-        useEffectLogs.insertLogs( useEffectLogs.getLogs() )
-
-      }
-
+      useEffectLogs.insertLogs(useEffectLogs)
     }
-  
-  }, [])
+  }, []);
 
+ 
   const graphCardBg = '#e6f2ff'
   const textColor = "#00334d"
-  const textAmount = "white"
-
 
   return (
-<>
-        <Grid
-        
-          templateAreas={`"header header"
-                          "nav main"
-                          "nav footer"`}
-          gridTemplateRows={'50px 1fr 10px'}
-          gridTemplateColumns={'315px 1fr'}
-          h='200px'
-          gap='5'
-          color='blackAlpha.700'
-          fontWeight='bold'
-        >
-          <GridItem pl={"2"} area={'header'} height={"50px"}>
+    <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
+      <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows='1fr' >
+        <Card bg={graphCardBg}>
+          <Grid
+            templateColumns={{
+              sm: "1fr",
+              md: "1fr 1fr",
+              xl: "1fr 1fr 1fr 1fr",
+            }}
+            templateRows={{ sm: "auto auto auto", md: "1fr auto", xl: "1fr" }}
+            gap='26px'>
+            <Card
+              // backgroundImage={
+              //   colorMode === "dark"
+              //     ? "linear-gradient(180deg, #3182CE 0%, #63B3ED 100%)"
+              //     : BackgroundCard1
+              // }
+              bg={'white'}
+             // backgroundRepeat='no-repeat'
+             // background='cover'
+             // bgPosition='10%'
+              p='16px'
+              h={{ sm: "220px", xl: "100%" }}
+              gridArea={{ md: "1 / 1 / 2 / 3", xl: "1 / 1 / 2 / 3" }}>
+              <Grid templateColumns={{ sm: "1fr", xl: "repeat(3, 1fr)" }} gap='22px'>
 
-                <Card  bg={graphCardBg} height={"50px"} position='relative'>
-                  <AbsoluteCenter>
 
-                  <Text fontSize="20px" color={textColor} fontWeight="bold" >
-                  OVERVIEW Users
-                  </Text>
 
-                  </AbsoluteCenter>
-              </Card>
+              {/* <CardBody h='100%' w='100%' >
 
-              
-              
-          </GridItem>
-          <GridItem pl={"2"} area={'nav'}  width={"315px"} 
-          height={{
-            base: "100%", // 0-48em
-            md: "50%", // 48em-80em,
-            xl: "25%", // 80em+
-          }}
-          >
-          <Card  
-          // height={{
-          //   base: "25em", // 0-48em
-          //   md: "48em", // 48em-80em,
-          //   xl: "88em", // 80em+
-            
-          // }} 
-          height="980px"
-           bg="white" bg={graphCardBg}  >
-            
-            <Flex direction="column">
-              <Flex align="center" justify="space-between" p="5px">
-              <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
-                  Recent Activity
-                </Text>
-                <Button variant="primary" maxH="30px">
-                  SEE ALL
-                </Button>
-              </Flex>
-            </Flex>
-          
-          <Card  
-          // height={{
-          //   base: "25em", // 0-48em
-          //   md: "48em", // 48em-80em,
-          //   xl: "88em", // 80em+
-           
-          // }}
-           height="900px"
-           bg={'white'} >
-
-          
-              <TableContainer overflowY={"scroll"} >
-                <Table >
-                  <Thead position={"sticky"}  >
-                    <Tr >
-                      <Th>User</Th>
-                      <Th>Info</Th>
-                      <Th>Dept</Th>
-                      {/* <Th>Date</Th> */}
-                      <Th>Module</Th>
-                      <Th>Desc</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody height="880px"  >
-                    {loginfo.map((log) => (
-
-                    <Tr key={log.logID}>
-                      <Td > 
-                        <Avatar
-                          size='sm'
-                          name= {log.displayName}
-                          src= {
-                            log?.ImageFile
-                          ? 
-                          `http://localhost:5001/image/static/${log?.ImageFile}`
-                            
-                          :  imgDefault
-                          }  
-                        />
-                        {/* {log.DisplayName} */}
-                      </Td>
-                       <Td>
-                      {log.logtype}
-                      </Td>
-                      <Td>
-                      {log.Department}
-                      </Td>
-                     
-                      {/* <Td >
-                        {log.dateatecreated}
-                      </Td> */}
-                      <Td>
-                        {log.module}
-                      </Td>
-                      <Td>
-                        {log.logfunction}
-                      </Td>
-                    </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-          </Card>
-            
-          
-          </Card> 
-          </GridItem>
-          <GridItem pl={"2"}  area={'main'} >
-            <SimpleGrid columns={3} spacingX='20px' spacingY='20px' minChildWidth={'315px'}>
-            <Card  maxW={{ sm: "400px", md: "100%" }} bg={graphCardBg} >
-              <Flex direction="column">
-                <Flex align="center" justify="space-between" p="10px">
-                <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
-                    Depreciated
-                  </Text>
-                  <Button variant="primary" maxH="30px">
-                    SEE ALL
-                  </Button>
-                </Flex>
-              </Flex>
-              <Card  height={'215px'} bg={'white'} >
-              <Flex direction="column">
-                <Flex align="center" justify="space-between" p="5px">
-                  <Text color={textColor}  fontSize="md" fontWeight="bold" textTransform={"uppercase"}>
-                    Jan - {month}
-                  </Text>
-                  <Button variant="secondary" color={textColor} maxH="30px" >
-                    
-                      2700
-                   
-                  </Button>
-                </Flex>
-              </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="5px">
-                <Text color={textColor}  fontSize="md" fontWeight="bold" textTransform={"uppercase"}>
-                    This Month
-                  </Text>
-                  <Button variant="secondary" color={textColor} maxH="30px" >
-                   
-                      100
-                  
-                  </Button>
-                </Flex>
-              </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="5px">
-                <Text color={textColor}  fontSize="md" fontWeight="bold" textTransform={"uppercase"}>
-                   Next Month
-                  </Text>
-                  <Button variant="secondary" color={textColor} maxH="30px" >
-                   
-                      200
-                   
-                  </Button>
-                </Flex>
-              </Flex>
-              <Flex direction="column" >
-                <Flex align="center" justify="space-between" p="5px">
-                <Text color={textColor}  fontSize="md" fontWeight="bold" textTransform={"uppercase"}>
-                    This Year
-                  </Text>
-                  <Button variant="secondary" color={textColor} maxH="30px" >
-                   
-                      3000
-                    
-                  </Button>
-                </Flex>
-              </Flex>
-              </Card>
-            </Card>
-            <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg} >
-            
-            <Flex direction="column">
-              <Flex align="center" justify="space-between" p="10px">
-              <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
-                  Asset Movement
-                </Text>
-                <Button variant="primary" maxH="30px">
-                  SEE ALL
-                </Button>
-              </Flex>
-            </Flex>
-            <Card bg={'white'} height={'215px'} overflowY={"auto"}> 
-              <CChartBar
-                  data={{
-                            labels: assetmovement?.map(
-                              (status) => 
-                              status.Movement
-                            ),
-                            datasets: [
-                              {
-                                label: "Movement ",
-                                backgroundColor: ["yellow","blue","red","tomato"],
-                                // assetmovement?.map((status) =>
-                                //   randomColor()
-                                //),
-                                
-                                data: [354,2416,2875,506],
-                                // assetmovement?.map(
-                                //   (asset) => asset.total
-                                // ),
-                              },
-                            ],
-                          }}
-                          // labels="Movement"
-              />
-              </Card>
-            </Card>
-              
-              <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg} >
-                <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                    <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
-                      Asset Per Department
-                      </Text>
-                      <Button variant="primary" maxH="30px">
-                        SEE ALL
-                      </Button>
-                    </Flex>
-                </Flex>
-                <Card bg={'white'} height={'215px'} overflowY={"auto"}> 
-                <CChartBar
-                    data={{
-                              labels: assetDept?.map(
-                                (dept) => dept.shortName
-                              ),
-                              datasets: [
-                                {
-                                  label: "Departmnt ",
-                                  backgroundColor: ["yellow","blue","red","tomato","orange"],
-                                  // assetmovement?.map((status) =>
-                                  //   randomColor()
-                                  //),
-                                  
-                                  data: [502,2416,2875,506,300,675,764,496],
-                                  // assetDept?.map(
-                                  //   (asset) => asset.assetdept
-                                  // ),
-                                },
-                              ],
-                            }}
-                            labels="Departmnt"
-                />
-              </Card>
-              </Card>
-
-              <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg}>
-                <Flex direction="column">
-                      <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
-                        Asset Status
-                        </Text>
-                        <Button variant="primary" maxH="30px">
-                          SEE ALL
-                        </Button>
-                      </Flex>
-                </Flex>
-                <Card bg={'white'} height={'215px'} overflowY={"auto"}> 
-                  <CChartBar
-                      data={{
-                                labels:
-                                 assetstatus?.map(
-                                  (stat) => stat.statusName
-                                ),
-                                datasets: [
-                                  {
-                                    label: "Status ",
-                                    backgroundColor: 
-                                    ["yellow","blue","red","tomato","orange"],
-                                    // assetmovement?.map((status) =>
-                                    //   randomColor()
-                                    // ),
-                                    
-                                    data:
-                                    // [502,2416,2875,506,300,675,764,496],
-                                    assetstatus?.map(
-                                      (stat) => stat.CntStatus
-                                    ),
-                                  },
-                                ],
-                              }}
-                              labels="Departmnt"
-                  />
-                </Card>
-              </Card>
-
-              <Card   maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg} >
-              <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                    <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
-                      Asset Category
-                      </Text>
-                      <Button variant="primary" maxH="30px">
-                        SEE ALL
-                      </Button>
-                    </Flex>
-              </Flex>
-                <Card bg={'white'} height={'215px'} overflowY={"auto"}> 
-                  <CChartBar
-                        data={{
-                                  labels: category?.map(
-                                    (stat) => stat.Category
-                                  ),
-                                  datasets: [
-                                    {
-                                      label: "Status ",
-                                      backgroundColor: 
-                                      ["yellow","blue","red","tomato","orange"],
-                                      // category?.map((categ) =>
-                                      //   randomColor()
-                                      // ),
-                                      
-                                      data:
-                                      // [502,2416,2875,506,300,675,764,496],
-                                      category?.map(
-                                        (categ) => categ.Current
-                                      ),
-                                    },
-                                  ],
-                                }}
-                                labels="Departmnt"
+                <Flex
+                  direction='column'
+                  color='white'
+                  h='100%'
+                  p='0px 10px 20px 10px'
+                  w='100%'>
+                  <Flex justify='space-between' align='center'>
+                    <Text fontSize='md' fontWeight='bold' color={textColor} textTransform={'uppercase'}>
+                      Profile Information
+                    </Text>
+                    <Avatar
+                      src={sampleImage}
+                     size="xl"
+                      color='gray.400'
                     />
-                </Card>
-              </Card>
-
-              <Card  maxW={{ sm: "315px", md: "100%" }} bg={graphCardBg}>
-              <Flex direction="column">
-                    <Flex align="center" justify="space-between" p="10px">
-                      <Text fontSize="sm" color={textColor} fontWeight="bold" textTransform={"uppercase"}>
-                      Asset Deployed
+                  </Flex>
+                  <Spacer />
+                  <Flex direction='column'>
+                   
+                      <Text
+                        fontSize='sm'
+                        letterSpacing='1px'
+                        fontWeight='bold'
+                        color={textColor}
+                        textTransform={'uppercase'}
+                        
+                        >
+                         
+                        Name : { ' '}
+                        
                       </Text>
-                      <Button variant="primary" color={'white'} maxH="30px" >
-                        SEE ALL
-                      </Button>
+                    
+                    <Text  fontSize='sm' fontWeight='bold' textTransform={'initial'}>
+                        {'Dev'}
+                        </Text> 
+                    <Flex mt='14px'>
+                      <Flex direction='column' me='34px'>
+                        <Text fontSize='xs'>VALID THRU</Text>
+                        <Text fontSize='xs' fontWeight='bold'>
+                          05/24
+                        </Text>
+                      </Flex>
+                      <Flex direction='column'>
+                        <Text fontSize='xs'>CVV</Text>
+                        <Text fontSize='xs' fontWeight='bold'>
+                          09X
+                        </Text>
+                      </Flex>
                     </Flex>
+                  </Flex>
                 </Flex>
-                <Card bg={'white'} height={'215px'}> 
-                <CChartBar
-                  data={{
-                            labels: deployed?.map(
-                              (dept) => dept.shortName
-                            ),
-                            datasets: [
-                              {
-                                label: "Asset Deployed",
-                                backgroundColor: ["blue","tomato","turquoise","green","violet","pink"],
-                                
-                                //'#f87979',
-                                data: deployed?.map(
-                                  (asset) => asset.Count
-                                ),
-                              },
-                            ],
-                          }}
-                          labels="departmentName"
-                />
-                </Card>
-              </Card>
+              </CardBody> */}
+                      <Card p='0px' my={{ sm: "24px", xl: "0px" }}  width={'22vw'} h={'32vh'} > 
+          <CardHeader p='12px 5px' mb='12px'>
+            <Text fontSize='lg' color={textColor} fontWeight='bold' textTransform={'uppercase'}>
+              Profile Information
+            </Text>
+            <HSeparator  />
+          </CardHeader>
+          {/* <CardBody px='5px'> */}
+            <Flex direction='column' >
+              {/* <Text fontSize='md' color='gray.400' fontWeight='400' mb='30px'>
+                Hi, I’m Esthera Jackson, Decisions: If you can’t decide, the
+                answer is no. If two equally difficult paths, choose the one
+                more painful in the short term (pain avoidance is creating an
+                illusion of equality).
+              </Text> */}
 
-
-            </SimpleGrid>
-          </GridItem>
-
-          <GridItem   area={'footer'} height={"250px"}     >
-            <SimpleGrid minChildWidth='315px' spacing='20px'  >
-              <Card height={"300px"} bg={graphCardBg}  >
              
 
-                    <Card height={"290px"} bg={'white'} overflowY="auto" > 
-                    <TableContainer   >
-                      <Table >
-                        <Thead position="sticky" >
-                          <Tr >
-                            <Th>Status</Th>
-                            <Th>Total</Th>
-                            <Th>Percentage</Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {condition.map((conditions) => (
+                  <Flex align='center' mb='18px'>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      fontWeight='bold'
+                      me='10px'>
+                      Full Name:{" "}
+                    </Text>        
+                    <Text fontSize='md' color='gray.400' fontWeight='400'>
+                      {profile.name}
+                    </Text>      
+                  </Flex>
 
-                          <Tr key={conditions.conditionID}>
-                            <Td>
-                            {conditions.ConditionName}
-                            </Td>
-                            <Td>
-                              {conditions.Count_Condition}
-                            </Td>
-                            <Td>
-                            <Flex align="center">
-                                <Text
-                                  color={conditions.colorscheme}
-                                  fontWeight="bold"
-                                  fontSize="sm"
-                                  me="12px"
-                                > {`${conditions.Count_Percentage}%`}</Text>
-                                <Progress
-                                  size="xs"
-                                  colorScheme={conditions.colorscheme}
-                                  value={conditions.Count_Percentage}
-                                  minW="120px"
-                                />
-                              </Flex>
+                  <Flex align='center' mb='18px'>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      fontWeight='bold'
+                      me='10px'>
+                      Email:{" "}
+                    </Text>        
+                    <Text fontSize='md' color='gray.400' fontWeight='400'>
+                      {profile.email}
+                    </Text>      
+                  </Flex>
 
-                              
-                            </Td>
-                          </Tr>
-                          ))}
-                        </Tbody>
-                      </Table>
-                    </TableContainer>
-                    </Card>     
-              </Card>
-              <Card  height={"300px"} bg={graphCardBg} >
-                <Card height={"260px"} bg={'white'} > 
-                  <TableContainer  bg={'white'} overflowY="auto"  >
-                    <Table >
-                      <Thead >
-                        <Tr >
-                          <Th>Locations</Th>
-                          <Th>Count</Th>
-                          <Th>Percentage</Th>
-                          <Th>Quota</Th>
-                          
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {location.map((loc) => (
 
-                        <Tr key={loc.LocationID}>
-                          
-                          <Td>
-                            {loc.LocationName}
-                          </Td>
-                          <Td>
-                            {loc.Count_Location}
-                          </Td>
-                          <Td>
-                          <CircularProgress value={loc.Count_Percentage} color={loc.colorscheme}>
-                            <CircularProgressLabel> 
-                            {`${loc.Count_Percentage}%`}
-                            </CircularProgressLabel>
-                          </CircularProgress>
-                            {}
-                          </Td>
-                          <Td>
-                          {loc.Quota}
-                          </Td>
-                        </Tr>
-                        ))}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
-                </Card>
-                </Card>
-            </SimpleGrid>
-          </GridItem>
-        </Grid>
+                  <Flex align='center' mb='18px'>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      fontWeight='bold'
+                      me='10px'>
+                      Department:{" "}
+                    </Text>        
+                    <Text fontSize='md' color='gray.400' fontWeight='400'>
+                      {profile.department}
+                    </Text>      
+                  </Flex>            
+                               
 
-        </>
-   
+            
+              <Flex align='center' mb='18px'>
+                <Text
+                  fontSize='md'
+                  color={textColor}
+                  fontWeight='bold'
+                  me='10px'>
+                  Group:{" "}
+                </Text>
+                <Text fontSize='md' color='gray.400' fontWeight='400'>
+                      {profile.group}
+                    </Text> 
+                <Flex>
+         
+                  {/* <Link
+                    href='#'
+                    color={iconColor}
+                    fontSize='lg'
+                    me='10px'
+                    _hover={{ color: "blue.500" }}>
+                    <Icon as={FaInstagram} />
+                  </Link>
+                  <Link
+                    href='#'
+                    color={iconColor}
+                    fontSize='lg'
+                    me='10px'
+                    _hover={{ color: "blue.500" }}>
+                    <Icon as={FaTwitter} />
+                  </Link> */}
+                </Flex>
+              </Flex>
+             
+            </Flex>
+          {/* </CardBody> */}
+         </Card> 
+
+              </Grid>
+            </Card>
+            <Card p='16px' display='flex' align='center' justify='center' >
+              <CardBody>
+                <Flex direction='column' align='center' w='100%' py='14px'>
+                <Avatar
+                      src={
+                        profile.image
+                        ?
+                         `http://localhost:5001/image/static/${profile?.image}`
+                        : sampleImage
+                      }
+                     size="1xl"
+                      color='gray.400'
+                    />
+                  <Flex
+                    direction='column'
+                    m='14px'
+                    justify='center'
+                    textAlign='center'
+                    align='center'
+                    w='100%'>
+                    {/* <Text fontSize='md' color={textColor} fontWeight='bold'>
+                      Salary
+                    </Text>
+                    <Text
+                      mb='24px'
+                      fontSize='xs'
+                      color='gray.400'
+                      fontWeight='semibold'>
+                      Belong Interactive
+                    </Text>
+                    <HSeparator /> */}
+                    {/* <Avatar
+                      src={sampleImage}
+                     size="xl"
+                      color='gray.400'
+                    /> */}
+                  </Flex>
+                  <Anchor
+                   // href='#'
+                    //color={iconColor}
+                   
+                    me='10px'
+                    _hover={{ color: "blue.500" }}>
+                      <Text
+                        fontSize='sm'
+                        color={'gray.400'}
+                        fontWeight='bold'
+                        me='10px'>
+                          {profile?.image
+                          ? 'Superb'
+                          : 'Need to update'
+                          }
+                       
+                      </Text>
+                  </Anchor>
+                </Flex>
+              </CardBody>
+            </Card>
+            <Card p='16px' display='flex' align='center' justify='center' >
+              <CardBody>
+                <Flex direction='column' align='center' w='100%' py='14px'>
+                <Avatar
+                      // src={
+                      //   profile.image
+                      //   ?
+                      //    `http://localhost:5001/image/static/${profile?.image}`
+                      //   : sampleImage
+                      // }
+                      src={sampleImage}
+                     size="1xl"
+                      color='gray.400'
+                    />
+                  <Flex
+                    direction='column'
+                    m='14px'
+                    justify='center'
+                    textAlign='center'
+                    align='center'
+                    w='100%'>
+                    {/* <Text fontSize='md' color={textColor} fontWeight='bold'>
+                      Salary
+                    </Text>
+                    <Text
+                      mb='24px'
+                      fontSize='xs'
+                      color='gray.400'
+                      fontWeight='semibold'>
+                      Belong Interactive
+                    </Text>
+                    <HSeparator /> */}
+                    {/* <Avatar
+                      src={sampleImage}
+                     size="xl"
+                      color='gray.400'
+                    /> */}
+                  </Flex>
+                  <Anchor
+                   // href='#'
+                    //color={iconColor}
+                   
+                    me='10px'
+                    _hover={{ color: "blue.500" }}>
+                      <Text
+                        fontSize='sm'
+                        color={'gray.400'}
+                        fontWeight='bold'
+                        me='10px'>
+                          Department
+                       
+                      </Text>
+                  </Anchor>
+                </Flex>
+              </CardBody>
+            </Card>
+          </Grid>
+          <Card p='16px' mt='24px'>
+            <CardHeader>
+              <Flex
+                justify='space-between'
+                align='center'
+                minHeight='60px'
+                w='100%'>
+                <Text fontSize='lg' color={textColor} fontWeight='bold'>
+                  Payment Method
+                </Text>
+                <Button variant={colorMode === "dark" ? "primary" : "dark"}>
+                  ADD A NEW CARD
+                </Button>
+              </Flex>
+            </CardHeader>
+            <CardBody  >
+              <Flex
+                direction={{ sm: "column", md: "row" }}
+                align='center'
+                w='100%'
+                justify='center'
+                py='1rem'>
+                <Flex
+                  p='1rem'
+                  bg={colorMode === "dark" ? "navy.900" : "transparent"}
+                  borderRadius='15px'
+                  width='100%'
+                  //border='1px solid'
+                  borderColor={borderColor}
+                  align='right'
+                  mb={{ sm: "24px", md: "0px" }}
+                  me={{ sm: "0px", md: "24px" }}>
+                  <IconBox me='10px' w='25px' h='22px'>
+                    <MastercardIcon w='100%' h='100%' />
+                  </IconBox>
+                  <Text color='gray.400' fontSize='md' fontWeight='semibold'>
+                    7812 2139 0823 XXXX
+                  </Text>
+                  <Spacer />
+                  <Button p='0px' w='16px' h='16px' variant='no-effects'>
+                    <Icon
+                      as={FaPencilAlt}
+                      color={colorMode === "dark" && "white"}
+                    />
+                  </Button>
+                </Flex>
+                <Flex
+                  p='16px'
+                  bg={colorMode === "dark" ? "navy.900" : "transparent"}
+                  borderRadius='15px'
+                  width='100%'
+                  border='1px solid'
+                  borderColor={borderColor}
+                  align='center'>
+                  <IconBox me='10px' w='25px' h='25px'>
+                    <VisaIcon w='100%' h='100%' />
+                  </IconBox>
+                  <Text color='gray.400' fontSize='md' fontWeight='semibold'>
+                    7812 2139 0823 XXXX
+                  </Text>
+                  <Spacer />
+                  <Button
+                    p='0px'
+                    bg='transparent'
+                    w='16px'
+                    h='16px'
+                    variant='no-effects'>
+                    <Icon
+                      as={FaPencilAlt}
+                      color={colorMode === "dark" && "white"}
+                    />
+                  </Button>
+                </Flex>
+              </Flex>
+            </CardBody>
+          </Card>
+        </Card>
+        <Card
+          p='22px'
+          my={{ sm: "24px", lg: "0px" }}
+          ms={{ sm: "0px", lg: "24px" }}>
+          <CardHeader>
+            <Flex justify='space-between' align='center' mb='1rem' w='100%'>
+              <Text fontSize='lg' color={textColor} fontWeight='bold'>
+                Invoices
+              </Text>
+              <Button
+                variant='outlined'
+                color={colorMode === "dark" && "white"}
+                borderColor={colorMode === "dark" && "white"}
+                _hover={colorMode === "dark" && "none"}
+                minW='110px'
+                maxH='35px'>
+                VIEW ALL
+              </Button>
+            </Flex>
+          </CardHeader>
+          <CardBody>
+            <Flex direction='column' w='100%'>
+              {invoicesData.map((row, idx) => {
+                return (
+                  <InvoicesRow
+                    date={row.date}
+                    code={row.code}
+                    price={row.price}
+                    logo={row.logo}
+                    format={row.format}
+                    key={idx}
+                  />
+                );
+              })}
+            </Flex>
+          </CardBody>
+        </Card>
+      </Grid>
+      <Grid templateColumns={{ sm: "1fr", lg: "1.6fr 1.2fr" }}>
+        <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
+          <Flex direction='column'>
+            <CardHeader py='12px'>
+              <Text color={textColor} fontSize='lg' fontWeight='bold'>
+                Billing Information
+              </Text>
+            </CardHeader>
+            <CardBody>
+              <Flex direction='column' w='100%'>
+                {billingData.map((row, key) => {
+                  return (
+                    <BillingRow
+                      name={row.name}
+                      company={row.company}
+                      email={row.email}
+                      number={row.number}
+                      key={key}
+                    />
+                  );
+                })}
+              </Flex>
+            </CardBody>
+          </Flex>
+        </Card>
+        <Card my='24px' ms={{ lg: "24px" }}>
+          <CardHeader mb='12px'>
+            <Flex direction='column' w='100%'>
+              <Flex
+                direction={{ sm: "column", lg: "row" }}
+                justify={{ sm: "center", lg: "space-between" }}
+                align={{ sm: "center" }}
+                w='100%'
+                my={{ md: "12px" }}>
+                <Text
+                  color={textColor}
+                  fontSize={{ sm: "lg", md: "xl", lg: "lg" }}
+                  fontWeight='bold'>
+                  Your Transactions
+                </Text>
+                <Flex align='center'>
+                  <Icon
+                    as={FaRegCalendarAlt}
+                    color='gray.400'
+                    fontSize='md'
+                    me='6px'></Icon>
+                  <Text color='gray.400' fontSize='sm' fontWeight='semibold'>
+                    23 - 30 March 2022
+                  </Text>
+                </Flex>
+              </Flex>
+            </Flex>
+          </CardHeader>
+          <CardBody>
+            <Flex direction='column' w='100%'>
+              <Text
+                color='gray.400'
+                fontSize={{ sm: "sm", md: "md" }}
+                fontWeight='semibold'
+                my='12px'>
+                NEWEST
+              </Text>
+              {newestTransactions.map((row, idx) => {
+                return (
+                  <TransactionRow
+                    name={row.name}
+                    logo={row.logo}
+                    date={row.date}
+                    price={row.price}
+                    key={idx}
+                  />
+                );
+              })}
+              <Text
+                color='gray.400'
+                fontSize={{ sm: "sm", md: "md" }}
+                fontWeight='semibold'
+                my='12px'>
+                OLDER
+              </Text>
+              {olderTransactions.map((row, idx) => {
+                return (
+                  <TransactionRow
+                    name={row.name}
+                    logo={row.logo}
+                    date={row.date}
+                    price={row.price}
+                    key={idx}
+                  />
+                );
+              })}
+            </Flex>
+          </CardBody>
+        </Card>
+      </Grid>
+    </Flex>
   );
 }
+
+export default DashboardUsers;

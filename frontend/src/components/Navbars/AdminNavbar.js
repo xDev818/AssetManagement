@@ -88,7 +88,7 @@ export default function AdminNavbar(props) {
       position={navbarPosition}
       boxShadow={navbarShadow}
       //bg={navbarBg}
-      bg={'yellow'}
+     // bg={'yellow'}
       borderColor={navbarBorder}
       filter={navbarFilter}
       backdropFilter={navbarBackdrop}
@@ -126,7 +126,7 @@ export default function AdminNavbar(props) {
           sm: "column",
           md: "row",
         }}
-        bg={'red'}
+        //bg={'red'}
         alignItems={{ xl: "center" }}
       >
         <Box mb={{ sm: "8px", md: "0px" }}>

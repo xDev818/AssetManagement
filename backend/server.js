@@ -96,6 +96,13 @@ Date : 10 / 26 / 23
         Purpose : 
                 app.use('/api', dashboard_routes)
                 const dashboard_routes = require('../routes/dashboard_routes')
+
+Date : 11 / 12 / 23
+        Author : Nole
+        Activities
+        Purpose : 
+                app.use('/api', dashboard_routes)
+                const dashboard_users_routes = require('../routes/dashboard_Users_routes')
  */
 
 
@@ -131,6 +138,8 @@ const user_checkin_routes  = require('./routes/user_checkin_routes')
 const user_asset_routes = require('./routes/user_asset_routes')
 
 const dashboard_routes = require('./routes/dashboard_routes')
+
+const dashboard_users_routes = require('./routes/dashboard_users_routes')
 
 
 // Server Initialization
@@ -182,4 +191,6 @@ app.use('/api', user_checkin_routes)
 
 app.use('/api', user_asset_routes)
 app.use('/api', dashboard_routes)
+app.use('/api', dashboard_users_routes)
+
 

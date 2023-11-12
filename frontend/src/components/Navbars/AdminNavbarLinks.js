@@ -40,7 +40,7 @@ import routes from "routes.js";
 import jwtDecode from "jwt-decode";
 import { useEffect } from "react";
 import { useState } from "react";
-import logout from "../../assets/img/Logout.ico"
+import logout from "../../assets/img/Logout.png"
 
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import IconBox from "components/Icons/IconBox";
@@ -112,18 +112,20 @@ export default function HeaderLinks(props) {
              {/* <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />  */}
             <Avatar
                           size='md'
+                          bg={'white'}
                           name= {user.result[0]?.displayName}
                           src= {
                             user.result[0]?.imgFilename
                           ? 
                           `http://localhost:5001/image/static/${user.result[0]?.imgFilename}`
                             
-                          :   <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
+                          :   <ProfileIcon color={navbarIcon} size='md' bg={'white'}/>
+
                           }  
                         />
-            <Text color="red">{user.result[0].Name}</Text>
+            {/* <Text color="red">{user.result[0].Name}</Text> */}
           </Flex>
-          <IconBox
+          {/* <IconBox
                   borderRadius="50%"
                   as="box"
                   h={"45px"}
@@ -131,9 +133,17 @@ export default function HeaderLinks(props) {
                   //bg={"white"}
                   cursor="pointer"
                   onClick={handleLogout} 
-                >
-                  <Image src={logout} size="lg" />
-                </IconBox>
+                > */}
+                  <Avatar
+                   cursor="pointer"
+                   onClick={handleLogout} 
+                   src={logout} size="md" 
+                   bg={'white'}
+                  >
+
+                  </Avatar>
+                  
+                {/* </IconBox> */}
           
           {/* <Button size="sm" >
             Log Out
