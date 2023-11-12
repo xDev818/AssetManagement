@@ -52,7 +52,7 @@ export default function Dashboard(props) {
 
   const { ...rest } = props;
   // states and functions
-  const [fixed, setFixed] = useState(false);
+  const [fixed, setFixed] = useState(true);
   const { colorMode } = useColorMode();
 
   useEffect(() => {
@@ -220,7 +220,7 @@ export default function Dashboard(props) {
             onOpen={onOpen}
             brandText={getActiveRoute(routes)}
             secondary={getActiveNavbar(routes)}
-            fixed={fixed}
+            fixed={false}
             {...rest}
           />
         </Portal>

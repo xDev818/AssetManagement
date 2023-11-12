@@ -49,7 +49,8 @@ export default function AdminNavbar(props) {
   let navbarBorder = "transparent";
   let secondaryMargin = "0px";
   let paddingX = "15px";
-  if (props.fixed === true)
+  if (false === true)
+  // props.fixed
     if (scrolled === true) {
       navbarPosition = "fixed";
       navbarShadow = useColorModeValue(
@@ -76,7 +77,7 @@ export default function AdminNavbar(props) {
   }
   const changeNavbar = () => {
     if (window.scrollY > 1) {
-      setScrolled(true);
+      setScrolled(false);
     } else {
       setScrolled(false);
     }
@@ -86,7 +87,8 @@ export default function AdminNavbar(props) {
     <Flex
       position={navbarPosition}
       boxShadow={navbarShadow}
-      bg={navbarBg}
+      //bg={navbarBg}
+      bg={'yellow'}
       borderColor={navbarBorder}
       filter={navbarFilter}
       backdropFilter={navbarBackdrop}
@@ -124,6 +126,7 @@ export default function AdminNavbar(props) {
           sm: "column",
           md: "row",
         }}
+        bg={'red'}
         alignItems={{ xl: "center" }}
       >
         <Box mb={{ sm: "8px", md: "0px" }}>
@@ -165,8 +168,8 @@ export default function AdminNavbar(props) {
             onOpen={props.onOpen}
             logoText={props.logoText}
             secondary={props.secondary}
-            fixed={props.fixed}
-            scrolled={scrolled}
+            fixed={false}
+            scrolled={false}
           />
         </Box>
       </Flex>

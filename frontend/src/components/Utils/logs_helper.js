@@ -49,11 +49,11 @@ class Logs {
 
          if (logStatus.includes("ERR_NETWOR")) {
             const log_status = new Logs(
-               "DB",
+               this.logtype,
                this.module,
                this.logfunction,
-               err,
-               ""
+               this.logValues,
+               this.userID
             );
 
            // alert(log_status.getMessage());
@@ -63,11 +63,17 @@ class Logs {
 
          if (logStatus.includes("ERR_BAD_REQUEST")) {
             const log_status = new Logs(
-               "Error",
+               this.logtype,
                this.module,
                this.logfunction,
-               err.response.data.message,
-               ""
+               this.logValues,
+               this.userID
+
+               // "Error",
+               // this.module,
+               // this.logfunction,
+               // err.response.data.message,
+               // ""
             );
 
            // alert('Bad Request /log, ' + log_status.getMessage());

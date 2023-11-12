@@ -19,7 +19,8 @@ const {
     deleteOldUserById,
     deleteAllOldUsers,
     updateProfile,
-    uploadImage
+    uploadImage,
+
 
 } = require('../controllers/users_controller')
 
@@ -42,6 +43,7 @@ router.post('/users/update-profile', updateProfile) // Api call to update a sing
 
 router.delete('/users/:id', deleteOldUserById) // Api call to delete an old data by ID
 router.delete('/users', deleteAllOldUsers) // Api call to delete all datas base on row ID's
+
 
 
 router.post('/users/upload-image/:userid', 

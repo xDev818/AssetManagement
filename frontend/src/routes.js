@@ -196,6 +196,13 @@
         component: ITPulloutViewer,
         layout: "/admin",
       },
+
+    Date : 11 / 12 / 23
+    Author : Nole
+    Activities
+      Add List of Users
+      
+
 */
 
 // import
@@ -221,7 +228,6 @@ import ITCheckOut from "components2/views/Activity/ITCheckOut";
 // Configuration submenus pages
 import UpdateProfile from "components2/Profile/UpdateProfile";
 import UserCheckin_Viewer from "components2/Activity/UserCheckin_Viewer";
-import UsersViewer from "components2/Activity/UsersViewer";
 import UserAssetsViewer from "components2/Activity/UserAssetsViewer";
 import Pullout from "components2/views/Activity/Pullout";
 import PulloutViewer from "components2/Activity/PulloutViewer";
@@ -243,10 +249,8 @@ import DataTable from "components2/TanstackTable/DataTable";
 
 import UserGroupViewer from "components2/Configuration/UserGroupViewer";
 import UserGroup from "components2/views/UserGroup";
-//import CreateStatusViewer from "components2/views/CreateStatusViewer";
-//import StatusCategory from "components2/Configuration/StatusCategory";
-//import PositionCategory from "components2/Configuration/PositionCategory";
-//import AssetCategory from "components2/Configuration/AssetCategory";
+
+import UsersViewer from "components2/views/UsersViewer";
 
 import {
   HomeIcon,

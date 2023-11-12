@@ -41,6 +41,9 @@ import {
   Input,
   FormControl,
   Select,
+  SimpleGrid,
+  Text,
+  AbsoluteCenter
 } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 
@@ -282,25 +285,40 @@ export default function Position() {
         
         <Card bg={graphCardBg}>
           <Card bg={'white'}>
-          <Box >
-            <Select
-              placeholder="Select option"
-              size="md"
-              onChange={(e) => {
-                setPosition({ ...values, departmentid: e.target.value });
-              }}
-              value={values.departmentid}
-            >
-              {departments.map((department) => (
-                <option value={department.departmentDisplayID} size="md">
-                  {department.departmentName}
-                </option>
-              ))}
-            </Select>
+          <SimpleGrid columns={'12'}spacing='2px'> 
+            <Box pl={'2'} w={'120px'}  >
+             
+              <Text color={textColor} textTransform={'uppercase'} fontSize={'sm'}>
+                Department
+              </Text>
+             
+              </Box>
+            <Box pl={'2'} w={'40vw'}  >
+              <Select
+                placeholder="Select option"
+                size="md"
+                onChange={(e) => {
+                  setPosition({ ...values, departmentid: e.target.value });
+                }}
+                value={values.departmentid}
+              >
+                {departments.map((department) => (
+                  <option value={department.departmentDisplayID} size="md">
+                    {department.departmentName}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+            </SimpleGrid>
+         
+            <SimpleGrid columns={'12'}spacing='5px'> 
+          <Box pl={'2'} w={'140px'} bg={'tomato'} >
+              <Text color={textColor} textTransform={'uppercase'} fontSize={'sm'}>
+                Position
+              </Text>
           </Box>
-          <Box>
-            <FormLabel fontSize={{ base: "sm" }}>Status Name: </FormLabel>
-            <Input
+          <Box pl={'2'} w={'40vw'}  >
+          <Input
               id="positionname"
               label="Position name"
               placeholder="Position Name"
@@ -310,6 +328,7 @@ export default function Position() {
               }}
             />
           </Box>
+          </SimpleGrid>
           <Box>
             <FormLabel fontSize={{ base: "sm" }}>Description: </FormLabel>
             <Input

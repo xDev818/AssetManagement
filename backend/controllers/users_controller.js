@@ -255,15 +255,24 @@ const verifyEmail = ( request, response ) => {
 // An Instance to get all the users
 const getAllUsers = ( request, response ) => {
 
-    const stmt = "SELECT users.userDisplayID as id,usercategory.categoryName,positions.positionName,"
-    + "concat(users.lastname,', ' , users.firstname) as fullname,department.departmentName,"
-    + "users.displayName,users.email,users.active"
-    + " FROM tblUsers users"
-    + " INNER JOIN tblUserCategory usercategory on usercategory.categoryID COLLATE utf8mb4_unicode_ci = users.groupTypeID"
-    + " INNER JOIN tblPositions positions on positions.positionDisplayID COLLATE utf8mb4_unicode_ci = users.positionID"
-    + " INNER JOIN tblDepartments department on department.departmentDisplayID COLLATE utf8mb4_unicode_ci = positions.departmentDisplayID"
-    + " where users.active = 1"
-    + " ORDER BY fullname"
+    // const stmt = "SELECT users.userDisplayID as id,usercategory.categoryName,positions.positionName,"
+    // + "concat(users.lastname,', ' , users.firstname) as fullname,department.departmentName,"
+    // + "users.displayName,users.email,users.active"
+    // + " FROM tblUsers users"
+    // + " INNER JOIN tblUserCategory usercategory on usercategory.categoryID COLLATE utf8mb4_unicode_ci = users.groupTypeID"
+    // + " INNER JOIN tblPositions positions on positions.positionDisplayID COLLATE utf8mb4_unicode_ci = users.positionID"
+    // + " INNER JOIN tblDepartments department on department.departmentDisplayID COLLATE utf8mb4_unicode_ci = positions.departmentDisplayID"
+    // + " where users.active = 1"
+    // + " ORDER BY fullname"
+
+    const stmt = "SELECT users.userDisplayID as id,concat(TRIM(users.lastname),  ', ', TRIM(users.firstname)) as FullName,"
+    + " users.email,users.imgFilename,pos.positionName,dept.departmentName,categ.categoryName,"
+    + " COALESCE(DATE_FORMAT(users.dateCreated, '%m/%d/%Y'),'') as date_created,users.active FROM assetmngt.tblUsers users"
+    + " INNER JOIN tblPositions pos ON pos.positionDisplayID COLLATE utf8mb4_unicode_ci = users.positionID "
+    + " INNER JOIN tblDepartments dept ON dept.departmentDisplayID COLLATE utf8mb4_unicode_ci = pos.departmentDisplayID"
+    + " INNER JOIN tblUserCategory categ ON categ.categoryID COLLATE utf8mb4_unicode_ci = users.groupTypeID"
+    + " order by FullName"
+    // WHERE users.active = 1
 
     mysql.query( stmt, [], ( err,result ) => {
 
@@ -645,7 +654,6 @@ const deleteAllOldUsers = ( request, response ) => {
 
 
 
-
 module.exports = {
     createUser,
     loginUser,
@@ -660,5 +668,5 @@ module.exports = {
     deleteOldUserById,
     deleteAllOldUsers,
     updateProfile,
-    uploadImage
+    uploadImage,
 }

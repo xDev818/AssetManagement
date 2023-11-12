@@ -70,14 +70,14 @@ export default function Configurator(props) {
                 </Text>
                 <Switch
                   colorScheme="blue"
-                  isChecked={switched}
+                  isChecked={false}
                   onChange={() => {
                     if (switched === true) {
                       props.onSwitch(false);
                       setSwitched(false);
                     } else {
                       props.onSwitch(true);
-                      setSwitched(true);
+                      setSwitched(false);
                     }
                   }}
                 />
