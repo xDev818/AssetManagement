@@ -223,8 +223,6 @@ function DashboardUsers() {
                 illusion of equality).
               </Text> */}
 
-             
-
                   <Flex align='center' mb='18px'>
                     <Text
                       fontSize='md'
@@ -500,7 +498,8 @@ function DashboardUsers() {
         <Card
           p='22px'
           my={{ sm: "24px", lg: "0px" }}
-          ms={{ sm: "0px", lg: "24px" }}>
+          ms={{ sm: "0px", lg: "24px" }}
+          bg= {graphCardBg}>
           <CardHeader>
             <Flex justify='space-between' align='center' mb='1rem' w='100%'>
               <Text fontSize='lg' color={textColor} fontWeight='bold'>
@@ -536,7 +535,7 @@ function DashboardUsers() {
         </Card>
       </Grid>
       <Grid templateColumns={{ sm: "1fr", lg: "1.6fr 1.2fr" }}>
-        <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
+        <Card my={{ lg: "24px" }} me={{ lg: "24px" }} bg={graphCardBg}>
           <Flex direction='column'>
             <CardHeader py='12px'>
               <Text color={textColor} fontSize='lg' fontWeight='bold'>
@@ -560,7 +559,7 @@ function DashboardUsers() {
             </CardBody>
           </Flex>
         </Card>
-        <Card my='24px' ms={{ lg: "24px" }}>
+        <Card my='24px' ms={{ lg: "24px" }} bg={graphCardBg}>
           <CardHeader mb='12px'>
             <Flex direction='column' w='100%'>
               <Flex

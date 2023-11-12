@@ -122,16 +122,16 @@ import DataTable from "components2/TanstackTable/DataTable";
               <Thead>
                 <Tr my=".8rem" pl="0px" color="gray.400" >
                   <Th pl="0px" borderColor={borderColor} color="gray.400" >
-                    Author
+                    USER
                   </Th>
-                  <Th borderColor={borderColor} color="gray.400" >Function</Th>
+                  <Th borderColor={borderColor} color="gray.400" >Dept</Th>
                   <Th borderColor={borderColor} color="gray.400" >Status</Th>
-                  <Th borderColor={borderColor} color="gray.400" >Employed</Th>
+                  <Th borderColor={borderColor} color="gray.400" >Created</Th>
                   <Th borderColor={borderColor}></Th>
                 </Tr>
               </Thead>
               <Tbody>
-                user
+                
                 {user.map((row, index, arr) => {
                   return (
                     <TablesTableRow
