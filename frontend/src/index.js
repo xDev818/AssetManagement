@@ -32,7 +32,7 @@ import {
 import AuthLayout from "./layouts/Auth";
 import AdminLayout from "./layouts/Admin";
 
-import { ChakraProvider, CircularProgress } from "@chakra-ui/react";
+import { ChakraProvider, CircularProgress,useToast } from "@chakra-ui/react";
 // Custom Chakra theme
 import theme from "theme/theme.js";
 import Configuration from "views/Dashboard/Configuration";
@@ -45,13 +45,29 @@ import jwtDecode from "jwt-decode";
 import { lazy } from "react";
 import { Suspense } from "react";
 
+
 export const placeHolderAPI = axios.create({
   baseURL: "http://localhost:5001/api"
 })
 
+// export function showToastMessage(title,desc,status) {
+ 
+//   return (
+
+//        toast({
+//              title: title,
+//              description: desc,
+//              status: status,
+//              duration: 3000,
+//              isClosable: true,
+//              position: "top"
+//            })
+
+//   );
+// };
+
 ReactDOM.render(
 
-   
  
   <ChakraProvider theme={theme} resetCss={false} position="relative">
      

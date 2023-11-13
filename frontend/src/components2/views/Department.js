@@ -15,9 +15,12 @@ Purpose :
 
 import { useLocation, Link } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
+
+
 import { useEffect, useState } from "react";
 //import axios from "axios";
-import { placeHolderAPI } from "index";
+import { placeHolderAPI,showToastMessage } from "index";
+
 import decoder from "jwt-decode";
 
 import React from "react";
@@ -32,17 +35,32 @@ import {
   Td,
   TableContainer,
   Stack,
+  HStack,
+  Grid,
+  GridItem,
   Box,
   Input,
   FormControl,
   Textarea,
+  Flex,
+  Center,
+  Avatar,
+  Text,
+  Alert,
+  AlertIcon,
+  useToast
 } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 
+import defaultLogo from "../../assets/img/Department.png"
+import ShowError from "components/Utils/viewToast";
+
 const Department = () => {
   // const location = useLocation();
   // const departmentID = location.state?.departmentID;
+
+ const toast = useToast()
 
   const graphCardBg = '#e6f2ff'
   const textColor = "#00334d"
@@ -55,8 +73,33 @@ const Department = () => {
     description: "",
   });
 
+  function viewToastify(title,desc,status) {
+    // const toast = useToast()
+     return (
+       
+           toast({
+             title: title,
+             description: desc,
+             status: status,
+             duration: 4000,
+             isClosable: true,
+             position: "top"
+           })
+
+      
+      
+     )
+   }
+
   useEffect(() => {
+    var userID = ''
     try {
+
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
+
+      userID = tokenDecoded.result[0].userDisplayID;
+
       const hashFragment = window.location.hash; // Get the hash fragment, e.g., '#/admin/position/b3552fb4-f7eb-4aae-8f4d-d12fcd338c18'
       const parts = hashFragment.split("/"); // Split the hash fragment by '/'
       const departmentID = parts[parts.length - 1]; // Get the last part, which is the ID
@@ -73,9 +116,10 @@ const Department = () => {
       }
 
       else if (departmentID) {
-        console.log("Dept ID : " + departmentID);
+        
         placeHolderAPI
           .get("/getDepartmentByID/" + departmentID)
+          //
           .then((res) => {
             setbtnState("Update");
             setDepartments({
@@ -86,8 +130,40 @@ const Department = () => {
             });
           })
           .catch((err) => {
-            alert(err);
-            window.location.href = '/'; 
+            const errorStatus = err.code;
+
+            if (errorStatus.includes("ERR_NETWORK")) {
+              const submitLogs = new Logs(
+                "DB",
+                "Department",
+                "Function useEffect /getDepartmentByID/",
+                err,
+                userID
+              );
+
+              viewToastify("Error Loading selected Department",
+              err.code,
+              'error')
+
+             // alert(submitLogs.getMessage());
+            } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+              const submitLogs = new Logs(
+                "Error",
+                "Department",
+                "Function useEffect /getDepartmentByID/",
+                err.response.data.message,
+                userID
+              );
+
+              const request = submitLogs.insertLogs(submitLogs.getLogs())
+
+              viewToastify("Error Loading selected Department",
+               'Please wait while we are logging error',
+               'error')
+             
+            
+            }
+
           });
       } else {
         setbtnState("Save");
@@ -100,18 +176,51 @@ const Department = () => {
         });
       }
     } catch (err) {
-      alert(err);
+      const errorStatus = err.code;
+
+      if (errorStatus.includes("ERR_NETWORK")) {
+        const submitLogs = new Logs(
+          "DB",
+          "Department",
+          "Function useEffect /getDepartmentByID/",
+          err,
+          userID
+        );
+
+        viewToastify("Error Loading selected Department",
+        err.code,
+        'error')
+
+       
+      } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        const submitLogs = new Logs(
+          "Error",
+          "Department",
+          "Function useEffect /getDepartmentByID/",
+          err.response.data.message,
+          userID
+        );
+
+        const request = submitLogs.insertLogs(submitLogs.getLogs())
+
+        viewToastify("Error Loading selected Department",
+         'Please wait while we are logging error',
+         'error')
+       
+      
+      }
     }
   }, []);
 
   async function handleUpdate(event) {
+    var userID = ''
     try {
       event.preventDefault();
 
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
 
-      const userID = tokenDecoded.result[0].userDisplayID;
+       userID = tokenDecoded.result[0].userDisplayID;
 
       const departmentvalues = {
         departmentid: values.departmentid,
@@ -125,7 +234,11 @@ const Department = () => {
         const success = await placeHolderAPI
           .post("/create-department", departmentvalues)
           .then((res) => {
-            alert("Insert Successful");
+            
+            viewToastify("Department",
+            " Create   Department name :  " + departmentvalues.departmentname + "successful",
+            'success')
+    
 
             const InsertLogs = new Logs(
               "Info",
@@ -135,10 +248,8 @@ const Department = () => {
               userID
             );
 
-            const request = placeHolderAPI 
-              .post("/log", InsertLogs.getLogs());
-            const response = request.data;
-
+            InsertLogs.insertLogs(InsertLogs.getMessage())
+    
             window.location.href = "/#/admin/department-viewer";
           })
           .catch((err) => {
@@ -150,7 +261,7 @@ const Department = () => {
         const success = await placeHolderAPI
           .post("/updateDepartmentByID", departmentvalues)
           .then((res) => {
-            alert("Update Successful");
+            //alert("Update Successful");
 
             const InsertLogs = new Logs(
               "Info",
@@ -163,9 +274,11 @@ const Department = () => {
               userID
             );
 
-            const request = placeHolderAPI 
-              .post("/log", InsertLogs.getLogs());
-            const response = request.data;
+            InsertLogs.insertLogs(InsertLogs);
+
+            viewToastify("Department",
+            " Update Department successful",
+            'success')
 
             window.location.href = "/#/admin/department-viewer";
           })
@@ -180,8 +293,10 @@ const Department = () => {
                 err,
                 userID
               );
-
-              alert(submitLogs.getMessage());
+              viewToastify("Department",
+              err.code,
+              'error')
+              
             } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
               const submitLogs = new Logs(
                 "Error",
@@ -190,93 +305,158 @@ const Department = () => {
                 err.response.data.message,
                 userID
               );
-              try {
-                const request = placeHolderAPI 
-                  .post("/log", submitLogs.getLogs());
-                const response = request.data;
-                console.log(response);
-              } catch (err) {
-                const logStatus = err.code;
-
-                if (logStatus.includes("ERR_NETWOR")) {
-                  const submitLogs = new Logs(
-                    "DB",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err,
-                    userID
-                  );
-
-                  alert(submitLogs.getMessage());
-                  console.log(submitLogs.getLogs());
-                }
-
-                if (logStatus.includes("ERR_BAD_REQUEST")) {
-                  const submitLogs = new Logs(
-                    "Error",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err.response.data.message,
-                    userID
-                  );
-
-                  alert(submitLogs.getMessage());
-                  console.log(submitLogs.getLogs());
-                }
-              }
+              submitLogs.insertLogs(submitLogs);
+              viewToastify("Error",
+              " Error in Inserting / updating Department",
+              'error')
             }
           });
       }
     } catch (err) {
-      alert(err);
+
+      const errorStatus = err.code;
+
+      if (errorStatus.includes("ERR_NETWORK")) {
+        const submitLogs = new Logs(
+          "DB",
+          "Department",
+          "Function /Handleupdate",
+          err,
+          userID
+        );
+        viewToastify("Department",
+        err.code,
+        'error')
+        
+      } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        const submitLogs = new Logs(
+          "Error",
+          "Department",
+          "Function /HandleUpdate",
+          err.response.data.message,
+          userID
+        );
+        submitLogs.insertLogs(submitLogs);
+        viewToastify("Error",
+        " Error in Inserting / updating Department",
+        'error')
+      }
     }
   }
 
   return (
-    <Stack>
-      <FormControl>
-        <Card bg={graphCardBg}>
-          <Card bg={'white'}>
-          <Box>
-            <FormLabel fontSize={{ base: "sm" }}>Department Name </FormLabel>
-            <Input
-              w={500}
-              id="departmentname"
-              label="Department name"
-              placeholder="Department Name"
-              value={values.departmentname}
-              onChange={(e) => {
-                setDepartments({ ...values, departmentname: e.target.value });
-              }}
-            />
-          </Box>
-          <Box>
-            <FormLabel fontSize={{ base: "sm" }}>Description: </FormLabel>
-            <Textarea
-              mb={4}
-              id="description"
-              label="Description"
-              placeholder="Description"
-              value={values.description}
-              onChange={(e) => {
-                setDepartments({ ...values, description: e.target.value });
-              }}
-            />
-          </Box>
-          <Box>
-            <Button colorScheme="green" onClick={handleUpdate}>
-              {/* <Link
-              to={{
-              pathname: "/admin/assetstatusviewer"
-              }}>
-          </Link> */}
-              {btnstate}
-            </Button>
-          </Box>
+
+    <>
+    <HStack>
+      
+      <FormControl>  
+         <Grid templateColumns={{ repeat:('6','1fr'), sm: "1fr", lg: "1.6fr 1.2fr" }} gap={5} >
+         <GridItem colSpan={4}  maxHeight={'600px'} >
+            <Card bg={graphCardBg} maxHeight={'600px'}>
+
+              <Card bg={'white'}>
+
+          
+
+                <Flex align='center' mb='18px'>
+                  <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'}>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      w={'95px'}
+                      fontWeight='bold'
+                      me='10px'>
+                      Department:{" "}
+                    </Text> 
+                  </Box>       
+                  <Box pl={'2'} w={'100%'}  >
+                  <Input
+                    w={500}
+                    id="departmentname"
+                    label="Department name"
+                    placeholder="Department Name"
+                    value={values.departmentname}
+                    onChange={(e) => {
+                      setDepartments({ ...values, departmentname: e.target.value });
+                    }}
+                  />
+                  </Box>
+                </Flex>
+                <Flex align='center' mb='18px'>
+                  <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'} h={'80px'}>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      w={'95px'}
+                      fontWeight='bold'
+                      me='10px'>
+                      Description:{" "}
+                    </Text> 
+                  </Box>       
+                  <Box pl={'2'} w={'100%'}  >
+                  <Textarea
+                    mb={4}
+                    id="description"
+                    label="Description"
+                    placeholder="Description"
+                    value={values.description}
+                    onChange={(e) => {
+                      setDepartments({ ...values, description: e.target.value });
+                    }}
+                  />
+                  </Box>
+                </Flex>
+
+               
+                
+                  <Center>
+                    <Button colorScheme="green" onClick={handleUpdate}>
+                            Save
+                      </Button>
+                  </Center>
+
+             
+              </Card>
+            </Card>
+        </GridItem>
+        <GridItem colStart={5} colEnd={6} maxHeight={'600px'} >
+          <Card bg={graphCardBg}  >
+              <Card bg={'white'}>
+               
+                    <Center  >
+                      <Avatar
+                      bg={'white'}
+                      src = {defaultLogo}
+                      h={'220px'}
+                      w={'220px'}
+                      >
+
+                      </Avatar>
+                    </Center>
+  
+                 
+                 
+                  <Box align='center'>
+                    <Center>
+                    <Button colorScheme="green" >
+                          Upload Image
+                    </Button>
+                    </Center>
+
+                  </Box>
+           
+                          
+              </Card>
           </Card>
-        </Card>
+          </GridItem>
+        </Grid>
+
+
       </FormControl>
-    </Stack>
+    </HStack>
+    </>
+
+  
   );
 };
 

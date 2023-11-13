@@ -46,6 +46,7 @@ import {
   Textarea,
   GridItem,
   Center,
+  useToast
 } from "@chakra-ui/react";
 import CardHeader from "components/Card/CardHeader.js";
 import Card from "components/Card/Card.js";
@@ -60,7 +61,7 @@ import defaultLogo from "../../assets/img/Department.png"
 
 export default function Position() {
   
-
+  const toast = useToast()
   const textColor = "#00334d"
   const graphCardBg = '#e6f2ff'
 
@@ -78,6 +79,23 @@ export default function Position() {
 
   const [departments, setDepartments] = useState([]);
   const [btnstate,setbtnState] = useState()
+
+  function viewToastify(title,desc,status) {
+    // const toast = useToast()
+     return (
+       
+           toast({
+             title: title,
+             description: desc,
+             status: status,
+             duration: 3000,
+             isClosable: true,
+             position: "top"
+           })
+       
+      
+     )
+   }
 
 
     useEffect(() => {
@@ -184,18 +202,22 @@ export default function Position() {
         const success = await placeHolderAPI
           .post("/positions/createNewPosition", positionvalues)
           .then((res) => {
-            alert("Insert Successful");
+            
+            viewToastify(
+              "Position",
+              "Updated Position successfull",
+              "success"
+            )
 
             const InsertLogs = new Logs(
               "Info",
-              "Asset Status",
+              "Position",
               "Function /handleUpdate",
               " Create   Position name :  " + positionvalues.positionname,
               userID
             );
 
-            // const request = axios.post('/log',InsertLogs.getLogs())
-            // const response =  request.data
+            InsertLogs.insertLogs(InsertLogs)
 
             window.location.href = "/#/admin/position-viewer";
           })
@@ -207,11 +229,16 @@ export default function Position() {
         const success = await placeHolderAPI
           .post("/positions/updatePosition", positionvalues)
           .then((res) => {
-            alert("Update Successful");
+            
+            viewToastify(
+              "Position",
+              "Updated " + positionvalues.positionname + " successfull",
+              "success"
+            )
 
             const InsertLogs = new Logs(
               "Info",
-              "Asset Status",
+              "Position",
               "Function /handleUpdate",
               " Update Position ID : " +
                 positionvalues.positionid +
@@ -220,8 +247,7 @@ export default function Position() {
               userID
             );
 
-            //  const request = axios.post('/log',InsertLogs.getLogs())
-            //  const response =  request.data
+            InsertLogs.insertLogs(InsertLogs)
 
             window.location.href = "/#/admin/position-viewer";
           })
@@ -229,15 +255,45 @@ export default function Position() {
             const errorStatus = err.code;
 
             if (errorStatus.includes("ERR_NETWORK")) {
+             
+              viewToastify(
+                "Position",
+                errorStatus,
+                "error"
+              )
+
+            
+             
+
+            } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
               const submitLogs = new Logs(
-                "DB",
-                "AssetStatus",
+                "Error",
+                "Position",
                 "Function /HandleSubmit",
-                err,
+                err.response.data.message,
                 userID
               );
+              submitLogs.insertLogs(submitLogs)
+              viewToastify(
+                "Position",
+                errorStatus,
+                "error"
+              )
+            }
+          });
+      }
+    } catch (err) {
+      const errorStatus = err.code;
 
-              alert(submitLogs.getMessage());
+            if (errorStatus.includes("ERR_NETWORK")) {
+             
+              viewToastify(
+                "Position",
+                errorStatus,
+                "error"
+              )
+             
+
             } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
               const submitLogs = new Logs(
                 "Error",
@@ -246,46 +302,15 @@ export default function Position() {
                 err.response.data.message,
                 userID
               );
+              submitLogs.insertLogs(submitLogs)
 
-              try {
-                const request = placeHolderAPI 
-                  .post("/log", submitLogs.getLogs());
-                const response = request.data;
-                console.log(response);
-              } catch (err) {
-                const logStatus = err.code;
-
-                if (logStatus.includes("ERR_NETWOR")) {
-                  const submitLogs = new Logs(
-                    "DB",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err,
-                    userID
-                  );
-
-                  alert(submitLogs.getMessage());
-                  console.log(submitLogs.getLogs());
-                }
-
-                if (logStatus.includes("ERR_BAD_REQUEST")) {
-                  const submitLogs = new Logs(
-                    "Error",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err.response.data.message,
-                    userID
-                  );
-
-                  alert(submitLogs.getMessage());
-                  console.log(submitLogs.getLogs());
-                }
-              }
+              viewToastify(
+                "Position",
+                errorStatus,
+                "error"
+              )
+              
             }
-          });
-      }
-    } catch (err) {
-      alert(err);
     }
   }
 

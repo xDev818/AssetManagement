@@ -1,27 +1,34 @@
-
+import React from "react";
 import {
 
     useToast
   
   } from "@chakra-ui/react";
 
-function viewToastify(title,desc,status) {
+  class ShowError {
 
-    const toast = useToast()
-
-    return (
-        toast({
-          title: title,
-          description: desc,
-          status: status,
-          duration: 2000,
-          isClosable: true,
-          position: "bottom"
-        })
+     toast = new useToast()
+   
+    viewTotast(title,desc,status) {
+      
+      
+     
+          toast({
+            title: title,
+            description: desc,
+            status: status,
+            duration: 2000,
+            isClosable: true,
+            position: "bottom"
+          })
+      
     
-    )
-    
-}
+      
+  }
 
-export default viewToastify;
+  }
+
+
+
+export default ShowError;
 

@@ -43,7 +43,7 @@ class Logs {
          .post("/log", logs);
          const response = await request.data;
 
-        // console.log(response);
+         return response
 
        } catch (err) {
 
@@ -58,29 +58,11 @@ class Logs {
                this.userID
             );
 
-           // alert(log_status.getMessage());
-           // console.log(log_status.getLogs());
+           return err.code
             
          }
 
-         if (logStatus.includes("ERR_BAD_REQUEST")) {
-            const log_status = new Logs(
-               this.logtype,
-               this.module,
-               this.logfunction,
-               this.logValues,
-               this.userID
-
-               // "Error",
-               // this.module,
-               // this.logfunction,
-               // err.response.data.message,
-               // ""
-            );
-
-           // alert('Bad Request /log, ' + log_status.getMessage());
-           // console.log(log_status.getLogs());
-         }
+     
 
       }
 
