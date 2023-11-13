@@ -18,7 +18,8 @@
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
@@ -134,7 +135,7 @@ export default function UserCheckin_Viewer() {
 
 
     const name = 'Deployed'
-    const success =  axios.get('/getStatusbyname/' + name)
+    const success =  placeHolderAPI.get('/getStatusbyname/' + name)
 
       .then((res) => {
        
@@ -221,7 +222,7 @@ export default function UserCheckin_Viewer() {
 
       if(userid ) {
 
-      const dep =  axios.get('/user-checkin/view-fordeploy/' + userid )
+      const dep =  placeHolderAPI.get('/user-checkin/view-fordeploy/' + userid )
 
         .then((res) => {
       
@@ -284,7 +285,7 @@ export default function UserCheckin_Viewer() {
    
   //   try {
      
-  //       const updateDetail = await axios.post("/user-checkin/update-checkin-status",{detailID,statID})
+  //       const updateDetail = await placeHolderAPI.post("/user-checkin/update-checkin-status",{detailID,statID})
 
   //         .then((res) => {
   //       //    alert("Asset Details updated")
@@ -312,7 +313,7 @@ export default function UserCheckin_Viewer() {
    
     try {
     
-         const success = axios.post("/user-checkin/update-checkin-status-asset",{assetID,statID,userid})
+         const success = placeHolderAPI.post("/user-checkin/update-checkin-status-asset",{assetID,statID,userid})
 
           .then((res) => {
       //      alert("Asset Status updated")
@@ -365,7 +366,7 @@ export default function UserCheckin_Viewer() {
           const statID = statusvalues.statusid
     
 
-            const success = await axios.post("/user-checkin/update-checkin",{detailID,statID,userid})
+            const success = await placeHolderAPI.post("/user-checkin/update-checkin",{detailID,statID,userid})
 
 
             .then((res) => {

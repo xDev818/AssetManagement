@@ -44,7 +44,8 @@ import Card from "components/Card/Card";
 import { useLocation, Link } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import React, { useEffect, useState, useReducer, useRef } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 
 import DatePicker from "react-datepicker";
@@ -108,7 +109,7 @@ export default function Asset() {
     LoadAllSuppliers();
 
     if (asset_ID) {
-      axios
+      placeHolderAPI
         .get("/asset/getAssetByID/" + asset_ID)
         .then((res) => {
           setbtnState("Update");
@@ -163,7 +164,7 @@ export default function Asset() {
 
   const LoadAllAssetType = async () => {
     try {
-      const success = await axios
+      const success = await placeHolderAPI
         .get("/assettype/viewasset-type")
 
         .then((res) => {
@@ -185,7 +186,7 @@ export default function Asset() {
 
   const LoadAllStatus = async () => {
     try {
-      const success = await axios
+      const success = await placeHolderAPI
         .get("/getallStatus")
         //axios.get('/getViewallStatus')
         .then((res) => {
@@ -207,7 +208,7 @@ export default function Asset() {
 
   const LoadAllSuppliers = async () => {
     try {
-      const success = await axios
+      const success = await placeHolderAPI
         .get("/suppliers/viewallsuppliers")
 
         .then((res) => {
@@ -268,7 +269,7 @@ export default function Asset() {
 
       if (assetvalues.asset_id === "") {
         // insert here
-        const success = await axios
+        const success = await placeHolderAPI
           .post("/asset/create-AssetByID", assetvalues)
           .then((res) => {
            
@@ -295,7 +296,7 @@ export default function Asset() {
           });
       } else if (!assetvalues.asset_typeid == "") {
         /// update here
-        const success = await axios
+        const success = await placeHolderAPI
           .post("/asset/update-AssetByID", assetvalues)
           .then((res) => {
             viewToastify (
@@ -343,7 +344,8 @@ export default function Asset() {
               );
 
               try {
-                const request = axios.post("/log", submitLogs.getLogs());
+                const request = placeHolderAPI
+                  .post("/log", submitLogs.getLogs());
                 const response = request.data;
                 console.log(response);
               } catch (err) {

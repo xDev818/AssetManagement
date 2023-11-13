@@ -15,7 +15,8 @@
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
-import axios from 'axios'
+//import axios from 'axios'
+import { placeHolderAPI } from 'index'
 import decoder from 'jwt-decode'
 
 
@@ -88,7 +89,7 @@ import {
 
         else if(supplierID) {
             console.log(supplierID)
-            axios.get('/suppliers/getSupplierID/' + supplierID)
+            placeHolderAPI.get('/suppliers/getSupplierID/' + supplierID)
             .then((res) => {
               setbtnState("Update")
                 setSupplier({
@@ -151,7 +152,7 @@ import {
 
         if(suppliervalues.supplierid === "") {
             // insert here
-            const success = await axios.post('/suppliers/createSupplier',suppliervalues)
+            const success = await placeHolderAPI.post('/suppliers/createSupplier',suppliervalues)
             .then((res) => {
             
               alert("Insert Successful")
@@ -176,7 +177,7 @@ import {
             });
         } else if(!suppliervalues.supplierid == "") {
           /// update here
-          const success = await axios.post('/suppliers/updateSupplier',suppliervalues)
+          const success = await placeHolderAPI.post('/suppliers/updateSupplier',suppliervalues)
           .then((res) => {
           
             alert("Update Successful")
@@ -190,7 +191,7 @@ import {
               userID
             )
     
-          //  const request = axios.post('/log',InsertLogs.getLogs())
+          //  const request = placeHolderAPI.post('/log',InsertLogs.getLogs())
           //  const response =  request.data
 
            window.location.href = "/#/admin/suppliers-viewer"
@@ -226,7 +227,7 @@ import {
       
               try {
       
-                const request = axios.post('/log',submitLogs.getLogs())
+                const request = placeHolderAPI.post('/log',submitLogs.getLogs())
                 const response =  request.data
                 console.log(response)
       

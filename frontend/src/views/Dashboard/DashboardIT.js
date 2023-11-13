@@ -80,7 +80,7 @@ import {
   GlobeIcon,
   WalletIcon,
 } from "components/Icons/Icons.js";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+
 // Variables
 import {
   barChartData,
@@ -92,7 +92,8 @@ import { pageVisits, socialTraffic } from "variables/general";
 
 // Jinshin
 import decoder from "jwt-decode";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import Logs from "../../components/Utils/logs_helper";
 import FourGraphs from "components/FourGraphs/FourGraphs";
 import AssetViewer from "components2/Activity/AssetViewer";
@@ -113,7 +114,13 @@ import { getStyle, hexToRgba } from "@coreui/utils";
 import randomColor from "randomcolor";
 import { useStepContext } from "@mui/material";
 
-export default function DashboardIT() {
+import React, { useEffect, useLayoutEffect, useState  } from "react";
+
+
+
+ function DashboardIT() {
+
+  
 
   const [purchases,setPurchases] = useState([])
   const [deployed,setDeployed] = useState([])
@@ -153,7 +160,7 @@ export default function DashboardIT() {
 
     const token = storage.getItem("token");
 
-    axios
+    placeHolderAPI
       .post("/users/verify", { token })
       .then((res) => {
         if (res.data.includes("Token is valid")) {
@@ -187,7 +194,7 @@ export default function DashboardIT() {
             ""
           );
 
-          axios
+          placeHolderAPI
             .post("/log", verifyLogs.getLogs())
             .then((res) => {
               console.log("Log is: ", res.data);
@@ -245,7 +252,8 @@ export default function DashboardIT() {
       const tokenDecoded = decoder(tokenStorage);
       userid = tokenDecoded.result[0].userDisplayID;
   
-      const PrevYearAmount = await axios.get("/dashboard/asset-acquired-PrevYear")
+      const PrevYearAmount = await placeHolderAPI
+      .get("/dashboard/asset-acquired-PrevYear")
   
       .then((res) => {
         amount_prevYear = res.data.result[0].Amount;
@@ -267,7 +275,8 @@ export default function DashboardIT() {
         Acquired Current Year Assets
       */
   
-         const CurrentYearAcuired = await axios.get("/dashboard/asset-acquired-CurrentYear")
+         const CurrentYearAcuired = await placeHolderAPI
+         .get("/dashboard/asset-acquired-CurrentYear")
   
         .then((res) => {
           
@@ -288,7 +297,8 @@ export default function DashboardIT() {
       /* 
         Asset Deploy
       */
-        const assetDeploy = await axios.get("/dashboard/asset-deploy")
+        const assetDeploy = await placeHolderAPI
+        .get("/dashboard/asset-deploy")
   
         .then((res) => {
           //console.log(res.data.result)
@@ -308,7 +318,8 @@ export default function DashboardIT() {
         /*
         Log Info 
         */
-        const successLogInfo = await axios.get("/dashboard/loginfo")
+        const successLogInfo = await placeHolderAPI
+        .get("/dashboard/loginfo")
   
         .then((res) => {
           setLogInfo(res.data.result)
@@ -327,7 +338,8 @@ export default function DashboardIT() {
         /*
         Asset Movement
         */
-        const successAssetMovement = await axios.get("/dashboard/asset-movement")
+        const successAssetMovement = await placeHolderAPI
+        .get("/dashboard/asset-movement")
   
         .then((res) => {
           setMovement(res.data.result[0])
@@ -346,7 +358,8 @@ export default function DashboardIT() {
         /*
         Asset Per Department
         */ 
-        const successAssetPerDept = await axios.get("/dashboard/asset-perDept")
+        const successAssetPerDept = await placeHolderAPI
+        .get("/dashboard/asset-perDept")
   
         .then((res) => {
           setAssetDept(res.data.result)
@@ -366,7 +379,8 @@ export default function DashboardIT() {
         /*
         Asset Status
         */ 
-        const successStatus = await axios.get("/dashboard/asset-Status")
+        const successStatus = await placeHolderAPI
+        .get("/dashboard/asset-Status")
   
         .then((res) => {
           setStatus(res.data.result)
@@ -385,7 +399,8 @@ export default function DashboardIT() {
         /*
         Asset Type
         */ 
-        const succesType = await axios.get("/dashboard/asset-Type")
+        const succesType = await placeHolderAPI
+        .get("/dashboard/asset-Type")
   
         .then((res) => {
           setType(res.data.result)
@@ -404,7 +419,8 @@ export default function DashboardIT() {
  /*
         Asset CATEGORY
         */ 
-        const succesCategory = await axios.get("/dashboard/asset-Category")
+        const succesCategory = await placeHolderAPI
+        .get("/dashboard/asset-Category")
   
         .then((res) => {
           setCategory(res.data.result)
@@ -423,7 +439,8 @@ export default function DashboardIT() {
         /*
         Asset Condition
         */ 
-        const succesCondition = await axios.get("/dashboard/asset-Condition")
+        const succesCondition = await placeHolderAPI
+        .get("/dashboard/asset-Condition")
   
         .then((res) => {
           setCondition(res.data.result[0])
@@ -442,7 +459,8 @@ export default function DashboardIT() {
       /*
         Asset Locations
         */ 
-        const succesLocations = await axios.get("/dashboard/asset-Locations")
+        const succesLocations = await placeHolderAPI
+        .get("/dashboard/asset-Locations")
        // console.log(succesLocations)
         const response = await succesLocations.data;
         //alert(response.message)
@@ -523,7 +541,7 @@ export default function DashboardIT() {
                   <AbsoluteCenter>
 
                   <Text fontSize="20px" color={textColor} fontWeight="bold" >
-                  OVERVIEW Users
+                  OVERVIEW IT
                   </Text>
 
                   </AbsoluteCenter>
@@ -572,7 +590,7 @@ export default function DashboardIT() {
           
               <TableContainer overflowY={"scroll"} >
                 <Table >
-                  <Thead position={"sticky"}  >
+                  <Thead  >
                     <Tr >
                       <Th>User</Th>
                       <Th>Info</Th>
@@ -983,3 +1001,5 @@ export default function DashboardIT() {
    
   );
 }
+
+export default DashboardIT;

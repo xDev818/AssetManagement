@@ -18,7 +18,8 @@
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
@@ -134,8 +135,8 @@ export default function UserAssetsViewer() {
   }, []);
 
   const LoadAllAssets = async (id) => {
-    try {
-      const success = await axios.get("/user-asset/viewallByID/" + id)
+    try { 
+      const success = await placeHolderAPI.get("/user-asset/viewallByID/" + id)
 
         .then((res) => {
           setAssets(res.data.result);

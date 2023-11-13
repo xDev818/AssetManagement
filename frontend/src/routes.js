@@ -209,6 +209,7 @@
 import React, { Component } from "react";
 import Dashboard from "views/Dashboard/Dashboard.js";
 import DashboardUsers from "views/Dashboard/DashboardUsers.js";
+ import DashboardIT from "views/Dashboard/DashboardIT";
 import Tables from "views/Dashboard/Tables.js";
 import Billing from "views/Dashboard/Billing.js";
 //import RTLPage from "views/RTL/RTLPage.js";
@@ -261,7 +262,7 @@ import {
   RocketIcon,
   SupportIcon,
 } from "components/Icons/Icons";
-import DashboardIT from "views/Dashboard/DashboardIT";
+
 
 var dashRoutes = [
   {

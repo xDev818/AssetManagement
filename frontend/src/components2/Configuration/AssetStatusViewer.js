@@ -48,7 +48,8 @@
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
@@ -79,7 +80,7 @@ export default function AssetStatusViewer() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const success = await axios
+      const success = await placeHolderAPI
         .get("/getallStatus")
         //axios.get('/getViewallStatus')
         .then((res) => {
@@ -103,7 +104,7 @@ export default function AssetStatusViewer() {
     try {
       event.preventDefault();
       //alert("Delete ID : " + statusid)
-      const deleteSuccess = await axios
+      const deleteSuccess = await placeHolderAPI
         .post("/deleteStatusbyID", { statusid })
         .then((res) => {
           alert("Delete Successfull");
@@ -118,7 +119,7 @@ export default function AssetStatusViewer() {
             userID
           );
 
-          const request = axios.post("/log", deleteLogs.getLogs());
+          const request = placeHolderAPI.post("/log", deleteLogs.getLogs());
           const response = request.data;
         })
         .catch((err) => {

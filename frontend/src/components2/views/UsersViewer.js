@@ -21,7 +21,8 @@ import {
   
 
   import  { useEffect, useState } from 'react'
-import axios from 'axios'
+//import axios from 'axios'
+import { placeHolderAPI } from "index";
 import decoder from 'jwt-decode'
 import imgDefault from "../../assets/img/defaultImage.webp";
 
@@ -58,7 +59,7 @@ import DataTable from "components2/TanstackTable/DataTable";
 
     const LoadAllUsers = async () => {
       try {
-        const request = await axios.get("/users")
+        const request = await placeHolderAPI.get("/users")
 
           .then((res) => {
             setUsers(res.data.result);

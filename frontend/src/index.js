@@ -32,32 +32,34 @@ import {
 import AuthLayout from "./layouts/Auth";
 import AdminLayout from "./layouts/Admin";
 
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, CircularProgress } from "@chakra-ui/react";
 // Custom Chakra theme
 import theme from "theme/theme.js";
 import Configuration from "views/Dashboard/Configuration";
 import Dummy from "views/Dashboard/Dummy";
 
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:5001/api";
+//axios.defaults.baseURL = "http://localhost:5001/api";
+
 import jwtDecode from "jwt-decode";
+import { lazy } from "react";
+import { Suspense } from "react";
+
+export const placeHolderAPI = axios.create({
+  baseURL: "http://localhost:5001/api"
+})
 
 ReactDOM.render(
 
-
+   
+ 
   <ChakraProvider theme={theme} resetCss={false} position="relative">
+     
     <HashRouter>
       <Switch>
-        {/* {!token ? <Redirect from={`/signin`} to="/admin/dashboard" />: null} */}
-        <Route path={`/auth`} component={AuthLayout} />
+         <Route path={`/auth`} component={AuthLayout} />
         <Route path={`/admin`} component={AdminLayout} />
-         {/*  <Route path={`/admin/position/:id`} component={AdminLayout} />
-     <Route path={`/admin/department/:id`} component={AdminLayout} />
-        <Route path={`/admin/suppliers/:id`} component={AdminLayout} />
-        <Route path={`/admin/assetstatus/:id`} component={AdminLayout} /> */}
-        {/* <Route path={`/admin/configuration`} component={Configuration} /> */}
         <Redirect from={`/`} to="/admin/dashboard" />
-        {/* <Redirect from={`/`} to="/admin/dashboardusers" /> */}
       </Switch>
     </HashRouter>
   </ChakraProvider>,

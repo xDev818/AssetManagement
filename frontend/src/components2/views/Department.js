@@ -16,7 +16,8 @@ Purpose :
 import { useLocation, Link } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 
 import React from "react";
@@ -73,7 +74,7 @@ const Department = () => {
 
       else if (departmentID) {
         console.log("Dept ID : " + departmentID);
-        axios
+        placeHolderAPI
           .get("/getDepartmentByID/" + departmentID)
           .then((res) => {
             setbtnState("Update");
@@ -121,7 +122,7 @@ const Department = () => {
 
       if (departmentvalues.departmentid === "") {
         // insert here
-        const success = await axios
+        const success = await placeHolderAPI
           .post("/create-department", departmentvalues)
           .then((res) => {
             alert("Insert Successful");
@@ -134,7 +135,8 @@ const Department = () => {
               userID
             );
 
-            const request = axios.post("/log", InsertLogs.getLogs());
+            const request = placeHolderAPI 
+              .post("/log", InsertLogs.getLogs());
             const response = request.data;
 
             window.location.href = "/#/admin/department-viewer";
@@ -145,7 +147,7 @@ const Department = () => {
       } else if (!departmentvalues.departmentid == "") {
         /// update here
 
-        const success = await axios
+        const success = await placeHolderAPI
           .post("/updateDepartmentByID", departmentvalues)
           .then((res) => {
             alert("Update Successful");
@@ -161,7 +163,8 @@ const Department = () => {
               userID
             );
 
-            const request = axios.post("/log", InsertLogs.getLogs());
+            const request = placeHolderAPI 
+              .post("/log", InsertLogs.getLogs());
             const response = request.data;
 
             window.location.href = "/#/admin/department-viewer";
@@ -188,7 +191,8 @@ const Department = () => {
                 userID
               );
               try {
-                const request = axios.post("/log", submitLogs.getLogs());
+                const request = placeHolderAPI 
+                  .post("/log", submitLogs.getLogs());
                 const response = request.data;
                 console.log(response);
               } catch (err) {

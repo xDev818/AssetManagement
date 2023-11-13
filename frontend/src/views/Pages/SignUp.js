@@ -52,6 +52,7 @@
 */
 
 import axios from 'axios'
+import { placeHolderAPI } from 'index'
 import * as React from 'react'
 import  { useEffect, useState, useRef } from 'react'
 import {hash_password} from '../../components/Utils/password_helper'
@@ -150,7 +151,8 @@ function SignUp() {
           error_name: "Signup",
           error_message: err.response.data.message})
 
-        axios.post('/log', useEffectLogs.getLogs())
+          placeHolderAPI
+          .post('/log', useEffectLogs.getLogs())
         .then(res => console.log(res.data))
         .catch(err => console.log(err))
 
@@ -185,7 +187,8 @@ function SignUp() {
           error_name: "Signup",
           error_message: err.response.data.message})
 
-        axios.post('/log', useEffectLogs.getLogs())
+          placeHolderAPI
+          .post('/log', useEffectLogs.getLogs())
         .then(res => console.log(res.data))
         .catch(err => console.log(err))
 
@@ -225,7 +228,8 @@ function SignUp() {
 
       if((positionID !== "") && (categoryID !== "")){
 
-      const request = await axios.post('/users',currentValues)
+      const request = await placeHolderAPI
+      .post('/users',currentValues)
 
       const response = await request.data
 
@@ -287,9 +291,10 @@ function SignUp() {
 
         try {
 
-          const request = await axios.post('/log',useEffectLogs.getLogs())
+          const request = await placeHolderAPI
+            .post('/log',useEffectLogs.getLogs())
           const response = await request.data
-          console.log(response)
+         // console.log(response)
 
         } catch ( err ) {
 

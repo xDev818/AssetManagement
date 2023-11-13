@@ -17,7 +17,8 @@
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
-import axios from 'axios'
+//import axios from 'axios'
+import { placeHolderAPI } from 'index'
 import decoder from 'jwt-decode'
 
 
@@ -76,7 +77,7 @@ import {
         }
        else  if(usergroup_id) {
         
-            axios.get('/usergroup/getUserGroupByID/' + usergroup_id)
+        placeHolderAPI.get('/usergroup/getUserGroupByID/' + usergroup_id)
             .then((res) => {
               setbtnState("Update")
                 setUserGroup({
@@ -130,7 +131,7 @@ import {
 
         if(usergroupvalues.usergroup_id === "") {
             // insert here
-            const success = await axios.post('/usergroup/create-usergroup',usergroupvalues)
+            const success = await placeHolderAPI.post('/usergroup/create-usergroup',usergroupvalues)
             .then((res) => {
             
               alert("Insert Successful")
@@ -143,7 +144,7 @@ import {
                 userID
               )
       
-             // const request = axios.post('/log',InsertLogs.getLogs())
+             // const request = placeHolderAPI.post('/log',InsertLogs.getLogs())
              // const response =  request.data
 
              window.location.href = "/#/admin/usergroup-viewer"
@@ -155,7 +156,7 @@ import {
             });
         } else if(!usergroupvalues.usergroup_id == "") {
           /// update here
-          const success = await axios.post('/usergroup/update-usergroup',usergroupvalues)
+          const success = await placeHolderAPI.post('/usergroup/update-usergroup',usergroupvalues)
           .then((res) => {
           
             alert("Update Successful")
@@ -169,7 +170,7 @@ import {
               userID
             )
     
-          //  const request = axios.post('/log',InsertLogs.getLogs())
+          //  const request = placeHolderAPI.post('/log',InsertLogs.getLogs())
           //  const response =  request.data
 
            window.location.href = "/#/admin/usergroup-viewer"
@@ -205,7 +206,7 @@ import {
       
               try {
       
-                const request = axios.post('/log',submitLogs.getLogs())
+                const request = placeHolderAPI.post('/log',submitLogs.getLogs())
                 const response =  request.data
                 console.log(response)
       

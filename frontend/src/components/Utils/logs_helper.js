@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { placeHolderAPI } from 'index'
 class Logs {
 
    #errorDbConnection = "Server is not running"
@@ -38,7 +39,8 @@ class Logs {
 
       try {
 
-         const request = await axios.post("/log", logs);
+         const request = await placeHolderAPI
+         .post("/log", logs);
          const response = await request.data;
 
         // console.log(response);

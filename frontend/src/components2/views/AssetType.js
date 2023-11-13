@@ -17,7 +17,8 @@
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
-import axios from 'axios'
+//import axios from 'axios'
+import { placeHolderAPI } from 'index'
 import decoder from 'jwt-decode'
 
 
@@ -79,7 +80,7 @@ import {
       const LoadAllCategories = async () => {
         try {
 
-          const success = await axios
+          const success = await placeHolderAPI
             .get("/assetcategory/viewassetcategory")
     
             .then((res) => {
@@ -125,7 +126,8 @@ import {
 
         else if(asset_typeID) {
         
-            axios.get('/assettype/get-AssetTypeByID/' + asset_typeID)
+          placeHolderAPI 
+            .get('/assettype/get-AssetTypeByID/' + asset_typeID)
             .then((res) => {
               setbtnState("Update")
                 setAssetType({
@@ -178,7 +180,8 @@ import {
 
         if(typevalues.asset_typeid === "") {
             // insert here
-            const success = await axios.post('/assettype/create-AssetType',typevalues)
+            const success = await placeHolderAPI
+              .post('/assettype/create-AssetType',typevalues)
             .then((res) => {
             
               alert("Insert Successful")
@@ -203,7 +206,8 @@ import {
             });
         } else if(!typevalues.asset_typeid == "") {
           /// update here
-          const success = await axios.post('/assettype/update-AssetType',typevalues)
+          const success = await placeHolderAPI 
+            .post('/assettype/update-AssetType',typevalues)
           .then((res) => {
           
             alert("Update Successful")
@@ -253,7 +257,8 @@ import {
       
               try {
       
-                const request = axios.post('/log',submitLogs.getLogs())
+                const request = placeHolderAPI 
+                  .post('/log',submitLogs.getLogs())
                 const response =  request.data
                 console.log(response)
       

@@ -39,7 +39,8 @@ import {
   olderTransactions,
 } from "variables/general";
 
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 
 import Logs from "components/Utils/logs_helper";
@@ -79,7 +80,8 @@ function DashboardUsers() {
       const tokenDecoded = decoder(tokenStorage);
        userid = tokenDecoded.result[0].userDisplayID
 
-      const success = await axios.get("/dashboard/users-viewProfile/" + userid)
+      const success = await placeHolderAPI
+      .get("/dashboard/users-viewProfile/" + userid)
 
         .then((res) => {
           
@@ -152,69 +154,13 @@ function DashboardUsers() {
               <Grid templateColumns={{ sm: "1fr", xl: "repeat(3, 1fr)" }} gap='22px'>
 
 
-
-              {/* <CardBody h='100%' w='100%' >
-
-                <Flex
-                  direction='column'
-                  color='white'
-                  h='100%'
-                  p='0px 10px 20px 10px'
-                  w='100%'>
-                  <Flex justify='space-between' align='center'>
-                    <Text fontSize='md' fontWeight='bold' color={textColor} textTransform={'uppercase'}>
-                      Profile Information
-                    </Text>
-                    <Avatar
-                      src={sampleImage}
-                     size="xl"
-                      color='gray.400'
-                    />
-                  </Flex>
-                  <Spacer />
-                  <Flex direction='column'>
-                   
-                      <Text
-                        fontSize='sm'
-                        letterSpacing='1px'
-                        fontWeight='bold'
-                        color={textColor}
-                        textTransform={'uppercase'}
-                        
-                        >
-                         
-                        Name : { ' '}
-                        
-                      </Text>
-                    
-                    <Text  fontSize='sm' fontWeight='bold' textTransform={'initial'}>
-                        {'Dev'}
-                        </Text> 
-                    <Flex mt='14px'>
-                      <Flex direction='column' me='34px'>
-                        <Text fontSize='xs'>VALID THRU</Text>
-                        <Text fontSize='xs' fontWeight='bold'>
-                          05/24
-                        </Text>
-                      </Flex>
-                      <Flex direction='column'>
-                        <Text fontSize='xs'>CVV</Text>
-                        <Text fontSize='xs' fontWeight='bold'>
-                          09X
-                        </Text>
-                      </Flex>
-                    </Flex>
-                  </Flex>
-                </Flex>
-              </CardBody> */}
-                      <Card p='0px' my={{ sm: "24px", xl: "0px" }}  width={'22vw'} h={'32vh'} > 
-          <CardHeader p='12px 5px' mb='12px'>
-            <Text fontSize='lg' color={textColor} fontWeight='bold' textTransform={'uppercase'}>
-              Profile Information
-            </Text>
-            <HSeparator  />
-          </CardHeader>
-          {/* <CardBody px='5px'> */}
+          <Card p='0px' my={{ sm: "24px", xl: "0px" }}  width={'22vw'} h={'32vh'} > 
+            <CardHeader p='12px 5px' mb='12px'>
+              <Text fontSize='lg' color={textColor} fontWeight='bold' textTransform={'uppercase'}>
+                Profile Information
+              </Text>
+              <HSeparator  />
+            </CardHeader>
             <Flex direction='column' >
               {/* <Text fontSize='md' color='gray.400' fontWeight='400' mb='30px'>
                 Hi, I’m Esthera Jackson, Decisions: If you can’t decide, the
@@ -298,7 +244,7 @@ function DashboardUsers() {
               </Flex>
              
             </Flex>
-          {/* </CardBody> */}
+          
          </Card> 
 
               </Grid>

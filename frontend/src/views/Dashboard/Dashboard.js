@@ -79,7 +79,7 @@ import {
   GlobeIcon,
   WalletIcon,
 } from "components/Icons/Icons.js";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+
 // Variables
 import {
   barChartData,
@@ -91,7 +91,9 @@ import { pageVisits, socialTraffic } from "variables/general";
 
 // Jinshin
 import decoder from "jwt-decode";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
+
 import Logs from "../../components/Utils/logs_helper";
 import FourGraphs from "components/FourGraphs/FourGraphs";
 import AssetViewer from "components2/Activity/AssetViewer";
@@ -99,6 +101,8 @@ import AssetViewer from "components2/Activity/AssetViewer";
 
 import ITCheckoutViewer from "components2/Activity/ITCheckoutViewer";
 //import DashBoardContent from "./DashboardContent"
+
+import React, { useEffect, useLayoutEffect, useState,lazy,Suspense } from "react";
 
 import {
   CChartBar,
@@ -110,8 +114,11 @@ import {
 import { getStyle, hexToRgba } from "@coreui/utils";
 
 import randomColor from "randomcolor";
-import DashboardIT from "./DashboardIT";
-import DashboardUsers from "./DashboardUsers";
+// import DashboardIT from "./DashboardIT";
+// import DashboardUsers from "./DashboardUsers";
+
+const DashboardIT = React.lazy(() => import("./DashboardIT"));
+const DashboardUsers = React.lazy(() => import("./DashboardUsers"));
 
 export default function Dashboard() {
 
@@ -134,7 +141,7 @@ export default function Dashboard() {
 
     const token = storage.getItem("token");
 
-    axios
+    placeHolderAPI
       .post("/users/verify", { token })
       .then((res) => {
         if (res.data.includes("Token is valid")) {
@@ -171,7 +178,7 @@ export default function Dashboard() {
             ""
           );
 
-          axios
+          placeHolderAPI
             .post("/log", verifyLogs.getLogs())
             .then((res) => {
               console.log("Log is: ", res.data);
@@ -243,10 +250,72 @@ export default function Dashboard() {
   return (
 <>
 
-      { user?.userRole.trim() === "IT Admin" && <DashboardIT /> }
-      { user?.userRole.trim() === "IT" && <DashboardIT /> }
-      { user?.userRole.trim() === "User" && <DashboardUsers /> }
-      { user?.userRole.trim() === "Supplier" && <DashboardUsers /> }
+        { user?.userRole.trim() === "IT Admin" &&  
+          <Suspense fallback={
+            <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <CircularProgress  h={'150px'} w={'150px'} isIndeterminate color='green.300' />
+            </div>
+            
+          }>
+            <DashboardIT/> 
+          </Suspense>
+        }
+
+        { user?.userRole.trim() === "IT" &&  
+          <Suspense fallback={
+            <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <CircularProgress  h={'150px'} w={'150px'}  isIndeterminate color='green.300' />
+            </div>
+            
+          }>
+            <DashboardIT/> 
+          </Suspense>
+        }
+        
+        { user?.userRole.trim() === "User" &&  
+          <Suspense fallback={
+            <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <CircularProgress  h={'150px'} w={'150px'}  isIndeterminate color='green.300' />
+            </div>
+            
+          }>
+            <DashboardUsers/> 
+          </Suspense>
+        }
+        { user?.userRole.trim() === "Supplier" &&  
+          <Suspense fallback={
+            <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <CircularProgress h={'150px'} w={'150px'}  isIndeterminate color='green.300' />
+            </div>
+            
+          }>
+            <DashboardUsers/> 
+          </Suspense>
+        }
+      {/* { user?.userRole.trim() === "IT Admin" && <DashboardIT /> } */}
+      {/* { user?.userRole.trim() === "IT" && <DashboardIT /> } */}
+      {/* { user?.userRole.trim() === "User" && <DashboardUsers /> } */}
+      {/* { user?.userRole.trim() === "Supplier" && <DashboardUsers /> } */}
 
         </>
    

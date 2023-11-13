@@ -37,7 +37,8 @@
       - Fixed global search
 */
 
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import { useEffect, useState } from "react";
 import React from "react";
 import decoder from "jwt-decode";
@@ -68,7 +69,7 @@ export default function DepartmentViewer() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const res = await axios.get("/get_all_departments");
+      const res = await placeHolderAPI.get("/get_all_departments");
       const data = await res.data;
       console.log("data", data.result);
       setDepartments(res.data.result);
@@ -90,7 +91,7 @@ export default function DepartmentViewer() {
     try {
       event.preventDefault();
       //alert("Delete ID : " + statusid)
-      const deleteSuccess = await axios
+      const deleteSuccess = await placeHolderAPI
         .post("/deleteDepartmentByID", { departmentid })
         .then((res) => {
           alert("Delete Successfull");
@@ -108,7 +109,7 @@ export default function DepartmentViewer() {
             userID
           );
 
-          const request = axios.post("/log", deleteLogs.getLogs());
+          const request = placeHolderAPI.post("/log", deleteLogs.getLogs());
           const response = request.data;
         })
         .catch((err) => {

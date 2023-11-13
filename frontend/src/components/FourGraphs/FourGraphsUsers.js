@@ -16,7 +16,8 @@
 */
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 
 import {
@@ -120,7 +121,7 @@ export default function FourGraphsUsers() {
       var notAvailable = ""
       var ForPullout = ""
 
-     const successAmount = await axios
+     const successAmount = await placeHolderAPI
 
         .get("/fourgraphs/totalAmount-asset-available")
 
@@ -138,7 +139,7 @@ export default function FourGraphsUsers() {
           );
         });
 
-      const successTotal = await axios
+      const successTotal = await placeHolderAPI
         .get("/fourgraphs/totalno-asset-deployed")
         .then((res) => {
           totalNo = res.data.result[0].Count;
@@ -153,7 +154,7 @@ export default function FourGraphsUsers() {
           );
         });
 
-      const successAvailable = await axios
+      const successAvailable = await placeHolderAPI
         .get("/fourgraphs/totalno-asset-available")
         .then((res) => {
           available = res.data.result[0].Available;
@@ -171,7 +172,7 @@ export default function FourGraphsUsers() {
       /*
        For Deploy  
       */
-      const successForDeploy = await axios
+      const successForDeploy = await placeHolderAPI
         .get("/fourgraphs/totalno-asset-fordeploy")
         .then((res) => {
           fordeploy = res.data.result[0].ForDeploy;
@@ -203,7 +204,7 @@ export default function FourGraphsUsers() {
       //     );
       //   });
 
-        const successNotAvailable = await axios
+        const successNotAvailable = await placeHolderAPI
         .get("/fourgraphs/totalno-asset-Not-available")
         .then((res) => {
           notAvailable = res.data.result[0].NotAvailable;
@@ -219,7 +220,7 @@ export default function FourGraphsUsers() {
           );
         });
 
-        const successForPullout = await axios
+        const successForPullout = await placeHolderAPI
         .get("/fourgraphs/totalno-asset-For-Pullout")
         .then((res) => {
           ForPullout = res.data.result[0].ForPullout;
@@ -292,8 +293,8 @@ export default function FourGraphsUsers() {
               <Box justifyItems={"center"} >
               <Flex>
                 <StatNumber fontSize="30px" color={textColor} fontWeight="bold" alignContent={"center"}>
-                  {/* {fourgraphs.amount} */}
-                  15
+                  {fourgraphs.amount} 
+                  
                 </StatNumber>
               </Flex>
               </Box>

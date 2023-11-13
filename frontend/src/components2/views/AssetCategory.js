@@ -17,7 +17,8 @@
 import { useLocation,Link } from 'react-router-dom'
 import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useState } from 'react'
-import axios from 'axios'
+//import axios from 'axios'
+import { placeHolderAPI } from 'index'
 import decoder from 'jwt-decode'
 
 
@@ -76,7 +77,8 @@ import {
 
         else if(asset_categoryID) {
         
-            axios.get('/assetcategory/getCategoryByID/' + asset_categoryID)
+          placeHolderAPI 
+            .get('/assetcategory/getCategoryByID/' + asset_categoryID)
             .then((res) => {
               setbtnState("Update")
                 setCaegory({
@@ -131,7 +133,8 @@ import {
 
         if(categoryvalues.asset_categoryid === "") {
             // insert here
-            const success = await axios.post('/assetcategory/createAssetCategory',categoryvalues)
+            const success = await placeHolderAPI 
+              .post('/assetcategory/createAssetCategory',categoryvalues)
             .then((res) => {
             
               alert("Insert Successful")
@@ -156,7 +159,8 @@ import {
             });
         } else if(!categoryvalues.asset_categoryid == "") {
           /// update here
-          const success = await axios.post('/assetcategory/updateAssetCategory',categoryvalues)
+          const success = await placeHolderAPI 
+            .post('/assetcategory/updateAssetCategory',categoryvalues)
           .then((res) => {
           
             alert("Update Successful")
@@ -206,7 +210,8 @@ import {
       
               try {
       
-                const request = axios.post('/log',submitLogs.getLogs())
+                const request = placeHolderAPI 
+                  .post('/log',submitLogs.getLogs())
                 const response =  request.data
                 console.log(response)
       

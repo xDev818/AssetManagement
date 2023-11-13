@@ -28,7 +28,8 @@ import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useMemo, useState } from 'react'
 import React from "react";
 
-import axios from 'axios'
+//import axios from 'axios'
+import { placeHolderAPI } from 'index';
 import decoder from 'jwt-decode'
 import Datehelper from 'components/Utils/datehelper'
 import { v4 as uuidv4 } from 'uuid';
@@ -138,7 +139,8 @@ import {
     const LoadallUsers = async () => {
       try {
 
-        const res = await axios.get("/users");
+        const res = await placeHolderAPI
+          .get("/users");
         const data = await res.data;
 
         
@@ -153,7 +155,8 @@ import {
     const LoadAllAssets = async () => {
       try {
 
-        const res = await axios.get("/assetcheckout/viewavailable-assets");
+        const res = await placeHolderAPI 
+          .get("/assetcheckout/viewavailable-assets");
         const data = await res.data;
 
         
@@ -168,7 +171,8 @@ import {
     const getAssetStatus_ForDeploy = async () => {
       try {
 
-        const res = await axios.get("/assetcheckout/get-assetstatus-byname");
+        const res = await placeHolderAPI 
+          .get("/assetcheckout/get-assetstatus-byname");
         const data = await res.data;
 
         //console.log(res.data.result)
@@ -206,37 +210,6 @@ import {
          LoadAllAssets()
          getAssetStatus_ForDeploy()
 
-        // if(positionID) {
-        
-        //     axios.get('/positions/getPositionID/' + positionID)
-        //     .then((res) => {
-        //       setbtnState("Update")
-        //         setPosition({
-        //           ...values,
-        //           positionid: res.data.result[0].positionDisplayID,
-        //           positionname: res.data.result[0].positionName,
-        //           description: res.data.result[0].description,
-        //           departmentid: res.data.result[0].departmentDisplayID,
-        //           departmentname: res.data.result[0].departmentName
-        //         })
-               
-        //     })
-        //     .catch((err) => {
-        //       alert(err);
-        //     });
-          
-        // } else {
-        //   setbtnState("Save")
-           
-        //   setPosition({
-        //     ...values,
-        //     positionid: '',
-        //     positionname: '',
-        //     description: '',
-        //     departmentid: '',
-        //     departmentname: ''
-        //   })
-        // }
 
       }
       catch(err) {
@@ -303,7 +276,8 @@ import {
          {
           
           var id = userSelected
-          const res = await axios.get("/assetcheckout/get-userdeptpos_byID/" + id);
+          const res = await placeHolderAPI
+            .get("/assetcheckout/get-userdeptpos_byID/" + id);
           const data = await res.data;
 
           var receiver_posid = res.data.result[0].positionDisplayID
@@ -328,7 +302,8 @@ import {
 
 
           
-              var success = await axios.post('/assetcheckout/create-checkoutasset',checkoutvalues)
+              var success = await placeHolderAPI 
+                .post('/assetcheckout/create-checkoutasset',checkoutvalues)
               .then((res) => {
                 
               //  alert("Insert Successful")
@@ -342,13 +317,15 @@ import {
                   userdata.userid
                 )
       
-                var request =  axios.post('/log',InsertLogs.getLogs())
+                var request =  placeHolderAPI 
+                  .post('/log',InsertLogs.getLogs())
                 var response =  request.data
 
                 /* 
                   Update the Assets to mark as deploy
                 */
-                  success = axios.post('/assetcheckout/update-checkoutasset_ForDeploy',checkoutvalues)
+                  success = placeHolderAPI 
+                    .post('/assetcheckout/update-checkoutasset_ForDeploy',checkoutvalues)
                   .then((res) => {
                 
                   // alert("update Successful")
@@ -361,7 +338,8 @@ import {
                       userdata.userid
                     )
           
-                    request = axios.post('/log',InsertLogs.getLogs())
+                    request = placeHolderAPI 
+                      .post('/log',InsertLogs.getLogs())
                     response =  request.data
 
                   //  window.location.href = "/#/admin/checkout-viewer";

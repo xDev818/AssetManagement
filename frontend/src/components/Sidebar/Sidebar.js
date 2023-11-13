@@ -767,20 +767,26 @@ export function SidebarResponsive(props) {
                   </Stack>
                 )}
 
-                {/* {userDropdown && (
+                {user?.userRole.trim() === "Supplier" && userDropdown && (
+                  
                   <Stack pl={4} gap={4}>
-                    {activitySubmenu.map((route, index) => (
-                      <Text 
-                      color={textColor}
-                      textTransform={"uppercase"}
-                      >
+                    {viewUseractivitySubmenu.map((route, index) => (
+                    
+                    
                       <Anchor key={index} to={`/admin${route.path}`}>
+                        <Text 
+                        color={textColor}
+                        textTransform={"uppercase"}
+                        fontSize={'sm'}
+                        >
                         {route.name}
+                        </Text>
+                        
+                      
                       </Anchor>
-                      </Text>
                     ))}
                   </Stack>
-                )} */}
+                )}
 
                 {user?.userRole.trim() === "IT Admin" && (
                   <Box display="flex" alignItems="center" gap="5">
@@ -812,21 +818,7 @@ export function SidebarResponsive(props) {
                   </Box>
                 )}
 
-                {/* {configDropdown && (
-                  <Stack pl={4} gap={4}>
-                    {configurationSubmenu.map((route, index) => (
-                      <Text 
-                      color={textColor}
-                      textTransform={"uppercase"}
-                      >
-                      <Anchor key={index} to={`/admin${route.path}`}>
-                        {route.name}
-                      </Anchor>
-                      </Text>
-                    ))}
-                  </Stack>
-                )} */}
-
+              
                 {user?.userRole.trim() === "IT Admin" && configDropdown && (
                   <Stack pl={4} gap={4}>
                     {configurationSubmenuAnchors.map((route, index) => (

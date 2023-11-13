@@ -16,7 +16,8 @@ import Logs from 'components/Utils/logs_helper'
 import  { useEffect, useMemo, useState } from 'react'
 import React from "react";
 
-import axios from 'axios'
+//import axios from 'axios'
+import { placeHolderAPI } from 'index';
 import decoder from 'jwt-decode'
 import Datehelper from 'components/Utils/datehelper'
 import { v4 as uuidv4 } from 'uuid';
@@ -105,7 +106,8 @@ import {
     const LoadAllAssets = async (id) => {
       try {
 
-        const res = await axios.get("/user-asset/viewallByID/" + id)
+        const res = await placeHolderAPI 
+          .get("/user-asset/viewallByID/" + id)
         const data = await res.data;
 
         setAssets(res.data.result)
@@ -119,7 +121,8 @@ import {
     const LoadAStatus = async (id) => {
       try {
 
-        const res = await axios.get("/user-asset/viewstatus")
+        const res = await placeHolderAPI 
+          .get("/user-asset/viewstatus")
         const data = await res.data;
 
         setStatus(res.data.result)
@@ -226,7 +229,8 @@ import {
                 /* 
                   Update the Assets to as Pullout
                 */
-              const pulloutsuccess = await axios.post('/user-asset/pullout-asset',pulloutvalues)
+              const pulloutsuccess = await placeHolderAPI 
+                .post('/user-asset/pullout-asset',pulloutvalues)
               .then((res) => {
                 
                 const InsertLogs = new Logs(
@@ -237,44 +241,13 @@ import {
                   userdata.userid
                 )
       
-                var request =  axios.post('/log',InsertLogs.getLogs())
+                var request =  placeHolderAPI 
+                  .post('/log',InsertLogs.getLogs())
                 var response =  request.data
 
                 LoadAllAssets(userdata.userid)
 
-                // /* 
-                //   Update the Assets Mark Status based on StatusID
-                // */
-                //   const success = axios.post('/user-asset/update-asset',{})
-                //   .then((res) => {
-                
-                //   // alert("update Successful")
-        
-                //     const InsertLogs = new Logs(
-                //       'Info',
-                //       "Asset Status",
-                //       "Function /handleUpdate",
-                //       ' Create   Position name :  ' + checkoutvalues.assetid,
-                //       userdata.userid
-                //     )
-          
-                //     request = axios.post('/log',InsertLogs.getLogs())
-                //     response =  request.data
-
-                //   //  window.location.href = "/#/admin/checkout-viewer";
-
-                //   viewToastify(
-                //     "Pullout",
-                //     "Asset pullout successfully",
-                //     "success"
-                //   )
-
-                //   LoadAllAssets(userdata.userid)
-
-                //   })
-                //   .catch((err) => {
-                //     alert(err);
-                //   });
+             
                   
               })
               .catch((err) => {

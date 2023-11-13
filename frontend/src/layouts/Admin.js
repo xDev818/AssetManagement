@@ -7,6 +7,7 @@ import {
   useColorMode,
   StatLabel,
   Text,
+  CircularProgress,
 } from "@chakra-ui/react";
 import Configurator from "components/Configurator/Configurator";
 import Footer from "components/Footer/Footer.js";
@@ -19,7 +20,7 @@ import {
 // Layout components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import React, { useState,useEffect } from "react";
+
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 
 import jwtDecode from "jwt-decode";
@@ -34,11 +35,21 @@ import MainPanel from "../components/Layout/MainPanel";
 import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
 import bgAdmin from "assets/img/AssetBackground.webp";
-import FourGraphs from "components/FourGraphs/FourGraphs";
-import FourGraphsUsers from "components/FourGraphs/FourGraphsUsers";
+
+//import FourGraphs from "components/FourGraphs/FourGraphs";
+//import FourGraphsUsers from "components/FourGraphs/FourGraphsUsers";
+
+
+
+import React, { lazy, Suspense } from "react";
+import  { useState,useEffect } from "react";
+const FourGraphs = React.lazy(() => import('components/FourGraphs/FourGraphs'));
+const FourGraphsUsers = React.lazy(() => import('components/FourGraphs/FourGraphsUsers'));
 
 
 export default function Dashboard(props) {
+
+ 
 
   const [user, setUser] = useState({
     userID: "",
@@ -155,6 +166,8 @@ export default function Dashboard(props) {
 
   const dashboardBg = 'linear(to-tl, #1a75ff, #80b3ff, #cce0ff)'
 
+
+
   return (
     <Box  h='100vh' bgGradient={dashboardBg}>
       {/*
@@ -206,13 +219,70 @@ export default function Dashboard(props) {
         }}
       >
         {/* Four Graphs */}
-        
+     
         <Stack mt={{ base: 140, md: 100 }} px={{ base: 4, md: 7, lg: 10 }} >
+      
+      
        
-          { user?.userRole.trim() === "IT Admin" && <FourGraphs /> }
-          { user?.userRole.trim() === "IT" && <FourGraphs /> }
-          { user?.userRole.trim() === "User" && <FourGraphsUsers /> }
-          { user?.userRole.trim() === "Supplier" && <FourGraphsUsers /> }
+          { user?.userRole.trim() === "IT Admin" &&  
+          <Suspense fallback={
+            <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <CircularProgress h={'50px'} w={'50px'} isIndeterminate color='green.300' />
+            </div>
+            
+          }>
+            <FourGraphs/> 
+          </Suspense>
+        }
+
+        { user?.userRole.trim() === "IT" &&  
+          <Suspense fallback={
+            <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <CircularProgress h={'50px'} w={'50px'} isIndeterminate color='green.300' />
+            </div>
+            
+          }>
+             <FourGraphs/> 
+          </Suspense>
+        }
+
+        { user?.userRole.trim() === "User" &&  
+          <Suspense fallback={
+            <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              
+              <CircularProgress h={'50px'} w={'50px'} isIndeterminate color='green.300' />
+            </div>
+            
+          }>
+             <FourGraphsUsers/> 
+          </Suspense>
+        }
+
+        { user?.userRole.trim() === "Supplier" &&  
+          <Suspense fallback={
+            <div>
+              <CircularProgress h={'50px'} w={'50px'} isIndeterminate color='green.300' />
+            </div>
+            
+          }>
+             <FourGraphsUsers/> 
+          </Suspense>
+        }
 
         </Stack>
         <Portal>
@@ -233,7 +303,7 @@ export default function Dashboard(props) {
                 {/* { user?.userRole.trim() === "IT Admin" && <Redirect from="/admin" to="/admin/dashboardit" /> }
                 { user?.userRole.trim() === "IT" && <Redirect from="/admin" to="/admin/dashboardit" /> }
                 { user?.userRole.trim() === "User" && <Redirect from="/admin" to="/admin/dashboardusers" /> } */}
-                 <Redirect from="/admin" to="/admin/dashboardusers" />
+                 <Redirect from="/admin" to="/admin/dashboard" />
                 
               </Switch>
              

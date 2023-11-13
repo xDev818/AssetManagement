@@ -27,7 +27,8 @@
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 
@@ -166,7 +167,7 @@ export default function AssetViewer() {
 
   const LoadAllAssets = async () => {
     try {
-      const success = await axios
+      const success = await placeHolderAPI
         .get("/asset/view-AllAssets")
 
         .then((res) => {
@@ -192,7 +193,7 @@ export default function AssetViewer() {
 
     
 
-      const deleteSuccess = await axios
+      const deleteSuccess = await placeHolderAPI
         .post("/asset/delete-AssetByID", { assetid })
         .then((res) => {
           alert("Delete succes");

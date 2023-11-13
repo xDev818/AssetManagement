@@ -19,7 +19,8 @@
 import { Link as Anchor } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
@@ -141,7 +142,7 @@ export default function ITPulloutViewer() {
 
   const LoadAPulloutAssets = async (id) => {
     try {
-      const success = await axios.get("/user-asset/view-ITPullout")
+      const success = await placeHolderAPI.get("/user-asset/view-ITPullout")
 
         .then((res) => {
           if(res.data.message === "Records Found") {
@@ -197,13 +198,13 @@ export default function ITPulloutViewer() {
             assetid: asset.assetID
           }
 
-          const request =  axios.post("/user-asset/update-pullout-receive",assetvalues)
+          const request =  placeHolderAPI.post("/user-asset/update-pullout-receive",assetvalues)
           
 
           .then((res) => {
             if(res.data.message === "Update Success") {
 
-              const requestStatus =  axios.post("/user-asset/update-pullout-assetStatus",assetvalues)
+              const requestStatus =  placeHolderAPI.post("/user-asset/update-pullout-assetStatus",assetvalues)
 
               .then((res) => {
                 if(res.data.message === "Update Success") { 

@@ -24,18 +24,12 @@
 import { useLocation, Link } from "react-router-dom";
 import Logs from "components/Utils/logs_helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
+import { placeHolderAPI } from "index";
 import decoder from "jwt-decode";
 
 import {
   FormLabel,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
   Stack,
   Box,
   Input,
@@ -43,13 +37,26 @@ import {
   Select,
   SimpleGrid,
   Text,
-  AbsoluteCenter
+  AbsoluteCenter,
+  Grid,
+  Spacer,
+  Flex,
+  Avatar,
+  HStack,
+  Textarea,
+  GridItem,
+  Center,
 } from "@chakra-ui/react";
+import CardHeader from "components/Card/CardHeader.js";
+import Card from "components/Card/Card.js";
+import CardBody from "components/Card/CardBody.js";
+import { HSeparator } from "components/Separator/Separator";
+
 import { Button, ButtonGroup } from "@chakra-ui/react";
 
 import Modal1 from "components2/Modal/Modal";
-import Card from "components/Card/Card";
 import { useParams } from "react-router-dom";
+import defaultLogo from "../../assets/img/Department.png"
 
 export default function Position() {
   
@@ -97,7 +104,8 @@ export default function Position() {
         
         else if(id) {
         
-            axios.get('/positions/getPositionID/' + id)
+          placeHolderAPI 
+            .get('/positions/getPositionID/' + id)
             .then((res) => {
               setbtnState("Update")
                 setPosition({
@@ -144,7 +152,8 @@ export default function Position() {
 
       userID = tokenDecoded.result[0].userDisplayID;
 
-      const res = await axios.get("/get_all_departments");
+      const res = await placeHolderAPI 
+        .get("/get_all_departments");
       const data = await res.data;
 
       setDepartments(res.data.result);
@@ -172,7 +181,7 @@ export default function Position() {
 
       if (positionvalues.positionid === "") {
         // insert here
-        const success = await axios
+        const success = await placeHolderAPI
           .post("/positions/createNewPosition", positionvalues)
           .then((res) => {
             alert("Insert Successful");
@@ -195,7 +204,7 @@ export default function Position() {
           });
       } else if (!positionvalues.positionid == "") {
         /// update here
-        const success = await axios
+        const success = await placeHolderAPI
           .post("/positions/updatePosition", positionvalues)
           .then((res) => {
             alert("Update Successful");
@@ -239,7 +248,8 @@ export default function Position() {
               );
 
               try {
-                const request = axios.post("/log", submitLogs.getLogs());
+                const request = placeHolderAPI 
+                  .post("/log", submitLogs.getLogs());
                 const response = request.data;
                 console.log(response);
               } catch (err) {
@@ -280,80 +290,143 @@ export default function Position() {
   }
 
   return (
-    <Stack>
-      <FormControl>
-        
-        <Card bg={graphCardBg}>
-          <Card bg={'white'}>
-          <SimpleGrid columns={'12'}spacing='2px'> 
-            <Box pl={'2'} w={'120px'}  >
+
+    <>
+    <HStack>
+      
+      <FormControl>  
+         <Grid templateColumns={{ repeat:('6','1fr'), sm: "1fr", lg: "1.6fr 1.2fr" }} gap={5} >
+         <GridItem colSpan={4}  maxHeight={'600px'} >
+            <Card bg={graphCardBg} maxHeight={'600px'}>
+
+              <Card bg={'white'}>
+
+              <Flex align='center' mb='18px' >
+                  
+                  <Box  >
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                    
+                      fontWeight='bold'
+                      me='10px'>
+                      Department:{" "}
+                    </Text> 
+                  </Box>
+                  <Box pl={'2'} w={'100%'}   >
+                    <Select
+                      placeholder="Select option"
+                      size="md"
+                      maxWidth={'100%'}
+                      onChange={(e) => {
+                        setPosition({ ...values, departmentid: e.target.value });
+                      }}
+                      value={values.departmentid}
+                    >
+                      {departments.map((department) => (
+                        <option value={department.departmentDisplayID} size="md">
+                          {department.departmentName}
+                        </option>
+                      ))}
+                    </Select>
+                  </Box> 
+                </Flex>
+
+                <Flex align='center' mb='18px'>
+                  <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'}>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      w={'95px'}
+                      fontWeight='bold'
+                      me='10px'>
+                      Position:{" "}
+                    </Text> 
+                  </Box>       
+                  <Box pl={'2'} w={'100%'}  >
+                    <Input
+                        id="positionname"
+                        label="Position name"
+                        placeholder="Position Name"
+                        value={values.positionname}
+                        onChange={(e) => {
+                          setPosition({ ...values, positionname: e.target.value });
+                        }}
+                      />
+                  </Box>
+                </Flex>
+                <Flex align='center' mb='18px'>
+                  <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'} h={'80px'}>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      w={'95px'}
+                      fontWeight='bold'
+                      me='10px'>
+                      Description:{" "}
+                    </Text> 
+                  </Box>       
+                  <Box pl={'2'} w={'100%'}  >
+                    <Textarea
+                      id="description"
+                      label="Description"
+                      size="sm"
+                      placeholder="Description"
+                      value={values.description}
+                      onChange={(e) => {
+                        setPosition({ ...values, description: e.target.value });
+                      }}
+                    />
+                  </Box>
+                </Flex>
+
+               
+                
+                  <Center>
+                    <Button colorScheme="green" onClick={handleUpdate}>
+                            Save
+                      </Button>
+                  </Center>
+
              
-              <Text color={textColor} textTransform={'uppercase'} fontSize={'sm'}>
-                Department
-              </Text>
-             
-              </Box>
-            <Box pl={'2'} w={'40vw'}  >
-              <Select
-                placeholder="Select option"
-                size="md"
-                onChange={(e) => {
-                  setPosition({ ...values, departmentid: e.target.value });
-                }}
-                value={values.departmentid}
-              >
-                {departments.map((department) => (
-                  <option value={department.departmentDisplayID} size="md">
-                    {department.departmentName}
-                  </option>
-                ))}
-              </Select>
-            </Box>
-            </SimpleGrid>
-         
-            <SimpleGrid columns={'12'}spacing='5px'> 
-          <Box pl={'2'} w={'140px'} bg={'tomato'} >
-              <Text color={textColor} textTransform={'uppercase'} fontSize={'sm'}>
-                Position
-              </Text>
-          </Box>
-          <Box pl={'2'} w={'40vw'}  >
-          <Input
-              id="positionname"
-              label="Position name"
-              placeholder="Position Name"
-              value={values.positionname}
-              onChange={(e) => {
-                setPosition({ ...values, positionname: e.target.value });
-              }}
-            />
-          </Box>
-          </SimpleGrid>
-          <Box>
-            <FormLabel fontSize={{ base: "sm" }}>Description: </FormLabel>
-            <Input
-              id="description"
-              label="Description"
-              placeholder="Description"
-              value={values.description}
-              onChange={(e) => {
-                setPosition({ ...values, description: e.target.value });
-              }}
-            />
-          </Box>
-          <Box>
-            <Button colorScheme="green" onClick={handleUpdate}>
-              {/* <Link
-                  to={{
-                  pathname: "/admin/assetstatusviewer"
-                  }}>
-              </Link> */}
-              {btnstate}
-            </Button>
-          </Box>
+              </Card>
+            </Card>
+        </GridItem>
+        <GridItem colStart={5} colEnd={6} maxHeight={'600px'} >
+          <Card bg={graphCardBg}  >
+              <Card bg={'white'}>
+               
+                    <Center  >
+                      <Avatar
+                      bg={'white'}
+                      src = {defaultLogo}
+                      h={'220px'}
+                      w={'220px'}
+                      >
+
+                      </Avatar>
+                    </Center>
+  
+                 
+                 
+                  <Box align='center'>
+                    <Center>
+                    <Button colorScheme="green" >
+                          Upload Image
+                    </Button>
+                    </Center>
+
+                  </Box>
+           
+                          
+              </Card>
           </Card>
-        </Card>
+          </GridItem>
+        </Grid>
+
+
       </FormControl>
-    </Stack>
+    </HStack>
+    </>
   );
 }
