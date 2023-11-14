@@ -138,6 +138,7 @@ const updatePosition = (request, response) => {
 
   const { positionid, positionname, description, departmentid, userID  } = request.body
 
+  
     mysql.query( updateByID(), [positionname,description,
                 departmentid,userID,utils_getDate(),positionid], ( err, result ) => {
 

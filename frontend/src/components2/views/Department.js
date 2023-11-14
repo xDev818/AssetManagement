@@ -19,7 +19,9 @@ import Logs from "components/Utils/logs_helper";
 
 import { useEffect, useState } from "react";
 //import axios from "axios";
-import { placeHolderAPI,showToastMessage } from "index";
+import { placeHolderAPI } from "index";
+
+//import showToast from "components/Utils/showToast";
 
 import decoder from "jwt-decode";
 
@@ -54,11 +56,13 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 
 import defaultLogo from "../../assets/img/Department.png"
-import ShowError from "components/Utils/viewToast";
+
+import showToast from "components/Utils/showToast";
 
 const Department = () => {
   // const location = useLocation();
   // const departmentID = location.state?.departmentID;
+
 
  const toast = useToast()
 
@@ -73,7 +77,7 @@ const Department = () => {
     description: "",
   });
 
-  function viewToastify(title,desc,status) {
+  function showToast(title,desc,status) {
     // const toast = useToast()
      return (
        
@@ -81,8 +85,8 @@ const Department = () => {
              title: title,
              description: desc,
              status: status,
-             duration: 4000,
-             isClosable: true,
+             duration: 3000,
+             //isClosable: true,
              position: "top"
            })
 
@@ -141,7 +145,7 @@ const Department = () => {
                 userID
               );
 
-              viewToastify("Error Loading selected Department",
+              showToast("Error Loading selected Department",
               err.code,
               'error')
 
@@ -157,9 +161,9 @@ const Department = () => {
 
               const request = submitLogs.insertLogs(submitLogs.getLogs())
 
-              viewToastify("Error Loading selected Department",
+              showToast("Error Loading selected Department",
                'Please wait while we are logging error',
-               'error')
+               'info')
              
             
             }
@@ -179,17 +183,11 @@ const Department = () => {
       const errorStatus = err.code;
 
       if (errorStatus.includes("ERR_NETWORK")) {
-        const submitLogs = new Logs(
-          "DB",
-          "Department",
-          "Function useEffect /getDepartmentByID/",
-          err,
-          userID
-        );
+       
 
-        viewToastify("Error Loading selected Department",
+        showToast("Error Loading selected Department",
         err.code,
-        'error')
+        'info')
 
        
       } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
@@ -203,9 +201,9 @@ const Department = () => {
 
         const request = submitLogs.insertLogs(submitLogs.getLogs())
 
-        viewToastify("Error Loading selected Department",
+        showToast("Error Loading selected Department",
          'Please wait while we are logging error',
-         'error')
+         'info')
        
       
       }
@@ -235,7 +233,7 @@ const Department = () => {
           .post("/create-department", departmentvalues)
           .then((res) => {
             
-            viewToastify("Department",
+            showToast("Department",
             " Create   Department name :  " + departmentvalues.departmentname + "successful",
             'success')
     
@@ -243,7 +241,7 @@ const Department = () => {
             const InsertLogs = new Logs(
               "Info",
               "Department",
-              "Function /handleUpdate",
+              "Function /handleUpdate ( Insert )",
               " Create   Department name :  " + departmentvalues.departmentname,
               userID
             );
@@ -266,7 +264,7 @@ const Department = () => {
             const InsertLogs = new Logs(
               "Info",
               "Department",
-              "Function /handleUpdate",
+              "Function /handleUpdate (Create )",
               " Update DepartmentID : " +
                 departmentvalues.departmentid +
                 " Departmentname :  " +
@@ -276,7 +274,7 @@ const Department = () => {
 
             InsertLogs.insertLogs(InsertLogs);
 
-            viewToastify("Department",
+            showToast("Department",
             " Update Department successful",
             'success')
 
@@ -293,7 +291,7 @@ const Department = () => {
                 err,
                 userID
               );
-              viewToastify("Department",
+              showToast("Department",
               err.code,
               'error')
               
@@ -306,7 +304,7 @@ const Department = () => {
                 userID
               );
               submitLogs.insertLogs(submitLogs);
-              viewToastify("Error",
+              showToast("Error",
               " Error in Inserting / updating Department",
               'error')
             }
@@ -317,14 +315,7 @@ const Department = () => {
       const errorStatus = err.code;
 
       if (errorStatus.includes("ERR_NETWORK")) {
-        const submitLogs = new Logs(
-          "DB",
-          "Department",
-          "Function /Handleupdate",
-          err,
-          userID
-        );
-        viewToastify("Department",
+        showToast("Department",
         err.code,
         'error')
         
@@ -332,12 +323,12 @@ const Department = () => {
         const submitLogs = new Logs(
           "Error",
           "Department",
-          "Function /HandleUpdate",
+          "Function /HandleUpdate ( Insert / Update )",
           err.response.data.message,
           userID
         );
         submitLogs.insertLogs(submitLogs);
-        viewToastify("Error",
+        showToast("Error",
         " Error in Inserting / updating Department",
         'error')
       }

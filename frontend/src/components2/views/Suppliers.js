@@ -35,15 +35,24 @@ import {
     FormControl,
     Select,
     GridItem,
-    Grid
+    Grid,
+    Flex,
+    useToast,
+    Center,
+    Avatar,
+    Text,
+    Textarea
   } from "@chakra-ui/react";
   import { Button, ButtonGroup } from "@chakra-ui/react";
   
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
  
-  
+  import defaultLogo from "../../assets/img/Department.png"
+
   export default function Suppliers () {
+
+    const toast = useToast()
 
     const graphCardBg = '#e6f2ff'
     const textColor = "#00334d"
@@ -64,6 +73,25 @@ import {
     const [btnstate,setbtnState] = useState()
 
 
+
+    function showToast(title,desc,status) {
+    
+      return (
+        
+            toast({
+              title: title,
+              description: desc,
+              status: status,
+              duration: 3000,
+              //isClosable: true,
+              position: "top"
+            })
+ 
+       
+       
+      )
+    }
+ 
   
 
     useEffect(() => {
@@ -88,9 +116,10 @@ import {
         }
 
         else if(supplierID) {
-            console.log(supplierID)
+            
             placeHolderAPI.get('/suppliers/getSupplierID/' + supplierID)
             .then((res) => {
+
               setbtnState("Update")
                 setSupplier({
                   ...values,
@@ -103,8 +132,35 @@ import {
                
             })
             .catch((err) => {
-              alert(err);
-              window.location.href = '/'; 
+            
+
+              const errorStatus = err.code;
+
+              if (errorStatus.includes("ERR_NETWORK")) {
+  
+                showToast("Error Loading selected Supplier",
+                err.code,
+                'error')
+  
+               // alert(submitLogs.getMessage());
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+                const submitLogs = new Logs(
+                  "Error",
+                  "Supplier",
+                  "Function useEffect /suppliers/getSupplierID/",
+                  err.response.data.message,
+                  userID
+                );
+  
+                const request = submitLogs.insertLogs(submitLogs)
+  
+                showToast("Error Loading selected Supplier",
+                 'Please wait while we are logging error',
+                 'info')
+               
+              
+              }
+              //window.location.href = '/'; 
             });
           
         }  else {
@@ -122,7 +178,31 @@ import {
 
       }
       catch(err) {
-        alert(err)
+
+        const errorStatus = err.code;
+
+        if (errorStatus.includes("ERR_NETWORK")) {
+
+          showToast("Error Loading selected Supplier",
+          err.code,
+          'error')
+
+         // alert(submitLogs.getMessage());
+        } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+          const submitLogs = new Logs(
+            "Error",
+            "Supplier",
+            "Function useEffect /suppliers/getSupplierID/",
+            err.response.data.message,
+            userID
+          );
+
+          const request = submitLogs.insertLogs(submitLogs)
+
+          showToast("Error Loading selected Supplier",
+           'Please wait while we are logging error',
+           'info')
+        }
       }
     }, [])
 
@@ -152,10 +232,8 @@ import {
 
         if(suppliervalues.supplierid === "") {
             // insert here
-            const success = await placeHolderAPI.post('/suppliers/createSupplier',suppliervalues)
+            const success = await placeHolderAPI .post('/suppliers/createSupplier',suppliervalues)
             .then((res) => {
-            
-              alert("Insert Successful")
 
               const InsertLogs = new Logs(
                 'Info',
@@ -164,7 +242,14 @@ import {
                 ' Create   Position name :  ' + suppliervalues.suppliername,
                 userID
               )
-      
+              const request = InsertLogs.insertLogs(InsertLogs)
+              
+              showToast(
+                "Supplier",
+                ' Create new Supplier Name :  ' + suppliervalues.suppliername ,
+                "success"
+              )
+
              // const request = axios.post('/log',InsertLogs.getLogs())
              // const response =  request.data
 
@@ -173,15 +258,36 @@ import {
 
             })
             .catch((err) => {
-              alert(err);
+              const errorStatus = err.code;
+
+              if (errorStatus.includes("ERR_NETWORK")) {
+      
+                showToast("Error Loading selected Supplier",
+                err.code,
+                'error')
+      
+               // alert(submitLogs.getMessage());
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+                const submitLogs = new Logs(
+                  "Error",
+                  "Supplier",
+                  "Function handleUpdate /suppliers/createSupplier/",
+                  err.response.data.message,
+                  userID
+                );
+      
+                const request = submitLogs.insertLogs(submitLogs)
+      
+                showToast("Error inserting selected Supplier",
+                 'Please wait while we are logging error',
+                 'info')
+              }
             });
         } else if(!suppliervalues.supplierid == "") {
           /// update here
-          const success = await placeHolderAPI.post('/suppliers/updateSupplier',suppliervalues)
+          const success = await placeHolderAPI .post('/suppliers/updateSupplier',suppliervalues)
           .then((res) => {
-          
-            alert("Update Successful")
-
+            
             const InsertLogs = new Logs(
               'Info',
               "Asset Status",
@@ -190,9 +296,14 @@ import {
               + ' Position Name :  ' + suppliervalues.suppliername,
               userID
             )
-    
-          //  const request = placeHolderAPI.post('/log',InsertLogs.getLogs())
-          //  const response =  request.data
+
+            const request = InsertLogs.insertLogs(InsertLogs)
+                  
+            showToast(
+              "Supplier",
+              ' Updating Supplier Name :  ' + suppliervalues.suppliername ,
+              "success"
+            )
 
            window.location.href = "/#/admin/suppliers-viewer"
             
@@ -203,76 +314,63 @@ import {
       
             if( errorStatus.includes('ERR_NETWORK') ) 
             {
-
-              
-              const submitLogs = new Logs(
-                "DB",
-                "AssetStatus",
-                "Function /HandleSubmit",
-                err,
-                userID
+              showToast(
+                "Supplier",
+                errorStatus,
+                "error"
               )
-              
-              alert( submitLogs.getMessage() )
 
             } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
              
               const submitLogs = new Logs(
                 'Error',
-                "Asset Status",
+                "Supplier",
                 "Function /HandleSubmit",
                 err.response.data.message,
                 userID
               )
-      
-              try {
-      
-                const request = placeHolderAPI.post('/log',submitLogs.getLogs())
-                const response =  request.data
-                console.log(response)
-      
-              } catch ( err ) {
-      
-                const logStatus = err.code
-      
-                if( logStatus.includes("ERR_NETWOR") ) {
-      
-                  const submitLogs = new Logs(
-                    "DB",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err,
-                    userID
-                  )
-      
-                  alert( submitLogs.getMessage() )
-                  console.log( submitLogs.getLogs() )
-      
-                }
-      
-                if( logStatus.includes("ERR_BAD_REQUEST") ) {
-      
-                  const submitLogs = new Logs(
-                    "Error",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err.response.data.message,
-                    userID
-                  )
-                  
-                  alert( submitLogs.getMessage() )
-                  console.log( submitLogs.getLogs() )
-      
-                }
-      
-              }
 
-          }});
+              
+              const request = submitLogs.insertLogs(submitLogs)
+      
+                showToast("Error updating selected Supplier",
+                 'Please wait while we are logging error',
+                 'info')
+           
+                
+            }
+        });
       }
 
       }
       catch (err) {
-        alert(err)
+        const errorStatus = err.code
+      
+        if( errorStatus.includes('ERR_NETWORK') ) 
+        {
+          showToast(
+            "Supplier",
+            errorStatus,
+            "error"
+          )
+
+        } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
+         
+          const submitLogs = new Logs(
+            'Error',
+            "Supplier",
+            "Function /HandleSubmit",
+            err.response.data.message,
+            userID
+          )
+
+          const request = submitLogs.insertLogs(submitLogs)
+      
+          showToast("Error updating selected Supplier",
+           'Please wait while we are logging error',
+           'info')
+            
+        }
       }
     }
     
@@ -280,58 +378,132 @@ import {
 
         <Stack>
           <FormControl>
-          <Card bg={graphCardBg}>
-            <Card bg={'white'}>
-            <Grid templateColumns="repeat(6, 1fr)" gap={1}>
-              <GridItem>
-                <FormLabel fontSize={{ base: "sm" }}>Vendor Name:  </FormLabel>
-              </GridItem>
-              <GridItem>
-                <Input id='suppliername' label="Supplier name" placeholder="Supplier Name" 
-                value={values.suppliername}
-                onChange={ e => {
-                  setSupplier( { ...values, suppliername: e.target.value } )}}
-                />    
-              </GridItem>
-            </Grid>
-            
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Address:  </FormLabel>
-              <Input id='address' label="Address" placeholder="Address" 
-              value={values.address}
-              onChange={ e => {
-                setSupplier( { ...values, address: e.target.value } )}}
-              />    
-            </Box>
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Contact No:  </FormLabel>
-              <Input id='contactno' label="Contact No" placeholder="Contact No" 
-              value={values.contactno}
-              onChange={ e => {
-                setSupplier( { ...values, contactno: e.target.value } )}}
-              />    
-            </Box>
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Email:  </FormLabel>
-              <Input id='email' label="Email" placeholder="Email" 
-              value={values.email}
-              onChange={ e => {
-                setSupplier( { ...values, email: e.target.value } )}}
-              />    
-            </Box>
-            <Box>
-            <Button colorScheme="green" onClick={handleUpdate}>
-              {/* <Link
-                  to={{
-                  pathname: "/admin/assetstatusviewer"
-                  }}>
-              </Link> */}
-              {btnstate}
 
-            </Button>
-          </Box>
+          <Grid templateColumns={{ repeat:('6','1fr'), sm: "1fr", lg: "1.6fr 1.2fr" }} gap={4} >
+          <GridItem colSpan={4}  maxHeight={'600px'} >
+            <Card bg={graphCardBg} maxHeight={'600px'}>
+              <Card bg={'white'}>
+              <Flex align='center' mb='18px' >
+                  <Box  position={'relative'} alignItems={'flex-end'}  textAlign={'end'}  >
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      w={'95px'}
+                      fontWeight='bold'
+                      me='10px'>
+                      Name:{" "}
+                    </Text> 
+                  </Box>       
+                  <Box pl={'2'} w={'100%'}  >
+                    <Input id='suppliername' label="Supplier name" placeholder="Supplier Name" 
+                      value={values.suppliername}
+                      onChange={ e => {
+                        setSupplier( { ...values, suppliername: e.target.value } )}}
+                    />    
+                  </Box>
+              </Flex>
+              <Flex align='center' mb='18px'>
+                  <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'} h={'80px'} >
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      w={'95px'}
+                      fontWeight='bold'
+                      me='10px'>
+                      Address:{" "}
+                    </Text> 
+                  </Box >       
+                  <Box pl={'2'} w={'100%'} >
+                    <Textarea id='address' label="Address" placeholder="Address" 
+                      value={values.address}
+                      onChange={ e => {
+                        setSupplier( { ...values, address: e.target.value } )}}
+                    />       
+                  </Box>
+              </Flex>
+              <Flex align='center' mb='18px'>
+                  <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'}>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      w={'95px'}
+                      fontWeight='bold'
+                      me='10px'>
+                      Contact No: {" "}
+                    </Text> 
+                  </Box>       
+                  <Box pl={'2'} w={'100%'}  >
+                    <Input id='contactno' label="Contact No" placeholder="Contact No" 
+                      value={values.contactno}
+                      onChange={ e => {
+                        setSupplier( { ...values, contactno: e.target.value } )}}
+                    />         
+                  </Box>
+              </Flex>
+              <Flex align='center' mb='18px'>
+                  <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'}>
+                    <Text
+                      fontSize='md'
+                      color={textColor}
+                      w={'95px'}
+                      fontWeight='bold'
+                      me='10px'>
+                      Email:  {" "}
+                    </Text> 
+                  </Box>       
+                  <Box pl={'2'} w={'100%'}  >
+                    <Input id='email' label="Email" placeholder="Email" 
+                      value={values.email}
+                      onChange={ e => {
+                        setSupplier( { ...values, email: e.target.value } )}}
+                    />           
+                  </Box>
+              </Flex>
+
+              <Center>
+                <Button colorScheme="green" onClick={handleUpdate}>
+                        Save
+                  </Button>
+              </Center>
+
+              </Card>
+            </Card>
+
+
+          </GridItem>
+
+          <GridItem colStart={5} colEnd={6} maxHeight={'600px'} >
+          <Card bg={graphCardBg}  >
+              <Card bg={'white'}>
+               
+                    <Center  >
+                      <Avatar
+                      bg={'white'}
+                      src = {defaultLogo}
+                      h={'220px'}
+                      w={'220px'}
+                      >
+
+                      </Avatar>
+                    </Center>
+  
+                 
+                 
+                  <Box align='center'>
+                    <Center>
+                    <Button colorScheme="green" >
+                          Upload Image
+                    </Button>
+                    </Center>
+
+                  </Box>
+           
+                          
+              </Card>
           </Card>
-          </Card>
+          </GridItem>
+          </Grid>
+
           </FormControl>
         </Stack>
       

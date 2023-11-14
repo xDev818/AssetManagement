@@ -46,7 +46,7 @@ import {
   Textarea,
   GridItem,
   Center,
-  useToast
+useToast
 } from "@chakra-ui/react";
 import CardHeader from "components/Card/CardHeader.js";
 import Card from "components/Card/Card.js";
@@ -59,9 +59,13 @@ import Modal1 from "components2/Modal/Modal";
 import { useParams } from "react-router-dom";
 import defaultLogo from "../../assets/img/Department.png"
 
+
+//import showToast from "components/Utils/showToast";
+
 export default function Position() {
   
   const toast = useToast()
+
   const textColor = "#00334d"
   const graphCardBg = '#e6f2ff'
 
@@ -80,8 +84,9 @@ export default function Position() {
   const [departments, setDepartments] = useState([]);
   const [btnstate,setbtnState] = useState()
 
-  function viewToastify(title,desc,status) {
-    // const toast = useToast()
+
+    function showToast(title,desc,status) {
+    
      return (
        
            toast({
@@ -89,10 +94,11 @@ export default function Position() {
              description: desc,
              status: status,
              duration: 3000,
-             isClosable: true,
+             //isClosable: true,
              position: "top"
            })
-       
+
+      
       
      )
    }
@@ -137,9 +143,9 @@ export default function Position() {
                
             })
             .catch((err) => {
-             // setbtnState("Save")
-             alert(err);
-             window.location.href = '/'; 
+            
+
+            // window.location.href = '/'; 
              
             });
           
@@ -159,7 +165,32 @@ export default function Position() {
 
       }
       catch(err) {
-        alert(err)
+        const errorStatus = err.code;
+
+        if (errorStatus.includes("ERR_NETWORK")) {
+        
+          showToast(
+            "Position",
+            errorStatus,
+            "error"
+          )
+  
+        } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        
+          const submitLogs = new Logs(
+            "Error",
+            "Position",
+            "Function useEffect",
+            err.response.data.message,
+            userID
+          );
+          submitLogs.insertLogs(submitLogs)
+          showToast(
+            "Position",
+            errorStatus,
+            "error"
+          )
+        }
       }
     }, [])
 
@@ -176,7 +207,32 @@ export default function Position() {
 
       setDepartments(res.data.result);
     } catch (err) {
-      alert(err);
+      const errorStatus = err.code;
+
+      if (errorStatus.includes("ERR_NETWORK")) {
+      
+        showToast(
+          "Position",
+          errorStatus,
+          "error"
+        )
+
+      } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+      
+        const submitLogs = new Logs(
+          "Error",
+          "Position",
+          "Function LoadallDepartments",
+          err.response.data.message,
+          userID
+        );
+        submitLogs.insertLogs(submitLogs)
+        showToast(
+          "Position",
+          errorStatus,
+          "error"
+        )
+      }
     }
   }
 
@@ -203,7 +259,7 @@ export default function Position() {
           .post("/positions/createNewPosition", positionvalues)
           .then((res) => {
             
-            viewToastify(
+            showToast(
               "Position",
               "Updated Position successfull",
               "success"
@@ -222,20 +278,46 @@ export default function Position() {
             window.location.href = "/#/admin/position-viewer";
           })
           .catch((err) => {
-            alert(err);
+           
+            const errorStatus = err.code;
+
+            if (errorStatus.includes("ERR_NETWORK")) {
+            
+              showToast(
+                "Position",
+                errorStatus,
+                "error"
+              )
+
+            } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+            
+              const submitLogs = new Logs(
+                "Error",
+                "Position",
+                "Function /handleUpdate",
+                err.response.data.message,
+                userID
+              );
+              submitLogs.insertLogs(submitLogs)
+              showToast(
+                "Position",
+                errorStatus,
+                "error"
+              )
+            }
+
           });
+
+          
       } else if (!positionvalues.positionid == "") {
         /// update here
         const success = await placeHolderAPI
-          .post("/positions/updatePosition", positionvalues)
-          .then((res) => {
-            
-            viewToastify(
-              "Position",
-              "Updated " + positionvalues.positionname + " successfull",
-              "success"
-            )
+          .post("/positions/updatePosition",positionvalues)
 
+          .then((res) => {
+           
+           if(res.data.message === 'Update Success') {
+           
             const InsertLogs = new Logs(
               "Info",
               "Position",
@@ -248,24 +330,51 @@ export default function Position() {
             );
 
             InsertLogs.insertLogs(InsertLogs)
-
+            showToast(
+              "Position",
+              "Updated " + positionvalues.positionname + " successfull",
+              "success"
+            )
             window.location.href = "/#/admin/position-viewer";
+
+           } else {
+           
+            const InsertLogs = new Logs(
+              "Info",
+              "Position",
+              "Function /handleUpdate",
+              " Update Position ID : " +
+                positionvalues.positionid +
+                " Position Name :  " +
+                positionvalues.positionname,
+              userID
+            );
+
+            showToast(
+              "Position",
+              res.data.message,
+              "error"
+            )
+
+            InsertLogs.insertLogs(InsertLogs)
+
+           
+           }
           })
           .catch((err) => {
+            
             const errorStatus = err.code;
 
             if (errorStatus.includes("ERR_NETWORK")) {
-             
-              viewToastify(
+            
+              showToast(
                 "Position",
                 errorStatus,
                 "error"
               )
 
-            
-             
-
             } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+            
               const submitLogs = new Logs(
                 "Error",
                 "Position",
@@ -273,8 +382,9 @@ export default function Position() {
                 err.response.data.message,
                 userID
               );
+             
               submitLogs.insertLogs(submitLogs)
-              viewToastify(
+              showToast(
                 "Position",
                 errorStatus,
                 "error"
@@ -283,34 +393,31 @@ export default function Position() {
           });
       }
     } catch (err) {
-      const errorStatus = err.code;
+   
+      const submitLogs = new Logs(
+        "Error",
+        "Position",
+        "Function /handleUpdate ( main catch)",
+        err,
+        userID
+      );
 
-            if (errorStatus.includes("ERR_NETWORK")) {
-             
-              viewToastify(
-                "Position",
-                errorStatus,
-                "error"
-              )
-             
+     const errResponse = submitLogs.insertLogs(submitLogs)
 
-            } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
-              const submitLogs = new Logs(
-                "Error",
-                "Asset Status",
-                "Function /HandleSubmit",
-                err.response.data.message,
-                userID
-              );
-              submitLogs.insertLogs(submitLogs)
-
-              viewToastify(
-                "Position",
-                errorStatus,
-                "error"
-              )
-              
-            }
+     if(errResponse === 'Success') {
+      showToast(
+        "Position",
+        'Writing Error Successful \n' + err ,
+        "info"
+      )
+     } else {
+      showToast(
+        "Position",
+        err,
+        "error"
+      )
+     }
+     
     }
   }
 

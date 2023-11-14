@@ -43,25 +43,11 @@ class Logs {
          .post("/log", logs);
          const response = await request.data;
 
-         return response
+         return 'Success'
 
        } catch (err) {
 
-         const logStatus = err.code;
-
-         if (logStatus.includes("ERR_NETWOR")) {
-            const log_status = new Logs(
-               this.logtype,
-               this.module,
-               this.logfunction,
-               this.logValues,
-               this.userID
-            );
-
-           return err.code
-            
-         }
-
+        return err;
      
 
       }

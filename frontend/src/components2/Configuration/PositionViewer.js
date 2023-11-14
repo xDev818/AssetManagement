@@ -87,7 +87,7 @@ export default function PositionViewer() {
 
         .then((res) => {
           setPositions(res.data.result);
-          console.log(res.data.result);
+          //console.log(res.data.result);
         })
         .catch((err) => {
           const InsertLogs = new Logs(
