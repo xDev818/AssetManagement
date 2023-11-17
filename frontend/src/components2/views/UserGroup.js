@@ -31,19 +31,31 @@ import {
     Th,
     Td,
     TableContainer,
-    Stack,
-    Box,
     Input,
     FormControl,
+    Stack,
+    Box,
+    Select,
+    useToast,
+    Grid,
+    GridItem,
+    Flex,
+    Center,
+    Avatar,
+    Text,
+    Textarea
   } from "@chakra-ui/react";
   import { Button, ButtonGroup } from "@chakra-ui/react";
   
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
  
+  import defaultLogo from "../../assets/img/Department.png"
   
   export default function UserGroup () {
 
+    const toast = useToast()
+    
     const graphCardBg = '#e6f2ff'
     const textColor = "#00334d"
 
@@ -57,6 +69,23 @@ import {
     // const  usergroup_id  = location.state?.userGroupID
     const [btnstate,setbtnState] = useState()
 
+    function showToast(title,desc,status) {
+    
+      return (
+        
+            toast({
+              title: title,
+              description: desc,
+              status: status,
+              duration: 3000,
+              //isClosable: true,
+              position: "top"
+            })
+ 
+       
+       
+      )
+    }
 
     useEffect(() => {
       
@@ -89,8 +118,46 @@ import {
                
             })
             .catch((err) => {
-              alert(err);
-              window.location.href = '/'; 
+
+              const errorStatus = err.code;
+
+              if (errorStatus.includes("ERR_NETWORK")) {
+              
+                showToast(
+                  "User",
+                  errorStatus,
+                  "error"
+                )
+        
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+              
+                const submitLogs = new Logs(
+                  "Error",
+                  "User",
+                  "Function useEffect usergroup/getUserGroupByID/",
+                  err.response.data.message,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading selected User",
+                'Please wait while we are logging error',
+                'warning')
+              } else {
+
+                const submitLogs = new Logs(
+                  "Error",
+                  "User",
+                  "Function useEffect usergroup/getUserGroupByID/",
+                  err,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading selected User",
+               'Please wait while we are logging error',
+               'warning')
+              }
             });
           
         } else {
@@ -106,7 +173,45 @@ import {
 
       }
       catch(err) {
-        alert(err)
+        const errorStatus = err.code;
+
+        if (errorStatus.includes("ERR_NETWORK")) {
+        
+          showToast(
+            "User",
+            errorStatus,
+            "error"
+          )
+  
+        } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        
+          const submitLogs = new Logs(
+            "Error",
+            "User",
+            "Function useEffect usergroup/getUserGroupByID/",
+            err.response.data.message,
+            userID
+          );
+
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error Loading selected User",
+          'Please wait while we are logging error',
+          'warning')
+        } else {
+
+          const submitLogs = new Logs(
+            "Error",
+            "User",
+            "Function useEffect usergroup/getUserGroupByID/",
+            err,
+            userID
+          );
+
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error Loading selected User",
+         'Please wait while we are logging error',
+         'warning')
+        }
       }
     }, [])
 
@@ -134,165 +239,269 @@ import {
             const success = await placeHolderAPI.post('/usergroup/create-usergroup',usergroupvalues)
             .then((res) => {
             
-              alert("Insert Successful")
-
               const InsertLogs = new Logs(
                 'Info',
                 "Asset Status",
                 "Function /handleUpdate",
-                ' Create   Statusname :  ' + usergroupvalues.usergroup_name,
+                ' Create   User Group :  ' + usergroupvalues.usergroup_name,
                 userID
               )
-      
-             // const request = placeHolderAPI.post('/log',InsertLogs.getLogs())
-             // const response =  request.data
+              InsertLogs.insertLogs(InsertLogs)
+              showToast("User",
+              ' Create   User Group :  ' + usergroupvalues.usergroup_name + " successful",
+              'success')
 
              window.location.href = "/#/admin/usergroup-viewer"
-              
 
             })
             .catch((err) => {
-              alert(err);
+              const errorStatus = err.code;
+
+              if (errorStatus.includes("ERR_NETWORK")) {
+              
+                showToast(
+                  "User",
+                  errorStatus,
+                  "error"
+                )
+        
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+              
+                const submitLogs = new Logs(
+                  "Error",
+                  "User",
+                  "Function handleUpdate usergroup/create-usergroup/",
+                  err.response.data.message,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error in creating user",
+                'Please wait while we are logging error',
+                'warning')
+              } else {
+
+                const submitLogs = new Logs(
+                  "Error",
+                  "User",
+                  "Function handleUpdate usergroup/create-usergroup/",
+                  err,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error in creating user",
+               'Please wait while we are logging error',
+               'warning')
+              }
             });
         } else if(!usergroupvalues.usergroup_id == "") {
           /// update here
           const success = await placeHolderAPI.post('/usergroup/update-usergroup',usergroupvalues)
           .then((res) => {
           
-            alert("Update Successful")
-
             const InsertLogs = new Logs(
               'Info',
-              "Asset Status",
+              "User",
               "Function /handleUpdate",
-              ' Update StatusID : ' +  usergroupvalues.usergroup_id
-              + ' Statusname :  ' + usergroupvalues.usergroup_name,
+              ' Update GrouupID : ' +  usergroupvalues.usergroup_id
+              + ' User Group :  ' + usergroupvalues.usergroup_name,
               userID
             )
+
+            InsertLogs.insertLogs(InsertLogs)
+            showToast("User",
+            ' Update User Group :  ' + usergroupvalues.usergroup_name + " successful",
+            'success')
     
-          //  const request = placeHolderAPI.post('/log',InsertLogs.getLogs())
-          //  const response =  request.data
 
            window.location.href = "/#/admin/usergroup-viewer"
             
           })
           .catch((err) => {
-           
-            const errorStatus = err.code
-      
-            if( errorStatus.includes('ERR_NETWORK') ) 
-            {
+            const errorStatus = err.code;
 
-              
-              const submitLogs = new Logs(
-                "DB",
-                "AssetStatus",
-                "Function /HandleSubmit",
-                err,
-                userID
+            if (errorStatus.includes("ERR_NETWORK")) {
+            
+              showToast(
+                "User",
+                errorStatus,
+                "error"
               )
-              
-              alert( submitLogs.getMessage() )
-
-            } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
-             
+      
+            } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+            
               const submitLogs = new Logs(
-                'Error',
-                "Asset Status",
-                "Function /HandleSubmit",
+                "Error",
+                "User",
+                "Function handleUpdate usergroup/update-usergroup/",
                 err.response.data.message,
                 userID
-              )
-      
-              try {
-      
-                const request = placeHolderAPI.post('/log',submitLogs.getLogs())
-                const response =  request.data
-                console.log(response)
-      
-              } catch ( err ) {
-      
-                const logStatus = err.code
-      
-                if( logStatus.includes("ERR_NETWOR") ) {
-      
-                  const submitLogs = new Logs(
-                    "DB",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err,
-                    userID
-                  )
-      
-                  alert( submitLogs.getMessage() )
-                  console.log( submitLogs.getLogs() )
-      
-                }
-      
-                if( logStatus.includes("ERR_BAD_REQUEST") ) {
-      
-                  const submitLogs = new Logs(
-                    "Error",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err.response.data.message,
-                    userID
-                  )
-                  
-                  alert( submitLogs.getMessage() )
-                  console.log( submitLogs.getLogs() )
-      
-                }
-      
-              }
+              );
 
-          }});
-      }
+              submitLogs.insertLogs(submitLogs)
+              showToast("Error in updating user",
+              'Please wait while we are logging error',
+              'warning')
+            } else {
+
+              const submitLogs = new Logs(
+                "Error",
+                "User",
+                "Function handleUpdate usergroup/update-usergroup/",
+                err,
+                userID
+              );
+
+              submitLogs.insertLogs(submitLogs)
+              showToast("Error in updating user",
+             'Please wait while we are logging error',
+             'warning')
+            }
+
+        });
+      } 
 
       }
       catch (err) {
-        alert(err)
+        const errorStatus = err.code;
+
+        if (errorStatus.includes("ERR_NETWORK")) {
+        
+          showToast(
+            "User",
+            errorStatus,
+            "error"
+          )
+  
+        } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        
+          const submitLogs = new Logs(
+            "Error",
+            "User",
+            "Function handleUpdateinsert / update",
+            err.response.data.message,
+            userID
+          );
+
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error in creating / updating user",
+          'Please wait while we are logging error',
+          'error')
+        } else {
+
+          const submitLogs = new Logs(
+            "Error",
+            "User",
+            "Function handleUpdate creating / updating",
+            err,
+            userID
+          );
+
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error in creating / updating",
+         'Please wait while we are logging error',
+         'error')
+        }
       }
     }
     
     return (
 
         <Stack>
-           <Card bg={graphCardBg}>
-            <Card bg={'white'}>
-          <FormControl>
 
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>User Group Name:  </FormLabel>
-              <Input id='usergroup_name' label="User Group name" placeholder="User Group Name" 
-              value={values.usergroup_name}
-              onChange={ e => {
-                setUserGroup( { ...values, usergroup_name: e.target.value } )}}
-              />    
-            </Box>
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Description:  </FormLabel>
-              <Input id='usergroup_description' label="Description" placeholder="Description" 
-              value={values.usergroup_description}
-              onChange={ e => {
-                setUserGroup( { ...values, usergroup_description: e.target.value } )}}
-              />    
-            </Box>
-            <Box>
-            <Button colorScheme="green" onClick={handleUpdate}>
-              {/* <Link
-                  to={{
-                  pathname: "/admin/assetstatusviewer"
-                  }}>
-              </Link> */}
-              {btnstate}
+<FormControl>  
+            <Grid templateColumns={{ repeat:('6','1fr'), sm: "1fr", lg: "1.6fr 1.2fr" }} gap={5} >
+            <GridItem colSpan={4}  maxHeight={'600px'} >
+                <Card bg={graphCardBg} maxHeight={'600px'}>
 
-            </Button>
-          </Box>
-          
+                  <Card bg={'white'}>
+
+                  <Flex align='center' mb='18px' >
+                      
+                      <Box  >
+                        <Text
+                          fontSize='md'
+                          color={textColor}
+                        
+                          fontWeight='bold'
+                          me='10px'>
+                          Name:{" "}
+                        </Text> 
+                      </Box>
+                      <Box pl={'2'} w={'100%'}   >
+                        <Input id='usergroup_name' label="User Group name" placeholder="User Group Name" 
+                          value={values.usergroup_name}
+                          onChange={ e => {
+                          setUserGroup( { ...values, usergroup_name: e.target.value } )}}
+                        />    
+                      </Box> 
+                    </Flex>
+
+                    <Flex align='center' mb='18px'>
+                      <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'}>
+                        <Text
+                          fontSize='md'
+                          color={textColor}
+                          w={'95px'}
+                          fontWeight='bold'
+                          me='10px'>
+                          Description:{" "}
+                        </Text> 
+                      </Box>       
+                      <Box pl={'2'} w={'100%'}  >
+                        <Textarea id='usergroup_description' label="Description" placeholder="Description" 
+                          value={values.usergroup_description}
+                          onChange={ e => {
+                          setUserGroup( { ...values, usergroup_description: e.target.value } )}}
+                        />   
+                      </Box>
+                    </Flex>
+
+                      <Center>
+                        <Button colorScheme="green" onClick={handleUpdate}>
+                                {btnstate}
+                          </Button>
+                      </Center>
+
+                
+                  </Card>
+                </Card>
+            </GridItem>
+            <GridItem colStart={5} colEnd={6} maxHeight={'600px'} >
+              <Card bg={graphCardBg}  >
+                  <Card bg={'white'}>
+                  
+                        <Center  >
+                          <Avatar
+                          bg={'white'}
+                          src = {defaultLogo}
+                          h={'220px'}
+                          w={'220px'}
+                          >
+
+                          </Avatar>
+                        </Center>
+      
+                    
+                    
+                      <Box align='center'>
+                        <Center>
+                        <Button colorScheme="green" >
+                              Upload Image
+                        </Button>
+                        </Center>
+
+                      </Box>
+              
+                              
+                  </Card>
+              </Card>
+              </GridItem>
+            </Grid>
+
           </FormControl>
-          </Card>
-          </Card>
+
         </Stack>
       
     );

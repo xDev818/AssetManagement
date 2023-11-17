@@ -424,7 +424,7 @@ export default function Position() {
   return (
 
     <>
-    <HStack>
+    <Stack>
       
       <FormControl>  
          <Grid templateColumns={{ repeat:('6','1fr'), sm: "1fr", lg: "1.6fr 1.2fr" }} gap={5} >
@@ -558,7 +558,7 @@ export default function Position() {
 
 
       </FormControl>
-    </HStack>
+    </Stack>
     </>
   );
 }

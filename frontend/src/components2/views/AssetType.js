@@ -35,15 +35,27 @@ import {
     Box,
     Input,
     FormControl,
-    Select
+    Select,
+    useToast,
+    Grid,
+    GridItem,
+    Flex,
+    Center,
+    Avatar,
+    Text,
+    Textarea
   } from "@chakra-ui/react";
   import { Button, ButtonGroup } from "@chakra-ui/react";
   
   import Modal1 from "components2/Modal/Modal";
   import Card from "components/Card/Card";
   
-  
+    
+  import defaultLogo from "../../assets/img/Department.png"
+
   export default function AssetType () {
+
+    const toast = useToast()
 
     const graphCardBg = '#e6f2ff'
     const textColor = "#00334d"
@@ -64,6 +76,24 @@ import {
     // const  asset_typeID  = location.state?.typeID
     const [btnstate,setbtnState] = useState()
 
+
+    function showToast(title,desc,status) {
+    
+      return (
+        
+            toast({
+              title: title,
+              description: desc,
+              status: status,
+              duration: 3000,
+              //isClosable: true,
+              position: "top"
+            })
+ 
+       
+       
+      )
+    }
 
     const SetUsers = async () => { 
 
@@ -87,17 +117,63 @@ import {
               setCategories(res.data.result);
             })
             .catch((err) => {
-              const InsertLogs = new Logs(
-                "Error",
-                "PositionViewer",
-                "Function /LoadAllPositions",
-                "LoadAllPositions",
-                userID
-              );
+
+              const errorStatus = err.code;
+
+              if (errorStatus.includes("ERR_NETWORK")) {
+              
+                showToast(
+                  "Asset Type",
+                  errorStatus,
+                  "error"
+                )
+        
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+              
+                const submitLogs = new Logs(
+                  "Error",
+                  "Asset Type",
+                  "Function useEffect /assetcategory/viewassetcategory/",
+                  err.response.data.message,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading Asset Category",
+                'Please wait while we are logging error',
+                'warning')
+              } else {
+
+                const submitLogs = new Logs(
+                  "Error",
+                  "Asset Category",
+                  "Function useEffect /assetcategory/viewassetcategory/",
+                  err,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading Asset Category",
+               'Please wait while we are logging error',
+               'warning')
+              }
+
+
+
             });
         } catch (err) {
           
-          alert(err);
+          const submitLogs = new Logs(
+            "Error",
+            "Asset Category",
+            "Function useEffect /assetcategory/viewassetcategory/",
+            err,
+            userID
+          );
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error Loading Asset Category",
+               'Please wait while we are logging error',
+               'error')
           window.location.href = '/'; 
         }
       };
@@ -140,7 +216,45 @@ import {
                
             })
             .catch((err) => {
-              alert(err);
+              const errorStatus = err.code;
+
+              if (errorStatus.includes("ERR_NETWORK")) {
+              
+                showToast(
+                  "Asset Type",
+                  errorStatus,
+                  "error"
+                )
+        
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+              
+                const submitLogs = new Logs(
+                  "Error",
+                  "Asset Type",
+                  "Function useEffect assettype/get-AssetTypeByID/",
+                  err.response.data.message,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading Asset Category",
+                'Please wait while we are logging error',
+                'warning')
+              } else {
+
+                const submitLogs = new Logs(
+                  "Error",
+                  "Asset Category",
+                  "Function useEffect assettype/get-AssetTypeByID/",
+                  err,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading Asset Category",
+               'Please wait while we are logging error',
+               'warning')
+              }
             });
           
         } else {
@@ -157,7 +271,45 @@ import {
 
       }
       catch(err) {
-        alert(err)
+        const errorStatus = err.code;
+
+        if (errorStatus.includes("ERR_NETWORK")) {
+        
+          showToast(
+            "Asset Type",
+            errorStatus,
+            "error"
+          )
+  
+        } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        
+          const submitLogs = new Logs(
+            "Error",
+            "Asset Type",
+            "Function useEffect assettype/get-AssetTypeByID/",
+            err.response.data.message,
+            userID
+          );
+
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error Loading Asset Category",
+          'Please wait while we are logging error',
+          'error')
+        } else {
+
+          const submitLogs = new Logs(
+            "Error",
+            "Asset Category",
+            "Function useEffect assettype/get-AssetTypeByID/",
+            err,
+            userID
+          );
+
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error Loading Asset Category",
+         'Please wait while we are logging error',
+         'error')
+        }
       }
     }, [])
 
@@ -184,7 +336,7 @@ import {
               .post('/assettype/create-AssetType',typevalues)
             .then((res) => {
             
-              alert("Insert Successful")
+              
 
               const InsertLogs = new Logs(
                 'Info',
@@ -193,16 +345,56 @@ import {
                 ' Create   Statusname :  ' + typevalues.asset_typename,
                 userdata.userID
               )
-      
-             // const request = axios.post('/log',InsertLogs.getLogs())
-             // const response =  request.data
+              InsertLogs.insertLogs(InsertLogs)
+              showToast(
+                "Asset Type",
+                ' Create   Asset Type :  ' + typevalues.asset_typename,
+                "success"
+              )
 
              window.location.href = "/#/admin/assetstype-viewer"
-              
 
             })
             .catch((err) => {
-              alert(err);
+
+              const errorStatus = err.code;
+              if (errorStatus.includes("ERR_NETWORK")) {
+        
+                showToast(
+                  "Asset Type",
+                  errorStatus,
+                  "error"
+                )
+        
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+              
+                const submitLogs = new Logs(
+                  "Error",
+                  "Asset Type",
+                  "Function handleUpdate assettype/create-AssetType/",
+                  err.response.data.message,
+                  userID
+                );
+      
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error in creating Asset Type",
+                'Please wait while we are logging error',
+                'error')
+              } else {
+      
+                const submitLogs = new Logs(
+                  "Error",
+                  "Asset Category",
+                  "Function handleUpdate assettype/create-AssetType/",
+                  err,
+                  userID
+                );
+      
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error in creating Asset Type",
+               'Please wait while we are logging error',
+               'error')
+              }
             });
         } else if(!typevalues.asset_typeid == "") {
           /// update here
@@ -210,7 +402,7 @@ import {
             .post('/assettype/update-AssetType',typevalues)
           .then((res) => {
           
-            alert("Update Successful")
+            
 
             const InsertLogs = new Logs(
               'Info',
@@ -220,148 +412,227 @@ import {
               + ' Statusname :  ' + typevalues.asset_typename,
               userdata.userID
             )
-    
-          //  const request = axios.post('/log',InsertLogs.getLogs())
-          //  const response =  request.data
+
+            InsertLogs.insertLogs(InsertLogs)
+            showToast(
+              "Asset Type",
+              ' Update Asset Type :  ' + typevalues.asset_typename,
+              "success"
+            )
 
            window.location.href = "/#/admin/assetstype-viewer"
             
           })
           .catch((err) => {
            
-            const errorStatus = err.code
+            const errorStatus = err.code;
+            if (errorStatus.includes("ERR_NETWORK")) {
       
-            if( errorStatus.includes('ERR_NETWORK') ) 
-            {
-
-              
-              const submitLogs = new Logs(
-                "DB",
-                "AssetStatus",
-                "Function /HandleSubmit",
-                err,
-                userdata.userID
+              showToast(
+                "Asset Type",
+                errorStatus,
+                "error"
               )
-              
-              alert( submitLogs.getMessage() )
-
-            } else if ( errorStatus.includes('ERR_BAD_REQUEST') ) {
-             
+      
+            } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+            
               const submitLogs = new Logs(
-                'Error',
-                "Asset Status",
-                "Function /HandleSubmit",
+                "Error",
+                "Asset Type",
+                "Function handleUpdate /update-AssetType",
                 err.response.data.message,
-                userdata.userID
-              )
-      
-              try {
-      
-                const request = placeHolderAPI 
-                  .post('/log',submitLogs.getLogs())
-                const response =  request.data
-                console.log(response)
-      
-              } catch ( err ) {
-                console.log(err)
-                const logStatus = err.code
-      
-                if( logStatus.includes("ERR_NETWOR") ) {
-      
-                  const submitLogs = new Logs(
-                    "DB",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err,
-                    userdata.userID
-                  )
-      
-                  alert( submitLogs.getMessage() )
-                  console.log( submitLogs.getLogs() )
-      
-                }
-      
-                if( logStatus.includes("ERR_BAD_REQUEST") ) {
-      
-                  const submitLogs = new Logs(
-                    "Error",
-                    "Asset Status",
-                    "Function /HandleSubmit",
-                    err.response.data.message,
-                    userdata.userID
-                  )
-                  
-                  alert( submitLogs.getMessage() )
-                  console.log( submitLogs.getLogs() )
-      
-                }
-      
-              }
+                userID
+              );
+    
+              submitLogs.insertLogs(submitLogs)
+              showToast("Error in updating Aset Type",
+              'Please wait while we are logging error',
+              'error')
+            } else {
+    
+              const submitLogs = new Logs(
+                "Error",
+                "Asset Category",
+                "Function handleUpdate /update-AssetType",
+                err,
+                userID
+              );
+    
+              submitLogs.insertLogs(submitLogs)
+              showToast("Error in updating Aset Type",
+             'Please wait while we are logging error',
+             'error')
+            }
 
-          }});
+        });
       }
 
       }
       catch (err) {
-        alert(err)
+        const errorStatus = err.code;
+        if (errorStatus.includes("ERR_NETWORK")) {
+  
+          showToast(
+            "Asset Type",
+            errorStatus,
+            "error"
+          )
+  
+        } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        
+          const submitLogs = new Logs(
+            "Error",
+            "Asset Type",
+            "Function handleUpdate insert / update",
+            err.response.data.message,
+            userID
+          );
+
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error in inserting / updating Aset Type",
+          'Please wait while we are logging error',
+          'error')
+        } else {
+
+          const submitLogs = new Logs(
+            "Error",
+            "Asset Category",
+            "Function handleUpdate insert / update",
+            err,
+            userID
+          );
+
+          submitLogs.insertLogs(submitLogs)
+          showToast("Error in inserting / updating Aset Type",
+         'Please wait while we are logging error',
+         'error')
+        }
       }
     }
     
     return (
 
         <Stack>
-          <Card bg={graphCardBg}>
-          <Card bg={'white'}>
-          <FormControl>
-          
-          <Box>
-            <Select id= 'asset_categoryid' placeholder='Select option' size='md'
-             onChange={ e => {
-              setAssetType( { ...values, asset_categoryid: e.target.value } )}}
-              value={values.asset_categoryid}
-             >
-              {categories.map((category) => (
-                <option value={category.id} size='md'> 
-                  {category.assetCategName}
-                </option>
-                ))
+
+<FormControl>  
+            <Grid templateColumns={{ repeat:('6','1fr'), sm: "1fr", lg: "1.6fr 1.2fr" }} gap={5} >
+            <GridItem colSpan={4}  maxHeight={'600px'} >
+                <Card bg={graphCardBg} maxHeight={'600px'}>
+
+                  <Card bg={'white'}>
+
+                  <Flex align='center' mb='18px' >
+                      
+                      <Box  >
+                        <Text
+                          fontSize='md'
+                          color={textColor}
+                        
+                          fontWeight='bold'
+                          me='10px'>
+                          Category:{" "}
+                        </Text> 
+                      </Box>
+                      <Box pl={'2'} w={'100%'}   >
+                      <Select id= 'asset_categoryid' placeholder='Select option' size='md'
+                        onChange={ e => {
+                          setAssetType( { ...values, asset_categoryid: e.target.value } )}}
+                          value={values.asset_categoryid}
+                        >
+                        {categories.map((category) => (
+                          <option value={category.id} size='md'> 
+                            {category.assetCategName}
+                          </option>
+                          ))
+                          
+                        }
+
+                      </Select>
+                      </Box> 
+                    </Flex>
+
+                    <Flex align='center' mb='18px'>
+                      <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'}>
+                        <Text
+                          fontSize='md'
+                          color={textColor}
+                          w={'95px'}
+                          fontWeight='bold'
+                          me='10px'>
+                          Name:{" "}
+                        </Text> 
+                      </Box>       
+                      <Box pl={'2'} w={'100%'}  >
+                        <Input id='asset_typename' label="Asset Type name" placeholder="Asset Type Name" 
+                        value={values.asset_typename}
+                        onChange={ e => {
+                          setAssetType( { ...values, asset_typename: e.target.value } )}}
+                        />  
+                      </Box>
+                    </Flex>
+                    <Flex align='center' mb='18px'>
+                      <Box  position={'relative'} alignItems={'flex-end'} textAlign={'end'}>
+                        <Text
+                          fontSize='md'
+                          color={textColor}
+                          w={'95px'}
+                          fontWeight='bold'
+                          me='10px'>
+                          Description:{" "}
+                        </Text> 
+                      </Box>       
+                      <Box pl={'2'} w={'100%'}  >
+                        <Textarea id='asset_typedescription' label="Description" placeholder="Description" 
+                        value={values.asset_typedescription}
+                        onChange={ e => {
+                          setAssetType( { ...values, asset_typedescription: e.target.value } )}}
+                        />   
+                      </Box>
+                    </Flex>
+                      <Center>
+                        <Button colorScheme="green" onClick={handleUpdate}>
+                                Save
+                          </Button>
+                      </Center>
+
                 
-              }
+                  </Card>
+                </Card>
+            </GridItem>
+            <GridItem colStart={5} colEnd={6} maxHeight={'600px'} >
+              <Card bg={graphCardBg}  >
+                  <Card bg={'white'}>
+                  
+                        <Center  >
+                          <Avatar
+                          bg={'white'}
+                          src = {defaultLogo}
+                          h={'220px'}
+                          w={'220px'}
+                          >
 
-            </Select>
+                          </Avatar>
+                        </Center>
+      
+                    
+                    
+                      <Box align='center'>
+                        <Center>
+                        <Button colorScheme="green" >
+                              Upload Image
+                        </Button>
+                        </Center>
 
-            </Box>
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Status Name:  </FormLabel>
-              <Input id='asset_typename' label="Asset Type name" placeholder="Asset Type Name" 
-              value={values.asset_typename}
-              onChange={ e => {
-                setAssetType( { ...values, asset_typename: e.target.value } )}}
-              />    
-            </Box>
-            <Box>
-              <FormLabel fontSize={{ base: "sm" }}>Description:  </FormLabel>
-              <Input id='asset_typedescription' label="Description" placeholder="Description" 
-              value={values.asset_typedescription}
-              onChange={ e => {
-                setAssetType( { ...values, asset_typedescription: e.target.value } )}}
-              />    
-            </Box>
-            <Box>
-            <Button colorScheme="green" onClick={handleUpdate}>
-              {/* <Link
-                  to={{
-                  pathname: "/admin/assetstatusviewer"
-                  }}>
-              </Link> */}
-              {btnstate}
+                      </Box>
+              
+                              
+                  </Card>
+              </Card>
+              </GridItem>
+            </Grid>
 
-            </Button>
-          </Box>
-          
           </FormControl>
-          </Card>
-          </Card>
+
         </Stack>
       
     );
