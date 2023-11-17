@@ -226,7 +226,7 @@ export default function UserCheckin_Viewer() {
 
         .then((res) => {
       
-          if(res.data.message === 'Record Found') {
+          if(res.data.message === 'Records Found') {
 
             setAssets(res.data.result);
 
@@ -443,7 +443,8 @@ export default function UserCheckin_Viewer() {
               setSearch={setSearch}
               handleReport={handleReport}
               handleExcelReport = {handleExcelReport}
-              pathname="/admin/checkout"
+              //pathname="/admin/checkout"
+              pathname=""
             />
         
             <Table size="lg">

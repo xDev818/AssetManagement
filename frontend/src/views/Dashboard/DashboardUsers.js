@@ -3,11 +3,18 @@ import {
   Avatar,
   Box,
   Button,
+  Center,
   Flex,
   Grid,
   Icon,
   Spacer,
+  Table,
+  Tbody,
   Text,
+  Th,
+  Thead,
+  Tr,
+  Td,
   useColorMode,
   useColorModeValue,
   useToast
@@ -47,6 +54,8 @@ import Logs from "components/Utils/logs_helper";
 
 import sampleImage from "../../assets/img/avatars/avatar1.png"
 import { Link as Anchor } from "react-router-dom";
+import UserCheckin_Viewer from "components2/Activity/UserCheckin_Viewer";
+import UserAssetsViewer from "components2/Activity/UserAssetsViewer";
 
 function DashboardUsers() {
   // Chakra color mode
@@ -67,15 +76,46 @@ function DashboardUsers() {
     image: ""
 
   });
-  // const [userdata, setUser] = useState({
-  //   userID: "",
-  // });
 
+  const [checkin,setCheckIN] = useState([]);
+  const [userdata, setUser] = useState({
+    userID: "",
+  });
+
+  const SetUsers = async () => {
+    const tokenStorage = localStorage.getItem("token");
+    const tokenDecoded = decoder(tokenStorage);
+
+    setUser({
+      ...userdata,
+
+      userID: tokenDecoded.result[0].userDisplayID,
+    });
+  };
+
+  function showToast(title,desc,status) {
+    
+    return (
+      
+          toast({
+            title: title,
+            description: desc,
+            status: status,
+            duration: 3000,
+            //isClosable: true,
+            position: "top"
+          })
+
+     
+     
+    )
+  }
  
   useEffect( async () => {
 
     var userid = ""
     try {
+
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
        userid = tokenDecoded.result[0].userDisplayID
@@ -94,7 +134,7 @@ function DashboardUsers() {
             image: res.data.result[0].imgFilename, 
           });
 
-         
+          Load_Checkin_Assets()
         })
         .catch((err) => {
          
@@ -115,16 +155,80 @@ function DashboardUsers() {
         "DashBoardUsers",
         "Function /LoadAProfile",
         "DashBoardUsers  " +  err.response.data.message,
-       userid
+      userid
       );
 
       useEffectLogs.insertLogs(useEffectLogs)
     }
   }, []);
 
+  const  Load_Checkin_Assets = async () => {
+    var userid = ""
+    try {
+
+      const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
+       userid = tokenDecoded.result[0].userDisplayID
+
+      const request = await placeHolderAPI 
+        .get("/user-checkin/view-fordeploy/" + userid )
+        //console.log(request)
+      .then((res) => {
+
+        if(res.data.message === "Records Found") {
+        
+        setCheckIN(res.data.result);
+        } 
+
+      })
+      .catch((err) => {
+        const useEffectLogs = new Logs(
+          "Error",
+          "Dashboard Users",
+          "Function /Load_Checkin_Assets",
+          "Load_Checkin_Assets",
+          userid
+        );
+
+        useEffectLogs.insertLogs( useEffectLogs)
+
+      });
+      
+
+
+    } catch(err) {
+
+         const useEffectLogs = new Logs(
+          "Error",
+          "Dashboard Users",
+          "Function /Load_Checkin_Assets",
+          err,
+          userid
+        );
+                  
+        useEffectLogs.insertLogs( useEffectLogs )
+        showToast("Error Loading Checkin Assets",
+                'Please wait while we are logging error',
+                'error')
+      
+    }
+  }
+
  
   const graphCardBg = '#e6f2ff'
   const textColor = "#00334d"
+
+  const updateProfile = () => {
+
+    window.location.href = "/#/admin/update-profile"
+
+  }
+
+  const viewCheckin = () => {
+
+    window.location.href = "/#/admin/checkin-viewer"
+
+  }
 
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
@@ -222,27 +326,19 @@ function DashboardUsers() {
                 <Text fontSize='md' color='gray.400' fontWeight='400'>
                       {profile.group}
                     </Text> 
-                <Flex>
-         
-                  {/* <Link
-                    href='#'
-                    color={iconColor}
-                    fontSize='lg'
-                    me='10px'
-                    _hover={{ color: "blue.500" }}>
-                    <Icon as={FaInstagram} />
-                  </Link>
-                  <Link
-                    href='#'
-                    color={iconColor}
-                    fontSize='lg'
-                    me='10px'
-                    _hover={{ color: "blue.500" }}>
-                    <Icon as={FaTwitter} />
-                  </Link> */}
-                </Flex>
               </Flex>
-             
+            
+                  <Center>
+                    <Button variant="primary" color={textColor} maxH="30px" onClick={updateProfile}  >
+                      
+                      Update 
+                  
+                    </Button>
+
+                 
+                  </Center>
+
+              
             </Flex>
           
          </Card> 
@@ -269,22 +365,7 @@ function DashboardUsers() {
                     textAlign='center'
                     align='center'
                     w='100%'>
-                    {/* <Text fontSize='md' color={textColor} fontWeight='bold'>
-                      Salary
-                    </Text>
-                    <Text
-                      mb='24px'
-                      fontSize='xs'
-                      color='gray.400'
-                      fontWeight='semibold'>
-                      Belong Interactive
-                    </Text>
-                    <HSeparator /> */}
-                    {/* <Avatar
-                      src={sampleImage}
-                     size="xl"
-                      color='gray.400'
-                    /> */}
+                   
                   </Flex>
                   <Anchor
                    // href='#'
@@ -364,7 +445,7 @@ function DashboardUsers() {
               </CardBody>
             </Card>
           </Grid>
-          <Card p='16px' mt='24px'>
+          {/* <Card p='16px' mt='24px'>
             <CardHeader>
               <Flex
                 justify='space-between'
@@ -439,19 +520,23 @@ function DashboardUsers() {
                 </Flex>
               </Flex>
             </CardBody>
-          </Card>
+          </Card> */}
         </Card>
         <Card
           p='22px'
           my={{ sm: "24px", lg: "0px" }}
           ms={{ sm: "0px", lg: "24px" }}
           bg= {graphCardBg}>
+            <Card bg={'white'}>
+
+           
           <CardHeader>
             <Flex justify='space-between' align='center' mb='1rem' w='100%'>
-              <Text fontSize='lg' color={textColor} fontWeight='bold'>
-                Invoices
+              <Text fontSize='lg' color={textColor} fontWeight='bold' textTransform={'uppercase'}>
+                Waiting for Check-In
               </Text>
-              <Button
+              
+              {/* <Button
                 variant='outlined'
                 color={colorMode === "dark" && "white"}
                 borderColor={colorMode === "dark" && "white"}
@@ -459,53 +544,70 @@ function DashboardUsers() {
                 minW='110px'
                 maxH='35px'>
                 VIEW ALL
-              </Button>
+              </Button> */}
+                <Button 
+                maxH='35px' variant="primary" color={textColor} onClick={viewCheckin}  textTransform={'uppercase'} >
+                        
+                        See All 
+                </Button>
+           
             </Flex>
           </CardHeader>
+          <HSeparator  />
           <CardBody>
             <Flex direction='column' w='100%'>
-              {invoicesData.map((row, idx) => {
-                return (
-                  <InvoicesRow
-                    date={row.date}
-                    code={row.code}
-                    price={row.price}
-                    logo={row.logo}
-                    format={row.format}
-                    key={idx}
-                  />
-                );
-              })}
+
+            <Table size="lg">
+              <Thead>
+                <Tr>
+                  <Th>Ref No</Th>
+                 <Th>Name</Th>
+                  {/*  <Th>Release By</Th> */}
+
+                </Tr>
+              </Thead>
+              <Tbody>
+                {checkin.map((asset) => (
+                  <Tr key={asset.detailID}>
+                    <Td>{asset.docRef_Checkin}</Td>
+                   <Td>{asset.assetName}</Td>
+                    {/*  <Td>{asset.ReleasedBy}</Td> */}
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+             
             </Flex>
           </CardBody>
+          </Card>
+
         </Card>
       </Grid>
-      <Grid templateColumns={{ sm: "1fr", lg: "1.6fr 1.2fr" }}>
-        <Card my={{ lg: "24px" }} me={{ lg: "24px" }} bg={graphCardBg}>
-          <Flex direction='column'>
-            <CardHeader py='12px'>
-              <Text color={textColor} fontSize='lg' fontWeight='bold'>
-                Billing Information
-              </Text>
-            </CardHeader>
-            <CardBody>
-              <Flex direction='column' w='100%'>
-                {billingData.map((row, key) => {
-                  return (
-                    <BillingRow
-                      name={row.name}
-                      company={row.company}
-                      email={row.email}
-                      number={row.number}
-                      key={key}
-                    />
-                  );
-                })}
-              </Flex>
-            </CardBody>
-          </Flex>
-        </Card>
-        <Card my='24px' ms={{ lg: "24px" }} bg={graphCardBg}>
+      <br/>
+      <br/>
+      <UserAssetsViewer/>
+      {/* <Grid templateColumns={{ sm: "1fr", lg: "1.6fr 1.2fr" }}> */}
+        {/* <Card my={{ lg: "24px" }} me={{ lg: "24px" }} bg={graphCardBg}>
+          <Card bg = {'white'}>
+            <Flex direction='column'>
+              <CardHeader py='12px'>
+                <Text color={textColor} fontSize='lg' fontWeight='bold'>
+                  Cuurent Asset(s)
+                </Text>
+              </CardHeader> 
+              <HSeparator  />
+              <CardBody>
+
+                  <Box overflowY={"auto"}>
+                   
+                  </Box>
+                 
+               
+              </CardBody>
+            </Flex>
+          </Card>
+        </Card> */}
+        {/* <Card my='24px' ms={{ lg: "24px" }} bg={graphCardBg}>
           <CardHeader mb='12px'>
             <Flex direction='column' w='100%'>
               <Flex
@@ -573,8 +675,8 @@ function DashboardUsers() {
               })}
             </Flex>
           </CardBody>
-        </Card>
-      </Grid>
+        </Card> */}
+      {/* </Grid> */}
     </Flex>
   );
 }

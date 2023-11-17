@@ -73,9 +73,10 @@ import DataTable from "components2/TanstackTable/DataTable";
               userdata.userID
             );
 
-            useEffectLogs.insertLogs( useEffectLogs.getLogs() )
+            useEffectLogs.insertLogs( useEffectLogs)
 
           });
+          
       } catch (err) {
         const errorStatus = err.code;
 

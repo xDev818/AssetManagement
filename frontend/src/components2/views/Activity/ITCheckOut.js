@@ -410,7 +410,7 @@ import {
                 >
                   {users.map((user) => (
                     <option value={user.id} size='md'> 
-                      {user.fullname}
+                      {user.FullName}
                     </option>
                     ))
                     

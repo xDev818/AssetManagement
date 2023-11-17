@@ -39,6 +39,8 @@ const {
   
   const viewAssetByUserID = ( request, response ) => {
     const { id } = request.params
+
+    console.log(id)
     
     mysql.query(viewAllAssetsfor_Deploy_ByUserID(), [id], ( err, result ) => {
 
@@ -58,7 +60,7 @@ const {
 
         response.status(200).send(
             {
-                message: "Record Found",
+                message: "Records Found",
                 result
             }
         )
