@@ -57,12 +57,17 @@ import decoder from "jwt-decode";
 import generate_PDF from "components/Utils/generate_PDF";
 import generate_EXCEL from "components/Utils/generate_EXCEL";
 
-import { TableContainer, Stack } from "@chakra-ui/react";
+import { TableContainer,
+  Stack,
+  useToast
+ } from "@chakra-ui/react";
 
 import Card from "components/Card/Card";
 import DataTable from "components2/TanstackTable/DataTable";
 
 export default function PositionViewer() {
+
+  const toast = useToast()
 
   const textColor = "#00334d"
   const graphCardBg = '#e6f2ff'
@@ -70,6 +75,24 @@ export default function PositionViewer() {
   var userID = "";
 
   const [positions, setPositions] = useState([]);
+
+  function showToast(title,desc,status) {
+    
+    return (
+      
+          toast({
+            title: title,
+            description: desc,
+            status: status,
+            duration: 3000,
+            //isClosable: true,
+            position: "top"
+          })
+
+     
+     
+    )
+  }
 
   useEffect(() => {
     LoadAllPositions();
@@ -99,7 +122,46 @@ export default function PositionViewer() {
           );
         });
     } catch (err) {
-      alert(err);
+      
+              const errorStatus = err.code;
+
+              if (errorStatus.includes("ERR_NETWORK")) {
+              
+                showToast(
+                  "PositionViewer",
+                  errorStatus,
+                  "error"
+                )
+        
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+              
+                const submitLogs = new Logs(
+                  "Error",
+                  "PositionViewer",
+                  "Function useEffect /positions/viewallpositions/",
+                  err.response.data.message,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading Positions",
+                'Please wait while we are logging error',
+                'warning')
+              } else {
+
+                const submitLogs = new Logs(
+                  "Error",
+                  "User",
+                  "Function useEffect /positions/viewallpositions",
+                  err,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading Positions",
+               'Please wait while we are logging error',
+               'warning')
+              }
     }
   };
 
@@ -110,9 +172,9 @@ export default function PositionViewer() {
       const deleteSuccess = await placeHolderAPI
         .post("/positions/deletePosition", { positionID })
         .then((res) => {
-          alert("Delete succes");
+          
 
-          LoadAllPositions();
+         
 
           const deleteLogs = new Logs(
             "Info",
@@ -125,14 +187,66 @@ export default function PositionViewer() {
             userID
           );
 
-          // const request = axios.post('/log',deleteLogs.getLogs())
-          // const response =  request.data
+          deleteLogs.insertLogs(deleteLogs)
+          showToast(
+            "PositionViewer",
+            "Delete statusID :  " +
+            positionID +
+            "   Statusname :  " +
+            positionname,
+            "success"
+          )
+
+          LoadAllPositions();
+
+         
         })
         .catch((err) => {
           alert(err);
         });
     } catch (err) {
-      alert(err);
+      
+            
+      const errorStatus = err.code;
+
+      if (errorStatus.includes("ERR_NETWORK")) {
+      
+        showToast(
+          "PositionViewer",
+          errorStatus,
+          "error"
+        )
+
+      } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+      
+        const submitLogs = new Logs(
+          "Error",
+          "PositionViewer",
+          "Function handleDelete /positions/deletePosition",
+          err.response.data.message,
+          userID
+        );
+
+        submitLogs.insertLogs(submitLogs)
+        showToast("Error Loading Positions",
+        'Please wait while we are logging error',
+        'warning')
+      } else {
+
+        const submitLogs = new Logs(
+          "Error",
+          "PositionViewer",
+          "Function handleDelete /positions/deletePosition",
+          err,
+          userID
+        );
+
+        submitLogs.insertLogs(submitLogs)
+        showToast("Error Deleting Positions",
+       'Please wait while we are logging error',
+       'warning')
+      }
+
     }
   };
 
@@ -140,7 +254,9 @@ export default function PositionViewer() {
     try {
       generate_PDF(positions, "Position");
     } catch (err) {
-      alert(err);
+      showToast("PDF PositionViewer",
+     err,
+      'error')
     }
   };
 
@@ -148,7 +264,9 @@ export default function PositionViewer() {
     try {
       generate_EXCEL(positions, "Position");
     } catch (err) {
-      alert(err);
+      showToast("Excel PositionViewer",
+     err,
+      'error')
     }
   };
 

@@ -143,9 +143,46 @@ export default function Position() {
                
             })
             .catch((err) => {
-            
 
-            // window.location.href = '/'; 
+              const errorStatus = err.code;
+
+              if (errorStatus.includes("ERR_NETWORK")) {
+              
+                showToast(
+                  "Position",
+                  errorStatus,
+                  "error"
+                )
+        
+              } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+              
+                const submitLogs = new Logs(
+                  "Error",
+                  "Position",
+                  "Function useEffect /positions/getPositionID/",
+                  err.response.data.message,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading selected Position",
+                'Please wait while we are logging error',
+                'warning')
+              } else {
+
+                const submitLogs = new Logs(
+                  "Error",
+                  "User",
+                  "Function useEffect /positions/getPositionID/",
+                  err,
+                  userID
+                );
+
+                submitLogs.insertLogs(submitLogs)
+                showToast("Error Loading selected Position",
+               'Please wait while we are logging error',
+               'warning')
+              }
              
             });
           
