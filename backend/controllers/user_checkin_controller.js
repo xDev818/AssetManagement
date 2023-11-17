@@ -40,8 +40,6 @@ const {
   const viewAssetByUserID = ( request, response ) => {
     const { id } = request.params
 
-    console.log(id)
-    
     mysql.query(viewAllAssetsfor_Deploy_ByUserID(), [id], ( err, result ) => {
 
        

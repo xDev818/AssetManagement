@@ -43,13 +43,7 @@ import {
   FormControl,
   Grid,
   GridItem,
-  useToast,
-  Tabs,
-  TabList,
-  Tab,
-  TabIndicator,
-  TabPanels,
-  TabPanel
+  useToast
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import React, { useEffect, useState, useReducer, useRef } from "react";
@@ -333,9 +327,23 @@ const handleUploadImage = async (e) => {
           borderRadius="1px"
         />
         <TabPanels>
-          <TabPanel>
-
-          <Card>
+        <TabPanel>
+         
+        </TabPanel>
+        </TabPanels>
+          <Text fontWeight="bold" mb={5}>
+            Profile
+          </Text>
+          <FormControl>
+            <Grid
+              templateColumns={{
+                xs: "repeat(1, 1fr)",
+                sm: "repeat(1, 1fr)",
+                lg: "repeat(2, 1fr)",
+              }}
+              gap={5}
+            >
+              <Card>
                 <FormLabel fontWeight="bold">
                   <Flex alignItems="center" gap={2}>
                     <PersonIcon />
@@ -480,9 +488,8 @@ const handleUploadImage = async (e) => {
                 </Flex>
               </Card>
 
-          </TabPanel>
-          <TabPanel>
-          <Card>
+              <GridItem colSpan={2}>
+                <Card>
                   <FormLabel fontWeight="bold">
                     <Flex alignItems="center" gap={2}>
                       <PersonIcon />
@@ -519,12 +526,7 @@ const handleUploadImage = async (e) => {
                     // defaultValue={states.confirm_password || "************"}
                     />
                   </Box>
-                  
-                </Card>
-          </TabPanel>
-        </TabPanels>
-
-        <Box mt={3}>
+                  <Box mt={3}>
                     <Button
                       rounded={5}
                       size="md"
@@ -535,7 +537,10 @@ const handleUploadImage = async (e) => {
                       Update Profile
                     </Button>
                   </Box>
-    
+                </Card>
+              </GridItem>
+            </Grid>
+          </FormControl>
         </Tabs>
         </Card>
       </Card>
