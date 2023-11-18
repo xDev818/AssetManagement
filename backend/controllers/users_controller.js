@@ -543,7 +543,7 @@ const uploadImage = ( request, response ) => {
    // const userid = request.files
 
 
-    console.log(userid)
+//    console.log(userid)
 
    const file = files.file
    const type = file.mimetype
@@ -652,6 +652,31 @@ const deleteAllOldUsers = ( request, response ) => {
 
 }
 
+// An Instance to delete an old user data by ID
+const updatepassword = ( request, response ) => {
+
+    const { password,userid } = request.body
+
+    const stmt = "UPDATE tblUsers SET password = ? where userDisplayID = ?"
+
+    mysql.query( stmt, [ password, userid], ( err, result ) => {
+
+        if( err || !result.changedRows ) return response.status(404).send(
+            {
+                message: "Update Error",
+                message2: err.message
+            }
+        )
+
+        response.status(200).send(
+            {
+                message: "Update Success"
+            }
+        )
+
+     })
+
+}
 
 
 module.exports = {
@@ -669,4 +694,5 @@ module.exports = {
     deleteAllOldUsers,
     updateProfile,
     uploadImage,
+    updatepassword
 }

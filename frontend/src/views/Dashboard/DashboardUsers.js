@@ -52,7 +52,9 @@ import decoder from "jwt-decode";
 
 import Logs from "components/Utils/logs_helper";
 
-import sampleImage from "../../assets/img/avatars/avatar1.png"
+import sampleImage from "../../assets/img/defaultImage.webp";
+
+
 import { Link as Anchor } from "react-router-dom";
 import UserCheckin_Viewer from "components2/Activity/UserCheckin_Viewer";
 import UserAssetsViewer from "components2/Activity/UserAssetsViewer";
@@ -230,6 +232,13 @@ function DashboardUsers() {
 
   }
 
+  const viewUpdateProfile = () => {
+
+    window.location.href = "/#/admin/update-profile"
+
+  }
+  
+
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
       <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows='1fr' >
@@ -367,6 +376,16 @@ function DashboardUsers() {
                     w='100%'>
                    
                   </Flex>
+                  <Text fontSize='md' color='gray.400' fontWeight='400' textTransform={'uppercase'}>
+                    {profile?.image
+                      ? 'Superb'
+                      : <Button 
+                          maxH='35px' variant="primary" color={textColor} onClick={viewUpdateProfile}  textTransform={'uppercase'} >
+                              
+                             'Need to update'
+                      </Button>
+                    }
+                  </Text> 
                   <Anchor
                    // href='#'
                     //color={iconColor}
@@ -378,10 +397,7 @@ function DashboardUsers() {
                         color={'gray.400'}
                         fontWeight='bold'
                         me='10px'>
-                          {profile?.image
-                          ? 'Superb'
-                          : 'Need to update'
-                          }
+                          
                        
                       </Text>
                   </Anchor>
@@ -392,12 +408,6 @@ function DashboardUsers() {
               <CardBody>
                 <Flex direction='column' align='center' w='100%' py='14px'>
                 <Avatar
-                      // src={
-                      //   profile.image
-                      //   ?
-                      //    `http://localhost:5001/image/static/${profile?.image}`
-                      //   : sampleImage
-                      // }
                       src={sampleImage}
                      size="1xl"
                       color='gray.400'
@@ -409,38 +419,10 @@ function DashboardUsers() {
                     textAlign='center'
                     align='center'
                     w='100%'>
-                    {/* <Text fontSize='md' color={textColor} fontWeight='bold'>
-                      Salary
-                    </Text>
-                    <Text
-                      mb='24px'
-                      fontSize='xs'
-                      color='gray.400'
-                      fontWeight='semibold'>
-                      Belong Interactive
-                    </Text>
-                    <HSeparator /> */}
-                    {/* <Avatar
-                      src={sampleImage}
-                     size="xl"
-                      color='gray.400'
-                    /> */}
                   </Flex>
-                  <Anchor
-                   // href='#'
-                    //color={iconColor}
-                   
-                    me='10px'
-                    _hover={{ color: "blue.500" }}>
-                      <Text
-                        fontSize='sm'
-                        color={'gray.400'}
-                        fontWeight='bold'
-                        me='10px'>
-                          Department
-                       
-                      </Text>
-                  </Anchor>
+                  <Text fontSize='md' color='gray.400' fontWeight='400'>
+                     Department Logo 
+                  </Text>    
                 </Flex>
               </CardBody>
             </Card>

@@ -18,27 +18,32 @@ export default function Pages(props) {
     return function cleanup() {};
   });
   const getActiveRoute = (routes) => {
-    let activeRoute = "Default Brand Text";
-    for (let i = 0; i < routes.length; i++) {
-      if (routes[i].collapse) {
-        let collapseActiveRoute = getActiveRoute(routes[i].views);
-        if (collapseActiveRoute !== activeRoute) {
-          return collapseActiveRoute;
-        }
-      } else if (routes[i].category) {
-        let categoryActiveRoute = getActiveRoute(routes[i].views);
-        if (categoryActiveRoute !== activeRoute) {
-          return categoryActiveRoute;
-        }
-      } else {
-        if (
-          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-        ) {
-          return routes[i].name;
+    try {
+      let activeRoute = "Default Brand Text";
+      for (let i = 0; i < routes.length; i++) {
+        if (routes[i].collapse) {
+          let collapseActiveRoute = getActiveRoute(routes[i].views);
+          if (collapseActiveRoute !== activeRoute) {
+            return collapseActiveRoute;
+          }
+        } else if (routes[i].category) {
+          let categoryActiveRoute = getActiveRoute(routes[i].views);
+          if (categoryActiveRoute !== activeRoute) {
+            return categoryActiveRoute;
+          }
+        } else {
+          if (
+            window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
+          ) {
+            return routes[i].name;
+          }
         }
       }
+      return activeRoute;
     }
-    return activeRoute;
+    catch(err) {
+      alert("error in getActiveRoute auth")
+    }
   };
   const getActiveNavbar = (routes) => {
     let activeNavbar = false;
@@ -61,6 +66,7 @@ export default function Pages(props) {
     return activeNavbar;
   };
   const getRoutes = (routes) => {
+    try {
     return routes.map((prop, key) => {
       if (prop.collapse) {
         return getRoutes(prop.views);
@@ -80,6 +86,9 @@ export default function Pages(props) {
         return null;
       }
     });
+  } catch(err) {
+    alert("error in getRoutes auth")
+  }
   };
   const navRef = React.useRef();
   document.documentElement.dir = "ltr";

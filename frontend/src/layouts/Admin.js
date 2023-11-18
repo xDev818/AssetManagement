@@ -140,6 +140,7 @@ export default function Dashboard(props) {
     return activeNavbar;
   };
   const getRoutes = (routes) => {
+    try {
     return routes.map((prop, key) => {
       if (prop.collapse) {
         return getRoutes(prop.views);
@@ -159,6 +160,9 @@ export default function Dashboard(props) {
         return null;
       }
     });
+  } catch(err) {
+    alert("error in getRoutes admin")
+  }
   };
   const { isOpen, onOpen, onClose } = useDisclosure();
   document.documentElement.dir = "ltr";
@@ -294,31 +298,37 @@ export default function Dashboard(props) {
             {...rest}
           />
         </Portal>
-        {getRoute() ? (
+        {/* {getRoute() ? (
           <PanelContent>
             <PanelContainer>
               <Switch>
                 {getRoutes(routes)}
-                  {/* <Redirect from="/admin" to="/admin/dashboard" />  */}
-                {/* { user?.userRole.trim() === "IT Admin" && <Redirect from="/admin" to="/admin/dashboardit" /> }
-                { user?.userRole.trim() === "IT" && <Redirect from="/admin" to="/admin/dashboardit" /> }
-                { user?.userRole.trim() === "User" && <Redirect from="/admin" to="/admin/dashboardusers" /> } */}
                  <Redirect from="/admin" to="/admin/dashboard" />
-                
               </Switch>
              
             </PanelContainer>
             
           </PanelContent>
-        ) : null}
+        ) : null} */}
 
-        <Portal>
+          <PanelContent>
+            <PanelContainer>
+              <Switch>
+                {getRoutes(routes)}
+                 <Redirect from="/admin" to="/admin/dashboard" />
+              </Switch>
+             
+            </PanelContainer>
+            
+          </PanelContent>
+
+        {/* <Portal>
           <FixedPlugin
             secondary={getActiveNavbar(routes)}
             fixed={fixed}
             onOpen={onOpen}
           />
-        </Portal>
+        </Portal> */}
       </MainPanel>
     </Box>
   );

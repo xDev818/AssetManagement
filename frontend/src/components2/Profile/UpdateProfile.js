@@ -50,11 +50,13 @@ import {
   TabIndicator,
   TabPanels,
   TabPanel,
-  Avatar
+  Avatar,
 } from "@chakra-ui/react";
 import Card from "components/Card/Card";
 import React, { useEffect, useState, useReducer, useRef } from "react";
 import decoder from "jwt-decode";
+import { hash_password,compare_password } from "components/Utils/password_helper";
+
 //import axios from "axios";
 import Logs from "components/Utils/logs_helper";
 import { placeHolderAPI } from "index";
@@ -66,17 +68,17 @@ import imgDefault from "../../assets/img/defaultImage.webp";
 import CardBody from "components/Card/CardBody";
 import CardHeader from "components/Card/CardHeader.js";
 import { HSeparator } from "components/Separator/Separator";
+
 //import t from '../../../../backend/images/static/'
 
 export default function UpdateProfile() {
 
-  // const toast = useToast()
+  const toast = useToast()
 
   const graphCardBg = '#e6f2ff'
   const textColor = "#00334d"
 
   //Nole
-  var userID = "";
   const [usergroups, setUserGroups] = useState([]);
   const [positions, setPositions] = useState([]);
  
@@ -94,7 +96,30 @@ export default function UpdateProfile() {
     userRole: "",
     imgFilename: ""
   })
+
+  const [password,setPassword] = useState({
+    newpass: "",
+    confirmpass: ""
+  })
   
+
+  function showToast(title,desc,status) {
+    
+    return (
+      
+          toast({
+            title: title,
+            description: desc,
+            status: status,
+            duration: 3000,
+            //isClosable: true,
+            position: "top"
+          })
+
+     
+     
+    )
+  }
  
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -116,6 +141,12 @@ export default function UpdateProfile() {
       imgFilename: decoded?.result[0].imgFilename
     })
 
+    // setPassword({
+    //   ...password,
+    //   newpass: "********",
+    //   confirmpass: "********"
+    // })
+
 
    // console.log("id", id);
   }, [setData]);
@@ -135,6 +166,7 @@ export default function UpdateProfile() {
   
   const handleLogout = () => {
       try {
+
       const storage = localStorage;
       window.localStorage.removeItem("token");
 
@@ -172,13 +204,11 @@ export default function UpdateProfile() {
       const response = await request.data;
 
       if (response.message.includes("Update Success")) {
-          // viewToastify(
-          //           "Update Profile",
-          //           "User Profile updated successfully",
-          //           "success"
-          //         )
 
-        //localStorage.setItem("token", response.token);
+        showToast('Profile',
+        "Profile successfully updated",
+        'success'
+        )
         handleLogout()
        
         
@@ -212,13 +242,11 @@ export default function UpdateProfile() {
           err.response.data.message,
           ""
         );
-        useEffectLogs.getLogs();
-
-        alert(useEffectLogs.getMessage());
-        console.log(useEffectLogs.getLogs());
+        
+        
         //buttonStatus.disabled = false;
 
-        useEffectLogs.insertLogs(useEffectLogs.getLogs());
+        useEffectLogs.insertLogs(useEffectLogs);
       }
     }
    window.location.reload()
@@ -226,6 +254,7 @@ export default function UpdateProfile() {
 
 
   const LoadAllUserGroups = async () => {
+    var userID = ""
     try {
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
@@ -243,8 +272,8 @@ export default function UpdateProfile() {
           const InsertLogs = new Logs(
             "Error",
             "PositionViewer",
-            "Function /LoadAllPositions",
-            "LoadAllPositions",
+            "Function /LoadAllUserGroups",
+            "LoadAllUserGroups",
             userID
           );
         });
@@ -254,6 +283,7 @@ export default function UpdateProfile() {
   };
 
   const LoadAllPositions = async () => {
+    var userID = ""
     try {
       const tokenStorage = localStorage.getItem("token");
       const tokenDecoded = decoder(tokenStorage);
@@ -307,12 +337,107 @@ const handleUploadImage = async (e) => {
           }
         })
 
+        handleLogout()
 
     } catch (err) {
       alert(err)
     }
 
 
+}
+
+const handleUpdatePassword = async () => {
+  var userID = ""
+
+  try {
+
+    const tokenStorage = localStorage.getItem("token");
+      const tokenDecoded = decoder(tokenStorage);
+      userID = tokenDecoded.result[0].userDisplayID;
+
+        const isValid = (password.newpass === password.confirmpass ? true : false)
+       
+        if(isValid) {
+          const pass_values = {
+            password: hash_password(password.newpass),
+            userid: userID
+          }
+
+        const request = await placeHolderAPI .post('/users/update-password', pass_values);
+        const response = await request.data;
+         
+        if (response.message.includes("Update Success")) {
+
+          showToast('Profile',
+          "Profile successfully updated",
+          'success'
+          )
+          handleLogout()
+        } else {
+          showToast("Error in Updating Password",
+          response.message,
+        'error')
+
+          const useEffectLogs = new Logs(
+            errorStatus,
+            "Login",
+            "Function /UpdatePassword",
+          response.message,
+          userID
+          );
+
+            useEffectLogs.insertLogs(useEffectLogs);
+
+
+        }
+      } else {
+        showToast('Profile',
+        'Password do noit match',
+        'warning')
+      }
+
+  } catch (err) {
+   
+      const errorStatus = err.code;
+
+
+      if (errorStatus.includes("ERR_NETWORK")) {
+        showToast("Error in Updating Password",
+         errorStatus,
+        'error')
+      }
+
+      if (errorStatus.includes("ERR_BAD_REQUEST")) {
+        const useEffectLogs = new Logs(
+          errorStatus,
+          "Login",
+          "Function /UpdatePassword",
+          err.response.data.message,
+          userID
+        );
+        
+        showToast("Error in Updating Password",
+                'Please wait while we are logging error',
+                'error')
+
+        useEffectLogs.insertLogs(useEffectLogs);
+
+      } else {
+        const useEffectLogs = new Logs(
+          errorStatus,
+          "Login",
+          "Function /UpdatePassword",
+          err,
+          userID
+        );
+
+        showToast("Error in Updating Password",
+                'Please wait while we are logging error',
+                'error')
+
+        useEffectLogs.insertLogs(useEffectLogs);
+      }
+  }
 }
 
   return (
@@ -339,10 +464,12 @@ const handleUploadImage = async (e) => {
           />
            <TabPanels>
               <TabPanel>
-                <Card>
+                <Card  my={{ sm: "15px", xl: "0px" }}>
                   <Flex direction='column' >
                     <Flex align='center' mb='18px'>
                       <Text
+                       align={'end'}
+                       w={'100px'}
                         fontSize='md'
                         color={textColor}
                         fontWeight='bold'
@@ -365,6 +492,8 @@ const handleUploadImage = async (e) => {
                     </Flex>
                     <Flex align='center' mb='18px'>
                       <Text
+                       align={'end'}
+                       w={'100px'}
                         fontSize='md'
                         color={textColor}
                         fontWeight='bold'
@@ -387,6 +516,8 @@ const handleUploadImage = async (e) => {
                     </Flex>
                     <Flex align='center' mb='18px'>
                       <Text
+                       align={'end'}
+                       w={'100px'}
                         fontSize='md'
                         color={textColor}
                         fontWeight='bold'
@@ -403,6 +534,8 @@ const handleUploadImage = async (e) => {
                     </Flex>
                     <Flex align='center' mb='18px'>
                       <Text
+                       align={'end'}
+                       w={'100px'}
                         fontSize='md'
                         color={textColor}
                         fontWeight='bold'
@@ -418,6 +551,8 @@ const handleUploadImage = async (e) => {
                     </Flex>
                     <Flex align='center' mb='18px'>
                       <Text
+                       align={'end'}
+                       w={'100px'}
                         fontSize='md'
                         color={textColor}
                         fontWeight='bold'
@@ -442,30 +577,31 @@ const handleUploadImage = async (e) => {
                 </Card>
               </TabPanel>
               <TabPanel>
-                <Card>
+                <Card  my={{ sm: "24px", xl: "0px" }}>
                   <Flex direction='column' >
                     <Flex align='center' mb='18px'>
                         <Text
+                          align={'end'}
+                          w={'200px'}
                           fontSize='md'
                           color={textColor}
                           fontWeight='bold'
                           me='10px'>
-                          Password:{" "}
+                          New Password:{" "}
                         </Text>        
                         <Input
                           type="password"
-                          // onChange={(e) =>
-                          //   dispatch({
-                          //     type: ACTION.PASSWORD,
-                          //     payload: e.target.value,
-                          //   })
-                          // }
-                          placeholder="Password..."
-                        // defaultValue={states.password || "************"}
+                          onChange={ e => {
+                            setPassword( { ...password, newpass: e.target.value } )}}
+                            
+                          placeholder="New Password..."
+                         //defaultValue={password.newpass || "************"}
                         />
                     </Flex>
                     <Flex align='center' mb='18px'>
                         <Text
+                         align={'end'}
+                         w={'200px'}
                           fontSize='md'
                           color={textColor}
                           fontWeight='bold'
@@ -474,19 +610,16 @@ const handleUploadImage = async (e) => {
                         </Text>        
                         <Input
                             type="password"
-                            // onChange={(e) =>
-                            //   dispatch({
-                            //     type: ACTION.CONFIRM_PASSWORD,
-                            //     payload: e.target.value,
-                            //   })
-                            // }
+                            onChange={ e => {
+                              setPassword( { ...password, confirmpass: e.target.value } )}}
+                              
                             placeholder="Confirm Password..."
-                          // defaultValue={states.confirm_password || "************"}
+                           //defaultValue={password.confirmpass || "************"}
                         />
                     </Flex>
                   </Flex>
-                  <Flex direction='column' align='center' w='100%' py='14px'>
-                    <Button  colorScheme="green" >
+                  <Flex direction='column' align='center' w='100%' >
+                    <Button  colorScheme="green" onClick={handleUpdatePassword} >
                       Update Password
                     </Button>    
 

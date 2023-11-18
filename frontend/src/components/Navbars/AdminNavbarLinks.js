@@ -50,12 +50,17 @@ export default function HeaderLinks(props) {
 
   useEffect(() => {
     try {
-    const token = window.localStorage.getItem("token");
-    const data = jwtDecode(token);
-    setUser(data);
+      const storage = localStorage;
+      if(storage.getItem("token")) {
+        const token = window.localStorage.getItem("token");
+        const data = jwtDecode(token);
+        setUser(data);
+      } else {
+        
+        window.location.href = "/#/auth/signin";
+      }
     } catch(err) {
-      
-      alert(err)
+      alert("No token for admin navbar links")
       window.location.href = "/#/auth/signin";
     }
   }, []);
@@ -65,13 +70,14 @@ export default function HeaderLinks(props) {
     try {
     const storage = localStorage;
     window.localStorage.removeItem("token");
-    window.location.reload()
+    // window.location.reload()
    // window.location.reload()
     // if (!storage.getItem("token")) {
-    //  //window.location.href = "/#/auth/signin";
+    window.location.href = "/#/auth/signin";
     //  window.location.reload()
     // }
   } catch(err) {
+    alert("error in click logout")
     alert(err)
   }
     

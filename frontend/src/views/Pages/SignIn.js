@@ -108,6 +108,7 @@ function SignIn() {
 
   useEffect(() => {
     try {
+      alert("call signin")
     const storage = localStorage;
 
     if (storage.getItem("token")) {

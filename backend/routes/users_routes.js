@@ -20,7 +20,7 @@ const {
     deleteAllOldUsers,
     updateProfile,
     uploadImage,
-
+    updatepassword
 
 } = require('../controllers/users_controller')
 
@@ -39,6 +39,7 @@ router.get('/users/ByAct',getUserByActive) // Api call to get all the users base
 router.get('/users/:id', getUserProfile) // Api call to a single user
 //router.put('/users/:id', updateUserProfile) // Api call to update a single user
 router.post('/users/update-profile', updateProfile) // Api call to update a single user
+router.post('/users/update-password', updatepassword) // Api call to update a single user password
 
 
 router.delete('/users/:id', deleteOldUserById) // Api call to delete an old data by ID

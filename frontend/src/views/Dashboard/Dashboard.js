@@ -59,6 +59,7 @@ import {
   Tr,
   useColorMode,
   useColorModeValue,
+  useToast
 } from "@chakra-ui/react";
 import bgAdmin from "assets/img/admin-background.png";
 
@@ -122,6 +123,8 @@ const DashboardUsers = React.lazy(() => import("./DashboardUsers"));
 
 export default function Dashboard() {
 
+  const toast = useToast()
+
   // Jinshin
   const [decoded, setDecode] = useState();
   const [user, setUser] = useState({
@@ -130,10 +133,31 @@ export default function Dashboard() {
   });
 
 
+  function showToast(title,desc,status) {
+    
+    return (
+      
+          toast({
+            title: title,
+            description: desc,
+            status: status,
+            duration: 3000,
+            //isClosable: true,
+            position: "top"
+          })
+
+     
+     
+    )
+  }
+
+
   useEffect(() => {
 
+    var userID = ""
     try {
     const storage = localStorage;
+  
 
     if (!storage.getItem("token") || !storage.getItem("token").length) {
       window.location.href = "/#/auth/signin";
@@ -151,6 +175,7 @@ export default function Dashboard() {
             userID: decoding.result[0].userDisplayID,
             userRole: decoding.result[0].userRole })
 
+            userID = decoding.result[0].userDisplayID
          
         }
       })
@@ -158,94 +183,78 @@ export default function Dashboard() {
         const errorStatus = err.code;
 
         if (errorStatus.includes("ERR_NETWORK")) {
+
+          showToast("Error in user verification",
+                err,
+                'warning')
+        } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+         
           const verifyLogs = new Logs(
-            "DB",
+            "Error",
+            "dashboard",
+            "useEffect /users/verify" + errorStatus,
+            err.response.data.message,
+            userID
+          );
+          verifyLogs.insertLogs(verifyLogs)
+          showToast("Error user verification",
+          'Please wait while we are logging error',
+          'warning')
+        } else {
+          const verifyLogs = new Logs(
+            "Error",
             "dashboard",
             "useEffect /users/verify" + errorStatus,
             err,
-            ""
+            userID
           );
-          alert(verifyLogs.getMessage());
-        }
-
-        if (errorStatus.includes("ERR_BAD_REQUEST")) {
-          //console.log(err);
-          const verifyLogs = new Logs(
-            "Error",
-            "dashboard--",
-            "useEffect /users/verify" + errorStatus,
-            err.response.data.message,
-            ""
-          );
-
-          placeHolderAPI
-            .post("/log", verifyLogs.getLogs())
-            .then((res) => {
-              console.log("Log is: ", res.data);
-              localStorage.removeItem("token");
-              window.location.href = "/#/auth/signin";
-            })
-            .catch((err) => {
-              const logStatus = err.code;
-
-              if (logStatus.includes("ERR_NETWORK")) {
-                const _logs = new Logs(
-                  "DB",
-                  "dashboard",
-                  "useEffect /log",
-                  err,
-                  decoded.result[0].userDisplayID
-                );
-                alert(_logs.getMessage());
-              }
-
-              if (logStatus.includes("ERR_BAD_REQUEST")) {
-                const _logs = new Logs(
-                  "Error",
-                  "dashboard",
-                  "useEffect /log",
-                  err.response.data.message,
-                  ""
-                );
-                alert(_logs.getLogs());
-              }
-            });
+          verifyLogs.insertLogs(verifyLogs)
+          showToast("Error user verification",
+          'Please wait while we are logging error',
+          'warning')
         }
       });
     } catch(err) {
       alert(err)
+      const errorStatus = err.code;
+
+      if (errorStatus.includes("ERR_NETWORK")) {
+
+        showToast("Error in user verification",
+              err,
+              'warning')
+      } else if (errorStatus.includes("ERR_BAD_REQUEST")) {
+       
+        const verifyLogs = new Logs(
+          "Error",
+          "dashboard",
+          "useEffect (catch) /users/verify" + errorStatus,
+          err.response.data.message,
+          userID
+        );
+        verifyLogs.insertLogs(verifyLogs)
+        showToast("Error user verification",
+        'Please wait while we are logging error',
+        'warning')
+      } else {
+        const verifyLogs = new Logs(
+          "Error",
+          "dashboard",
+          "useEffect (catch) /users/verify" + errorStatus,
+          err,
+          userID
+        );
+        verifyLogs.insertLogs(verifyLogs)
+        showToast("Error user verification",
+        'Please wait while we are logging error',
+        'warning')
+      }
     }
   }, [setDecode]);
 
-  // useLayoutEffect(() => {
-  //   decoded && console.log("user", decoded);
-  // });
-  // // End Jinshin
-
-  // useEffect( async() => {
-
-  
-  //   try {
-  
-  //     const tokenStorage = localStorage.getItem("token");
-      
- 
-  //     if (!storage.getItem("token") || !storage.getItem("token").length) {
-  //           window.location.href = "/#/auth/signin";
-  //     } else {
-  //       const tokenDecoded = decoder(tokenStorage);
-  //       setUser({...user,
-  //         userID: tokenDecoded.result[0].userDisplayID,
-  //         userRole: tokenDecoded.result[0].userRole })
-  
-  //     }
-
-      
-  //   } catch(err) {
-  //     alert("dashboard")
-  //   }
-  
-  // }, [])
+  useLayoutEffect(() => {
+    decoded 
+  });
 
   return (
 <>
@@ -312,10 +321,6 @@ export default function Dashboard() {
             <DashboardUsers/> 
           </Suspense>
         }
-      {/* { user?.userRole.trim() === "IT Admin" && <DashboardIT /> } */}
-      {/* { user?.userRole.trim() === "IT" && <DashboardIT /> } */}
-      {/* { user?.userRole.trim() === "User" && <DashboardUsers /> } */}
-      {/* { user?.userRole.trim() === "Supplier" && <DashboardUsers /> } */}
 
         </>
    
